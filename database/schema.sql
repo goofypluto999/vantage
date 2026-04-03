@@ -92,7 +92,7 @@ CREATE POLICY "Users can view own analyses" ON analyses
 
 -- Waitlist: anyone can join (insert), but only service role can view
 CREATE POLICY "Anyone can join waitlist" ON waitlist
-  FOR INSERT WITH (true);
+  FOR INSERT WITH CHECK (true);
 
 -- API Usage: users can only see their own usage
 CREATE POLICY "Users can view own usage" ON api_usage
