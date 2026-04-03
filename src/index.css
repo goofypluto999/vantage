@@ -1,0 +1,179 @@
+@import "tailwindcss";
+
+/* ============================================
+   VANTAGE DESIGN TOKENS v1.0
+   Pastel Glassmorphism Theme
+   ============================================ */
+
+@layer base {
+  :root {
+    /* Primary Palette */
+    --v-indigo-core: #4F46E5;
+    --v-indigo-light: #6366F1;
+    --v-lavender-mist: #A8A5E6;
+    --v-lilac-haze: #C2C0F0;
+    --v-frost-lavender: #E6E5F8;
+
+    /* Accent Palette (Cassette Labels) */
+    --v-mint-signal: #A8E6CF;
+    --v-sky-brief: #A1C9F1;
+    --v-coral-warmth: #FFB7B2;
+    --v-rose-soft: #D4A5C9;
+
+    /* Neutrals */
+    --v-ink-deep: #2D2B4E;
+    --v-slate-dark: #3B3A5C;
+    --v-muted-violet: #6B6B8D;
+    --v-ghost-lavender: #9B99B7;
+
+    /* Gradients */
+    --v-grad-hero: linear-gradient(135deg, #A8A5E6, #C2C0F0, #E6E5F8);
+    --v-grad-cta: linear-gradient(90deg, #A8E6CF, #A1C9F1, #FFB7B2);
+    --v-grad-text: linear-gradient(90deg, #4F46E5, #7C3AED);
+
+    /* Glass System */
+    --v-glass-surface: rgba(255, 255, 255, 0.30);
+    --v-glass-elevated: rgba(255, 255, 255, 0.45);
+    --v-glass-subtle: rgba(255, 255, 255, 0.15);
+    --v-glass-border: rgba(255, 255, 255, 0.50);
+    --v-blur-surface: blur(20px);
+    --v-blur-elevated: blur(28px);
+    --v-blur-subtle: blur(12px);
+
+    /* Shadows */
+    --v-shadow-rest: 0 4px 16px rgba(0, 0, 0, 0.06);
+    --v-shadow-hover: 0 8px 32px rgba(0, 0, 0, 0.10);
+    --v-shadow-elevated: 0 16px 48px rgba(0, 0, 0, 0.14);
+    --v-shadow-glow: 0 0 40px rgba(255, 255, 255, 0.5);
+
+    /* Radius */
+    --v-radius-pill: 9999px;
+    --v-radius-card: 24px;
+    --v-radius-modal: 32px;
+    --v-radius-input: 12px;
+    --v-radius-chip: 8px;
+
+    /* Typography */
+    --font-display: 'Plus Jakarta Sans', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+}
+
+/* Typography Defaults */
+body {
+  font-family: var(--font-body);
+  color: var(--v-ink-deep);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+}
+
+/* Glassmorphism Utility Classes */
+.glass-surface {
+  background: var(--v-glass-surface);
+  backdrop-filter: var(--v-blur-surface);
+  -webkit-backdrop-filter: var(--v-blur-surface);
+  border: 1px solid var(--v-glass-border);
+  border-radius: var(--v-radius-card);
+  box-shadow: var(--v-shadow-rest);
+}
+
+.glass-elevated {
+  background: var(--v-glass-elevated);
+  backdrop-filter: var(--v-blur-elevated);
+  -webkit-backdrop-filter: var(--v-blur-elevated);
+  border: 1px solid rgba(255, 255, 255, 0.60);
+  border-radius: var(--v-radius-modal);
+  box-shadow: var(--v-shadow-elevated);
+}
+
+.glass-subtle {
+  background: var(--v-glass-subtle);
+  backdrop-filter: var(--v-blur-subtle);
+  -webkit-backdrop-filter: var(--v-blur-subtle);
+  border: 1px solid rgba(255, 255, 255, 0.30);
+}
+
+/* Gradient Text */
+.text-gradient {
+  background: var(--v-grad-text);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  canvas {
+    display: none !important;
+  }
+}
+
+/* Grain / Noise Texture Overlay */
+.grain-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 128px 128px;
+  z-index: 1;
+}
+
+/* 3D Flashcard Perspective */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Hide Scrollbar */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Focus visible ring for accessibility */
+*:focus-visible {
+  outline: 2px solid var(--v-indigo-core);
+  outline-offset: 2px;
+}
+
+/* Animated gradient border keyframes */
+@keyframes gradient-rotate {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animated-gradient-border {
+  background-size: 400% 400%;
+  animation: gradient-rotate 3s ease infinite;
+}
+
+/* Fade out for hero hint */
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; visibility: hidden; }
+}
