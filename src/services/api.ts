@@ -1,12 +1,11 @@
-import type { Profile } from '../lib/supabase';
 import { supabase } from '../lib/supabase';
 
 const API_BASE = import.meta.env.VITE_API_URL || '/api';
 
 interface AnalyzeRequest {
-  cvFile: File;
+  cvText: string;
   jobUrl: string;
-  jobDescFile?: File;
+  jobDescText?: string;
   includeFitScore?: boolean;
 }
 
@@ -62,31 +61,18 @@ export async function analyzeJob(
   onProgress?: (message: string) => void
 ): Promise<AnalyzeResponse> {
   onProgress?.('Checking credits...');
-  
-  const formData = new FormData();
-  formData.append('cvFile', request.cvFile);
-  formData.append('jobUrl', request.jobUrl);
-  if (request.jobDescFile) {
-    formData.append('jobDescFile', request.jobDescFile);
-  }
-  if (request.includeFitScore) {
-    formData.append('includeFitScore', 'true');
-  }
-
   onProgress?.('Generating job intelligence...');
 
-  const token = await getAuthToken();
-  const response = await fetch(`${API_BASE}/analyze`, {
+  const response = await fetchWithAuth('/analyze', {
     method: 'POST',
-    body: formData,
-    ...(token ? { headers: { 'Authorization': `Bearer ${token}` } } : {}),
+    body: JSON.stringify(request),
   });
 
   if (!response.ok) {
     const error = await response.json();
     return {
       success: false,
-      error: error.message || 'Analysis failed',
+      error: error.error || error.message || 'Analysis failed',
     };
   }
 
@@ -129,10 +115,10 @@ export async function getWaitlistCount(): Promise<number> {
   return 0;
 }
 
-export async function createStripeCheckout(priceId: string): Promise<{ url: string }> {
+export async function createStripeCheckout(plan: string): Promise<{ url: string }> {
   const response = await fetchWithAuth('/stripe/checkout', {
     method: 'POST',
-    body: JSON.stringify({ priceId }),
+    body: JSON.stringify({ plan }),
   });
 
   if (!response.ok) {

@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../App';
 import { getCreditsRemaining, hasCredits } from '../lib/supabase';
-import { analyzeJob } from '../services/api';
+import { analyzeJob, createStripeCheckout } from '../services/api';
 
 const PLANS = [
   { name: 'Starter', price: 5, credits: 10, color: '#6B6B8D', icon: Zap, features: ['10 analyses/mo', 'Strategic Brief', 'Cover Letter', 'Interview Pack'] },
@@ -19,6 +19,7 @@ export default function Dashboard() {
   const { user, profile, signOut } = useAuth();
   const navigate = useNavigate();
   const [step, setStep] = useState<'input' | 'processing' | 'results'>('input');
+  const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
   const [cvFile, setCvFile] = useState<File | null>(null);
   const [jobUrl, setJobUrl] = useState('');
   const [jobDescFile, setJobDescFile] = useState<File | null>(null);
@@ -43,33 +44,30 @@ export default function Dashboard() {
     setStep('processing');
 
     try {
-      const reader = new FileReader();
-      reader.onload = async (e) => {
-        const cvText = e.target?.result as string;
-        
-        let jobDescText = null;
-        if (jobDescFile) {
-          jobDescText = await jobDescFile.text();
-        }
+      const cvText = await cvFile.text();
 
-        const result = await analyzeJob(
-          {
-            cvFile,
-            jobUrl,
-            jobDescFile: jobDescFile || undefined,
-          },
-          (msg) => console.log(msg)
-        );
+      let jobDescText: string | undefined;
+      if (jobDescFile) {
+        jobDescText = await jobDescFile.text();
+      }
 
-        if (result.success) {
-          setResults(result.data);
-          setStep('results');
-        } else {
-          setError(result.error || 'Analysis failed');
-          setStep('input');
-        }
-      };
-      reader.readAsText(cvFile);
+      const result = await analyzeJob(
+        {
+          cvText,
+          jobUrl,
+          jobDescText,
+          includeFitScore: true,
+        },
+        (msg) => console.log(msg)
+      );
+
+      if (result.success) {
+        setResults(result.data);
+        setStep('results');
+      } else {
+        setError(result.error || 'Analysis failed');
+        setStep('input');
+      }
     } catch (err: any) {
       setError(err.message || 'Something went wrong');
       setStep('input');
@@ -79,6 +77,17 @@ export default function Dashboard() {
   const handleSignOut = async () => {
     await signOut();
     navigate('/');
+  };
+
+  const handleCheckout = async (plan: string) => {
+    setCheckoutLoading(plan);
+    try {
+      const { url } = await createStripeCheckout(plan);
+      window.location.href = url;
+    } catch (err: any) {
+      setError(err.message || 'Failed to start checkout');
+      setCheckoutLoading(null);
+    }
   };
 
   return (
@@ -130,6 +139,37 @@ export default function Dashboard() {
           </div>
         </div>
       </header>
+
+      {/* Subscription Banner */}
+      {profile && profile.subscription_status !== 'active' && (
+        <div className="max-w-5xl mx-auto px-6 pt-6">
+          <div className="p-6 rounded-2xl bg-gradient-to-r from-violet-600/10 to-purple-600/10 border border-violet-500/20">
+            <h2 className="text-lg font-display font-bold text-white mb-1">Complete your subscription to start using Vantage</h2>
+            <p className="text-white/50 text-sm mb-5">Choose a plan to unlock your credits and begin analysing jobs.</p>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {PLANS.map((plan) => (
+                <div
+                  key={plan.name}
+                  className="p-4 rounded-xl bg-white/5 border border-white/10 flex flex-col items-center text-center"
+                >
+                  <plan.icon className="w-6 h-6 mb-2" style={{ color: plan.color }} />
+                  <div className="text-white font-bold">{plan.name}</div>
+                  <div className="text-2xl font-bold text-white my-1">{'\u00A3'}{plan.price}<span className="text-sm text-white/40 font-normal">/mo</span></div>
+                  <div className="text-xs text-white/50 mb-3">{plan.credits} credits/month</div>
+                  <button
+                    onClick={() => handleCheckout(plan.name.toLowerCase())}
+                    disabled={checkoutLoading !== null}
+                    className="w-full py-2 rounded-lg text-sm font-bold transition-all disabled:opacity-50"
+                    style={{ background: plan.color, color: '#fff' }}
+                  >
+                    {checkoutLoading === plan.name.toLowerCase() ? 'Redirecting...' : 'Subscribe'}
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Main Content */}
       <main className="max-w-5xl mx-auto p-6">

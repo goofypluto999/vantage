@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { Mail, Lock, User, Eye, EyeOff, ArrowRight, BrainCircuit, Chrome, Check } from 'lucide-react';
 import { signUp, signInWithGoogle } from '../lib/supabase';
@@ -19,7 +19,6 @@ export default function Register() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState('starter');
-  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,7 +28,6 @@ export default function Register() {
     try {
       await signUp(email, password, name);
       setSuccess(true);
-      setTimeout(() => navigate('/dashboard'), 1500);
     } catch (err: any) {
       if (err.message.includes('User already registered')) {
         setError('An account with this email already exists. Try logging in.');
@@ -64,7 +62,7 @@ export default function Register() {
             <Check className="w-8 h-8 text-emerald-400" />
           </div>
           <h2 className="text-2xl font-display font-bold text-white mb-2">Account created!</h2>
-          <p className="text-white/50">Redirecting to your dashboard...</p>
+          <p className="text-white/50">Check your email to confirm your account, then sign in to get started.</p>
         </motion.div>
       </div>
     );

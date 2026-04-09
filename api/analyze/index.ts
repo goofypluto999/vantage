@@ -185,19 +185,6 @@ Requirements:
   return parsed;
 }
 
-async function parseCVFile(file: any): Promise<string> {
-  if (!file) return '';
-  
-  const buffer = Buffer.from(file.data, 'base64');
-  const text = buffer.toString('utf-8');
-  
-  if (file.mimetype === 'application/pdf') {
-    return text.substring(0, 50000);
-  }
-  
-  return text.substring(0, 50000);
-}
-
 export default async function handler(request: any, response: any) {
   if (request.method !== 'POST') {
     return response.status(405).json({ error: 'Method not allowed' });
