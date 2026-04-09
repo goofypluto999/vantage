@@ -30,7 +30,7 @@ export default function Dashboard() {
   const jdInputRef = useRef<HTMLInputElement>(null);
 
   const creditsRemaining = profile ? getCreditsRemaining(profile) : 0;
-  const canAnalyze = hasCredits(profile || null, 2);
+  const canAnalyze = hasCredits(profile, 2);
 
   const handleStart = async () => {
     if (!cvFile) { setError('Please upload your CV'); return; }

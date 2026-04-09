@@ -32,11 +32,13 @@ export interface WaitlistEntry {
   created_at: string;
 }
 
-export function getCreditsRemaining(profile: Profile): number {
+export function getCreditsRemaining(profile: Profile | null): number {
+  if (!profile) return 0;
   return Math.max(0, profile.credits_total - profile.credits_used);
 }
 
-export function hasCredits(profile: Profile, required: number = 2): boolean {
+export function hasCredits(profile: Profile | null, required: number = 2): boolean {
+  if (!profile) return false;
   return getCreditsRemaining(profile) >= required;
 }
 
