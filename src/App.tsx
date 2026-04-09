@@ -6,12 +6,15 @@ import { loadStripe } from '@stripe/stripe-js';
 import LandingPage from './components/LandingPage';
 import Login from './components/Login';
 import Register from './components/Register';
+import ForgotPassword from './components/ForgotPassword';
+import ResetPassword from './components/ResetPassword';
 import Dashboard from './components/Dashboard';
 import Pricing from './components/Pricing';
 import CookieConsent from './components/CookieConsent';
 import PrivacyPolicy from './components/PrivacyPolicy';
 import TermsOfService from './components/TermsOfService';
 import CookiePolicy from './components/CookiePolicy';
+import Account from './components/Account';
 import ThemeProvider, { useTheme } from './contexts/ThemeContext';
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || '');
@@ -103,6 +106,8 @@ function AppContent() {
             <Route path="/" element={<LandingPageWrapper />} />
             <Route path="/login" element={<LoginWrapper />} />
             <Route path="/register" element={<RegisterWrapper />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/pricing" element={<PricingWrapper />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/terms" element={<TermsOfService />} />
@@ -110,6 +115,11 @@ function AppContent() {
             <Route path="/dashboard" element={
               <ProtectedRoute>
                 <Dashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="/account" element={
+              <ProtectedRoute>
+                <Account />
               </ProtectedRoute>
             } />
             <Route path="*" element={<Navigate to="/" replace />} />

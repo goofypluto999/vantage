@@ -98,7 +98,29 @@ export default function Dashboard() {
               <div className="w-2 h-2 bg-emerald-400 rounded-full" />
               <span className="text-sm font-bold text-emerald-400">{creditsRemaining} Credits</span>
             </div>
-            
+
+            {profile?.plan && (
+              <span className="text-xs font-semibold text-white/40 uppercase tracking-wider">
+                {profile.plan}
+              </span>
+            )}
+
+            {profile?.subscription_status === 'inactive' && profile?.plan === 'starter' && (
+              <button
+                onClick={() => navigate('/pricing')}
+                className="px-3 py-1 rounded-full text-xs font-bold bg-violet-600/20 text-violet-400 border border-violet-500/30 hover:bg-violet-600/30 transition-colors"
+              >
+                Upgrade
+              </button>
+            )}
+
+            <button
+              onClick={() => navigate('/account')}
+              className="p-2 rounded-lg hover:bg-white/5 text-white/50 hover:text-white transition-colors"
+            >
+              <Settings className="w-5 h-5" />
+            </button>
+
             <button
               onClick={handleSignOut}
               className="p-2 rounded-lg hover:bg-white/5 text-white/50 hover:text-white transition-colors"

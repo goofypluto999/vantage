@@ -143,6 +143,19 @@ export async function createStripeCheckout(priceId: string): Promise<{ url: stri
   return response.json();
 }
 
+export async function createBillingPortal(): Promise<{ url: string }> {
+  const response = await fetchWithAuth('/stripe/portal', {
+    method: 'POST',
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || 'Failed to create billing portal session');
+  }
+
+  return response.json();
+}
+
 export async function logout(): Promise<void> {
   await fetchWithAuth('/auth/logout', { method: 'POST' });
 }

@@ -15,9 +15,9 @@ const PLAN_CREDITS: Record<string, number> = {
 };
 
 const PLAN_PRICES: Record<string, string> = {
-  'starter': process.env.STRIPE_STARTER_PRICE_ID || 'price_starter',
-  'pro': process.env.STRIPE_PRO_PRICE_ID || 'price_pro',
-  'premium': process.env.STRIPE_PREMIUM_PRICE_ID || 'price_premium',
+  'starter': process.env.STRIPE_PRICE_STARTER || process.env.STRIPE_STARTER_PRICE_ID || 'price_starter',
+  'pro': process.env.STRIPE_PRICE_PRO || process.env.STRIPE_PRO_PRICE_ID || 'price_pro',
+  'premium': process.env.STRIPE_PRICE_PREMIUM || process.env.STRIPE_PREMIUM_PRICE_ID || 'price_premium',
 };
 
 export default async function handler(request: any, response: any) {
