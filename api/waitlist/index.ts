@@ -40,7 +40,8 @@ export default async function handler(request: any, response: any) {
   }
 
   try {
-    // Use anon key for insert — RLS policy "Anyone can join waitlist" allows public inserts
+    // Use anon key with return=minimal — RLS INSERT policy allows public inserts
+    // but no SELECT policy exists, so return=representation fails
     const insertKey = SUPABASE_ANON_KEY || SUPABASE_SERVICE_KEY;
     const res = await fetch(`${SUPABASE_URL}/rest/v1/waitlist`, {
       method: 'POST',
@@ -48,7 +49,7 @@ export default async function handler(request: any, response: any) {
         'Content-Type': 'application/json',
         'apikey': insertKey,
         'Authorization': `Bearer ${insertKey}`,
-        'Prefer': 'return=representation',
+        'Prefer': 'return=minimal',
       },
       body: JSON.stringify({
         email: email.toLowerCase(),
@@ -58,14 +59,17 @@ export default async function handler(request: any, response: any) {
     });
 
     if (!res.ok) {
-      const errorData = await res.json().catch(() => ({}));
-      console.error('Supabase insert error:', JSON.stringify(errorData), 'Status:', res.status);
+      const errorText = await res.text();
+      let errorData: any = {};
+      try { errorData = JSON.parse(errorText); } catch {}
+      console.error('Supabase insert error:', errorText, 'Status:', res.status);
       if (errorData.code === '23505') {
         return response.status(409).json({ success: false, error: 'Email already on waitlist' });
       }
-      return response.status(500).json({ success: false, error: errorData.message || 'Failed to add to waitlist', detail: errorData });
+      return response.status(500).json({ success: false, error: errorData.message || 'Failed to add to waitlist' });
     }
 
+    // Count uses service key to bypass RLS (no SELECT policy on waitlist)
     const countRes = await fetch(`${SUPABASE_URL}/rest/v1/waitlist?select=count`, {
       headers: {
         'apikey': SUPABASE_SERVICE_KEY,
