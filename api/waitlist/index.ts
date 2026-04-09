@@ -10,6 +10,24 @@ const SUPABASE_URL = process.env.SUPABASE_URL || '';
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 
 export default async function handler(request: any, response: any) {
+  // GET: return waitlist count (public)
+  if (request.method === 'GET') {
+    try {
+      const countRes = await fetch(`${SUPABASE_URL}/rest/v1/waitlist?select=count`, {
+        headers: {
+          'apikey': SUPABASE_SERVICE_KEY,
+          'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+          'Prefer': 'count=exact',
+        },
+      });
+      const countHeader = countRes.headers.get('content-range');
+      const total = countHeader ? parseInt(countHeader.split('/')[1]) : 0;
+      return response.status(200).json({ count: total });
+    } catch {
+      return response.status(200).json({ count: 0 });
+    }
+  }
+
   if (request.method !== 'POST') {
     return response.status(405).json({ success: false, error: 'Method not allowed' });
   }

@@ -27,7 +27,7 @@ export default function Waitlist({ launchDate, onPreOrderClick }: WaitlistProps)
   const containerRef = useRef<HTMLDivElement>(null);
   const countdownRef = useRef<HTMLDivElement>(null);
 
-  const targetDate = launchDate || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+  const [targetDate] = useState(() => launchDate || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000));
 
   useEffect(() => {
     getWaitlistCount().then(setWaitlistCount).catch(() => {});

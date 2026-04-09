@@ -1,13 +1,16 @@
 import React, { useRef, useState, useMemo, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Sparkles } from '@react-three/drei';
 import { motion, useScroll, useTransform, AnimatePresence } from 'motion/react';
 import {
   ChevronRight, ShieldAlert, ShieldCheck, FileText, Lock,
   Upload, Link as LinkIcon, Download, CheckCircle, Eye, Menu, X,
-  BrainCircuit, Trophy, Clock3, BarChart2, User
+  BrainCircuit, Trophy, Clock3, BarChart2, User, Play
 } from 'lucide-react';
 import * as THREE from 'three';
+import Waitlist from './Waitlist';
+import DemoWalkthrough from './DemoWalkthrough';
 
 // ============================================================================
 // 3D: DOT-MATRIX GLOBE  (fibonacci sphere of points + orbital rings)
@@ -193,7 +196,7 @@ function GlassCard({ children, className = "" }: { children: React.ReactNode; cl
 // ============================================================================
 // NAVBAR
 // ============================================================================
-function Navbar({ onStart }: { onStart: () => void; showLogin?: () => void }) {
+function Navbar({ onStart, showLogin }: { onStart: () => void; showLogin?: () => void }) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -503,6 +506,7 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
   const heroScale   = useTransform(scrollYProgress, [0, 0.15], [1, 0.95]);
 
   const [showHowItWorks, setShowHowItWorks] = useState(false);
+  const [showDemo, setShowDemo] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
   const tabs = ['Strategic Brief', 'Cover Letter', 'Interview Pack', 'Presentation Deck'];
 
@@ -513,6 +517,11 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
         {showHowItWorks && (
           <motion.div key="hiw" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.25 }}>
             <HowItWorksModal onClose={() => setShowHowItWorks(false)} onStart={() => { setShowHowItWorks(false); onStart(); }} />
+          </motion.div>
+        )}
+        {showDemo && (
+          <motion.div key="demo" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.25 }}>
+            <DemoWalkthrough onClose={() => setShowDemo(false)} onStartReal={() => { setShowDemo(false); onStart(); }} />
           </motion.div>
         )}
       </AnimatePresence>
@@ -590,6 +599,12 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
                 className="group inline-flex items-center gap-2 px-10 py-4 bg-[#4F46E5] text-white rounded-full font-bold text-base hover:-translate-y-1 hover:shadow-[0_12px_32px_rgba(79,70,229,0.45)] active:scale-95 transition-all"
               >
                 Access Workspace <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </button>
+              <button
+                onClick={() => setShowDemo(true)}
+                className="inline-flex items-center gap-2 px-8 py-4 bg-white/35 backdrop-blur-[20px] border border-white/55 text-[#2D2B4E] rounded-full font-semibold text-base hover:bg-white/55 hover:-translate-y-1 active:scale-95 transition-all"
+              >
+                <Play className="w-4 h-4" /> Watch Demo
               </button>
               <button
                 onClick={() => setShowHowItWorks(true)}
@@ -876,6 +891,17 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
       </section>
 
       {/* ================================================================
+          WAITLIST
+      ================================================================ */}
+      <section id="waitlist" className="py-20 px-6 relative z-20">
+        <div className="max-w-4xl mx-auto">
+          <div className="glass-elevated p-12 md:p-16 rounded-[32px]">
+            <Waitlist onPreOrderClick={onStart} />
+          </div>
+        </div>
+      </section>
+
+      {/* ================================================================
           FINAL CTA
       ================================================================ */}
       <section className="py-20 px-6 relative z-20">
@@ -927,14 +953,14 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
 
             <div className="flex-1 flex gap-12 text-sm font-bold text-[#3B3A5C]">
               <div className="flex flex-col gap-3">
-                <a href="#" className="hover:text-[#4F46E5] transition-colors">Product</a>
+                <a href="#features" className="hover:text-[#4F46E5] transition-colors">Product</a>
                 <a href="#pricing" className="hover:text-[#4F46E5] transition-colors">Pricing</a>
-                <a href="#" className="hover:text-[#4F46E5] transition-colors">Security</a>
+                <a href="#waitlist" className="hover:text-[#4F46E5] transition-colors">Waitlist</a>
               </div>
               <div className="flex flex-col gap-3">
-                <a href="#" className="hover:text-[#4F46E5] transition-colors">Privacy Policy</a>
-                <a href="#" className="hover:text-[#4F46E5] transition-colors">Terms of Service</a>
-                <a href="#" className="hover:text-[#4F46E5] transition-colors">Contact</a>
+                <Link to="/privacy" className="hover:text-[#4F46E5] transition-colors">Privacy Policy</Link>
+                <Link to="/terms" className="hover:text-[#4F46E5] transition-colors">Terms of Service</Link>
+                <Link to="/cookies" className="hover:text-[#4F46E5] transition-colors">Cookie Policy</Link>
               </div>
             </div>
 
@@ -949,8 +975,8 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
           </div>
 
           <div className="flex flex-col md:flex-row justify-between items-center text-[11px] text-[#6B6B8D] mt-8 font-bold tracking-wider gap-3">
-            <span>© 2026 VANTAGE AI. ALL RIGHTS RESERVED.</span>
-            <span className="text-center">EARLY ACCESS — ALL OUTPUTS ARE AI-GENERATED | USER ASSUMES LIABILITY FOR USAGE</span>
+            <span>© 2026 VANTAGE. ALL RIGHTS RESERVED.</span>
+            <span className="text-center">ALL OUTPUTS ARE AI-GENERATED | <Link to="/terms" className="underline hover:text-[#4F46E5]">TERMS APPLY</Link></span>
           </div>
         </div>
       </footer>

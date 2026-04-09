@@ -50,6 +50,7 @@ async function getUserCredits(userId: string): Promise<{ total: number; used: nu
 }
 
 async function deductCredits(userId: string, amount: number): Promise<void> {
+  const { total, used } = await getUserCredits(userId);
   await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${userId}`, {
     method: 'PATCH',
     headers: {
@@ -58,7 +59,7 @@ async function deductCredits(userId: string, amount: number): Promise<void> {
       'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
     },
     body: JSON.stringify({
-      credits_used: { increment: amount },
+      credits_used: used + amount,
     }),
   });
 }

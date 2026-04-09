@@ -1,4 +1,5 @@
-import { Profile, Analysis } from '../lib/supabase';
+import type { Profile } from '../lib/supabase';
+import { supabase } from '../lib/supabase';
 
 const API_BASE = import.meta.env.VITE_API_URL || '/api';
 
@@ -29,14 +30,20 @@ interface WaitlistResponse {
   error?: string;
 }
 
+async function getAuthToken(): Promise<string | null> {
+  const { data: { session } } = await supabase.auth.getSession();
+  return session?.access_token ?? null;
+}
+
 async function fetchWithAuth(endpoint: string, options: RequestInit = {}): Promise<Response> {
+  const token = await getAuthToken();
   const response = await fetch(`${API_BASE}${endpoint}`, {
     ...options,
     headers: {
       'Content-Type': 'application/json',
+      ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
       ...options.headers,
     },
-    credentials: 'include',
   });
   return response;
 }
@@ -67,11 +74,12 @@ export async function analyzeJob(
   }
 
   onProgress?.('Generating job intelligence...');
-  
+
+  const token = await getAuthToken();
   const response = await fetch(`${API_BASE}/analyze`, {
     method: 'POST',
     body: formData,
-    credentials: 'include',
+    ...(token ? { headers: { 'Authorization': `Bearer ${token}` } } : {}),
   });
 
   if (!response.ok) {
@@ -109,10 +117,10 @@ export async function joinWaitlist(email: string, name?: string): Promise<Waitli
 
 export async function getWaitlistCount(): Promise<number> {
   try {
-    const response = await fetch(`${API_BASE}/waitlist/count`);
+    const response = await fetch(`${API_BASE}/waitlist`);
     if (response.ok) {
       const data = await response.json();
-      return data.count;
+      return data.count ?? 0;
     }
   } catch {
     // Fallback to default

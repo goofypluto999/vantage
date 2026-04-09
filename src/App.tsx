@@ -8,9 +8,13 @@ import Login from './components/Login';
 import Register from './components/Register';
 import Dashboard from './components/Dashboard';
 import Pricing from './components/Pricing';
+import CookieConsent from './components/CookieConsent';
+import PrivacyPolicy from './components/PrivacyPolicy';
+import TermsOfService from './components/TermsOfService';
+import CookiePolicy from './components/CookiePolicy';
 import ThemeProvider, { useTheme } from './contexts/ThemeContext';
 
-const stripePromise = loadStripe('pk_test_placeholder');
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || '');
 
 interface AuthContextType {
   user: any;
@@ -56,27 +60,33 @@ function AppContent() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getCurrentUser().then(async (user) => {
-      setUser(user);
-      if (user) {
-        const profile = await fetchProfile(user.id);
-        setProfile(profile);
+    let cancelled = false;
+
+    getCurrentUser().then(async (currentUser) => {
+      if (cancelled) return;
+      setUser(currentUser);
+      if (currentUser) {
+        const p = await fetchProfile(currentUser.id);
+        if (!cancelled) setProfile(p);
       }
-      setLoading(false);
+      if (!cancelled) setLoading(false);
+    }).catch(() => {
+      if (!cancelled) setLoading(false);
     });
 
     const { data: { subscription } } = subscribeToAuthChanges(async (event, session) => {
+      if (cancelled) return;
       if (event === 'SIGNED_IN' && session?.user) {
         setUser(session.user);
-        const profile = await fetchProfile(session.user.id);
-        setProfile(profile);
+        const p = await fetchProfile(session.user.id);
+        if (!cancelled) setProfile(p);
       } else if (event === 'SIGNED_OUT') {
         setUser(null);
         setProfile(null);
       }
     });
 
-    return () => subscription.unsubscribe();
+    return () => { cancelled = true; subscription.unsubscribe(); };
   }, []);
 
   const handleSignOut = async () => {
@@ -94,6 +104,9 @@ function AppContent() {
             <Route path="/login" element={<LoginWrapper />} />
             <Route path="/register" element={<RegisterWrapper />} />
             <Route path="/pricing" element={<PricingWrapper />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/terms" element={<TermsOfService />} />
+            <Route path="/cookies" element={<CookiePolicy />} />
             <Route path="/dashboard" element={
               <ProtectedRoute>
                 <Dashboard />
@@ -101,6 +114,7 @@ function AppContent() {
             } />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
+          <CookieConsent />
         </ThemeProvider>
       </BrowserRouter>
     </AuthContext.Provider>
