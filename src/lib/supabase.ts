@@ -91,12 +91,16 @@ export async function getCurrentUser(): Promise<User | null> {
 }
 
 export async function fetchProfile(userId: string): Promise<Profile | null> {
+  console.log('[fetchProfile] called with userId:', userId);
+  console.log('[fetchProfile] supabaseUrl:', supabaseUrl ? 'set' : 'EMPTY');
+  console.log('[fetchProfile] supabaseAnonKey:', supabaseAnonKey ? 'set' : 'EMPTY');
   const { data, error } = await supabase
     .from('profiles')
     .select('*')
     .eq('id', userId)
     .single();
-  
+
+  console.log('[fetchProfile] result:', { data: !!data, error: error?.message || null });
   if (error) {
     console.error('Error fetching profile:', error);
     return null;

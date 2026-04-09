@@ -90,11 +90,14 @@ function AppContent() {
     };
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('[auth] event:', event, 'hasSession:', !!session, 'cancelled:', cancelled);
       if (cancelled) return;
 
       if (session?.user) {
+        console.log('[auth] setting user, loading profile for:', session.user.id);
         setUser(session.user);
         await loadProfile(session.user.id);
+        console.log('[auth] profile loaded');
       } else if (event === 'SIGNED_OUT' || (event === 'INITIAL_SESSION' && !session)) {
         setUser(null);
         setProfile(null);
