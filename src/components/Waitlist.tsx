@@ -6,7 +6,7 @@ import { joinWaitlist, getWaitlistCount } from '../services/api';
 
 interface WaitlistProps {
   launchDate?: Date;
-  onPreOrderClick?: () => void;
+  onSignUpClick?: () => void;
 }
 
 interface TimeLeft {
@@ -16,7 +16,7 @@ interface TimeLeft {
   seconds: number;
 }
 
-export default function Waitlist({ launchDate, onPreOrderClick }: WaitlistProps) {
+export default function Waitlist({ launchDate, onSignUpClick }: WaitlistProps) {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -27,7 +27,7 @@ export default function Waitlist({ launchDate, onPreOrderClick }: WaitlistProps)
   const containerRef = useRef<HTMLDivElement>(null);
   const countdownRef = useRef<HTMLDivElement>(null);
 
-  const [targetDate] = useState(() => launchDate || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000));
+  const [targetDate] = useState(() => launchDate || new Date(Date.now() + 6 * 24 * 60 * 60 * 1000));
 
   useEffect(() => {
     getWaitlistCount().then(setWaitlistCount).catch(() => {});
@@ -105,13 +105,13 @@ export default function Waitlist({ launchDate, onPreOrderClick }: WaitlistProps)
             <div className="text-center mb-8">
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#4F46E5]/10 border border-[#4F46E5]/20 mb-6">
                 <Sparkles className="w-4 h-4 text-[#4F46E5]" />
-                <span className="text-sm font-semibold text-[#4F46E5]">Launching Soon</span>
+                <span className="text-sm font-semibold text-[#4F46E5]">Coming Soon</span>
               </div>
               <h2 className="text-4xl md:text-5xl font-display font-bold text-[#2D2B4E] mb-4">
-                Get Early Access
+                AI Mock Interview is Landing
               </h2>
               <p className="text-lg text-[#6B6B8D] max-w-xl mx-auto">
-                Join the waitlist to be notified when Vantage launches. Be the first to experience AI-powered job preparation.
+                Voice-powered AI interviews, real-time feedback, and STAR story coaching. Drop your email to be the first to know.
               </p>
             </div>
 
@@ -171,7 +171,7 @@ export default function Waitlist({ launchDate, onPreOrderClick }: WaitlistProps)
                     <div className="w-5 h-5 border-2 border-white/40 border-t-white rounded-full animate-spin" />
                   ) : (
                     <>
-                      Join the Waitlist <ArrowRight className="w-5 h-5" />
+                      Notify Me <ArrowRight className="w-5 h-5" />
                     </>
                   )}
                 </button>
@@ -182,15 +182,15 @@ export default function Waitlist({ launchDate, onPreOrderClick }: WaitlistProps)
               <div className="flex items-center gap-2 text-[#6B6B8D] text-sm">
                 <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                 <Clock className="w-4 h-4" />
-                <span>{waitlistCount} people already waiting</span>
+                <span>{waitlistCount} people signed up</span>
               </div>
               <div className="h-4 w-px bg-[#6B6B8D]/20 hidden md:block" />
               <button
-                onClick={onPreOrderClick}
+                onClick={onSignUpClick}
                 className="flex items-center gap-2 text-sm font-semibold text-[#4F46E5] hover:text-[#4338CA] transition-colors"
               >
                 <Zap className="w-4 h-4" />
-                <span>Pre-order now &rarr;</span>
+                <span>Start using Vantage now &rarr;</span>
               </button>
             </div>
           </motion.div>
@@ -205,10 +205,10 @@ export default function Waitlist({ launchDate, onPreOrderClick }: WaitlistProps)
               <Check className="w-10 h-10 text-emerald-600" />
             </div>
             <h3 className="text-2xl font-display font-bold text-[#2D2B4E] mb-3">
-              You're on the list!
+              You're in!
             </h3>
             <p className="text-[#6B6B8D] mb-8 max-w-md mx-auto">
-              We'll notify you when Vantage launches. In the meantime, watch the countdown above as we prepare to go live.
+              We'll notify you when AI Mock Interview drops. In the meantime, start using Vantage now — it's live and ready.
             </p>
             <div className="inline-flex items-center gap-3 px-5 py-3 rounded-2xl bg-white/40 border border-[#4F46E5]/10">
               <span className="text-[#6B6B8D] text-sm">Share with friends:</span>

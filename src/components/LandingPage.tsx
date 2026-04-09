@@ -891,12 +891,12 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
       </section>
 
       {/* ================================================================
-          WAITLIST
+          FEATURE DROP — EMAIL CAPTURE
       ================================================================ */}
-      <section id="waitlist" className="py-20 px-6 relative z-20">
+      <section id="upcoming" className="py-20 px-6 relative z-20">
         <div className="max-w-4xl mx-auto">
           <div className="glass-elevated p-12 md:p-16 rounded-[32px]">
-            <Waitlist onPreOrderClick={onStart} />
+            <Waitlist onSignUpClick={onStart} />
           </div>
         </div>
       </section>
@@ -955,7 +955,7 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
               <div className="flex flex-col gap-3">
                 <a href="#features" className="hover:text-[#4F46E5] transition-colors">Product</a>
                 <a href="#pricing" className="hover:text-[#4F46E5] transition-colors">Pricing</a>
-                <a href="#waitlist" className="hover:text-[#4F46E5] transition-colors">Waitlist</a>
+                <a href="#upcoming" className="hover:text-[#4F46E5] transition-colors">Upcoming</a>
               </div>
               <div className="flex flex-col gap-3">
                 <Link to="/privacy" className="hover:text-[#4F46E5] transition-colors">Privacy Policy</Link>
