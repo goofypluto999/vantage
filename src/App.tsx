@@ -65,6 +65,11 @@ function AppContent() {
   useEffect(() => {
     let cancelled = false;
 
+    // Timeout: never let auth check block the app for more than 5 seconds
+    const timeout = setTimeout(() => {
+      if (!cancelled) setLoading(false);
+    }, 5000);
+
     getCurrentUser().then(async (currentUser) => {
       if (cancelled) return;
       setUser(currentUser);
@@ -72,9 +77,9 @@ function AppContent() {
         const p = await fetchProfile(currentUser.id);
         if (!cancelled) setProfile(p);
       }
-      if (!cancelled) setLoading(false);
+      if (!cancelled) { clearTimeout(timeout); setLoading(false); }
     }).catch(() => {
-      if (!cancelled) setLoading(false);
+      if (!cancelled) { clearTimeout(timeout); setLoading(false); }
     });
 
     const { data: { subscription } } = subscribeToAuthChanges(async (event, session) => {
