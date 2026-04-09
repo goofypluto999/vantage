@@ -55,11 +55,12 @@ export default async function handler(request: any, response: any) {
     });
 
     if (!res.ok) {
-      const errorData = await res.json();
+      const errorData = await res.json().catch(() => ({}));
+      console.error('Supabase insert error:', JSON.stringify(errorData), 'Status:', res.status);
       if (errorData.code === '23505') {
         return response.status(409).json({ success: false, error: 'Email already on waitlist' });
       }
-      throw new Error('Failed to add to waitlist');
+      return response.status(500).json({ success: false, error: errorData.message || 'Failed to add to waitlist', detail: errorData });
     }
 
     const countRes = await fetch(`${SUPABASE_URL}/rest/v1/waitlist?select=count`, {
@@ -73,8 +74,8 @@ export default async function handler(request: any, response: any) {
     const total = countHeader ? parseInt(countHeader.split('/')[1]) : 0;
 
     return response.status(201).json({ success: true, position: total });
-  } catch (error) {
-    console.error('Waitlist error:', error);
-    return response.status(500).json({ success: false, error: 'Internal server error' });
+  } catch (error: any) {
+    console.error('Waitlist error:', error?.message || error);
+    return response.status(500).json({ success: false, error: error?.message || 'Internal server error' });
   }
 }
