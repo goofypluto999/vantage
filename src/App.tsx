@@ -115,7 +115,7 @@ function LandingPageWrapper() {
     return <Navigate to="/dashboard" replace />;
   }
   
-  return <LandingPage onStart={() => navigate('/register')} />;
+  return <LandingPage onStart={() => navigate('/register')} showLogin={() => navigate('/login')} />;
 }
 
 function LoginWrapper() {

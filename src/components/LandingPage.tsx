@@ -5,7 +5,7 @@ import { motion, useScroll, useTransform, AnimatePresence } from 'motion/react';
 import {
   ChevronRight, ShieldAlert, ShieldCheck, FileText, Lock,
   Upload, Link as LinkIcon, Download, CheckCircle, Eye, Menu, X,
-  BrainCircuit, Trophy, Clock3, BarChart2
+  BrainCircuit, Trophy, Clock3, BarChart2, User
 } from 'lucide-react';
 import * as THREE from 'three';
 
@@ -193,7 +193,7 @@ function GlassCard({ children, className = "" }: { children: React.ReactNode; cl
 // ============================================================================
 // NAVBAR
 // ============================================================================
-function Navbar({ onStart }: { onStart: () => void }) {
+function Navbar({ onStart }: { onStart: () => void; showLogin?: () => void }) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -252,8 +252,14 @@ function Navbar({ onStart }: { onStart: () => void }) {
           initial={{ opacity: 0, x: 16 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
-          className="hidden md:block"
+          className="hidden md:flex items-center gap-2"
         >
+          <button
+            onClick={showLogin}
+            className="px-4 py-2.5 text-[#4F46E5] text-sm font-bold rounded-full hover:bg-white/30 transition-all"
+          >
+            Log In
+          </button>
           <button
             onClick={onStart}
             className="px-5 py-2.5 bg-[#4F46E5] text-white text-sm font-bold rounded-full hover:bg-[#6366F1] hover:-translate-y-px hover:shadow-[0_8px_20px_rgba(79,70,229,0.35)] active:scale-95 transition-all"
@@ -491,7 +497,7 @@ function HowItWorksModal({ onClose, onStart }: { onClose: () => void; onStart: (
 // ============================================================================
 // LANDING PAGE
 // ============================================================================
-export default function LandingPage({ onStart }: { onStart: () => void }) {
+export default function LandingPage({ onStart, showLogin }: { onStart: () => void; showLogin?: () => void }) {
   const { scrollYProgress } = useScroll();
   const heroOpacity = useTransform(scrollYProgress, [0, 0.15], [1, 0]);
   const heroScale   = useTransform(scrollYProgress, [0, 0.15], [1, 0.95]);
@@ -511,7 +517,7 @@ export default function LandingPage({ onStart }: { onStart: () => void }) {
         )}
       </AnimatePresence>
 
-      <Navbar onStart={onStart} />
+      <Navbar onStart={onStart} showLogin={showLogin} />
 
       {/* ================================================================
           HERO — dot-matrix globe behind the headline
