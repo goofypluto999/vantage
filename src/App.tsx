@@ -65,49 +65,42 @@ function AppContent() {
   const [loading, setLoading] = useState(true);
 
   const refreshProfile = async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session?.user) {
-      const p = await fetchProfile(session.user.id);
+    if (user?.id) {
+      const p = await fetchProfile(user.id);
       setProfile(p);
     }
   };
 
+  // Auth state listener — only sets user, never awaits DB queries (deadlock risk)
   useEffect(() => {
-    let cancelled = false;
+    const timeout = setTimeout(() => setLoading(false), 5000);
 
-    const timeout = setTimeout(() => {
-      if (!cancelled) setLoading(false);
-    }, 5000);
-
-    const loadProfile = async (userId: string) => {
-      let p = await fetchProfile(userId);
-      // Retry once after delay — RLS may not see the session token yet
-      if (!p && !cancelled) {
-        await new Promise(r => setTimeout(r, 800));
-        p = await fetchProfile(userId);
-      }
-      if (!cancelled) setProfile(p);
-    };
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log('[auth] event:', event, 'hasSession:', !!session, 'cancelled:', cancelled);
-      if (cancelled) return;
-
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (session?.user) {
-        console.log('[auth] setting user, loading profile for:', session.user.id);
         setUser(session.user);
-        await loadProfile(session.user.id);
-        console.log('[auth] profile loaded');
       } else if (event === 'SIGNED_OUT' || (event === 'INITIAL_SESSION' && !session)) {
         setUser(null);
         setProfile(null);
       }
-
-      if (!cancelled) { clearTimeout(timeout); setLoading(false); }
+      clearTimeout(timeout);
+      setLoading(false);
     });
 
-    return () => { cancelled = true; subscription.unsubscribe(); };
+    return () => { subscription.unsubscribe(); };
   }, []);
+
+  // Fetch profile whenever user changes — separate from auth listener to avoid deadlock
+  useEffect(() => {
+    if (!user) {
+      setProfile(null);
+      return;
+    }
+    let cancelled = false;
+    fetchProfile(user.id).then(p => {
+      if (!cancelled) setProfile(p);
+    });
+    return () => { cancelled = true; };
+  }, [user]);
 
   const handleSignOut = async () => {
     await signOut();
