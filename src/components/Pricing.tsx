@@ -5,6 +5,8 @@ import { Check, Zap, Star, Crown, ArrowRight } from 'lucide-react';
 interface PricingProps {
   onLogin?: () => void;
   onRegister?: () => void;
+  onCheckout?: (plan: string) => void;
+  isAuthenticated?: boolean;
 }
 
 const PLANS = [
@@ -56,7 +58,7 @@ const PLANS = [
   },
 ];
 
-export default function Pricing({ onLogin, onRegister }: PricingProps) {
+export default function Pricing({ onLogin, onRegister, onCheckout, isAuthenticated }: PricingProps) {
   return (
     <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #0d0b1e 0%, #1a1635 50%, #2d2654 100%)' }}>
       {/* Header */}
@@ -69,9 +71,15 @@ export default function Pricing({ onLogin, onRegister }: PricingProps) {
             <span className="text-lg font-display font-bold text-white">Vantage</span>
           </a>
           <div className="flex items-center gap-4">
-            <button onClick={onLogin} className="text-white/70 hover:text-white font-semibold">
-              Sign in
-            </button>
+            {isAuthenticated ? (
+              <a href="/dashboard" className="text-white/70 hover:text-white font-semibold">
+                Dashboard
+              </a>
+            ) : (
+              <button onClick={onLogin} className="text-white/70 hover:text-white font-semibold">
+                Sign in
+              </button>
+            )}
           </div>
         </div>
       </header>
@@ -136,14 +144,14 @@ export default function Pricing({ onLogin, onRegister }: PricingProps) {
                 </ul>
 
                 <button
-                  onClick={onRegister}
+                  onClick={() => isAuthenticated && onCheckout ? onCheckout(plan.name.toLowerCase()) : onRegister?.()}
                   className={`w-full py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 transition-all ${
                     plan.popular
                       ? 'bg-gradient-to-r from-violet-600 to-purple-600 text-white hover:from-violet-500 hover:to-purple-500'
                       : 'bg-white/10 text-white hover:bg-white/20'
                   }`}
                 >
-                  Get Started <ArrowRight className="w-5 h-5" />
+                  {isAuthenticated ? 'Subscribe' : 'Get Started'} <ArrowRight className="w-5 h-5" />
                 </button>
               </motion.div>
             );

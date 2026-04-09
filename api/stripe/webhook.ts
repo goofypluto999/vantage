@@ -25,11 +25,14 @@ export default async function handler(request: any, response: any) {
   let event: Stripe.Event;
 
   try {
-    if (sig && webhookSecret) {
-      event = stripe.webhooks.constructEvent(request.body, sig, webhookSecret);
-    } else {
-      event = request.body as Stripe.Event;
+    if (!webhookSecret) {
+      console.error('STRIPE_WEBHOOK_SECRET is not configured');
+      return response.status(500).json({ error: 'Webhook not configured' });
     }
+    if (!sig) {
+      return response.status(400).json({ error: 'Missing stripe-signature header' });
+    }
+    event = stripe.webhooks.constructEvent(request.body, sig, webhookSecret);
   } catch (err) {
     console.error('Webhook signature verification failed:', err);
     return response.status(400).json({ error: 'Webhook verification failed' });
@@ -44,12 +47,13 @@ export default async function handler(request: any, response: any) {
         const subscriptionId = session.subscription as string;
 
         if (userId) {
-          await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${userId}`, {
+          const res = await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${userId}`, {
             method: 'PATCH',
             headers: {
               'Content-Type': 'application/json',
               'apikey': SUPABASE_SERVICE_KEY,
               'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+              'Prefer': 'return=minimal',
             },
             body: JSON.stringify({
               plan,
@@ -58,6 +62,9 @@ export default async function handler(request: any, response: any) {
               subscription_status: 'active',
             }),
           });
+          if (!res.ok) {
+            console.error('Failed to update profile after checkout:', res.status, await res.text());
+          }
         }
         break;
       }
@@ -82,18 +89,22 @@ export default async function handler(request: any, response: any) {
           const status = subscription.status === 'active' ? 'active' : 
                         subscription.status === 'canceled' ? 'cancelled' : 'past_due';
 
-          await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${profile.id}`, {
+          const updateRes = await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${profile.id}`, {
             method: 'PATCH',
             headers: {
               'Content-Type': 'application/json',
               'apikey': SUPABASE_SERVICE_KEY,
               'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+              'Prefer': 'return=minimal',
             },
             body: JSON.stringify({
               subscription_status: status,
               credits_total: status === 'active' ? (PLAN_CREDITS[profile.plan] || 10) : 0,
             }),
           });
+          if (!updateRes.ok) {
+            console.error('Failed to update subscription status:', updateRes.status, await updateRes.text());
+          }
         }
         break;
       }
@@ -102,7 +113,7 @@ export default async function handler(request: any, response: any) {
         const subscription = event.data.object as Stripe.Subscription;
         const customerId = subscription.customer as string;
 
-        await fetch(
+        const delRes = await fetch(
           `${SUPABASE_URL}/rest/v1/profiles?stripe_customer_id=eq.${customerId}`,
           {
             method: 'PATCH',
@@ -110,6 +121,7 @@ export default async function handler(request: any, response: any) {
               'Content-Type': 'application/json',
               'apikey': SUPABASE_SERVICE_KEY,
               'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+              'Prefer': 'return=minimal',
             },
             body: JSON.stringify({
               subscription_status: 'cancelled',
@@ -117,6 +129,9 @@ export default async function handler(request: any, response: any) {
             }),
           }
         );
+        if (!delRes.ok) {
+          console.error('Failed to update profile after subscription deletion:', delRes.status, await delRes.text());
+        }
         break;
       }
     }

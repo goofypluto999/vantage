@@ -2,6 +2,7 @@ import React, { useState, useEffect, createContext, useContext } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'motion/react';
 import { supabase, signOut, fetchProfile, Profile } from './lib/supabase';
+import { createStripeCheckout } from './services/api';
 import { loadStripe } from '@stripe/stripe-js';
 import LandingPage from './components/LandingPage';
 import Login from './components/Login';
@@ -183,12 +184,24 @@ function RegisterWrapper() {
 function PricingWrapper() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  
-  if (user) {
-    return <Navigate to="/dashboard" replace />;
-  }
-  
-  return <Pricing onLogin={() => navigate('/login')} onRegister={() => navigate('/register')} />;
+
+  const handleCheckout = async (plan: string) => {
+    try {
+      const { url } = await createStripeCheckout(plan);
+      window.location.href = url;
+    } catch {
+      navigate('/dashboard');
+    }
+  };
+
+  return (
+    <Pricing
+      onLogin={() => navigate('/login')}
+      onRegister={() => navigate('/register')}
+      onCheckout={user ? handleCheckout : undefined}
+      isAuthenticated={!!user}
+    />
+  );
 }
 
 export default function App() {

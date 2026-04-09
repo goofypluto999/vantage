@@ -123,7 +123,7 @@ export async function createStripeCheckout(plan: string): Promise<{ url: string 
 
   if (!response.ok) {
     const error = await response.json();
-    throw new Error(error.message || 'Failed to create checkout session');
+    throw new Error(error.error || error.message || 'Failed to create checkout session');
   }
 
   return response.json();
@@ -136,7 +136,7 @@ export async function createBillingPortal(): Promise<{ url: string }> {
 
   if (!response.ok) {
     const error = await response.json();
-    throw new Error(error.message || 'Failed to create billing portal session');
+    throw new Error(error.error || error.message || 'Failed to create billing portal session');
   }
 
   return response.json();

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   Upload, Link as LinkIcon, FileText, Loader2, Sparkles, ChevronRight,
@@ -18,6 +18,8 @@ const PLANS = [
 export default function Dashboard() {
   const { user, profile, signOut, refreshProfile } = useAuth();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [checkoutSuccess, setCheckoutSuccess] = useState(false);
 
   // Retry profile load if null on mount
   useEffect(() => {
@@ -25,6 +27,18 @@ export default function Dashboard() {
       refreshProfile();
     }
   }, [user, profile]);
+
+  // Handle post-checkout return
+  useEffect(() => {
+    if (searchParams.get('success') === 'true') {
+      setCheckoutSuccess(true);
+      setSearchParams({}, { replace: true });
+      // Webhook may take a moment to update the profile
+      const timer = setTimeout(() => refreshProfile(), 2000);
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
   const [step, setStep] = useState<'input' | 'processing' | 'results'>('input');
   const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
   const [cvFile, setCvFile] = useState<File | null>(null);
@@ -147,8 +161,28 @@ export default function Dashboard() {
         </div>
       </header>
 
+      {/* Checkout Success Banner */}
+      {checkoutSuccess && (
+        <div className="max-w-5xl mx-auto px-6 pt-6">
+          <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                <Sparkles className="w-4 h-4 text-emerald-400" />
+              </div>
+              <div>
+                <p className="text-emerald-400 font-semibold">Subscription activated!</p>
+                <p className="text-emerald-400/70 text-sm">Your credits are ready to use.</p>
+              </div>
+            </div>
+            <button onClick={() => setCheckoutSuccess(false)} className="text-emerald-400/50 hover:text-emerald-400 text-sm">
+              Dismiss
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Subscription Banner */}
-      {(!profile || profile.subscription_status !== 'active') && (
+      {(!profile || profile.subscription_status !== 'active') && !checkoutSuccess && (
         <div className="max-w-5xl mx-auto px-6 pt-6">
           <div className="p-6 rounded-2xl bg-gradient-to-r from-violet-600/10 to-purple-600/10 border border-violet-500/20">
             <h2 className="text-lg font-display font-bold text-white mb-1">Complete your subscription to start using Vantage</h2>
@@ -380,8 +414,87 @@ export default function Dashboard() {
                 </div>
               )}
 
+              {/* CV Fit Score */}
+              {results.cvFitScore != null && (
+                <div className="p-6 rounded-2xl bg-white/5 border border-white/10">
+                  <h3 className="text-lg font-bold text-white mb-4">CV Fit Score</h3>
+                  <div className="flex items-center gap-6">
+                    <div className="relative w-24 h-24">
+                      <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
+                        <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="8" />
+                        <circle
+                          cx="50" cy="50" r="42" fill="none"
+                          stroke={results.cvFitScore >= 70 ? '#34d399' : results.cvFitScore >= 40 ? '#fbbf24' : '#f87171'}
+                          strokeWidth="8" strokeLinecap="round"
+                          strokeDasharray={`${(results.cvFitScore / 100) * 264} 264`}
+                        />
+                      </svg>
+                      <span className="absolute inset-0 flex items-center justify-center text-2xl font-bold text-white">
+                        {results.cvFitScore}
+                      </span>
+                    </div>
+                    {results.cvFitSummary && (
+                      <p className="text-white/70 flex-1">{results.cvFitSummary}</p>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Key Requirements & CV Match */}
+              {results.keyRequirements?.length > 0 && (
+                <div className="p-6 rounded-2xl bg-white/5 border border-white/10">
+                  <h3 className="text-lg font-bold text-white mb-4">Role Match Analysis</h3>
+                  <div className="space-y-3">
+                    {results.keyRequirements.map((req: string, i: number) => (
+                      <div key={i} className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div className="p-3 rounded-lg bg-violet-500/10 border border-violet-500/20">
+                          <p className="text-xs text-violet-400 font-bold uppercase mb-1">Requirement</p>
+                          <p className="text-white/80 text-sm">{req}</p>
+                        </div>
+                        {results.cvMatchPoints?.[i] && (
+                          <div className="p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+                            <p className="text-xs text-emerald-400 font-bold uppercase mb-1">Your Match</p>
+                            <p className="text-white/80 text-sm">{results.cvMatchPoints[i]}</p>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* Strategic Brief */}
-              {results.strategicBrief && (
+              {results.briefSections ? (
+                <div className="p-6 rounded-2xl bg-white/5 border border-white/10">
+                  <h3 className="text-lg font-bold text-white mb-4">Strategic Brief</h3>
+                  <div className="space-y-4">
+                    {results.briefSections.companyContext && (
+                      <div>
+                        <p className="text-xs text-violet-400 font-bold uppercase mb-1">Company Context</p>
+                        <p className="text-white/70 text-sm leading-relaxed">{results.briefSections.companyContext}</p>
+                      </div>
+                    )}
+                    {results.briefSections.roleRequirements && (
+                      <div>
+                        <p className="text-xs text-violet-400 font-bold uppercase mb-1">Role Requirements</p>
+                        <p className="text-white/70 text-sm leading-relaxed">{results.briefSections.roleRequirements}</p>
+                      </div>
+                    )}
+                    {results.briefSections.cvAlignment && (
+                      <div>
+                        <p className="text-xs text-violet-400 font-bold uppercase mb-1">CV Alignment</p>
+                        <p className="text-white/70 text-sm leading-relaxed">{results.briefSections.cvAlignment}</p>
+                      </div>
+                    )}
+                    {results.briefSections.narrativeAngle && (
+                      <div>
+                        <p className="text-xs text-violet-400 font-bold uppercase mb-1">Narrative Angle</p>
+                        <p className="text-white/70 text-sm leading-relaxed">{results.briefSections.narrativeAngle}</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ) : results.strategicBrief && (
                 <div className="p-6 rounded-2xl bg-white/5 border border-white/10">
                   <h3 className="text-lg font-bold text-white mb-4">Strategic Brief</h3>
                   <p className="text-white/70 whitespace-pre-wrap">{results.strategicBrief}</p>
@@ -394,6 +507,26 @@ export default function Dashboard() {
                   <h3 className="text-lg font-bold text-white mb-4">Cover Letter</h3>
                   <div className="prose prose-invert max-w-none">
                     <p className="text-white/70 whitespace-pre-wrap font-serif leading-relaxed">{results.coverLetter}</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Presentation Deck */}
+              {results.presentation?.length > 0 && (
+                <div className="p-6 rounded-2xl bg-white/5 border border-white/10">
+                  <h3 className="text-lg font-bold text-white mb-4">Presentation Outline</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {results.presentation.map((slide: { title: string; content: string }, i: number) => (
+                      <div key={i} className="p-4 rounded-xl bg-white/5 border border-white/10">
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="w-6 h-6 rounded-full bg-violet-500/20 text-violet-400 text-xs font-bold flex items-center justify-center">
+                            {i + 1}
+                          </span>
+                          <p className="text-white font-semibold text-sm">{slide.title}</p>
+                        </div>
+                        <p className="text-white/60 text-xs leading-relaxed">{slide.content}</p>
+                      </div>
+                    ))}
                   </div>
                 </div>
               )}
