@@ -99,8 +99,9 @@ export async function analyzeJob(
 }
 
 export async function joinWaitlist(email: string, name?: string): Promise<WaitlistResponse> {
-  const response = await fetchWithAuth('/waitlist', {
+  const response = await fetch(`${API_BASE}/waitlist`, {
     method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, name }),
   });
 
@@ -108,7 +109,7 @@ export async function joinWaitlist(email: string, name?: string): Promise<Waitli
     const error = await response.json();
     return {
       success: false,
-      error: error.message || 'Failed to join waitlist',
+      error: error.error || 'Failed to join waitlist',
     };
   }
 
