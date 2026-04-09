@@ -1,0 +1,158 @@
+// API endpoint to sync profile from Stripe
+// Called after checkout return as a webhook fallback
+// Vercel serverless function
+
+import Stripe from 'stripe';
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '');
+
+const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || '';
+const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
+
+const PLAN_CREDITS: Record<string, number> = {
+  'starter': 10,
+  'pro': 30,
+  'premium': 60,
+};
+
+export default async function handler(request: any, response: any) {
+  if (request.method !== 'POST') {
+    return response.status(405).json({ error: 'Method not allowed' });
+  }
+
+  const authHeader = request.headers.authorization;
+  if (!authHeader) {
+    return response.status(401).json({ error: 'Authentication required' });
+  }
+
+  const token = authHeader.replace('Bearer ', '');
+
+  try {
+    // Verify user
+    const userRes = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'apikey': SUPABASE_SERVICE_KEY,
+      },
+    });
+
+    if (!userRes.ok) {
+      return response.status(401).json({ error: 'Invalid token' });
+    }
+
+    const user = await userRes.json();
+
+    // Get current profile
+    const profileRes = await fetch(
+      `${SUPABASE_URL}/rest/v1/profiles?id=eq.${user.id}&select=stripe_customer_id,credits_used`,
+      {
+        headers: {
+          'apikey': SUPABASE_SERVICE_KEY,
+          'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+        },
+      }
+    );
+
+    const profiles = await profileRes.json();
+    if (!profiles.length || !profiles[0].stripe_customer_id) {
+      return response.status(200).json({ synced: false, reason: 'No Stripe customer' });
+    }
+
+    const profile = profiles[0];
+    const customerId = profile.stripe_customer_id;
+
+    // Get active subscriptions from Stripe
+    const subscriptions = await stripe.subscriptions.list({
+      customer: customerId,
+      status: 'active',
+      limit: 10,
+    });
+
+    if (subscriptions.data.length === 0) {
+      // Check for any subscription (might be just created)
+      const allSubs = await stripe.subscriptions.list({
+        customer: customerId,
+        limit: 10,
+      });
+
+      if (allSubs.data.length === 0) {
+        return response.status(200).json({ synced: false, reason: 'No subscriptions found' });
+      }
+
+      // Use the most recent subscription
+      const latest = allSubs.data[0];
+      const status = latest.status === 'active' ? 'active' :
+                     latest.status === 'canceled' ? 'cancelled' : 'past_due';
+
+      return response.status(200).json({
+        synced: true,
+        subscription_status: status,
+      });
+    }
+
+    // Find the highest-tier active subscription
+    const activeSubs = subscriptions.data;
+    let bestPlan = 'starter';
+    let bestSubId = activeSubs[0].id;
+
+    for (const sub of activeSubs) {
+      const priceId = sub.items.data[0]?.price?.id || '';
+      // Match price ID to plan
+      const starterPrice = process.env.STRIPE_PRICE_STARTER || process.env.STRIPE_STARTER_PRICE_ID || '';
+      const proPrice = process.env.STRIPE_PRICE_PRO || process.env.STRIPE_PRO_PRICE_ID || '';
+      const premiumPrice = process.env.STRIPE_PRICE_PREMIUM || process.env.STRIPE_PREMIUM_PRICE_ID || '';
+
+      if (priceId === premiumPrice) { bestPlan = 'premium'; bestSubId = sub.id; }
+      else if (priceId === proPrice && bestPlan !== 'premium') { bestPlan = 'pro'; bestSubId = sub.id; }
+      else if (priceId === starterPrice && bestPlan === 'starter') { bestSubId = sub.id; }
+    }
+
+    // Cancel any extra active subscriptions (keep only the best one)
+    for (const sub of activeSubs) {
+      if (sub.id !== bestSubId) {
+        try {
+          await stripe.subscriptions.cancel(sub.id);
+          console.log(`Sync: cancelled duplicate subscription ${sub.id}`);
+        } catch (e: any) {
+          console.warn(`Sync: could not cancel ${sub.id}: ${e.message}`);
+        }
+      }
+    }
+
+    // Update profile with the correct plan and credits
+    const newCreditsTotal = PLAN_CREDITS[bestPlan] || 10;
+    const updateRes = await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${user.id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_SERVICE_KEY,
+        'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+        'Prefer': 'return=minimal',
+      },
+      body: JSON.stringify({
+        plan: bestPlan,
+        credits_total: newCreditsTotal,
+        stripe_subscription_id: bestSubId,
+        subscription_status: 'active',
+      }),
+    });
+
+    if (!updateRes.ok) {
+      console.error('Sync: failed to update profile:', updateRes.status, await updateRes.text());
+      return response.status(500).json({ error: 'Failed to update profile' });
+    }
+
+    return response.status(200).json({
+      synced: true,
+      plan: bestPlan,
+      credits_total: newCreditsTotal,
+      credits_used: profile.credits_used || 0,
+      credits_remaining: newCreditsTotal - (profile.credits_used || 0),
+      subscription_id: bestSubId,
+      cancelled_duplicates: activeSubs.length - 1,
+    });
+  } catch (error: any) {
+    console.error('Sync error:', error);
+    return response.status(500).json({ error: error.message || 'Sync failed' });
+  }
+}

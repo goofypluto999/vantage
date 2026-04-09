@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../App';
 import { getCreditsRemaining, hasCredits } from '../lib/supabase';
-import { analyzeJob, createStripeCheckout } from '../services/api';
+import { analyzeJob, createStripeCheckout, syncSubscription } from '../services/api';
 
 const PLANS = [
   { name: 'Starter', price: 5, credits: 10, color: '#6B6B8D', icon: Zap, features: ['10 analyses/mo', 'Strategic Brief', 'Cover Letter', 'Interview Pack'] },
@@ -28,13 +28,16 @@ export default function Dashboard() {
     }
   }, [user, profile]);
 
-  // Handle post-checkout return
+  // Handle post-checkout return — sync from Stripe then refresh profile
   useEffect(() => {
     if (searchParams.get('success') === 'true') {
       setCheckoutSuccess(true);
       setSearchParams({}, { replace: true });
-      // Webhook may take a moment to update the profile
-      const timer = setTimeout(() => refreshProfile(), 2000);
+      // Give webhook a moment, then force-sync from Stripe as fallback
+      const timer = setTimeout(async () => {
+        await syncSubscription();
+        await refreshProfile();
+      }, 2000);
       return () => clearTimeout(timer);
     }
   }, []);

@@ -142,6 +142,18 @@ export async function createBillingPortal(): Promise<{ url: string }> {
   return response.json();
 }
 
+export async function syncSubscription(): Promise<{ synced: boolean; plan?: string; credits_remaining?: number }> {
+  const response = await fetchWithAuth('/stripe/sync', {
+    method: 'POST',
+  });
+
+  if (!response.ok) {
+    return { synced: false };
+  }
+
+  return response.json();
+}
+
 export async function logout(): Promise<void> {
   await fetchWithAuth('/auth/logout', { method: 'POST' });
 }
