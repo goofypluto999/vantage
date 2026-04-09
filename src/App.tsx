@@ -89,17 +89,19 @@ function AppContent() {
     return () => { subscription.unsubscribe(); };
   }, []);
 
-  // Fetch profile whenever user changes — separate from auth listener to avoid deadlock
+  // Fetch profile whenever user changes — deferred to next tick so Supabase auth lock is released
   useEffect(() => {
     if (!user) {
       setProfile(null);
       return;
     }
     let cancelled = false;
-    fetchProfile(user.id).then(p => {
-      if (!cancelled) setProfile(p);
-    });
-    return () => { cancelled = true; };
+    const timer = setTimeout(() => {
+      fetchProfile(user.id).then(p => {
+        if (!cancelled) setProfile(p);
+      });
+    }, 50);
+    return () => { cancelled = true; clearTimeout(timer); };
   }, [user]);
 
   const handleSignOut = async () => {
