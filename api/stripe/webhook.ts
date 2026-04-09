@@ -117,11 +117,19 @@ export default async function handler(request: any, response: any) {
         const customerId = subscription.customer as string;
 
         const profiles = await supabaseGet(
-          `stripe_customer_id=eq.${customerId}&select=id,plan,credits_used`
+          `stripe_customer_id=eq.${customerId}&select=id,plan,credits_used,stripe_subscription_id`
         );
 
         if (profiles.length > 0) {
           const profile = profiles[0];
+
+          // Only update if this event is for the CURRENT subscription
+          // Prevents old subscription events from overwriting a new upgrade
+          if (profile.stripe_subscription_id && profile.stripe_subscription_id !== subscription.id) {
+            console.log(`Ignoring subscription.updated for old sub ${subscription.id} (current: ${profile.stripe_subscription_id})`);
+            break;
+          }
+
           const status = subscription.status === 'active' ? 'active' :
                         subscription.status === 'canceled' ? 'cancelled' : 'past_due';
 
@@ -137,13 +145,20 @@ export default async function handler(request: any, response: any) {
         const subscription = event.data.object as Stripe.Subscription;
         const customerId = subscription.customer as string;
 
-        // On cancellation, keep credits_used but zero out total so remaining = 0
         const profiles = await supabaseGet(
-          `stripe_customer_id=eq.${customerId}&select=id,credits_used`
+          `stripe_customer_id=eq.${customerId}&select=id,credits_used,stripe_subscription_id`
         );
 
         if (profiles.length > 0) {
           const profile = profiles[0];
+
+          // Only update if this event is for the CURRENT subscription
+          // Prevents old subscription deletion from overwriting a new upgrade
+          if (profile.stripe_subscription_id && profile.stripe_subscription_id !== subscription.id) {
+            console.log(`Ignoring subscription.deleted for old sub ${subscription.id} (current: ${profile.stripe_subscription_id})`);
+            break;
+          }
+
           await supabasePatch(`id=eq.${profile.id}`, {
             subscription_status: 'cancelled',
             credits_total: profile.credits_used, // remaining becomes 0
