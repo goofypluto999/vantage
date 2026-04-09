@@ -88,11 +88,30 @@ async function saveAnalysis(
 }
 
 function parseJSON<T>(text: string): T {
+  // Strip markdown fencing if present
   const fenced = text.match(/```(?:json)?\s*([\s\S]*?)```/);
   const raw = fenced ? fenced[1] : text;
+
+  // Find the outermost JSON object by matching braces
   const start = raw.indexOf('{');
-  const end = raw.lastIndexOf('}');
-  if (start === -1 || end === -1) throw new Error('Invalid JSON format');
+  if (start === -1) throw new Error('No JSON object found in response');
+
+  let depth = 0;
+  let inString = false;
+  let escape = false;
+  let end = -1;
+
+  for (let i = start; i < raw.length; i++) {
+    const ch = raw[i];
+    if (escape) { escape = false; continue; }
+    if (ch === '\\' && inString) { escape = true; continue; }
+    if (ch === '"') { inString = !inString; continue; }
+    if (inString) continue;
+    if (ch === '{') depth++;
+    if (ch === '}') { depth--; if (depth === 0) { end = i; break; } }
+  }
+
+  if (end === -1) throw new Error('Invalid JSON: unmatched braces');
   return JSON.parse(raw.slice(start, end + 1));
 }
 
@@ -178,8 +197,28 @@ Requirements:
   if (!response.text) throw new Error('No response received from AI');
 
   const parsed = parseJSON<JobIntelligence>(response.text);
-  if (parsed.coverLetter) {
-    parsed.coverLetter = stripCitations(parsed.coverLetter);
+
+  // Strip Gemini grounding citations from all text fields
+  if (parsed.coverLetter) parsed.coverLetter = stripCitations(parsed.coverLetter);
+  if (parsed.strategicBrief) parsed.strategicBrief = stripCitations(parsed.strategicBrief);
+  if (parsed.cvFitSummary) parsed.cvFitSummary = stripCitations(parsed.cvFitSummary);
+  if (parsed.companySnapshot) {
+    if (parsed.companySnapshot.mission) parsed.companySnapshot.mission = stripCitations(parsed.companySnapshot.mission);
+    parsed.companySnapshot.cultureSignals = parsed.companySnapshot.cultureSignals?.map(stripCitations) || [];
+    parsed.companySnapshot.recentHighlights = parsed.companySnapshot.recentHighlights?.map(stripCitations) || [];
+  }
+  if (parsed.briefSections) {
+    for (const key of Object.keys(parsed.briefSections) as Array<keyof typeof parsed.briefSections>) {
+      if (parsed.briefSections[key]) parsed.briefSections[key] = stripCitations(parsed.briefSections[key]);
+    }
+  }
+  parsed.keyRequirements = parsed.keyRequirements?.map(stripCitations) || [];
+  parsed.cvMatchPoints = parsed.cvMatchPoints?.map(stripCitations) || [];
+  if (parsed.presentation) {
+    parsed.presentation = parsed.presentation.map(s => ({
+      title: stripCitations(s.title),
+      content: stripCitations(s.content),
+    }));
   }
 
   return parsed;
