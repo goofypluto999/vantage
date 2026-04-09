@@ -1,7 +1,7 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { 
+import {
   Upload, Link as LinkIcon, FileText, Loader2, Sparkles, ChevronRight,
   User, LogOut, CreditCard, Plus, Zap, Crown, Star, Settings
 } from 'lucide-react';
@@ -16,8 +16,15 @@ const PLANS = [
 ];
 
 export default function Dashboard() {
-  const { user, profile, signOut } = useAuth();
+  const { user, profile, signOut, refreshProfile } = useAuth();
   const navigate = useNavigate();
+
+  // Retry profile load if null on mount
+  useEffect(() => {
+    if (user && !profile) {
+      refreshProfile();
+    }
+  }, [user, profile]);
   const [step, setStep] = useState<'input' | 'processing' | 'results'>('input');
   const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
   const [cvFile, setCvFile] = useState<File | null>(null);
@@ -105,7 +112,7 @@ export default function Dashboard() {
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
               <div className="w-2 h-2 bg-emerald-400 rounded-full" />
-              <span className="text-sm font-bold text-emerald-400">{creditsRemaining} Credits</span>
+              <span className="text-sm font-bold text-emerald-400">{profile ? creditsRemaining : '--'} Credits</span>
             </div>
 
             {profile?.plan && (
@@ -141,7 +148,7 @@ export default function Dashboard() {
       </header>
 
       {/* Subscription Banner */}
-      {profile && profile.subscription_status !== 'active' && (
+      {(!profile || profile.subscription_status !== 'active') && (
         <div className="max-w-5xl mx-auto px-6 pt-6">
           <div className="p-6 rounded-2xl bg-gradient-to-r from-violet-600/10 to-purple-600/10 border border-violet-500/20">
             <h2 className="text-lg font-display font-bold text-white mb-1">Complete your subscription to start using Vantage</h2>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'motion/react';
-import { supabase, signUp, signIn, signOut, signInWithGoogle, getCurrentUser, fetchProfile, Profile, subscribeToAuthChanges } from './lib/supabase';
+import { supabase, signOut, fetchProfile, Profile } from './lib/supabase';
 import { loadStripe } from '@stripe/stripe-js';
 import LandingPage from './components/LandingPage';
 import Login from './components/Login';
@@ -24,6 +24,7 @@ interface AuthContextType {
   profile: Profile | null;
   loading: boolean;
   signOut: () => Promise<void>;
+  refreshProfile: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -31,6 +32,7 @@ const AuthContext = createContext<AuthContextType>({
   profile: null,
   loading: true,
   signOut: async () => {},
+  refreshProfile: async () => {},
 });
 
 export const useAuth = () => useContext(AuthContext);
@@ -62,36 +64,43 @@ function AppContent() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const refreshProfile = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session?.user) {
+      const p = await fetchProfile(session.user.id);
+      setProfile(p);
+    }
+  };
+
   useEffect(() => {
     let cancelled = false;
 
-    // Timeout: never let auth check block the app for more than 5 seconds
     const timeout = setTimeout(() => {
       if (!cancelled) setLoading(false);
     }, 5000);
 
-    getCurrentUser().then(async (currentUser) => {
-      if (cancelled) return;
-      setUser(currentUser);
-      if (currentUser) {
-        const p = await fetchProfile(currentUser.id);
-        if (!cancelled) setProfile(p);
+    const loadProfile = async (userId: string) => {
+      let p = await fetchProfile(userId);
+      // Retry once after delay — RLS may not see the session token yet
+      if (!p && !cancelled) {
+        await new Promise(r => setTimeout(r, 800));
+        p = await fetchProfile(userId);
       }
-      if (!cancelled) { clearTimeout(timeout); setLoading(false); }
-    }).catch(() => {
-      if (!cancelled) { clearTimeout(timeout); setLoading(false); }
-    });
+      if (!cancelled) setProfile(p);
+    };
 
-    const { data: { subscription } } = subscribeToAuthChanges(async (event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (cancelled) return;
-      if (event === 'SIGNED_IN' && session?.user) {
+
+      if (session?.user) {
         setUser(session.user);
-        const p = await fetchProfile(session.user.id);
-        if (!cancelled) setProfile(p);
-      } else if (event === 'SIGNED_OUT') {
+        await loadProfile(session.user.id);
+      } else if (event === 'SIGNED_OUT' || (event === 'INITIAL_SESSION' && !session)) {
         setUser(null);
         setProfile(null);
       }
+
+      if (!cancelled) { clearTimeout(timeout); setLoading(false); }
     });
 
     return () => { cancelled = true; subscription.unsubscribe(); };
@@ -104,7 +113,7 @@ function AppContent() {
   };
 
   return (
-    <AuthContext.Provider value={{ user, profile, loading, signOut: handleSignOut }}>
+    <AuthContext.Provider value={{ user, profile, loading, signOut: handleSignOut, refreshProfile }}>
       <BrowserRouter>
         <ThemeProvider>
           <Routes>
