@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { Mail, Lock, User, Eye, EyeOff, ArrowRight, BrainCircuit, Chrome, Check } from 'lucide-react';
+import { Mail, Lock, User, Eye, EyeOff, ArrowRight, ArrowLeft, BrainCircuit, Chrome, Check } from 'lucide-react';
 import { signUp, signInWithGoogle } from '../lib/supabase';
 
 const PLANS = [
@@ -77,11 +77,17 @@ export default function Register() {
           animate={{ opacity: 1, y: 0 }}
           className="w-full max-w-md"
         >
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-600 to-purple-600 flex items-center justify-center">
-              <BrainCircuit className="w-5 h-5 text-white" />
-            </div>
-            <span className="text-2xl font-display font-bold text-white">Vantage</span>
+          <div className="flex items-center justify-between mb-6">
+            <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-600 to-purple-600 flex items-center justify-center">
+                <BrainCircuit className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-2xl font-display font-bold text-white">Vantage</span>
+            </Link>
+            <Link to="/" className="flex items-center gap-1.5 text-white/40 hover:text-white/70 text-sm transition-colors">
+              <ArrowLeft className="w-4 h-4" />
+              Home
+            </Link>
           </div>
 
           <h1 className="text-3xl font-display font-bold text-white mb-2">Create your account</h1>
