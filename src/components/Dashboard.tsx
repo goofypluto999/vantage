@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   Upload, Link as LinkIcon, FileText, Loader2, Sparkles, ChevronRight,
-  User, LogOut, CreditCard, Plus, Zap, Crown, Star, Settings
+  User, LogOut, CreditCard, Plus, Zap, Crown, Star, Settings, Check
 } from 'lucide-react';
 import { useAuth } from '../App';
 import { getCreditsRemaining, hasCredits } from '../lib/supabase';
@@ -185,31 +185,60 @@ export default function Dashboard() {
       )}
 
       {/* Subscription Banner */}
-      {(!profile || profile.subscription_status !== 'active') && !checkoutSuccess && (
+      {!checkoutSuccess && (
         <div className="max-w-5xl mx-auto px-6 pt-6">
           <div className="p-6 rounded-2xl bg-gradient-to-r from-violet-600/10 to-purple-600/10 border border-violet-500/20">
-            <h2 className="text-lg font-display font-bold text-white mb-1">Complete your subscription to start using Vantage</h2>
-            <p className="text-white/50 text-sm mb-5">Choose a plan to unlock your credits and begin analysing jobs.</p>
+            {profile?.subscription_status === 'active' ? (
+              <>
+                <h2 className="text-lg font-display font-bold text-white mb-1">Your Plan</h2>
+                <p className="text-white/50 text-sm mb-5">Manage your subscription or upgrade to unlock more credits.</p>
+              </>
+            ) : (
+              <>
+                <h2 className="text-lg font-display font-bold text-white mb-1">Complete your subscription to start using Vantage</h2>
+                <p className="text-white/50 text-sm mb-5">Choose a plan to unlock your credits and begin analysing jobs.</p>
+              </>
+            )}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              {PLANS.map((plan) => (
-                <div
-                  key={plan.name}
-                  className="p-4 rounded-xl bg-white/5 border border-white/10 flex flex-col items-center text-center"
-                >
-                  <plan.icon className="w-6 h-6 mb-2" style={{ color: plan.color }} />
-                  <div className="text-white font-bold">{plan.name}</div>
-                  <div className="text-2xl font-bold text-white my-1">{'\u00A3'}{plan.price}<span className="text-sm text-white/40 font-normal">/mo</span></div>
-                  <div className="text-xs text-white/50 mb-3">{plan.credits} credits/month</div>
-                  <button
-                    onClick={() => handleCheckout(plan.name.toLowerCase())}
-                    disabled={checkoutLoading !== null}
-                    className="w-full py-2 rounded-lg text-sm font-bold transition-all disabled:opacity-50"
-                    style={{ background: plan.color, color: '#fff' }}
+              {PLANS.map((plan) => {
+                const isCurrentPlan = profile?.plan === plan.name.toLowerCase();
+                return (
+                  <div
+                    key={plan.name}
+                    className={`p-4 rounded-xl flex flex-col items-center text-center relative ${
+                      isCurrentPlan
+                        ? 'bg-emerald-500/10 border-2 border-emerald-500/40'
+                        : 'bg-white/5 border border-white/10'
+                    }`}
                   >
-                    {checkoutLoading === plan.name.toLowerCase() ? 'Redirecting...' : 'Subscribe'}
-                  </button>
-                </div>
-              ))}
+                    {isCurrentPlan && (
+                      <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-emerald-500 text-white text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">
+                        <Check className="w-3 h-3" />
+                        Current Plan
+                      </div>
+                    )}
+                    <plan.icon className="w-6 h-6 mb-2 mt-1" style={{ color: isCurrentPlan ? '#34d399' : plan.color }} />
+                    <div className={`font-bold ${isCurrentPlan ? 'text-emerald-400' : 'text-white'}`}>{plan.name}</div>
+                    <div className="text-2xl font-bold text-white my-1">{'\u00A3'}{plan.price}<span className="text-sm text-white/40 font-normal">/mo</span></div>
+                    <div className="text-xs text-white/50 mb-3">{plan.credits} credits/month</div>
+                    {isCurrentPlan ? (
+                      <div className="w-full py-2 rounded-lg text-sm font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center gap-1.5">
+                        <Check className="w-4 h-4" />
+                        Subscribed
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => handleCheckout(plan.name.toLowerCase())}
+                        disabled={checkoutLoading !== null}
+                        className="w-full py-2 rounded-lg text-sm font-bold transition-all disabled:opacity-50"
+                        style={{ background: plan.color, color: '#fff' }}
+                      >
+                        {checkoutLoading === plan.name.toLowerCase() ? 'Redirecting...' : 'Upgrade'}
+                      </button>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
