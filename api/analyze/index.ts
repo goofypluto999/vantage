@@ -50,7 +50,16 @@ async function fetchPage(url: string, headers: Record<string, string>): Promise<
     if (!res.ok) return null;
     const ct = res.headers.get('content-type') || '';
     if (!ct.includes('text/html') && !ct.includes('application/xhtml')) return null;
-    return await res.text();
+    const html = await res.text();
+    // Detect soft 404 / expired job pages
+    const titleMatch = html.match(/<title[^>]*>(.*?)<\/title>/i);
+    const title = (titleMatch?.[1] || '').toLowerCase();
+    const soft404 = /(page not found|not found|404|no longer available|expired|job removed|this job has been|unavailable)/i;
+    if (soft404.test(title)) {
+      console.warn('Detected soft 404 page:', title);
+      return null;
+    }
+    return html;
   } catch {
     return null;
   }
@@ -99,6 +108,14 @@ function extractTextFromHtml(html: string): string {
   // Combine structured meta with body text
   const meta = [pageTitle, ogDesc].filter(Boolean).join('\n');
   const combined = meta ? `${meta}\n\n${text}` : text;
+
+  // If the extracted text is too short or looks like a generic page (no job keywords),
+  // return null so Gemini falls back to googleSearch instead of analyzing the job board itself
+  if (combined.length < 200) {
+    console.warn('Extracted text too short, likely not a valid job page');
+    return null;
+  }
+
   return combined.slice(0, 8000);
 }
 
@@ -262,6 +279,20 @@ async function generateJobIntelligence(
       }
     } catch (err: any) {
       console.warn('URL scrape failed:', err.message);
+    }
+  }
+
+  // If scraping returned content but it looks like a generic job board page
+  // (mentions the board name but no specific job title), discard it
+  if (scrapedJobText && jobUrl) {
+    const urlHost = new URL(jobUrl).hostname.replace('www.', '').split('.')[0]; // e.g. "adzuna", "indeed", "reed"
+    const lowerText = scrapedJobText.toLowerCase();
+    const hasJobTitle = /job title:|position:|role:/i.test(scrapedJobText);
+    const hasCompanyField = /company:|hiring organization:|employer:/i.test(scrapedJobText);
+    // If text mentions the board name prominently but has no job-specific fields, it's likely the board's own page
+    if (!hasJobTitle && !hasCompanyField && lowerText.split(urlHost).length > 3) {
+      console.warn(`Scraped text mentions "${urlHost}" ${lowerText.split(urlHost).length - 1} times but has no job fields — discarding as job board page`);
+      scrapedJobText = null;
     }
   }
 
