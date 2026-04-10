@@ -7,6 +7,117 @@ const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
 const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || '';
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 
+// ─── Job URL scraper ─────────────────────────────────────────────────────────
+// Fetches the actual job page content so Gemini doesn't have to guess.
+// Falls back gracefully if the page blocks us.
+
+async function scrapeJobUrl(url: string): Promise<string | null> {
+  const headers: Record<string, string> = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+    'Accept-Language': 'en-GB,en;q=0.9',
+    'Referer': 'https://www.google.com/',
+  };
+
+  // Try direct fetch first
+  let html = await fetchPage(url, headers);
+
+  // If blocked, try Jina Reader API as fallback
+  if (!html) {
+    try {
+      const jinaRes = await fetch(`https://r.jina.ai/${url}`, {
+        headers: { 'Accept': 'text/plain', 'X-No-Cache': 'true' },
+        signal: AbortSignal.timeout(15000),
+      });
+      if (jinaRes.ok) {
+        const text = await jinaRes.text();
+        if (text.length > 200 && !text.includes('returned error')) return text.slice(0, 8000);
+      }
+    } catch { /* Jina failed, continue */ }
+  }
+
+  if (!html) return null;
+  return extractTextFromHtml(html);
+}
+
+async function fetchPage(url: string, headers: Record<string, string>): Promise<string | null> {
+  try {
+    const res = await fetch(url, {
+      headers,
+      redirect: 'follow',
+      signal: AbortSignal.timeout(12000),
+    });
+    if (!res.ok) return null;
+    const ct = res.headers.get('content-type') || '';
+    if (!ct.includes('text/html') && !ct.includes('application/xhtml')) return null;
+    return await res.text();
+  } catch {
+    return null;
+  }
+}
+
+function extractTextFromHtml(html: string): string {
+  // Extract structured data first (JSON-LD job postings)
+  const jsonLd = html.match(/<script[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/gi);
+  if (jsonLd) {
+    for (const block of jsonLd) {
+      try {
+        const content = block.replace(/<\/?script[^>]*>/gi, '');
+        const data = JSON.parse(content);
+        if (data['@type'] === 'JobPosting' || data?.mainEntity?.['@type'] === 'JobPosting') {
+          const job = data['@type'] === 'JobPosting' ? data : data.mainEntity;
+          const parts = [
+            job.title && `Job Title: ${job.title}`,
+            job.hiringOrganization?.name && `Company: ${job.hiringOrganization.name}`,
+            job.jobLocation?.address?.addressLocality && `Location: ${job.jobLocation.address.addressLocality}`,
+            job.baseSalary && `Salary: ${JSON.stringify(job.baseSalary)}`,
+            job.description && `Description: ${stripHtmlTags(job.description)}`,
+          ].filter(Boolean);
+          if (parts.length >= 2) return parts.join('\n').slice(0, 8000);
+        }
+      } catch { /* not valid JSON-LD */ }
+    }
+  }
+
+  // Extract OG meta tags
+  const ogTitle = html.match(/og:title[^>]*content="([^"]*)"/)?.[1] || '';
+  const ogDesc = html.match(/og:description[^>]*content="([^"]*)"/)?.[1] || '';
+
+  // Extract page title
+  const pageTitle = html.match(/<title[^>]*>(.*?)<\/title>/)?.[1] || '';
+
+  // Strip scripts, styles, nav, headers, footers
+  let text = html
+    .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
+    .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
+    .replace(/<nav[^>]*>[\s\S]*?<\/nav>/gi, '')
+    .replace(/<header[^>]*>[\s\S]*?<\/header>/gi, '')
+    .replace(/<footer[^>]*>[\s\S]*?<\/footer>/gi, '');
+
+  text = stripHtmlTags(text);
+
+  // Combine structured meta with body text
+  const meta = [pageTitle, ogDesc].filter(Boolean).join('\n');
+  const combined = meta ? `${meta}\n\n${text}` : text;
+  return combined.slice(0, 8000);
+}
+
+function stripHtmlTags(html: string): string {
+  return html
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<\/?(p|div|li|h[1-6])[^>]*>/gi, '\n')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&nbsp;/g, ' ')
+    .replace(/\s+/g, ' ')
+    .replace(/\n\s*\n/g, '\n')
+    .trim();
+}
+
 interface JobIntelligence {
   companySnapshot?: {
     name?: string;
@@ -51,17 +162,23 @@ async function getUserCredits(userId: string): Promise<{ total: number; used: nu
 
 async function deductCredits(userId: string, amount: number): Promise<void> {
   const { total, used } = await getUserCredits(userId);
-  await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${userId}`, {
+  const newUsed = (used ?? 0) + amount;
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${userId}`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
       'apikey': SUPABASE_SERVICE_KEY,
       'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+      'Prefer': 'return=minimal',
     },
     body: JSON.stringify({
-      credits_used: used + amount,
+      credits_used: newUsed,
     }),
   });
+  if (!res.ok) {
+    console.error('Failed to deduct credits:', res.status, await res.text());
+    throw new Error('Failed to deduct credits');
+  }
 }
 
 async function saveAnalysis(
@@ -115,7 +232,8 @@ function parseJSON<T>(text: string): T {
   return JSON.parse(raw.slice(start, end + 1));
 }
 
-function stripCitations(text: string): string {
+function stripCitations(text: any): string {
+  if (!text || typeof text !== 'string') return text ?? '';
   return text
     .replace(/\s*\[CV(?:,\s*cite:\s*\d+)?\]/gi, '')
     .replace(/\s*\[cite:\s*\d+\]/gi, '')
@@ -129,6 +247,27 @@ async function generateJobIntelligence(
   jobDescText: string | null,
   includeFitScore: boolean
 ): Promise<JobIntelligence> {
+  // CRITICAL: Scrape the job URL to get actual job description text.
+  // Gemini's googleSearch tool does NOT visit URLs — it only searches Google.
+  // Without scraping, Gemini will hallucinate the company/role.
+  let scrapedJobText: string | null = null;
+  if (jobUrl) {
+    try {
+      console.log(`Scraping job URL: ${jobUrl}`);
+      scrapedJobText = await scrapeJobUrl(jobUrl);
+      if (scrapedJobText) {
+        console.log(`Scraped ${scrapedJobText.length} chars from job URL`);
+      } else {
+        console.warn('URL scrape returned no content — will rely on googleSearch only');
+      }
+    } catch (err: any) {
+      console.warn('URL scrape failed:', err.message);
+    }
+  }
+
+  // Merge scraped content with any user-provided JD text
+  const fullJobDesc = [scrapedJobText, jobDescText].filter(Boolean).join('\n\n---\n\n');
+  const hasJobDesc = fullJobDesc.length > 50;
   const useSearch = Boolean(jobUrl);
 
   const jsonShape = `{
@@ -156,16 +295,17 @@ async function generateJobIntelligence(
 
   const prompt = `You are an expert career coach and corporate strategist.
 
-I am providing my CV and the job description document.${jobUrl ? ` Target role/company URL: ${jobUrl}` : ''}
+I am providing my CV${hasJobDesc ? ' and the FULL JOB DESCRIPTION (scraped from the original listing)' : ''}.${jobUrl ? ` Target role/company URL: ${jobUrl}` : ''}
 
-${useSearch ? 'Use web search to deeply research the company — find their official name, industry, founding year, approximate headcount, mission, recent news, product launches, culture, leadership, and brand voice.' : ''}
+${hasJobDesc ? 'IMPORTANT: The job description below was scraped directly from the job listing URL. Use it as your PRIMARY source for the company name, role title, requirements, and responsibilities. Do NOT guess or infer a different company — use EXACTLY the company mentioned in the job description.' : ''}
+${useSearch ? 'Use web search to deeply research the company mentioned in the job description — find additional context like founding year, approximate headcount, mission, recent news, product launches, culture, leadership, and brand voice.' : ''}
 Cross-reference my CV with the role requirements${useSearch ? ' and live company context' : ''}.
 
 Return ONLY valid JSON in exactly this shape (no markdown, no explanation):
 ${jsonShape}
 
 Requirements:
-- companySnapshot.name: the official company name (extract from URL or JD)
+- companySnapshot.name: the official company name (extract from the job description text, NOT guessed)
 - companySnapshot.industry: the company's primary industry or sector
 - companySnapshot.founded: the year the company was founded (from web search or JD), or null
 - companySnapshot.size: approximate headcount band (e.g. "500–2,000 employees") from web search or JD, or null
@@ -184,17 +324,38 @@ Requirements:
 
   const cvPart = { text: `[CV / Resume]\n${cvText}` };
   const parts: any[] = [{ text: prompt }, cvPart];
-  if (jobDescText) parts.push({ text: `[Job Description]\n${jobDescText}` });
+  if (hasJobDesc) parts.push({ text: `[Job Description — scraped from ${jobUrl}]\n${fullJobDesc}` });
 
-  const response = await ai.models.generateContent({
-    model: 'models/gemini-2.5-flash',
-    contents: [{ parts }],
-    config: useSearch
-      ? { tools: [{ googleSearch: {} }] }
-      : { responseMimeType: 'application/json' },
-  });
+  // When we have scraped job content, use JSON mode (reliable structured output).
+  // Only use googleSearch when scraping failed and we need Gemini to find info.
+  const useGoogleSearch = useSearch && !hasJobDesc;
 
-  if (!response.text) throw new Error('No response received from AI');
+  const callGemini = async () => {
+    const res = await ai.models.generateContent({
+      model: 'models/gemini-2.5-flash',
+      contents: [{ parts }],
+      config: useGoogleSearch
+        ? { tools: [{ googleSearch: {} }] }
+        : { responseMimeType: 'application/json' },
+    });
+    return res;
+  };
+
+  console.log(`Calling Gemini: useGoogleSearch=${useGoogleSearch}, hasJobDesc=${hasJobDesc}, parts=${parts.length}`);
+  let response = await callGemini();
+
+  // Retry once if empty response (Gemini can intermittently return nothing)
+  if (!response.text) {
+    console.warn('Gemini returned empty response, retrying...');
+    response = await callGemini();
+  }
+
+  if (!response.text) {
+    const candidates = (response as any).candidates;
+    const reason = candidates?.[0]?.finishReason || 'unknown';
+    console.error('Gemini empty response. finishReason:', reason, 'candidates:', JSON.stringify(candidates || []));
+    throw new Error(`AI returned no content (reason: ${reason}). Please try again.`);
+  }
 
   const parsed = parseJSON<JobIntelligence>(response.text);
 
@@ -252,7 +413,7 @@ export default async function handler(request: any, response: any) {
     const { total: creditsTotal, used: creditsUsed } = await getUserCredits(user.id);
     const creditsRemaining = creditsTotal - creditsUsed;
 
-    const COST_PER_ANALYSIS = 2;
+    const COST_PER_ANALYSIS = 3;
     if (creditsRemaining < COST_PER_ANALYSIS) {
       return response.status(403).json({
         error: 'Insufficient credits',

@@ -154,6 +154,53 @@ export async function syncSubscription(): Promise<{ synced: boolean; plan?: stri
   return response.json();
 }
 
+export async function rewriteTone(
+  coverLetter: string,
+  tone: string,
+  roleContext?: string
+): Promise<{ success: boolean; coverLetter?: string; creditsRemaining?: number; error?: string }> {
+  const response = await fetchWithAuth('/rewrite-tone', {
+    method: 'POST',
+    body: JSON.stringify({ coverLetter, tone, roleContext }),
+  });
+  if (!response.ok) {
+    const error = await response.json();
+    return { success: false, error: error.error || 'Failed to rewrite cover letter' };
+  }
+  return response.json();
+}
+
+export async function generateInterviewQuestions(
+  roleContext: string
+): Promise<{ success: boolean; questions?: any[]; creditsRemaining?: number; error?: string }> {
+  const response = await fetchWithAuth('/interview/questions', {
+    method: 'POST',
+    body: JSON.stringify({ roleContext }),
+  });
+  if (!response.ok) {
+    const error = await response.json();
+    return { success: false, error: error.error || 'Failed to generate questions' };
+  }
+  return response.json();
+}
+
+export async function evaluateAnswer(
+  roleContext: string,
+  question: string,
+  category: string,
+  answer: string
+): Promise<{ success: boolean; evaluation?: any; error?: string }> {
+  const response = await fetchWithAuth('/interview/evaluate', {
+    method: 'POST',
+    body: JSON.stringify({ roleContext, question, category, answer }),
+  });
+  if (!response.ok) {
+    const error = await response.json();
+    return { success: false, error: error.error || 'Failed to evaluate answer' };
+  }
+  return response.json();
+}
+
 export async function logout(): Promise<void> {
   await fetchWithAuth('/auth/logout', { method: 'POST' });
 }

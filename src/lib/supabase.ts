@@ -37,7 +37,7 @@ export function getCreditsRemaining(profile: Profile | null): number {
   return Math.max(0, profile.credits_total - profile.credits_used);
 }
 
-export function hasCredits(profile: Profile | null, required: number = 2): boolean {
+export function hasCredits(profile: Profile | null, required: number = 3): boolean {
   if (!profile) return false;
   return getCreditsRemaining(profile) >= required;
 }

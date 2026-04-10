@@ -15,7 +15,7 @@ import {
   Award,
   BarChart2,
 } from 'lucide-react';
-import { GoogleGenAI, Type } from '@google/genai';
+import { generateInterviewQuestions, evaluateAnswer } from '../services/api';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -59,10 +59,6 @@ type SessionPhase =
   | 'evaluation'
   | 'summary'
   | 'error';
-
-// ─── AI client ────────────────────────────────────────────────────────────────
-
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY ?? '' });
 
 // ─── Category colours ─────────────────────────────────────────────────────────
 
@@ -272,41 +268,13 @@ export default function AIInterviewSession({ roleContext, onClose }: AIInterview
   async function generateQuestions() {
     setPhase('loading');
     try {
-      const prompt = `You are an expert interview coach preparing a candidate for the following role:
-"${roleContext}"
-
-Generate exactly 5 interview questions that are highly specific to this role and context.
-Return a JSON array of exactly 5 objects. Each object must have:
-- question: string (the interview question)
-- category: one of "behavioural" | "technical" | "situational" | "motivational"
-- hint: string (a brief coaching tip, 1-2 sentences, to help the candidate answer well)
-
-Only return the JSON array, no other text.`;
-
-      const response = await ai.models.generateContent({
-        model: 'models/gemini-2.5-flash',
-        contents: [{ parts: [{ text: prompt }] }],
-        config: {
-          responseMimeType: 'application/json',
-          responseSchema: {
-            type: Type.ARRAY,
-            items: {
-              type: Type.OBJECT,
-              properties: {
-                question: { type: Type.STRING },
-                category: { type: Type.STRING },
-                hint: { type: Type.STRING },
-              },
-              required: ['question', 'category', 'hint'],
-            },
-          },
-        },
-      });
-
-      if (!response.text) throw new Error('No response from AI');
-      const parsed: InterviewQuestion[] = JSON.parse(response.text);
-      setQuestions(parsed.slice(0, 5));
-      setEvaluations(new Array(parsed.slice(0, 5).length).fill(null));
+      const result = await generateInterviewQuestions(roleContext);
+      if (!result.success || !result.questions) {
+        throw new Error(result.error || 'Failed to generate questions');
+      }
+      const parsed: InterviewQuestion[] = result.questions.slice(0, 5);
+      setQuestions(parsed);
+      setEvaluations(new Array(parsed.length).fill(null));
       setPhase('question-list');
     } catch (err: any) {
       setErrorMsg(err?.message ?? 'Failed to generate questions. Please try again.');
@@ -404,55 +372,11 @@ Only return the JSON array, no other text.`;
     const q = questions[currentIndex];
 
     try {
-      const prompt = `You are an expert interview coach evaluating a candidate's answer.
-
-Role context: "${roleContext}"
-Question: "${q.question}"
-Category: "${q.category}"
-Candidate's answer: "${transcript}"
-
-Evaluate the answer and return a JSON object with:
-- overallScore: integer 0-100
-- grade: "Excellent" | "Good" | "Fair" | "Needs Work"
-- summary: 2-3 sentence overall feedback
-- strengths: array of 2-3 specific strengths observed
-- improvements: array of 2-3 specific areas to improve
-- metrics: object with keys clarity, relevance, structure, impact, confidence — each an integer 0-100
-
-Return only the JSON object, no other text.`;
-
-      const response = await ai.models.generateContent({
-        model: 'models/gemini-2.5-flash',
-        contents: [{ parts: [{ text: prompt }] }],
-        config: {
-          responseMimeType: 'application/json',
-          responseSchema: {
-            type: Type.OBJECT,
-            properties: {
-              overallScore: { type: Type.INTEGER },
-              grade: { type: Type.STRING },
-              summary: { type: Type.STRING },
-              strengths: { type: Type.ARRAY, items: { type: Type.STRING } },
-              improvements: { type: Type.ARRAY, items: { type: Type.STRING } },
-              metrics: {
-                type: Type.OBJECT,
-                properties: {
-                  clarity: { type: Type.INTEGER },
-                  relevance: { type: Type.INTEGER },
-                  structure: { type: Type.INTEGER },
-                  impact: { type: Type.INTEGER },
-                  confidence: { type: Type.INTEGER },
-                },
-                required: ['clarity', 'relevance', 'structure', 'impact', 'confidence'],
-              },
-            },
-            required: ['overallScore', 'grade', 'summary', 'strengths', 'improvements', 'metrics'],
-          },
-        },
-      });
-
-      if (!response.text) throw new Error('No evaluation received');
-      const evaluation: Evaluation = JSON.parse(response.text);
+      const result = await evaluateAnswer(roleContext, q.question, q.category, transcript);
+      if (!result.success || !result.evaluation) {
+        throw new Error(result.error || 'Failed to evaluate answer');
+      }
+      const evaluation: Evaluation = result.evaluation;
       setCurrentEval(evaluation);
 
       const updated = [...evaluations];

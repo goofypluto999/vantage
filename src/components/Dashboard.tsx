@@ -3,11 +3,13 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   Upload, Link as LinkIcon, FileText, Loader2, Sparkles, ChevronRight,
-  User, LogOut, CreditCard, Plus, Zap, Crown, Star, Settings, Check
+  User, LogOut, CreditCard, Plus, Zap, Crown, Star, Settings, Check,
+  Mic, BookOpen, Lock, RefreshCw
 } from 'lucide-react';
 import { useAuth } from '../App';
 import { getCreditsRemaining, hasCredits } from '../lib/supabase';
-import { analyzeJob, createStripeCheckout, syncSubscription } from '../services/api';
+import { analyzeJob, createStripeCheckout, syncSubscription, rewriteTone } from '../services/api';
+import AIInterviewSession from './AIInterviewSession';
 
 const PLANS = [
   { name: 'Starter', price: 5, credits: 10, color: '#6B6B8D', icon: Zap, features: ['10 analyses/mo', 'Strategic Brief', 'Cover Letter', 'Interview Pack'] },
@@ -53,8 +55,19 @@ export default function Dashboard() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const jdInputRef = useRef<HTMLInputElement>(null);
 
+  // Cover letter tone
+  const [activeTone, setActiveTone] = useState<string>('original');
+  const [toneLoading, setToneLoading] = useState(false);
+  const [displayLetter, setDisplayLetter] = useState<string>('');
+  const toneCache = useRef<Record<string, string>>({});
+
+  // Interview
+  const [showInterview, setShowInterview] = useState(false);
+  const [showPrepCards, setShowPrepCards] = useState(false);
+
   const creditsRemaining = profile ? getCreditsRemaining(profile) : 0;
-  const canAnalyze = hasCredits(profile, 2);
+  const canAnalyze = hasCredits(profile, 3);
+  const isPro = profile?.plan === 'pro' || profile?.plan === 'premium';
 
   const handleStart = async () => {
     if (!cvFile) { setError('Please upload your CV'); return; }
@@ -88,6 +101,7 @@ export default function Dashboard() {
       if (result.success) {
         setResults(result.data);
         setStep('results');
+        refreshProfile();
       } else {
         setError(result.error || 'Analysis failed');
         setStep('input');
@@ -101,6 +115,37 @@ export default function Dashboard() {
   const handleSignOut = async () => {
     await signOut();
     navigate('/');
+  };
+
+  const handleToneSwitch = async (tone: string) => {
+    if (tone === 'original') {
+      setActiveTone('original');
+      setDisplayLetter(results?.coverLetter || '');
+      return;
+    }
+    if (toneCache.current[tone]) {
+      setActiveTone(tone);
+      setDisplayLetter(toneCache.current[tone]);
+      return;
+    }
+    if (!hasCredits(profile, 1)) {
+      setError('Not enough credits to rewrite tone (1 credit)');
+      return;
+    }
+    setToneLoading(true);
+    const roleContext = results?.companySnapshot?.name
+      ? `${results.companySnapshot.name} — ${results.keyRequirements?.join(', ') || ''}`
+      : '';
+    const result = await rewriteTone(results.coverLetter, tone, roleContext);
+    setToneLoading(false);
+    if (result.success && result.coverLetter) {
+      toneCache.current[tone] = result.coverLetter;
+      setActiveTone(tone);
+      setDisplayLetter(result.coverLetter);
+      refreshProfile();
+    } else {
+      setError(result.error || 'Failed to rewrite cover letter');
+    }
   };
 
   const handleCheckout = async (plan: string) => {
@@ -263,8 +308,8 @@ export default function Dashboard() {
                 <div className="mb-6 p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center gap-3">
                   <CreditCard className="w-5 h-5 text-amber-400" />
                   <div className="flex-1">
-                    <p className="text-amber-400 font-semibold">Low on credits</p>
-                    <p className="text-amber-400/70 text-sm">Upgrade your plan to continue</p>
+                    <p className="text-amber-400 font-semibold">Not enough credits</p>
+                    <p className="text-amber-400/70 text-sm">Each analysis costs 3 credits. Upgrade your plan to continue.</p>
                   </div>
                   <button 
                     onClick={() => navigate('/pricing')}
@@ -369,6 +414,7 @@ export default function Dashboard() {
               >
                 <Sparkles className="w-5 h-5" />
                 Generate Intelligence
+                <span className="text-white/60 text-sm font-normal ml-1">(3 credits)</span>
                 <ChevronRight className="w-5 h-5" />
               </button>
             </motion.div>
@@ -533,12 +579,41 @@ export default function Dashboard() {
                 </div>
               )}
 
-              {/* Cover Letter */}
+              {/* Cover Letter with Tone Switcher */}
               {results.coverLetter && (
                 <div className="p-6 rounded-2xl bg-white/5 border border-white/10">
-                  <h3 className="text-lg font-bold text-white mb-4">Cover Letter</h3>
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-bold text-white">Cover Letter</h3>
+                    <div className="flex items-center gap-2">
+                      {['original', 'Formal', 'Warm', 'Direct', 'Creative'].map((tone) => (
+                        <button
+                          key={tone}
+                          onClick={() => handleToneSwitch(tone)}
+                          disabled={toneLoading}
+                          className={`px-3 py-1 rounded-full text-xs font-semibold transition-all ${
+                            activeTone === tone
+                              ? 'bg-violet-600 text-white'
+                              : 'bg-white/5 text-white/50 hover:bg-white/10 hover:text-white/80'
+                          } ${toneLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        >
+                          {tone === 'original' ? 'Original' : tone}
+                        </button>
+                      ))}
+                      {activeTone !== 'original' && (
+                        <span className="text-white/30 text-xs ml-1">1 credit per tone</span>
+                      )}
+                    </div>
+                  </div>
+                  {toneLoading && (
+                    <div className="flex items-center gap-2 mb-3 text-violet-400 text-sm">
+                      <RefreshCw className="w-4 h-4 animate-spin" />
+                      Rewriting in {activeTone} tone...
+                    </div>
+                  )}
                   <div className="prose prose-invert max-w-none">
-                    <p className="text-white/70 whitespace-pre-wrap font-serif leading-relaxed">{results.coverLetter}</p>
+                    <p className="text-white/70 whitespace-pre-wrap font-serif leading-relaxed">
+                      {displayLetter || results.coverLetter}
+                    </p>
                   </div>
                 </div>
               )}
@@ -562,9 +637,117 @@ export default function Dashboard() {
                   </div>
                 </div>
               )}
+
+              {/* Interview Prep Cards */}
+              <div className="p-6 rounded-2xl bg-white/5 border border-white/10">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                    <BookOpen className="w-5 h-5 text-violet-400" />
+                    Interview Prep
+                  </h3>
+                  <button
+                    onClick={() => setShowPrepCards(!showPrepCards)}
+                    className="px-4 py-2 rounded-lg bg-violet-500/20 text-violet-400 font-semibold text-sm hover:bg-violet-500/30 transition-colors"
+                  >
+                    {showPrepCards ? 'Hide Cards' : 'Show Revision Cards'}
+                  </button>
+                </div>
+                {showPrepCards && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+                    {results.companySnapshot && (
+                      <div className="p-4 rounded-xl bg-violet-500/10 border border-violet-500/20">
+                        <p className="text-xs text-violet-400 font-bold uppercase mb-2">Know the Company</p>
+                        <p className="text-white font-semibold">{results.companySnapshot.name}</p>
+                        <p className="text-white/60 text-sm mt-1">{results.companySnapshot.mission}</p>
+                        {results.companySnapshot.cultureSignals?.length > 0 && (
+                          <div className="flex flex-wrap gap-1 mt-2">
+                            {results.companySnapshot.cultureSignals.map((s: string, i: number) => (
+                              <span key={i} className="px-2 py-0.5 rounded-full bg-violet-500/20 text-violet-300 text-xs">{s}</span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                    {results.briefSections?.roleRequirements && (
+                      <div className="p-4 rounded-xl bg-blue-500/10 border border-blue-500/20">
+                        <p className="text-xs text-blue-400 font-bold uppercase mb-2">Know the Role</p>
+                        <p className="text-white/70 text-sm">{results.briefSections.roleRequirements}</p>
+                      </div>
+                    )}
+                    {results.briefSections?.cvAlignment && (
+                      <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
+                        <p className="text-xs text-emerald-400 font-bold uppercase mb-2">Why You Fit</p>
+                        <p className="text-white/70 text-sm">{results.briefSections.cvAlignment}</p>
+                      </div>
+                    )}
+                    {results.briefSections?.narrativeAngle && (
+                      <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20">
+                        <p className="text-xs text-amber-400 font-bold uppercase mb-2">Your Narrative</p>
+                        <p className="text-white/70 text-sm">{results.briefSections.narrativeAngle}</p>
+                      </div>
+                    )}
+                    {results.keyRequirements?.length > 0 && (
+                      <div className="p-4 rounded-xl bg-pink-500/10 border border-pink-500/20 sm:col-span-2">
+                        <p className="text-xs text-pink-400 font-bold uppercase mb-2">Key Talking Points</p>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                          {results.keyRequirements.map((req: string, i: number) => (
+                            <div key={i} className="flex items-start gap-2">
+                              <Check className="w-4 h-4 text-pink-400 mt-0.5 shrink-0" />
+                              <span className="text-white/70 text-sm">{req}{results.cvMatchPoints?.[i] ? ` — ${results.cvMatchPoints[i]}` : ''}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* AI Mock Interview */}
+              <div className="p-6 rounded-2xl bg-white/5 border border-white/10">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                    <Mic className="w-5 h-5 text-violet-400" />
+                    AI Mock Interview
+                    {!isPro && (
+                      <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 text-xs font-bold ml-2 flex items-center gap-1">
+                        <Lock className="w-3 h-3" /> Pro / Premium
+                      </span>
+                    )}
+                  </h3>
+                  {isPro ? (
+                    <button
+                      onClick={() => setShowInterview(true)}
+                      disabled={!hasCredits(profile, 2)}
+                      className="px-4 py-2 rounded-lg bg-gradient-to-r from-violet-600 to-purple-600 text-white font-semibold text-sm hover:from-violet-500 hover:to-purple-500 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
+                    >
+                      <Mic className="w-4 h-4" />
+                      Start Interview (2 credits)
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => navigate('/pricing')}
+                      className="px-4 py-2 rounded-lg bg-white/5 text-white/50 font-semibold text-sm hover:bg-white/10 transition-colors"
+                    >
+                      Upgrade to Unlock
+                    </button>
+                  )}
+                </div>
+                <p className="text-white/40 text-sm mt-2">
+                  Practice with AI-generated questions, voice recording, timed responses, and detailed evaluation with scores.
+                </p>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
+
+        {/* AI Interview Modal */}
+        {showInterview && results && (
+          <AIInterviewSession
+            roleContext={`${results.companySnapshot?.name || ''} — ${results.keyRequirements?.join(', ') || ''}`}
+            onClose={() => { setShowInterview(false); refreshProfile(); }}
+          />
+        )}
       </main>
     </div>
   );
