@@ -72,20 +72,42 @@ export default async function handler(request: any, response: any) {
     });
 
     if (subscriptions.data.length === 0) {
-      // Check for any subscription (might be just created)
+      // No active subscriptions — check for cancelled/past_due
       const allSubs = await stripe.subscriptions.list({
         customer: customerId,
         limit: 10,
       });
 
       if (allSubs.data.length === 0) {
-        return response.status(200).json({ synced: false, reason: 'No subscriptions found' });
+        // No subscriptions at all — update status to inactive
+        await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${user.id}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': SUPABASE_SERVICE_KEY,
+            'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+            'Prefer': 'return=minimal',
+          },
+          body: JSON.stringify({ subscription_status: 'inactive' }),
+        });
+        return response.status(200).json({ synced: true, subscription_status: 'inactive' });
       }
 
-      // Use the most recent subscription
+      // Use the most recent subscription — update the DB with its actual status
       const latest = allSubs.data[0];
       const status = latest.status === 'active' ? 'active' :
                      latest.status === 'canceled' ? 'cancelled' : 'past_due';
+
+      await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${user.id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_SERVICE_KEY,
+          'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+          'Prefer': 'return=minimal',
+        },
+        body: JSON.stringify({ subscription_status: status }),
+      });
 
       return response.status(200).json({
         synced: true,

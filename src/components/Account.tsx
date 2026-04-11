@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../App';
 import { supabase, getCreditsRemaining } from '../lib/supabase';
-import { createBillingPortal } from '../services/api';
+import { createBillingPortal, syncSubscription } from '../services/api';
 
 const PLAN_META: Record<string, { color: string; icon: LucideIcon; label: string }> = {
   starter: { color: '#6B6B8D', icon: Zap, label: 'Starter' },
@@ -17,8 +17,17 @@ const PLAN_META: Record<string, { color: string; icon: LucideIcon; label: string
 };
 
 export default function Account() {
-  const { user, profile, signOut } = useAuth();
+  const { user, profile, signOut, refreshProfile } = useAuth();
   const navigate = useNavigate();
+
+  // Refresh profile on mount — catches subscription changes made via Stripe portal
+  React.useEffect(() => {
+    refreshProfile();
+    // Also sync with Stripe to catch cancellations that webhooks may not have delivered yet
+    if (profile?.stripe_subscription_id) {
+      syncSubscription().then(() => refreshProfile()).catch(() => {});
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Name editing
   const [editingName, setEditingName] = useState(false);
@@ -234,7 +243,14 @@ export default function Account() {
               </div>
               <div>
                 <p className="text-white font-bold">{planInfo.label} Plan</p>
-                <p className="text-white/40 text-sm capitalize">{profile?.subscription_status || 'inactive'}</p>
+                <p className={`text-sm capitalize ${
+                  profile?.subscription_status === 'active' ? 'text-emerald-400' :
+                  profile?.subscription_status === 'cancelled' ? 'text-amber-400' :
+                  profile?.subscription_status === 'past_due' ? 'text-red-400' :
+                  'text-white/40'
+                }`}>
+                  {profile?.subscription_status === 'cancelled' ? 'Cancelled — tokens kept' : profile?.subscription_status || 'inactive'}
+                </p>
               </div>
             </div>
 
