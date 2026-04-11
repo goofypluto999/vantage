@@ -52,6 +52,9 @@ export default async function handler(request: any, response: any) {
     if (!question || !answer) {
       return response.status(400).json({ error: 'question and answer are required' });
     }
+    if (answer.length > 5000) {
+      return response.status(400).json({ error: 'Answer is too long (max 5,000 characters)' });
+    }
 
     const prompt = `You are an expert interview coach evaluating a candidate's answer.
 
@@ -86,6 +89,6 @@ Return only the JSON object, no other text.`;
     });
   } catch (error: any) {
     console.error('Interview evaluate error:', error);
-    return response.status(500).json({ error: error.message || 'Failed to evaluate answer' });
+    return response.status(500).json({ error: 'Failed to evaluate answer' });
   }
 }

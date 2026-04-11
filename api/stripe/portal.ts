@@ -8,6 +8,18 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '');
 const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || '';
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 
+function getAllowedOrigin(requestOrigin: string | undefined): string {
+  const allowed = process.env.APP_URL || process.env.VERCEL_URL;
+  if (allowed) {
+    const origin = allowed.startsWith('http') ? allowed : `https://${allowed}`;
+    return origin.replace(/\/$/, '');
+  }
+  if (requestOrigin && /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(requestOrigin)) {
+    return requestOrigin;
+  }
+  return requestOrigin || '';
+}
+
 export default async function handler(request: any, response: any) {
   if (request.method !== 'POST') {
     return response.status(405).json({ error: 'Method not allowed' });
@@ -51,9 +63,10 @@ export default async function handler(request: any, response: any) {
       return response.status(400).json({ error: 'No billing account found' });
     }
 
+    const origin = getAllowedOrigin(request.headers.origin);
     const session = await stripe.billingPortal.sessions.create({
       customer: customerId,
-      return_url: `${request.headers.origin}/dashboard`,
+      return_url: `${origin}/dashboard`,
     });
 
     return response.status(200).json({ url: session.url });

@@ -11,6 +11,22 @@ const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 // Fetches the actual job page content so Gemini doesn't have to guess.
 // Falls back gracefully if the page blocks us.
 
+function isUrlSafe(url: string): boolean {
+  try {
+    const parsed = new URL(url);
+    if (!['http:', 'https:'].includes(parsed.protocol)) return false;
+    const hostname = parsed.hostname.toLowerCase();
+    // Block internal/private networks
+    if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '0.0.0.0') return false;
+    if (hostname.startsWith('10.') || hostname.startsWith('192.168.') || hostname.startsWith('172.')) return false;
+    if (hostname.startsWith('169.254.')) return false; // AWS metadata
+    if (hostname.endsWith('.internal') || hostname.endsWith('.local')) return false;
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 async function scrapeJobUrl(url: string): Promise<string | null> {
   const headers: Record<string, string> = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
@@ -160,9 +176,9 @@ interface JobIntelligence {
   cvFitSummary?: string;
 }
 
-async function getUserCredits(userId: string): Promise<{ total: number; used: number }> {
+async function getTokenBalance(userId: string): Promise<number> {
   const res = await fetch(
-    `${SUPABASE_URL}/rest/v1/profiles?id=eq.${userId}&select=credits_total,credits_used`,
+    `${SUPABASE_URL}/rest/v1/profiles?id=eq.${userId}&select=token_balance`,
     {
       headers: {
         'apikey': SUPABASE_SERVICE_KEY,
@@ -171,31 +187,26 @@ async function getUserCredits(userId: string): Promise<{ total: number; used: nu
     }
   );
   const profiles = await res.json();
-  if (!profiles || profiles.length === 0) {
-    return { total: 10, used: 0 };
-  }
-  return { total: profiles[0].credits_total, used: profiles[0].credits_used };
+  if (!profiles || profiles.length === 0) return 0;
+  return profiles[0].token_balance ?? 0;
 }
 
-async function deductCredits(userId: string, amount: number): Promise<void> {
-  const { total, used } = await getUserCredits(userId);
-  const newUsed = (used ?? 0) + amount;
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${userId}`, {
-    method: 'PATCH',
+async function deductTokens(userId: string, amount: number): Promise<number> {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/deduct_tokens`, {
+    method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'apikey': SUPABASE_SERVICE_KEY,
       'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
-      'Prefer': 'return=minimal',
     },
-    body: JSON.stringify({
-      credits_used: newUsed,
-    }),
+    body: JSON.stringify({ p_user_id: userId, p_amount: amount }),
   });
   if (!res.ok) {
-    console.error('Failed to deduct credits:', res.status, await res.text());
-    throw new Error('Failed to deduct credits');
+    const errText = await res.text();
+    if (errText.includes('Insufficient')) throw new Error('Insufficient tokens');
+    throw new Error('Failed to deduct tokens');
   }
+  return res.json();
 }
 
 async function saveAnalysis(
@@ -441,14 +452,13 @@ export default async function handler(request: any, response: any) {
     }
 
     const user = await userRes.json();
-    const { total: creditsTotal, used: creditsUsed } = await getUserCredits(user.id);
-    const creditsRemaining = creditsTotal - creditsUsed;
+    const tokenBalance = await getTokenBalance(user.id);
 
     const COST_PER_ANALYSIS = 3;
-    if (creditsRemaining < COST_PER_ANALYSIS) {
+    if (tokenBalance < COST_PER_ANALYSIS) {
       return response.status(403).json({
-        error: 'Insufficient credits',
-        creditsRemaining,
+        error: 'Insufficient tokens',
+        token_balance: tokenBalance,
         required: COST_PER_ANALYSIS,
       });
     }
@@ -459,20 +469,29 @@ export default async function handler(request: any, response: any) {
     const cvText = formData.cvText || '';
     const jobDescText = formData.jobDescText || null;
 
+    if (jobUrl && !isUrlSafe(jobUrl)) {
+      return response.status(400).json({ error: 'Invalid job URL' });
+    }
+    if (cvText.length > 50000) {
+      return response.status(400).json({ error: 'CV text is too long (max 50,000 characters)' });
+    }
+    if (jobDescText && jobDescText.length > 50000) {
+      return response.status(400).json({ error: 'Job description is too long (max 50,000 characters)' });
+    }
+
     const results = await generateJobIntelligence(cvText, jobUrl, jobDescText, includeFitScore);
 
-    await deductCredits(user.id, COST_PER_ANALYSIS);
+    const newBalance = await deductTokens(user.id, COST_PER_ANALYSIS);
     await saveAnalysis(user.id, jobUrl, results, COST_PER_ANALYSIS);
-
-    const newCredits = creditsRemaining - COST_PER_ANALYSIS;
 
     return response.status(200).json({
       success: true,
       data: results,
-      creditsRemaining: newCredits,
+      token_balance: newBalance,
     });
   } catch (error: any) {
     console.error('Analysis error:', error);
-    return response.status(500).json({ error: error.message || 'Analysis failed' });
+    const msg = error.message?.includes('Insufficient') ? error.message : 'Analysis failed';
+    return response.status(500).json({ error: msg });
   }
 }

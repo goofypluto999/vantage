@@ -9,9 +9,9 @@ const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 
 const COST = 1;
 
-async function getUserCredits(userId: string): Promise<{ total: number; used: number }> {
+async function getTokenBalance(userId: string): Promise<number> {
   const res = await fetch(
-    `${SUPABASE_URL}/rest/v1/profiles?id=eq.${userId}&select=credits_total,credits_used`,
+    `${SUPABASE_URL}/rest/v1/profiles?id=eq.${userId}&select=token_balance`,
     {
       headers: {
         'apikey': SUPABASE_SERVICE_KEY,
@@ -20,23 +20,26 @@ async function getUserCredits(userId: string): Promise<{ total: number; used: nu
     }
   );
   const profiles = await res.json();
-  if (!profiles || profiles.length === 0) return { total: 0, used: 0 };
-  return { total: profiles[0].credits_total, used: profiles[0].credits_used ?? 0 };
+  if (!profiles || profiles.length === 0) return 0;
+  return profiles[0].token_balance ?? 0;
 }
 
-async function deductCredits(userId: string): Promise<void> {
-  const { used } = await getUserCredits(userId);
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${userId}`, {
-    method: 'PATCH',
+async function deductTokens(userId: string): Promise<number> {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/deduct_tokens`, {
+    method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'apikey': SUPABASE_SERVICE_KEY,
       'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
-      'Prefer': 'return=minimal',
     },
-    body: JSON.stringify({ credits_used: used + COST }),
+    body: JSON.stringify({ p_user_id: userId, p_amount: COST }),
   });
-  if (!res.ok) throw new Error('Failed to deduct credits');
+  if (!res.ok) {
+    const errText = await res.text();
+    if (errText.includes('Insufficient')) throw new Error('Insufficient tokens');
+    throw new Error('Failed to deduct tokens');
+  }
+  return res.json();
 }
 
 export default async function handler(request: any, response: any) {
@@ -61,11 +64,10 @@ export default async function handler(request: any, response: any) {
     if (!userRes.ok) return response.status(401).json({ error: 'Invalid token' });
 
     const user = await userRes.json();
-    const { total, used } = await getUserCredits(user.id);
-    const remaining = total - used;
+    const balance = await getTokenBalance(user.id);
 
-    if (remaining < COST) {
-      return response.status(403).json({ error: 'Insufficient credits', creditsRemaining: remaining });
+    if (balance < COST) {
+      return response.status(403).json({ error: 'Insufficient tokens', token_balance: balance });
     }
 
     const { coverLetter, tone, roleContext } = request.body;
@@ -94,15 +96,20 @@ Return ONLY the rewritten cover letter text, no explanation or preamble.`;
 
     if (!aiResponse.text) throw new Error('No response from AI');
 
-    await deductCredits(user.id);
+    if (coverLetter.length > 10000) {
+      return response.status(400).json({ error: 'Cover letter text is too long' });
+    }
+
+    const newBalance = await deductTokens(user.id);
 
     return response.status(200).json({
       success: true,
       coverLetter: aiResponse.text.trim(),
-      creditsRemaining: remaining - COST,
+      token_balance: newBalance,
     });
   } catch (error: any) {
     console.error('Rewrite tone error:', error);
-    return response.status(500).json({ error: error.message || 'Failed to rewrite cover letter' });
+    const msg = error.message?.includes('Insufficient') ? error.message : 'Failed to rewrite cover letter';
+    return response.status(500).json({ error: msg });
   }
 }

@@ -238,17 +238,11 @@ export default function Account() {
               </div>
             </div>
 
-            {/* Credits */}
+            {/* Token Balance */}
             <div className="p-3 rounded-xl bg-white/5 border border-white/10 mb-5">
-              <div className="flex items-center justify-between mb-1">
-                <span className="text-white/50 text-sm">Credits Remaining</span>
-                <span className="text-emerald-400 font-bold">{creditsRemaining} / {profile?.credits_total || 0}</span>
-              </div>
-              <div className="w-full h-1.5 rounded-full bg-white/10 overflow-hidden">
-                <div
-                  className="h-full rounded-full bg-gradient-to-r from-violet-500 to-emerald-500 transition-all"
-                  style={{ width: `${profile?.credits_total ? (creditsRemaining / profile.credits_total) * 100 : 0}%` }}
-                />
+              <div className="flex items-center justify-between">
+                <span className="text-white/50 text-sm">Token Balance</span>
+                <span className="text-emerald-400 font-bold">{creditsRemaining}</span>
               </div>
             </div>
 

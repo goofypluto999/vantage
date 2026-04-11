@@ -3,7 +3,6 @@ import { BrowserRouter, Routes, Route, Navigate, useNavigate, useLocation } from
 import { AnimatePresence, motion } from 'motion/react';
 import { supabase, signOut, fetchProfile, Profile } from './lib/supabase';
 import { createStripeCheckout } from './services/api';
-import { loadStripe } from '@stripe/stripe-js';
 import LandingPage from './components/LandingPage';
 import Login from './components/Login';
 import Register from './components/Register';
@@ -17,8 +16,6 @@ import TermsOfService from './components/TermsOfService';
 import CookiePolicy from './components/CookiePolicy';
 import Account from './components/Account';
 import ThemeProvider, { useTheme } from './contexts/ThemeContext';
-
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || '');
 
 interface AuthContextType {
   user: any;
@@ -189,8 +186,9 @@ function PricingWrapper() {
     try {
       const { url } = await createStripeCheckout(plan);
       window.location.href = url;
-    } catch {
-      navigate('/dashboard');
+    } catch (err: any) {
+      console.error('Checkout failed:', err.message);
+      navigate('/dashboard?checkout_error=true');
     }
   };
 

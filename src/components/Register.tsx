@@ -5,9 +5,9 @@ import { Mail, Lock, User, Eye, EyeOff, ArrowRight, ArrowLeft, BrainCircuit, Chr
 import { signUp, signInWithGoogle } from '../lib/supabase';
 
 const PLANS = [
-  { name: 'Starter', price: 5, credits: 10, color: '#6B6B8D' },
-  { name: 'Pro', price: 12, credits: 30, color: '#4F46E5' },
-  { name: 'Premium', price: 20, credits: 60, color: '#7C3AED' },
+  { name: 'Starter', price: 5, tokens: 10, color: '#6B6B8D' },
+  { name: 'Pro', price: 12, tokens: 30, color: '#4F46E5' },
+  { name: 'Premium', price: 20, tokens: 60, color: '#7C3AED' },
 ];
 
 export default function Register() {
@@ -168,7 +168,7 @@ export default function Register() {
                   >
                     <div className="text-sm font-bold text-white">{plan.name}</div>
                     <div className="text-lg font-bold text-white">£{plan.price}</div>
-                    <div className="text-xs text-white/50">{plan.credits} credits</div>
+                    <div className="text-xs text-white/50">{plan.tokens} tokens</div>
                   </button>
                 ))}
               </div>

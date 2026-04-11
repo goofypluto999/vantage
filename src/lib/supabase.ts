@@ -14,8 +14,7 @@ export interface Profile {
   full_name?: string;
   avatar_url?: string;
   plan: Plan;
-  credits_total: number;
-  credits_used: number;
+  token_balance: number;
   stripe_customer_id?: string;
   stripe_subscription_id?: string;
   subscription_status: SubscriptionStatus;
@@ -34,12 +33,12 @@ export interface WaitlistEntry {
 
 export function getCreditsRemaining(profile: Profile | null): number {
   if (!profile) return 0;
-  return Math.max(0, profile.credits_total - profile.credits_used);
+  return Math.max(0, profile.token_balance);
 }
 
 export function hasCredits(profile: Profile | null, required: number = 3): boolean {
   if (!profile) return false;
-  return getCreditsRemaining(profile) >= required;
+  return profile.token_balance >= required;
 }
 
 export async function signUp(email: string, password: string, fullName?: string) {

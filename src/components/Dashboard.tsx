@@ -12,9 +12,9 @@ import { analyzeJob, createStripeCheckout, syncSubscription, rewriteTone } from 
 import AIInterviewSession from './AIInterviewSession';
 
 const PLANS = [
-  { name: 'Starter', price: 5, credits: 10, color: '#6B6B8D', icon: Zap, features: ['10 analyses/mo', 'Strategic Brief', 'Cover Letter', 'Interview Pack'] },
-  { name: 'Pro', price: 12, credits: 30, color: '#4F46E5', icon: Star, features: ['30 analyses/mo', 'AI Mock Interview', 'STAR Stories', 'Everything in Starter'] },
-  { name: 'Premium', price: 20, credits: 60, color: '#7C3AED', icon: Crown, features: ['60 analyses/mo', 'CV Fit Score', 'Presentation Deck', 'Priority', 'Everything in Pro'] },
+  { name: 'Starter', price: 5, tokens: 10, color: '#6B6B8D', icon: Zap, features: ['10 tokens', 'Strategic Brief', 'Cover Letter', 'Interview Pack'] },
+  { name: 'Pro', price: 12, tokens: 30, color: '#4F46E5', icon: Star, features: ['30 tokens', 'AI Mock Interview', 'STAR Stories', 'Everything in Starter'] },
+  { name: 'Premium', price: 20, tokens: 60, color: '#7C3AED', icon: Crown, features: ['60 tokens', 'CV Fit Score', 'Presentation Deck', 'Priority', 'Everything in Pro'] },
 ];
 
 export default function Dashboard() {
@@ -72,9 +72,9 @@ export default function Dashboard() {
   const handleStart = async () => {
     if (!cvFile) { setError('Please upload your CV'); return; }
     if (!jobUrl) { setError('Please add a job URL'); return; }
-    if (!canAnalyze) { 
-      setError('Not enough credits. Upgrade your plan!'); 
-      return; 
+    if (!canAnalyze) {
+      setError('Not enough tokens. Buy more to continue!');
+      return;
     }
 
     setError('');
@@ -129,22 +129,27 @@ export default function Dashboard() {
       return;
     }
     if (!hasCredits(profile, 1)) {
-      setError('Not enough credits to rewrite tone (1 credit)');
+      setError('Not enough tokens to rewrite tone (1 token)');
       return;
     }
     setToneLoading(true);
-    const roleContext = results?.companySnapshot?.name
-      ? `${results.companySnapshot.name} — ${results.keyRequirements?.join(', ') || ''}`
-      : '';
-    const result = await rewriteTone(results.coverLetter, tone, roleContext);
-    setToneLoading(false);
-    if (result.success && result.coverLetter) {
-      toneCache.current[tone] = result.coverLetter;
-      setActiveTone(tone);
-      setDisplayLetter(result.coverLetter);
-      refreshProfile();
-    } else {
-      setError(result.error || 'Failed to rewrite cover letter');
+    try {
+      const roleContext = results?.companySnapshot?.name
+        ? `${results.companySnapshot.name} — ${results.keyRequirements?.join(', ') || ''}`
+        : '';
+      const result = await rewriteTone(results.coverLetter, tone, roleContext);
+      if (result.success && result.coverLetter) {
+        toneCache.current[tone] = result.coverLetter;
+        setActiveTone(tone);
+        setDisplayLetter(result.coverLetter);
+        refreshProfile();
+      } else {
+        setError(result.error || 'Failed to rewrite cover letter');
+      }
+    } catch {
+      setError('Network error — please try again');
+    } finally {
+      setToneLoading(false);
     }
   };
 
@@ -174,7 +179,7 @@ export default function Dashboard() {
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
               <div className="w-2 h-2 bg-emerald-400 rounded-full" />
-              <span className="text-sm font-bold text-emerald-400">{profile ? creditsRemaining : '--'} Credits</span>
+              <span className="text-sm font-bold text-emerald-400">{profile ? creditsRemaining : '--'} Tokens</span>
             </div>
 
             {profile?.plan && (
@@ -219,7 +224,7 @@ export default function Dashboard() {
               </div>
               <div>
                 <p className="text-emerald-400 font-semibold">Subscription activated!</p>
-                <p className="text-emerald-400/70 text-sm">Your credits are ready to use.</p>
+                <p className="text-emerald-400/70 text-sm">Your tokens have been added to your balance.</p>
               </div>
             </div>
             <button onClick={() => setCheckoutSuccess(false)} className="text-emerald-400/50 hover:text-emerald-400 text-sm">
@@ -236,12 +241,12 @@ export default function Dashboard() {
             {profile?.subscription_status === 'active' ? (
               <>
                 <h2 className="text-lg font-display font-bold text-white mb-1">Your Plan</h2>
-                <p className="text-white/50 text-sm mb-5">Manage your subscription or upgrade to unlock more credits.</p>
+                <p className="text-white/50 text-sm mb-5">Manage your subscription or buy more tokens.</p>
               </>
             ) : (
               <>
                 <h2 className="text-lg font-display font-bold text-white mb-1">Complete your subscription to start using Vantage</h2>
-                <p className="text-white/50 text-sm mb-5">Choose a plan to unlock your credits and begin analysing jobs.</p>
+                <p className="text-white/50 text-sm mb-5">Choose a plan to get tokens and begin analysing jobs.</p>
               </>
             )}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -265,7 +270,7 @@ export default function Dashboard() {
                     <plan.icon className="w-6 h-6 mb-2 mt-1" style={{ color: isCurrentPlan ? '#34d399' : plan.color }} />
                     <div className={`font-bold ${isCurrentPlan ? 'text-emerald-400' : 'text-white'}`}>{plan.name}</div>
                     <div className="text-2xl font-bold text-white my-1">{'\u00A3'}{plan.price}<span className="text-sm text-white/40 font-normal">/mo</span></div>
-                    <div className="text-xs text-white/50 mb-3">{plan.credits} credits/month</div>
+                    <div className="text-xs text-white/50 mb-3">{plan.tokens} tokens</div>
                     {isCurrentPlan ? (
                       <div className="w-full py-2 rounded-lg text-sm font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center gap-1.5">
                         <Check className="w-4 h-4" />
@@ -308,8 +313,8 @@ export default function Dashboard() {
                 <div className="mb-6 p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center gap-3">
                   <CreditCard className="w-5 h-5 text-amber-400" />
                   <div className="flex-1">
-                    <p className="text-amber-400 font-semibold">Not enough credits</p>
-                    <p className="text-amber-400/70 text-sm">Each analysis costs 3 credits. Upgrade your plan to continue.</p>
+                    <p className="text-amber-400 font-semibold">Not enough tokens</p>
+                    <p className="text-amber-400/70 text-sm">Each analysis costs 3 tokens. Buy more tokens to continue.</p>
                   </div>
                   <button 
                     onClick={() => navigate('/pricing')}
@@ -414,7 +419,7 @@ export default function Dashboard() {
               >
                 <Sparkles className="w-5 h-5" />
                 Generate Intelligence
-                <span className="text-white/60 text-sm font-normal ml-1">(3 credits)</span>
+                <span className="text-white/60 text-sm font-normal ml-1">(3 tokens)</span>
                 <ChevronRight className="w-5 h-5" />
               </button>
             </motion.div>
@@ -600,7 +605,7 @@ export default function Dashboard() {
                         </button>
                       ))}
                       {activeTone !== 'original' && (
-                        <span className="text-white/30 text-xs ml-1">1 credit per tone</span>
+                        <span className="text-white/30 text-xs ml-1">1 token per tone</span>
                       )}
                     </div>
                   </div>
@@ -722,7 +727,7 @@ export default function Dashboard() {
                       className="px-4 py-2 rounded-lg bg-gradient-to-r from-violet-600 to-purple-600 text-white font-semibold text-sm hover:from-violet-500 hover:to-purple-500 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
                     >
                       <Mic className="w-4 h-4" />
-                      Start Interview (2 credits)
+                      Start Interview (2 tokens)
                     </button>
                   ) : (
                     <button

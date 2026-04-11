@@ -44,7 +44,7 @@ export default async function handler(request: any, response: any) {
 
     // Get current profile
     const profileRes = await fetch(
-      `${SUPABASE_URL}/rest/v1/profiles?id=eq.${user.id}&select=stripe_customer_id,credits_used`,
+      `${SUPABASE_URL}/rest/v1/profiles?id=eq.${user.id}&select=stripe_customer_id,stripe_subscription_id,token_balance`,
       {
         headers: {
           'apikey': SUPABASE_SERVICE_KEY,
@@ -119,8 +119,26 @@ export default async function handler(request: any, response: any) {
       }
     }
 
-    // Update profile with the correct plan and credits
-    const newCreditsTotal = PLAN_CREDITS[bestPlan] || 10;
+    // Only add tokens if the subscription ID changed (prevents double-crediting
+    // if the webhook already processed this checkout)
+    const alreadySynced = profile.stripe_subscription_id === bestSubId;
+    const tokensToAdd = alreadySynced ? 0 : (PLAN_CREDITS[bestPlan] || 10);
+
+    // Use atomic RPC for token addition
+    let newBalance = profile.token_balance || 0;
+    if (tokensToAdd > 0) {
+      const rpcRes = await fetch(`${SUPABASE_URL}/rest/v1/rpc/add_tokens`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_SERVICE_KEY,
+          'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+        },
+        body: JSON.stringify({ p_user_id: user.id, p_amount: tokensToAdd }),
+      });
+      if (rpcRes.ok) newBalance = await rpcRes.json();
+    }
+
     const updateRes = await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${user.id}`, {
       method: 'PATCH',
       headers: {
@@ -131,28 +149,24 @@ export default async function handler(request: any, response: any) {
       },
       body: JSON.stringify({
         plan: bestPlan,
-        credits_total: newCreditsTotal,
         stripe_subscription_id: bestSubId,
         subscription_status: 'active',
       }),
     });
 
     if (!updateRes.ok) {
-      console.error('Sync: failed to update profile:', updateRes.status, await updateRes.text());
-      return response.status(500).json({ error: 'Failed to update profile' });
+      console.error('Sync: failed to update profile');
+      return response.status(500).json({ error: 'Failed to sync profile' });
     }
 
     return response.status(200).json({
       synced: true,
       plan: bestPlan,
-      credits_total: newCreditsTotal,
-      credits_used: profile.credits_used || 0,
-      credits_remaining: newCreditsTotal - (profile.credits_used || 0),
-      subscription_id: bestSubId,
-      cancelled_duplicates: activeSubs.length - 1,
+      token_balance: newBalance,
+      tokens_added: tokensToAdd,
     });
   } catch (error: any) {
     console.error('Sync error:', error);
-    return response.status(500).json({ error: error.message || 'Sync failed' });
+    return response.status(500).json({ error: 'Sync failed' });
   }
 }

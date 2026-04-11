@@ -13,7 +13,7 @@ const PLANS = [
   {
     name: 'Starter',
     price: 5,
-    credits: 10,
+    tokens: 10,
     color: '#6B6B8D',
     icon: Zap,
     features: [
@@ -28,7 +28,7 @@ const PLANS = [
   {
     name: 'Pro',
     price: 12,
-    credits: 30,
+    tokens: 30,
     color: '#4F46E5',
     icon: Star,
     features: [
@@ -43,7 +43,7 @@ const PLANS = [
   {
     name: 'Premium',
     price: 20,
-    credits: 60,
+    tokens: 60,
     color: '#7C3AED',
     icon: Crown,
     features: [
@@ -125,7 +125,7 @@ export default function Pricing({ onLogin, onRegister, onCheckout, isAuthenticat
                   </div>
                   <div>
                     <h3 className="text-xl font-bold text-white">{plan.name}</h3>
-                    <p className="text-white/50 text-sm">{plan.credits} analyses/month</p>
+                    <p className="text-white/50 text-sm">{plan.tokens} tokens</p>
                   </div>
                 </div>
 

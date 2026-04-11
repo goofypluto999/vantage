@@ -31,7 +31,7 @@ export default async function handler(request: any, response: any) {
     const user = await userRes.json();
 
     const profileRes = await fetch(
-      `${SUPABASE_URL}/rest/v1/profiles?id=eq.${user.id}&select=credits_total,credits_used`,
+      `${SUPABASE_URL}/rest/v1/profiles?id=eq.${user.id}&select=token_balance`,
       {
         headers: {
           'apikey': SUPABASE_SERVICE_KEY,
@@ -46,13 +46,10 @@ export default async function handler(request: any, response: any) {
     }
 
     const profile = profiles[0];
-    const credits_remaining = profile.credits_total - profile.credits_used;
 
     return response.status(200).json({
       success: true,
-      credits_total: profile.credits_total,
-      credits_used: profile.credits_used,
-      credits_remaining,
+      token_balance: profile.token_balance ?? 0,
     });
   } catch (error) {
     console.error('Credits error:', error);

@@ -11,8 +11,7 @@ CREATE TABLE IF NOT EXISTS profiles (
   full_name TEXT,
   avatar_url TEXT,
   plan TEXT NOT NULL DEFAULT 'starter' CHECK (plan IN ('starter', 'pro', 'premium')),
-  credits_total INTEGER NOT NULL DEFAULT 10,
-  credits_used INTEGER NOT NULL DEFAULT 0,
+  token_balance INTEGER NOT NULL DEFAULT 10 CHECK (token_balance >= 0),
   stripe_customer_id TEXT,
   stripe_subscription_id TEXT,
   subscription_status TEXT DEFAULT 'inactive' CHECK (subscription_status IN ('inactive', 'active', 'cancelled', 'past_due')),
@@ -35,7 +34,7 @@ CREATE TABLE IF NOT EXISTS analyses (
   job_title TEXT,
   job_url TEXT,
   results_json JSONB,
-  credits_spent INTEGER NOT NULL DEFAULT 2,
+  tokens_spent INTEGER NOT NULL DEFAULT 3,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
@@ -65,7 +64,7 @@ CREATE TABLE IF NOT EXISTS api_usage (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
   endpoint TEXT NOT NULL,
-  credits_consumed INTEGER NOT NULL DEFAULT 1,
+  tokens_consumed INTEGER NOT NULL DEFAULT 1,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
@@ -82,21 +81,83 @@ ALTER TABLE analyses ENABLE ROW LEVEL SECURITY;
 ALTER TABLE waitlist ENABLE ROW LEVEL SECURITY;
 ALTER TABLE api_usage ENABLE ROW LEVEL SECURITY;
 
--- Profiles: users can only read/update their own profile
-CREATE POLICY "Users can manage own profile" ON profiles
-  FOR ALL USING (auth.uid() = id);
+-- Profiles: users can read and update their own profile only
+-- No INSERT (handled by trigger) or DELETE (use admin/RPC for account deletion)
+DROP POLICY IF EXISTS "Users can manage own profile" ON profiles;
+
+CREATE POLICY "Users can read own profile" ON profiles
+  FOR SELECT USING (auth.uid() = id);
+
+CREATE POLICY "Users can update own profile" ON profiles
+  FOR UPDATE USING (auth.uid() = id)
+  WITH CHECK (auth.uid() = id);
 
 -- Analyses: users can only see their own analyses
 CREATE POLICY "Users can view own analyses" ON analyses
-  FOR ALL USING (auth.uid() = user_id);
+  FOR SELECT USING (auth.uid() = user_id);
 
 -- Waitlist: anyone can join (insert), but only service role can view
 CREATE POLICY "Anyone can join waitlist" ON waitlist
   FOR INSERT WITH CHECK (true);
 
--- API Usage: users can only see their own usage
+-- API Usage: users can only read their own usage
 CREATE POLICY "Users can view own usage" ON api_usage
-  FOR ALL USING (auth.uid() = user_id);
+  FOR SELECT USING (auth.uid() = user_id);
+
+-- ============================================================================
+-- ATOMIC TOKEN OPERATIONS (RPC functions)
+-- Called from API endpoints via POST /rest/v1/rpc/<function_name>
+-- These run as SECURITY DEFINER to bypass RLS with atomic guarantees
+-- ============================================================================
+
+-- Deduct tokens atomically. Returns new balance, raises exception if insufficient.
+CREATE OR REPLACE FUNCTION deduct_tokens(p_user_id UUID, p_amount INTEGER)
+RETURNS INTEGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  new_balance INTEGER;
+BEGIN
+  UPDATE profiles
+  SET token_balance = token_balance - p_amount,
+      updated_at = NOW()
+  WHERE id = p_user_id
+    AND token_balance >= p_amount
+  RETURNING token_balance INTO new_balance;
+
+  IF NOT FOUND THEN
+    RAISE EXCEPTION 'Insufficient tokens';
+  END IF;
+
+  RETURN new_balance;
+END;
+$$;
+
+-- Add tokens atomically. Returns new balance.
+CREATE OR REPLACE FUNCTION add_tokens(p_user_id UUID, p_amount INTEGER)
+RETURNS INTEGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  new_balance INTEGER;
+BEGIN
+  UPDATE profiles
+  SET token_balance = token_balance + p_amount,
+      updated_at = NOW()
+  WHERE id = p_user_id
+  RETURNING token_balance INTO new_balance;
+
+  IF NOT FOUND THEN
+    RAISE EXCEPTION 'User not found';
+  END IF;
+
+  RETURN new_balance;
+END;
+$$;
 
 -- ============================================================================
 -- TRIGGERS
@@ -104,7 +165,10 @@ CREATE POLICY "Users can view own usage" ON api_usage
 
 -- Auto-create profile on user signup
 CREATE OR REPLACE FUNCTION public.handle_new_user()
-RETURNS TRIGGER AS $$
+RETURNS TRIGGER
+SECURITY DEFINER
+SET search_path = public
+AS $$
 BEGIN
   INSERT INTO public.profiles (id, email, full_name, avatar_url)
   VALUES (
@@ -115,7 +179,7 @@ BEGIN
   );
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql;
 
 DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 CREATE TRIGGER on_auth_user_created
@@ -137,26 +201,45 @@ CREATE TRIGGER profiles_updated_at
   FOR EACH ROW EXECUTE FUNCTION public.update_updated_at();
 
 -- ============================================================================
--- SEED DATA (Optional)
+-- MIGRATION (run this if upgrading from old credits_total/credits_used schema)
 -- ============================================================================
-
--- You can add some initial waitlist entries for testing:
--- INSERT INTO waitlist (email, name, source) VALUES 
---   ('test@example.com', 'Test User', 'testing');
+--
+-- ALTER TABLE profiles ADD COLUMN token_balance INTEGER NOT NULL DEFAULT 0;
+-- ALTER TABLE profiles ADD CONSTRAINT token_balance_non_negative CHECK (token_balance >= 0);
+-- UPDATE profiles SET token_balance = GREATEST(0, credits_total - credits_used);
+-- ALTER TABLE profiles DROP COLUMN credits_total;
+-- ALTER TABLE profiles DROP COLUMN credits_used;
+--
+-- -- Split the RLS policy:
+-- DROP POLICY IF EXISTS "Users can manage own profile" ON profiles;
+-- CREATE POLICY "Users can read own profile" ON profiles FOR SELECT USING (auth.uid() = id);
+-- CREATE POLICY "Users can update own profile" ON profiles FOR UPDATE USING (auth.uid() = id) WITH CHECK (auth.uid() = id);
+--
+-- -- Fix analyses and api_usage policies:
+-- DROP POLICY IF EXISTS "Users can view own analyses" ON analyses;
+-- CREATE POLICY "Users can view own analyses" ON analyses FOR SELECT USING (auth.uid() = user_id);
+-- DROP POLICY IF EXISTS "Users can view own usage" ON api_usage;
+-- CREATE POLICY "Users can view own usage" ON api_usage FOR SELECT USING (auth.uid() = user_id);
+--
+-- -- Rename columns:
+-- ALTER TABLE analyses RENAME COLUMN credits_spent TO tokens_spent;
+-- ALTER TABLE api_usage RENAME COLUMN credits_consumed TO tokens_consumed;
+--
+-- -- Create the RPC functions (copy from above)
 
 -- ============================================================================
 -- NOTES
 -- ============================================================================
--- 
--- 1. After running this SQL, go to Supabase Dashboard → Authentication → Providers
+--
+-- 1. After running this SQL, go to Supabase Dashboard -> Authentication -> Providers
 -- 2. Enable Google OAuth and configure your credentials
 -- 3. Create your Stripe products and add their Price IDs to your environment variables
 --
 -- Environment Variables needed:
 -- - SUPABASE_URL: Your project URL
--- - SUPABASE_SERVICE_ROLE_KEY: Found in Project Settings → API
--- - SUPABASE_ANON_KEY: Found in Project Settings → API
+-- - SUPABASE_SERVICE_ROLE_KEY: Found in Project Settings -> API
+-- - SUPABASE_ANON_KEY: Found in Project Settings -> API
 --
--- Optional Stripe setup:
--- - Create 3 products in Stripe: Starter (£5), Pro (£12), Premium (£20)
--- - Add their Price IDs to: STRIPE_STARTER_PRICE_ID, STRIPE_PRO_PRICE_ID, STRIPE_PREMIUM_PRICE_ID
+-- Stripe setup:
+-- - Create 3 products in Stripe: Starter (5 GBP), Pro (12 GBP), Premium (20 GBP)
+-- - Add their Price IDs to: STRIPE_PRICE_STARTER, STRIPE_PRICE_PRO, STRIPE_PRICE_PREMIUM

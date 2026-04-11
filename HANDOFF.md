@@ -1,206 +1,192 @@
-# Vantage — Project Handoff Document
+# Vantage -- Agent Handoff Document
 
-**Date:** March 2026
-**Status:** MVP Frontend Complete — Auth + Payments = Next Phase
-
----
-
-## What We Built
-
-Vantage is an AI-powered job preparation tool. A user uploads their CV, pastes a job URL, and receives a full intelligence package in about 30–60 seconds:
-
-| Output | Description |
-|---|---|
-| Company Snapshot | Name, industry, size, founded year, mission, culture signals, recent highlights — auto-extracted from the job URL via Gemini + Google Search |
-| Role Match | CV fit score (0–100), key requirements, matched points from CV |
-| Strategic Brief | Company context, role requirements, CV alignment, narrative angle |
-| Cover Letter | Personalised, grounded in CV evidence. 4 tone variants: Formal / Warm / Direct / Creative |
-| Presentation Outline | Slide structure for interview presentations |
-| Interview Prep | Flashcards (Q&A format) + AI mock interview session with voice transcription |
+**Date:** 2026-04-11
+**Status:** Auth + Payments built, but token/credit system is broken and needs a rewrite.
 
 ---
 
-## Running the Project
+## What Is Vantage?
 
-### Requirements
-- Node.js 18+
-- A Gemini API key (free at [aistudio.google.com](https://aistudio.google.com))
+AI-powered job preparation SaaS. User uploads CV + job URL, gets:
+- Company intelligence snapshot (auto-scraped from URL + Gemini Google Search)
+- Role/CV fit analysis with score
+- Strategic brief and narrative angle
+- Personalised cover letter (4 tones: Formal / Warm / Direct / Creative)
+- Presentation outline
+- Interview prep flashcards + AI mock interview with voice
 
-### Steps
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Framework | React 19 + TypeScript + Vite 6 |
+| Styling | Tailwind CSS v4 (`@tailwindcss/vite` plugin -- NO config file) |
+| Animations | Framer Motion (`motion/react` import, NOT `framer-motion`) |
+| 3D (landing) | Three.js + `@react-three/fiber` + `@react-three/drei` |
+| AI | `@google/genai` SDK -- model: `models/gemini-2.5-flash` |
+| Auth | Supabase Auth (email + Google OAuth) |
+| Database | Supabase PostgreSQL with RLS |
+| Payments | Stripe (subscriptions via checkout sessions + webhooks) |
+| Backend | Vercel serverless functions (TypeScript, in `api/` directory) |
+| Doc parsing | `mammoth` (DOCX to text, client-side) |
+| Speech | Web Speech API (`SpeechRecognition`) |
+| Icons | `lucide-react` |
+
+---
+
+## What Works (DO NOT BREAK THESE)
+
+These features have been live-tested and verified working:
+
+1. **Landing page** -- Full glassmorphic design, 3D globe, all sections render correctly in light/dark mode
+2. **Auth flow** -- Register, login, logout, Google OAuth, forgot/reset password all work
+3. **CV upload** -- PDF, DOCX, and TXT files parse correctly
+4. **URL scraping** -- Server-side scraper with soft 404 detection, JSON-LD extraction, minimum content length checks
+5. **AI analysis** -- Gemini generates all sections (company snapshot, match points, strategic brief, cover letter, presentation, fit score)
+6. **Cover letter tone switching** -- All 4 tones work, results cached in a Map ref
+7. **Interview prep flashcards** -- Toggle on/off, Q&A format
+8. **AI mock interview** -- Server-side question generation + answer evaluation, Pro/Premium gated
+9. **Dark/light theme** -- Full theme system via ThemeContext, persists in localStorage
+10. **Dark background CSS** -- `html, body { background: #0d0b1e; }` prevents white flash on results page
+
+---
+
+## What's Broken (THIS IS YOUR MAIN JOB)
+
+### The Token/Credit System
+
+The current implementation uses `credits_total` and `credits_used` fields. The problem: when a user upgrades plans, `credits_total` gets SET to a fixed value instead of ADDING tokens.
+
+**Current broken behavior:**
+- User signs up -> gets starter plan -> `credits_total = 10`, `credits_used = 0` -> 10 remaining (correct)
+- User runs 3 analyses (costs 9 credits) -> `credits_total = 10`, `credits_used = 9` -> 1 remaining (correct)
+- User upgrades to Pro -> webhook sets `credits_total = 30`, preserves `credits_used = 9` -> 21 remaining
+- **BUT**: the user expected to ADD 30 tokens to their remaining 1, giving them 31 total
+
+**Where the bug lives:**
+1. `api/stripe/webhook.ts` line 105: `credits_total: PLAN_CREDITS[plan] || 10` -- REPLACES instead of ADDS
+2. `api/stripe/sync.ts` line 123: `credits_total: newCreditsTotal` -- same bug, REPLACES instead of ADDS
+3. `api/stripe/checkout.ts` line 80-88: cancels existing subscription before creating new one, which can trigger `subscription.deleted` webhook that zeroes out credits
+
+**The user wants a complete rewrite. See `WALLET-SPEC.md` for the exact requirements.**
+
+### Additional Issues
+
+- Stripe checkout cancels the old subscription immediately (line 80-88 in checkout.ts), which fires a `subscription.deleted` webhook that can race with the `checkout.session.completed` webhook and zero out the user's credits
+- The sync endpoint (`api/stripe/sync.ts`) also replaces credits instead of adding
+- No purchase history -- user can't see what they bought or when
+
+---
+
+## Profile Schema (Supabase)
+
+```sql
+CREATE TABLE profiles (
+  id UUID PRIMARY KEY REFERENCES auth.users(id),
+  email TEXT NOT NULL,
+  full_name TEXT,
+  avatar_url TEXT,
+  plan TEXT NOT NULL DEFAULT 'starter',
+  credits_total INTEGER NOT NULL DEFAULT 10,
+  credits_used INTEGER NOT NULL DEFAULT 0,
+  stripe_customer_id TEXT,
+  stripe_subscription_id TEXT,
+  subscription_status TEXT DEFAULT 'inactive',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+```
+
+Auto-created on signup via `handle_new_user()` trigger. RLS enabled -- users can only access their own row.
+
+---
+
+## Credit Costs
+
+| Action | Credits |
+|--------|---------|
+| Full job analysis | 3 |
+| Cover letter tone rewrite | 1 |
+| Interview question generation | 2 |
+| Interview answer evaluation | 0 (free, but Pro/Premium only) |
+
+---
+
+## Plan Tiers
+
+| Plan | Credits Given | Price |
+|------|--------------|-------|
+| Starter | 10 | ~$5 |
+| Pro | 30 | ~$12 |
+| Premium | 60 | ~$20 |
+
+---
+
+## Environment Variables (Vercel)
+
+```
+# Supabase
+VITE_SUPABASE_URL=...
+VITE_SUPABASE_ANON_KEY=...
+SUPABASE_URL=...                    # Same as VITE_ version, for serverless functions
+SUPABASE_SERVICE_ROLE_KEY=...       # Service role key (server-side only)
+
+# Gemini
+VITE_GEMINI_API_KEY=...
+GEMINI_API_KEY=...                  # Same key, for serverless functions
+
+# Stripe
+VITE_STRIPE_PUBLISHABLE_KEY=...
+STRIPE_SECRET_KEY=...
+STRIPE_WEBHOOK_SECRET=...
+STRIPE_PRICE_STARTER=...           # (or STRIPE_STARTER_PRICE_ID)
+STRIPE_PRICE_PRO=...               # (or STRIPE_PRO_PRICE_ID)
+STRIPE_PRICE_PREMIUM=...           # (or STRIPE_PREMIUM_PRICE_ID)
+```
+
+---
+
+## Dev Commands
+
 ```bash
-# 1. Install dependencies
-npm install
-
-# 2. Create environment file
-echo "VITE_GEMINI_API_KEY=your_key_here" > .env
-
-# 3. Start dev server
-npm run dev
-# Opens at http://localhost:3000
+npm install          # Install dependencies
+npm run dev          # Dev server on http://localhost:3000
+npm run build        # Production build
+npx tsc --noEmit     # TypeScript check (MUST be clean)
 ```
 
----
-
-## Sharing the Project (Zip + Send)
-
-### What to send
-Do **NOT** include `node_modules/` — it's 300MB+. The recipient runs `npm install` to recreate it.
-
-**On Windows, to create a clean zip:**
-1. Open the project folder: `c:\Cloaude Logic\vantage-landing\`
-2. Select everything **except** `node_modules` and `public/frames`
-3. Right-click → "Compress to ZIP file"
-4. Send the ZIP
-
-**Or use terminal:**
-```bash
-cd "c:/Cloaude Logic"
-# This zips everything except node_modules and the large frames folder
-tar -czf vantage-landing.tar.gz --exclude="vantage-landing/node_modules" --exclude="vantage-landing/public/frames" vantage-landing/
-```
-
-### Recipient setup
-```bash
-# Unzip, then:
-cd vantage-landing
-npm install
-# Create .env with their own Gemini key
-echo "VITE_GEMINI_API_KEY=their_key_here" > .env
-npm run dev
-```
+Deployed on Vercel. Serverless functions are in `api/` directory, auto-deployed by Vercel.
 
 ---
 
-## Loading in a New VS Code
+## Critical Rules (READ THESE)
 
-1. Open VS Code
-2. File → Open Folder → select the `vantage-landing` folder
-3. Open terminal (Ctrl + `)
-4. `npm install` (first time only)
-5. `npm run dev`
-6. Install recommended extensions if prompted (ESLint, Tailwind CSS IntelliSense)
-
-### Recommended VS Code Extensions
-- **Tailwind CSS IntelliSense** — autocomplete for Tailwind classes
-- **ESLint** — catches TypeScript errors inline
-- **Prettier** — auto-formatting
+1. **Framer Motion import**: `import { motion } from 'motion/react'` -- NOT `framer-motion`
+2. **Gemini model string**: Must be `'models/gemini-2.5-flash'` (needs the `models/` prefix)
+3. **Gemini constraint**: `googleSearch` tool and `responseMimeType: 'application/json'` are MUTUALLY EXCLUSIVE. Never combine both.
+4. **Tailwind v4**: No `tailwind.config.js`. Uses `@import "tailwindcss"` in CSS.
+5. **CSS 3D transforms**: Tailwind v4 doesn't reliably apply `preserve-3d` and `backface-hidden`. Always use inline styles for 3D CSS.
+6. **Supabase auth deadlock**: The `onAuthStateChange` callback must NOT await Supabase DB queries. Profile fetch is deferred with a 50ms `setTimeout` to avoid internal lock conflicts. See `App.tsx` lines 76-91.
+7. **Always run `npx tsc --noEmit`** after any code changes and fix all errors before finishing.
+8. **Dark background**: `html, body { background: #0d0b1e; }` in `index.css` prevents white flash. Do not remove.
 
 ---
 
-## Starting a New Claude Agent on This Project
+## Deployment
 
-The file `CLAUDE.md` in the project root is specifically written for Claude. When you start a new session:
-
-1. Open Claude Code in the `vantage-landing` folder
-2. Claude will auto-read `CLAUDE.md` and have full context
-3. Or paste this at the start: *"Read CLAUDE.md first, then..."*
-
----
-
-## Architecture Overview
-
-```
-Landing Page (LandingPage.tsx)
-    ↓ user clicks "Get Started"
-Plan Picker (App.tsx → PlanPicker)
-    ↓ user selects plan
-Theme Picker (App.tsx → ThemePicker)  ← first-time only
-    ↓ user picks light/dark
-Tool Workspace (App.tsx → ToolWorkspace)
-    ↓ user uploads CV + job URL
-AI Processing (services/ai.ts → generateJobIntelligence)
-    ↓ Gemini API returns JSON
-Results View (App.tsx → ResultsView)
-    ├── CompanyIntelligenceCard
-    ├── RoleMatchCard
-    ├── StrategicBriefCard
-    ├── CoverLetterCard (with tone switcher)
-    ├── PresentationDeckCard
-    ├── FitScoreCard (Pro)
-    └── Interview Prep (Pro → UpgradeModal → InterviewPrep.tsx)
-```
+- **Frontend + API**: Vercel (single project, `vercel.json` routes API calls to serverless functions)
+- **Database**: Supabase (hosted PostgreSQL)
+- **Payments**: Stripe (test mode, `sk_test_` keys)
+- **Stripe webhook**: Must be configured in Stripe Dashboard to point to `https://your-domain.vercel.app/api/stripe/webhook`
 
 ---
 
-## Key Design Decisions
+## What's NOT Built Yet
 
-### Glassmorphic Design System
-All cards use: `bg-white/60 backdrop-blur-xl border border-white/50` on a coloured gradient background. Dark mode uses `bg-[#181530]/75 backdrop-blur-xl border border-white/[0.07]`.
-
-### Theme System
-Full light/dark mode via React Context (`ThemeContext.tsx`). Every component calls `const { t } = useTheme()` and uses `t.glass`, `t.text`, etc. Theme persists in `localStorage`.
-
-### Gemini + Google Search Constraint
-The Gemini API cannot use `googleSearch` tool AND `responseMimeType: 'application/json'` in the same call. The code uses a `useSearch` flag to choose one path or the other depending on whether a URL was provided.
-
-### No Backend
-Everything runs client-side. The Gemini API key is in `.env` (prefixed `VITE_` so Vite exposes it to the browser). This is fine for MVP/testing but should be moved server-side before public launch.
-
----
-
-## What Needs to Be Built Next
-
-### Phase 2 — Auth + Accounts (Supabase)
-- User signup / login
-- Save and retrieve past job analyses
-- User profile (CV storage)
-- Plan/tier management
-
-### Phase 3 — Payments (Stripe)
-- Pro plan subscription ($X/month)
-- Usage metering (analyses per month)
-- Stripe webhook to update user tier in Supabase
-
-### Phase 4 — Hosting (Vercel)
-- Deploy frontend to Vercel
-- Move Gemini API calls to Vercel Edge Functions (keeps API key server-side)
-- Custom domain
-
-### Phase 5 — Polish
-- Email onboarding flow
-- Analytics (Posthog or Mixpanel)
-- A/B test landing page hero copy
-- Mobile optimisation pass
-
----
-
-## File Responsibilities
-
-| File | Owns |
-|---|---|
-| `src/App.tsx` | All workspace state, results display, modals, theme picker, nav |
-| `src/components/LandingPage.tsx` | Landing page — hero, story section, features, pricing, FAQ |
-| `src/components/InterviewPrep.tsx` | Flashcard UI, Q&A display |
-| `src/components/AIInterviewSession.tsx` | Live mock interview with voice transcription |
-| `src/contexts/ThemeContext.tsx` | Light/dark theme — `buildStyles()`, `ThemeProvider`, `useTheme()` |
-| `src/services/ai.ts` | All Gemini API calls, response parsing, citation stripping |
-| `public/frames/` | 49 WebP frames from Compass Video (scroll animation, currently unused) |
-
----
-
-## Environment Variables
-
-| Variable | Purpose |
-|---|---|
-| `VITE_GEMINI_API_KEY` | Gemini API key — get free at aistudio.google.com |
-
----
-
-## Gemini API Notes
-
-- **Model:** `models/gemini-2.5-flash` (must include `models/` prefix)
-- **Free tier:** Generous — sufficient for development and testing
-- **Rate limits:** If you hit limits, add a delay between calls or upgrade to paid
-- **Grounding:** When `googleSearch` tool is used, responses may contain citation markers like `[1]` — the `stripCitations()` function handles this
-
----
-
-## Quick Reference — Things That Bit Us
-
-| Issue | Solution |
-|---|---|
-| Tailwind `preserve-3d` class not working | Use `style={{ transformStyle: 'preserve-3d' }}` inline |
-| Gemini returns `[CV, cite: 6]` in text | `stripCitations()` in `ai.ts` handles this |
-| `googleSearch` + `responseMimeType` conflict | Never use both — `useSearch` flag separates the paths |
-| Avira blocking `@react-three/drei` | Whitelist `node_modules` folder in Avira |
-| Dev server on wrong port | Check `vite.config.ts` — server runs on port 3000 |
+- Results persistence (analyses table exists but not wired up)
+- Email onboarding / transactional emails
+- Analytics
+- Mobile optimization pass
+- Real plan enforcement after wallet rewrite

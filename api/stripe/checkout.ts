@@ -8,11 +8,26 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '');
 const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || '';
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 
+const VALID_PLANS = ['starter', 'pro', 'premium'] as const;
+
 const PLAN_PRICES: Record<string, string> = {
-  'starter': process.env.STRIPE_PRICE_STARTER || process.env.STRIPE_STARTER_PRICE_ID || 'price_starter',
-  'pro': process.env.STRIPE_PRICE_PRO || process.env.STRIPE_PRO_PRICE_ID || 'price_pro',
-  'premium': process.env.STRIPE_PRICE_PREMIUM || process.env.STRIPE_PREMIUM_PRICE_ID || 'price_premium',
+  'starter': process.env.STRIPE_PRICE_STARTER || process.env.STRIPE_STARTER_PRICE_ID || '',
+  'pro': process.env.STRIPE_PRICE_PRO || process.env.STRIPE_PRO_PRICE_ID || '',
+  'premium': process.env.STRIPE_PRICE_PREMIUM || process.env.STRIPE_PREMIUM_PRICE_ID || '',
 };
+
+function getAllowedOrigin(requestOrigin: string | undefined): string {
+  const allowed = process.env.APP_URL || process.env.VERCEL_URL;
+  if (allowed) {
+    const origin = allowed.startsWith('http') ? allowed : `https://${allowed}`;
+    return origin.replace(/\/$/, '');
+  }
+  // Only trust request origin if it matches expected patterns
+  if (requestOrigin && /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(requestOrigin)) {
+    return requestOrigin;
+  }
+  return requestOrigin || '';
+}
 
 export default async function handler(request: any, response: any) {
   if (request.method !== 'POST') {
@@ -76,20 +91,20 @@ export default async function handler(request: any, response: any) {
       });
     }
 
-    // Cancel existing subscription if upgrading
-    if (currentProfile.stripe_subscription_id && currentProfile.subscription_status === 'active') {
-      try {
-        await stripe.subscriptions.cancel(currentProfile.stripe_subscription_id);
-        console.log(`Cancelled existing subscription ${currentProfile.stripe_subscription_id} for upgrade`);
-      } catch (cancelErr: any) {
-        // Already cancelled — proceed with new checkout
-        console.warn(`Could not cancel old subscription: ${cancelErr.message}`);
-      }
-    }
+    // Old subscription is cancelled by the webhook after checkout completes.
+    // Cancelling here races with the webhook and can zero out the user's tokens.
 
     const planKey = plan || 'starter';
-    const stripePriceId = priceId || PLAN_PRICES[planKey] || PLAN_PRICES.starter;
+    if (!VALID_PLANS.includes(planKey as any)) {
+      return response.status(400).json({ error: 'Invalid plan' });
+    }
 
+    const stripePriceId = PLAN_PRICES[planKey];
+    if (!stripePriceId) {
+      return response.status(500).json({ error: 'Plan pricing is not configured' });
+    }
+
+    const origin = getAllowedOrigin(request.headers.origin);
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       payment_method_types: ['card'],
@@ -100,8 +115,8 @@ export default async function handler(request: any, response: any) {
         },
       ],
       mode: 'subscription',
-      success_url: `${request.headers.origin}/dashboard?success=true`,
-      cancel_url: `${request.headers.origin}/dashboard?cancelled=true`,
+      success_url: `${origin}/dashboard?success=true`,
+      cancel_url: `${origin}/dashboard?cancelled=true`,
       metadata: {
         user_id: user.id,
         plan: planKey,
@@ -111,6 +126,6 @@ export default async function handler(request: any, response: any) {
     return response.status(200).json({ url: session.url });
   } catch (error: any) {
     console.error('Stripe checkout error:', error);
-    return response.status(500).json({ error: error.message || 'Failed to create checkout session' });
+    return response.status(500).json({ error: 'Failed to create checkout session' });
   }
 }

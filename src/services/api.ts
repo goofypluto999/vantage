@@ -18,9 +18,7 @@ interface AnalyzeResponse {
 
 interface CreditsResponse {
   success: boolean;
-  credits_total: number;
-  credits_used: number;
-  credits_remaining: number;
+  token_balance: number;
 }
 
 interface WaitlistResponse {
@@ -47,10 +45,18 @@ async function fetchWithAuth(endpoint: string, options: RequestInit = {}): Promi
   return response;
 }
 
+async function safeJson(response: Response): Promise<any> {
+  try {
+    return await response.json();
+  } catch {
+    return { error: 'Unexpected server response' };
+  }
+}
+
 export async function checkCredits(): Promise<CreditsResponse> {
   const response = await fetchWithAuth('/credits');
   if (!response.ok) {
-    const error = await response.json();
+    const error = await safeJson(response);
     throw new Error(error.message || 'Failed to check credits');
   }
   return response.json();
@@ -69,7 +75,7 @@ export async function analyzeJob(
   });
 
   if (!response.ok) {
-    const error = await response.json();
+    const error = await safeJson(response);
     return {
       success: false,
       error: error.error || error.message || 'Analysis failed',
@@ -122,7 +128,7 @@ export async function createStripeCheckout(plan: string): Promise<{ url: string 
   });
 
   if (!response.ok) {
-    const error = await response.json();
+    const error = await safeJson(response);
     throw new Error(error.error || error.message || 'Failed to create checkout session');
   }
 
@@ -135,7 +141,7 @@ export async function createBillingPortal(): Promise<{ url: string }> {
   });
 
   if (!response.ok) {
-    const error = await response.json();
+    const error = await safeJson(response);
     throw new Error(error.error || error.message || 'Failed to create billing portal session');
   }
 
@@ -164,7 +170,7 @@ export async function rewriteTone(
     body: JSON.stringify({ coverLetter, tone, roleContext }),
   });
   if (!response.ok) {
-    const error = await response.json();
+    const error = await safeJson(response);
     return { success: false, error: error.error || 'Failed to rewrite cover letter' };
   }
   return response.json();
@@ -172,13 +178,13 @@ export async function rewriteTone(
 
 export async function generateInterviewQuestions(
   roleContext: string
-): Promise<{ success: boolean; questions?: any[]; creditsRemaining?: number; error?: string }> {
+): Promise<{ success: boolean; questions?: any[]; token_balance?: number; error?: string }> {
   const response = await fetchWithAuth('/interview/questions', {
     method: 'POST',
     body: JSON.stringify({ roleContext }),
   });
   if (!response.ok) {
-    const error = await response.json();
+    const error = await safeJson(response);
     return { success: false, error: error.error || 'Failed to generate questions' };
   }
   return response.json();
@@ -195,7 +201,7 @@ export async function evaluateAnswer(
     body: JSON.stringify({ roleContext, question, category, answer }),
   });
   if (!response.ok) {
-    const error = await response.json();
+    const error = await safeJson(response);
     return { success: false, error: error.error || 'Failed to evaluate answer' };
   }
   return response.json();

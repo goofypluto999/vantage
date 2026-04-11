@@ -14,7 +14,7 @@
 - A presentation outline
 - An interview prep pack with flashcards + AI mock interview
 
-This is a **frontend-only MVP** with Gemini AI as the backend. No auth, no payments yet — those are the next phase.
+The app has a full backend: Supabase Auth, Stripe payments, and Vercel serverless API functions. See `HANDOFF.md` for current status and `WALLET-SPEC.md` for the token system rewrite spec.
 
 ---
 
@@ -27,6 +27,10 @@ This is a **frontend-only MVP** with Gemini AI as the backend. No auth, no payme
 | Animations | Framer Motion (`motion/react` import, NOT `framer-motion`) |
 | 3D (landing) | Three.js + `@react-three/fiber` + `@react-three/drei` |
 | AI | `@google/genai` SDK v1.29.0 — model: `models/gemini-2.5-flash` |
+| Auth | Supabase Auth (email + Google OAuth) |
+| Database | Supabase PostgreSQL with RLS |
+| Payments | Stripe (subscriptions via checkout sessions + webhooks) |
+| Backend | Vercel serverless functions (TypeScript, `api/` directory) |
 | Doc parsing | `mammoth` (DOCX → text, client-side) |
 | Speech | Web Speech API (`SpeechRecognition`) |
 | Icons | `lucide-react` |
@@ -41,25 +45,49 @@ This is a **frontend-only MVP** with Gemini AI as the backend. No auth, no payme
 ## File Structure
 
 ```
-vantage-landing/
+vantage/
+├── api/                               # Vercel serverless functions (backend)
+│   ├── analyze/index.ts               # URL scraping + Gemini analysis (3 credits)
+│   ├── credits/index.ts               # Credit balance check
+│   ├── rewrite-tone/index.ts          # Cover letter tone rewrite (1 credit)
+│   ├── interview/questions.ts         # Generate interview Qs (2 credits, Pro+)
+│   ├── interview/evaluate.ts          # Evaluate answers (free, Pro+)
+│   ├── stripe/checkout.ts             # Create Stripe checkout session
+│   ├── stripe/webhook.ts              # Stripe webhook handler
+│   ├── stripe/sync.ts                 # Fallback sync after checkout
+│   ├── stripe/portal.ts              # Billing portal session
+│   └── waitlist/index.ts              # Waitlist join/count
+├── database/
+│   └── schema.sql                     # Full Supabase schema (profiles, analyses, RLS)
 ├── src/
-│   ├── App.tsx                        # Main app shell, all workspace logic (~960 lines)
+│   ├── App.tsx                        # Auth context, routing, protected routes (~209 lines)
 │   ├── main.tsx                       # Entry point
-│   ├── index.css                      # Tailwind import + font imports
+│   ├── index.css                      # Tailwind import + design tokens
 │   ├── contexts/
 │   │   └── ThemeContext.tsx           # Light/dark theme system
-│   ├── components/
-│   │   ├── LandingPage.tsx            # Landing page (~996 lines)
-│   │   ├── InterviewPrep.tsx          # Flashcard + interview prep UI
-│   │   └── AIInterviewSession.tsx     # Live AI mock interview session
-│   └── services/
-│       └── ai.ts                      # All Gemini API calls (~289 lines)
-├── public/
-│   └── frames/                        # WebP frames for scroll video (49 frames, currently unused)
-├── index.html
+│   ├── lib/
+│   │   └── supabase.ts               # Supabase client, Profile type, auth/credit helpers
+│   ├── services/
+│   │   └── api.ts                     # All API calls with auth token injection (~206 lines)
+│   └── components/
+│       ├── Dashboard.tsx              # Main workspace (upload, results, credits) (~754 lines)
+│       ├── LandingPage.tsx            # Landing page (~996 lines)
+│       ├── AIInterviewSession.tsx     # Live AI mock interview session
+│       ├── InterviewPrep.tsx          # Flashcard UI
+│       ├── Account.tsx                # User account + subscription management
+│       ├── Pricing.tsx                # Pricing page with Stripe checkout
+│       ├── Login.tsx                  # Login form (email + Google OAuth)
+│       ├── Register.tsx               # Registration form
+│       ├── ForgotPassword.tsx         # Password reset request
+│       ├── ResetPassword.tsx          # Password reset form
+│       └── (legal pages, cookie consent, waitlist, demo)
+├── HANDOFF.md                         # What works, what's broken, env vars, deployment
+├── WALLET-SPEC.md                     # Token wallet rewrite specification
+├── FILE-MAP.md                        # Every file mapped with purpose
+├── AGENT-PROMPT.md                    # Starter prompt for new agents
+├── vercel.json                        # Vercel routing config
 ├── vite.config.ts
-├── package.json
-└── HANDOFF.md                         # Full project handoff document
+└── package.json
 ```
 
 ---
@@ -253,27 +281,30 @@ style={{ perspective: '1200px' }}                 // NOT className="perspective-
 
 ---
 
-## Environment Variable
+## Environment Variables
 
-The Gemini API key is set via `.env`:
+See `HANDOFF.md` for the full list. Key vars:
 ```
-VITE_GEMINI_API_KEY=your_key_here
-```
+# Supabase
+VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY
 
-Used in `ai.ts`:
-```typescript
-const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
+# Gemini
+VITE_GEMINI_API_KEY, GEMINI_API_KEY
+
+# Stripe
+VITE_STRIPE_PUBLISHABLE_KEY, STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET
+STRIPE_PRICE_STARTER, STRIPE_PRICE_PRO, STRIPE_PRICE_PREMIUM
 ```
 
 ---
 
-## What's NOT Built Yet (Next Phase)
+## What's NOT Built Yet
 
-- **Authentication** — Supabase (planned)
-- **Payments** — Stripe (planned)
-- **Hosting** — Vercel (planned)
-- **Database** — Results persistence
-- **Real plan enforcement** — Currently test mode bypasses Pro lock
+- **Token wallet rewrite** — See `WALLET-SPEC.md` (CRITICAL, current credit system is broken)
+- **Results persistence** — `analyses` table exists but not wired up to UI
+- **Email** — No onboarding or transactional emails
+- **Analytics** — No tracking
+- **Mobile optimization** — Needs a pass
 - **Email** — No email capture or comms
 
 ---

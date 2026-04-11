@@ -11,7 +11,7 @@ const COST = 2;
 
 async function getProfile(userId: string) {
   const res = await fetch(
-    `${SUPABASE_URL}/rest/v1/profiles?id=eq.${userId}&select=plan,credits_total,credits_used`,
+    `${SUPABASE_URL}/rest/v1/profiles?id=eq.${userId}&select=plan,token_balance`,
     {
       headers: {
         'apikey': SUPABASE_SERVICE_KEY,
@@ -24,18 +24,22 @@ async function getProfile(userId: string) {
   return profiles[0];
 }
 
-async function deductCredits(userId: string, currentUsed: number): Promise<void> {
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${userId}`, {
-    method: 'PATCH',
+async function deductTokens(userId: string): Promise<number> {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/deduct_tokens`, {
+    method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'apikey': SUPABASE_SERVICE_KEY,
       'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
-      'Prefer': 'return=minimal',
     },
-    body: JSON.stringify({ credits_used: (currentUsed ?? 0) + COST }),
+    body: JSON.stringify({ p_user_id: userId, p_amount: COST }),
   });
-  if (!res.ok) throw new Error('Failed to deduct credits');
+  if (!res.ok) {
+    const errText = await res.text();
+    if (errText.includes('Insufficient')) throw new Error('Insufficient tokens');
+    throw new Error('Failed to deduct tokens');
+  }
+  return res.json();
 }
 
 export default async function handler(request: any, response: any) {
@@ -68,9 +72,9 @@ export default async function handler(request: any, response: any) {
       return response.status(403).json({ error: 'AI Mock Interview requires a Pro or Premium plan' });
     }
 
-    const remaining = profile.credits_total - (profile.credits_used ?? 0);
-    if (remaining < COST) {
-      return response.status(403).json({ error: 'Insufficient credits', creditsRemaining: remaining });
+    const balance = profile.token_balance ?? 0;
+    if (balance < COST) {
+      return response.status(403).json({ error: 'Insufficient tokens', token_balance: balance });
     }
 
     const { roleContext } = request.body;
@@ -99,15 +103,16 @@ Only return the JSON array, no other text.`;
 
     const questions = JSON.parse(aiResponse.text);
 
-    await deductCredits(user.id, profile.credits_used ?? 0);
+    const newBalance = await deductTokens(user.id);
 
     return response.status(200).json({
       success: true,
       questions: questions.slice(0, 5),
-      creditsRemaining: remaining - COST,
+      token_balance: newBalance,
     });
   } catch (error: any) {
     console.error('Interview questions error:', error);
-    return response.status(500).json({ error: error.message || 'Failed to generate questions' });
+    const msg = error.message?.includes('Insufficient') ? error.message : 'Failed to generate questions';
+    return response.status(500).json({ error: msg });
   }
 }
