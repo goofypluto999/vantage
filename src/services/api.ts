@@ -3,7 +3,9 @@ import { supabase } from '../lib/supabase';
 const API_BASE = import.meta.env.VITE_API_URL || '/api';
 
 interface AnalyzeRequest {
-  cvText: string;
+  cvText?: string;
+  cvBase64?: string;
+  cvMimeType?: string;
   jobUrl: string;
   jobDescText?: string;
   includeFitScore?: boolean;

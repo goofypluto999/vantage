@@ -274,7 +274,9 @@ async function generateJobIntelligence(
   cvText: string,
   jobUrl: string,
   jobDescText: string | null,
-  includeFitScore: boolean
+  includeFitScore: boolean,
+  cvBase64?: string,
+  cvMimeType?: string
 ): Promise<JobIntelligence> {
   // CRITICAL: Scrape the job URL to get actual job description text.
   // Gemini's googleSearch tool does NOT visit URLs — it only searches Google.
@@ -365,7 +367,11 @@ Requirements:
 - coverLetter: 3 paragraphs, tailored to company brand voice${includeFitScore ? '\n- cvFitScore: integer 0-100\n- cvFitSummary: 2 sentences' : ''}
 - presentation: exactly 6 slides`;
 
-  const cvPart = { text: `[CV / Resume]\n${cvText}` };
+  // PDF: send as inline data (Gemini parses PDFs natively — better than text extraction)
+  // Text/DOCX: already extracted to clean text by the client
+  const cvPart = cvBase64 && cvMimeType
+    ? { inlineData: { data: cvBase64, mimeType: cvMimeType } }
+    : { text: `[CV / Resume]\n${cvText}` };
   const parts: any[] = [{ text: prompt }, cvPart];
   if (hasJobDesc) parts.push({ text: `[Job Description — scraped from ${jobUrl}]\n${fullJobDesc}` });
 
@@ -468,19 +474,27 @@ export default async function handler(request: any, response: any) {
     const jobUrl = formData.jobUrl || '';
     const includeFitScore = formData.includeFitScore === true || formData.includeFitScore === 'true';
     const cvText = formData.cvText || '';
+    const cvBase64 = formData.cvBase64 || '';
+    const cvMimeType = formData.cvMimeType || '';
     const jobDescText = formData.jobDescText || null;
 
+    if (!cvText && !cvBase64) {
+      return response.status(400).json({ error: 'CV content is required' });
+    }
     if (jobUrl && !isUrlSafe(jobUrl)) {
       return response.status(400).json({ error: 'Invalid job URL' });
     }
-    if (cvText.length > 50000) {
-      return response.status(400).json({ error: 'CV text is too long (max 50,000 characters)' });
+    if (cvText && cvText.length > 200000) {
+      return response.status(400).json({ error: 'CV text is too long' });
     }
-    if (jobDescText && jobDescText.length > 50000) {
-      return response.status(400).json({ error: 'Job description is too long (max 50,000 characters)' });
+    if (cvBase64 && cvBase64.length > 10000000) {
+      return response.status(400).json({ error: 'CV file is too large (max ~7MB)' });
+    }
+    if (jobDescText && jobDescText.length > 200000) {
+      return response.status(400).json({ error: 'Job description is too long' });
     }
 
-    const results = await generateJobIntelligence(cvText, jobUrl, jobDescText, includeFitScore);
+    const results = await generateJobIntelligence(cvText, jobUrl, jobDescText, includeFitScore, cvBase64, cvMimeType);
 
     const newBalance = await deductTokens(user.id, COST_PER_ANALYSIS);
     await saveAnalysis(user.id, jobUrl, results, COST_PER_ANALYSIS);

@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import {
   Upload, Link as LinkIcon, FileText, Loader2, Sparkles, ChevronRight,
   LogOut, CreditCard, Zap, Crown, Star, Settings, Check,
-  Mic, BookOpen, Lock, RefreshCw
+  Mic, BookOpen, Lock, RefreshCw, ClipboardPaste, Type
 } from 'lucide-react';
 import { useAuth } from '../App';
 import { getCreditsRemaining, hasCredits } from '../lib/supabase';
@@ -49,6 +49,8 @@ export default function Dashboard() {
   const [cvFile, setCvFile] = useState<File | null>(null);
   const [jobUrl, setJobUrl] = useState('');
   const [jobDescFile, setJobDescFile] = useState<File | null>(null);
+  const [jobDescText, setJobDescText] = useState('');
+  const [jdMode, setJdMode] = useState<'file' | 'text'>('file');
   const [error, setError] = useState('');
   const [results, setResults] = useState<any>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -72,6 +74,7 @@ export default function Dashboard() {
   const handleStart = async () => {
     if (!cvFile) { setError('Please upload your CV'); return; }
     if (!jobUrl) { setError('Please add a job URL'); return; }
+    if (cvFile.size > 5 * 1024 * 1024) { setError('CV file is too large (max 5MB)'); return; }
     if (!canAnalyze) {
       setError('Not enough tokens. Buy more to continue!');
       return;
@@ -81,18 +84,50 @@ export default function Dashboard() {
     setStep('processing');
 
     try {
-      const cvText = await cvFile.text();
+      // Smart file extraction: PDF → base64 (Gemini parses natively), DOCX → mammoth, TXT → raw text
+      const fileName = cvFile.name.toLowerCase();
+      let cvTextContent: string | undefined;
+      let cvBase64: string | undefined;
+      let cvMimeType: string | undefined;
 
-      let jobDescText: string | undefined;
-      if (jobDescFile) {
-        jobDescText = await jobDescFile.text();
+      if (fileName.endsWith('.pdf') || cvFile.type === 'application/pdf') {
+        const buffer = await cvFile.arrayBuffer();
+        const bytes = new Uint8Array(buffer);
+        let binary = '';
+        for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+        cvBase64 = btoa(binary);
+        cvMimeType = 'application/pdf';
+      } else if (fileName.endsWith('.docx') || cvFile.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+        const mammoth = await import('mammoth');
+        const buffer = await cvFile.arrayBuffer();
+        const { value } = await mammoth.extractRawText({ arrayBuffer: buffer });
+        cvTextContent = value;
+      } else {
+        cvTextContent = await cvFile.text();
+      }
+
+      let jdText: string | undefined;
+      if (jdMode === 'file' && jobDescFile) {
+        const jdName = jobDescFile.name.toLowerCase();
+        if (jdName.endsWith('.docx') || jobDescFile.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+          const mammoth = await import('mammoth');
+          const buffer = await jobDescFile.arrayBuffer();
+          const { value } = await mammoth.extractRawText({ arrayBuffer: buffer });
+          jdText = value;
+        } else {
+          jdText = await jobDescFile.text();
+        }
+      } else if (jdMode === 'text' && jobDescText.trim()) {
+        jdText = jobDescText.trim();
       }
 
       const result = await analyzeJob(
         {
-          cvText,
+          cvText: cvTextContent,
+          cvBase64,
+          cvMimeType,
           jobUrl,
-          jobDescText,
+          jobDescText: jdText,
           includeFitScore: true,
         },
         (msg) => console.log(msg)
@@ -369,32 +404,68 @@ export default function Dashboard() {
                   </div>
                 </div>
 
-                {/* Job Description Upload */}
-                <div
-                  className="p-6 rounded-2xl border-2 border-dashed border-white/10 bg-white/5 hover:border-white/20 transition-all cursor-pointer"
-                  onClick={() => jdInputRef.current?.click()}
-                >
-                  <input
-                    ref={jdInputRef}
-                    type="file"
-                    accept=".pdf,.doc,.docx,.txt"
-                    className="hidden"
-                    onChange={(e) => e.target.files?.[0] && setJobDescFile(e.target.files[0])}
-                  />
-                  <div className="text-center">
-                    {jobDescFile ? (
-                      <>
-                        <FileText className="w-8 h-8 text-emerald-400 mx-auto mb-2" />
-                        <p className="text-white font-semibold text-sm truncate">{jobDescFile.name}</p>
-                      </>
-                    ) : (
-                      <>
-                        <FileText className="w-8 h-8 text-white/30 mx-auto mb-2" />
-                        <p className="text-white/50 text-sm">Job Description</p>
-                        <p className="text-white/30 text-xs">Optional</p>
-                      </>
-                    )}
+                {/* Job Description — File or Paste */}
+                <div className="p-4 rounded-2xl border-2 border-dashed border-white/10 bg-white/5">
+                  <div className="flex items-center gap-1 mb-3">
+                    <button
+                      onClick={() => setJdMode('file')}
+                      className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold transition-all ${jdMode === 'file' ? 'bg-violet-600/30 text-violet-300' : 'text-white/40 hover:text-white/60'}`}
+                    >
+                      <Upload className="w-3 h-3" /> File
+                    </button>
+                    <button
+                      onClick={() => setJdMode('text')}
+                      className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold transition-all ${jdMode === 'text' ? 'bg-violet-600/30 text-violet-300' : 'text-white/40 hover:text-white/60'}`}
+                    >
+                      <Type className="w-3 h-3" /> Paste
+                    </button>
+                    <span className="text-white/20 text-xs ml-auto">Optional</span>
                   </div>
+                  {jdMode === 'file' ? (
+                    <div
+                      className="cursor-pointer text-center"
+                      onClick={() => jdInputRef.current?.click()}
+                    >
+                      <input
+                        ref={jdInputRef}
+                        type="file"
+                        accept=".pdf,.doc,.docx,.txt"
+                        className="hidden"
+                        onChange={(e) => e.target.files?.[0] && setJobDescFile(e.target.files[0])}
+                      />
+                      {jobDescFile ? (
+                        <>
+                          <FileText className="w-6 h-6 text-emerald-400 mx-auto mb-1" />
+                          <p className="text-white font-semibold text-xs truncate">{jobDescFile.name}</p>
+                        </>
+                      ) : (
+                        <>
+                          <FileText className="w-6 h-6 text-white/30 mx-auto mb-1" />
+                          <p className="text-white/50 text-xs">Upload JD</p>
+                        </>
+                      )}
+                    </div>
+                  ) : (
+                    <div>
+                      <textarea
+                        value={jobDescText}
+                        onChange={(e) => setJobDescText(e.target.value)}
+                        placeholder="Paste job description here..."
+                        className="w-full h-20 bg-transparent text-white placeholder-white/30 outline-none text-xs resize-none"
+                      />
+                      <button
+                        onClick={async () => {
+                          try {
+                            const text = await navigator.clipboard.readText();
+                            if (text) setJobDescText(text);
+                          } catch { /* clipboard access denied */ }
+                        }}
+                        className="flex items-center gap-1 px-2 py-1 rounded-md bg-white/5 hover:bg-white/10 text-white/50 hover:text-white/70 text-xs transition-all"
+                      >
+                        <ClipboardPaste className="w-3 h-3" /> Paste
+                      </button>
+                    </div>
+                  )}
                 </div>
 
                 {/* Job URL */}
