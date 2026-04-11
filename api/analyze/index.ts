@@ -35,25 +35,52 @@ async function scrapeJobUrl(url: string): Promise<string | null> {
     'Referer': 'https://www.google.com/',
   };
 
-  // Try direct fetch first
+  // Layer 1: Direct fetch
   let html = await fetchPage(url, headers);
-
-  // If blocked, try Jina Reader API as fallback
-  if (!html) {
-    try {
-      const jinaRes = await fetch(`https://r.jina.ai/${url}`, {
-        headers: { 'Accept': 'text/plain', 'X-No-Cache': 'true' },
-        signal: AbortSignal.timeout(15000),
-      });
-      if (jinaRes.ok) {
-        const text = await jinaRes.text();
-        if (text.length > 200 && !text.includes('returned error')) return text.slice(0, 8000);
-      }
-    } catch { /* Jina failed, continue */ }
+  if (html) {
+    const text = extractTextFromHtml(html);
+    if (text && text.length > 200) return text;
   }
 
-  if (!html) return null;
-  return extractTextFromHtml(html);
+  // Layer 2: Jina Reader (renders JavaScript, handles SPAs)
+  try {
+    const jinaRes = await fetch(`https://r.jina.ai/${url}`, {
+      headers: {
+        'Accept': 'text/plain',
+        'X-No-Cache': 'true',
+        'X-Return-Format': 'text',
+      },
+      signal: AbortSignal.timeout(20000),
+    });
+    if (jinaRes.ok) {
+      const text = await jinaRes.text();
+      if (text.length > 200 && !text.includes('returned error')) return text.slice(0, 12000);
+    }
+  } catch { /* Jina failed, continue */ }
+
+  // Layer 3: Google webcache
+  try {
+    const cacheUrl = `https://webcache.googleusercontent.com/search?q=cache:${encodeURIComponent(url)}`;
+    const cacheHtml = await fetchPage(cacheUrl, headers);
+    if (cacheHtml) {
+      const text = extractTextFromHtml(cacheHtml);
+      if (text && text.length > 200) return text;
+    }
+  } catch { /* Cache failed, continue */ }
+
+  // Layer 4: Jina Search (searches Google for the URL and extracts the top result)
+  try {
+    const searchRes = await fetch(`https://s.jina.ai/${encodeURIComponent(url)}`, {
+      headers: { 'Accept': 'text/plain' },
+      signal: AbortSignal.timeout(15000),
+    });
+    if (searchRes.ok) {
+      const text = await searchRes.text();
+      if (text.length > 200) return text.slice(0, 12000);
+    }
+  } catch { /* Jina search failed, continue */ }
+
+  return null;
 }
 
 async function fetchPage(url: string, headers: Record<string, string>): Promise<string | null> {
@@ -154,6 +181,7 @@ function stripHtmlTags(html: string): string {
 interface JobIntelligence {
   companySnapshot?: {
     name?: string;
+    nameConfidence?: string;
     industry?: string;
     founded?: string;
     size?: string;
@@ -289,7 +317,7 @@ async function generateJobIntelligence(
       if (scrapedJobText) {
         console.log(`Scraped ${scrapedJobText.length} chars from job URL`);
       } else {
-        console.warn('URL scrape returned no content — will rely on googleSearch only');
+        console.warn('All 4 scraping layers failed — will use Gemini pre-flight to identify job');
       }
     } catch (err: any) {
       console.warn('URL scrape failed:', err.message);
@@ -299,27 +327,65 @@ async function generateJobIntelligence(
   // If scraping returned content but it looks like a generic job board page
   // (mentions the board name but no specific job title), discard it
   if (scrapedJobText && jobUrl) {
-    const urlHost = new URL(jobUrl).hostname.replace('www.', '').split('.')[0]; // e.g. "adzuna", "indeed", "reed"
+    const urlHost = new URL(jobUrl).hostname.replace('www.', '').split('.')[0];
     const lowerText = scrapedJobText.toLowerCase();
     const hasJobTitle = /job title:|position:|role:/i.test(scrapedJobText);
     const hasCompanyField = /company:|hiring organization:|employer:/i.test(scrapedJobText);
-    // If text mentions the board name prominently but has no job-specific fields, it's likely the board's own page
     if (!hasJobTitle && !hasCompanyField && lowerText.split(urlHost).length > 3) {
-      console.warn(`Scraped text mentions "${urlHost}" ${lowerText.split(urlHost).length - 1} times but has no job fields — discarding as job board page`);
+      console.warn(`Scraped text looks like job board page — discarding`);
       scrapedJobText = null;
     }
   }
 
-  // Merge scraped content with any user-provided JD text
-  const fullJobDesc = [scrapedJobText, jobDescText].filter(Boolean).join('\n\n---\n\n');
+  // FALLBACK: When scraping fails, use a dedicated Gemini googleSearch call
+  // to identify the ACTUAL job details from the URL BEFORE running the full analysis.
+  // This prevents hallucination by verifying facts first.
+  let preflightJobInfo: string | null = null;
+  if (!scrapedJobText && !jobDescText && jobUrl) {
+    console.log('Running pre-flight Gemini call to identify job details from URL...');
+    try {
+      const preflightPrompt = `I need you to find the EXACT job listing at this URL: ${jobUrl}
+
+Search for this specific job posting. Extract and return ONLY these facts in plain text:
+- COMPANY: the exact name of the hiring company (NOT the job board)
+- TITLE: the exact job title
+- LOCATION: where the job is based
+- KEY REQUIREMENTS: the top 5 requirements listed
+- DESCRIPTION SUMMARY: a 2-3 sentence summary of the role
+
+Rules:
+- If the job board is a platform like Indeed, Reed, SpaceCareers.uk, LinkedIn, etc. — the company is the EMPLOYER, not the platform
+- If you cannot find the specific listing, say "LISTING NOT FOUND" and provide whatever partial info you can verify
+- Do NOT guess or infer — only report what you actually find`;
+
+      const preflightRes = await ai.models.generateContent({
+        model: 'models/gemini-2.5-flash',
+        contents: [{ parts: [{ text: preflightPrompt }] }],
+        config: { tools: [{ googleSearch: {} }] },
+      });
+
+      if (preflightRes.text && preflightRes.text.length > 50) {
+        preflightJobInfo = preflightRes.text;
+        console.log(`Pre-flight identified job: ${preflightJobInfo.slice(0, 200)}...`);
+      }
+    } catch (err: any) {
+      console.warn('Pre-flight Gemini call failed:', err.message);
+    }
+  }
+
+  // Merge all available job info: scraped content + user JD + pre-flight results
+  const allJobInfo = [scrapedJobText, jobDescText, preflightJobInfo].filter(Boolean);
+  const fullJobDesc = allJobInfo.join('\n\n---\n\n');
   const hasJobDesc = fullJobDesc.length > 50;
   const useSearch = Boolean(jobUrl);
+  const dataSource = scrapedJobText ? 'scraped' : jobDescText ? 'user-provided' : preflightJobInfo ? 'gemini-preflight' : 'none';
 
   const jsonShape = `{
     "companySnapshot": {
-      "name": "<company name>",
+      "name": "<company name — EXACT name from job description, or 'Unknown' if not found>",
+      "nameConfidence": "<high | medium | low — high = found explicitly in JD text, medium = inferred from context, low = guessed>",
       "industry": "<industry/sector>",
-      "founded": "<founding year if findable, else null>",
+      "founded": "<founding year if VERIFIED, else null>",
       "size": "<approximate headcount or band, e.g. '500–2000 employees', else null>",
       "mission": "<one concise sentence capturing company mission>",
       "cultureSignals": ["<culture trait 1>", "<culture trait 2>", "<culture trait 3>"],
@@ -338,33 +404,55 @@ async function generateJobIntelligence(
     "presentation": [{"title":"...","content":"..."}]
   }`;
 
-  const prompt = `You are an expert career coach and corporate strategist.
+  const prompt = `You are a brutally honest career analyst. No sugar-coating, no dopamine-pushing, no flattery. Clinical accuracy only.
 
-I am providing my CV${hasJobDesc ? ' and the FULL JOB DESCRIPTION (scraped from the original listing)' : ''}.${jobUrl ? ` Target role/company URL: ${jobUrl}` : ''}
+I am providing my CV${hasJobDesc ? ' and job description data' : ''}.${jobUrl ? ` Target role/company URL: ${jobUrl}` : ''}
 
-${hasJobDesc ? 'IMPORTANT: The job description below was scraped directly from the job listing URL. Use it as your PRIMARY source for the company name, role title, requirements, and responsibilities. Do NOT guess or infer a different company — use EXACTLY the company mentioned in the job description.' : ''}
-${useSearch ? 'Use web search to deeply research the company mentioned in the job description — find additional context like founding year, approximate headcount, mission, recent news, product launches, culture, leadership, and brand voice.' : ''}
+DATA SOURCE: ${dataSource === 'scraped' ? 'Job description was scraped directly from the listing URL — treat this as reliable primary data.' : dataSource === 'user-provided' ? 'Job description was provided by the user — treat as reliable.' : dataSource === 'gemini-preflight' ? 'WARNING: Direct scraping of the job URL FAILED (JS-rendered or blocked site). The job info below was obtained via a separate Google Search verification step. Cross-check carefully — do NOT add details not present in the pre-flight data.' : 'WARNING: No job description data could be obtained. You MUST use web search to find this specific job listing. If you cannot find it, set company name to "Unknown — listing not accessible" and be explicit about what you could not verify.'}
+
+COMPANY NAME RULES (CRITICAL — ZERO TOLERANCE FOR ERRORS):
+- Extract the EXACT hiring company name from the job description data provided below
+- The job may be posted on a job board (e.g. Indeed, Reed, SpaceCareers.uk, LinkedIn) — the job board is NOT the employer
+- Look for "Company:", "Employer:", "About [Company]", "Who we are", or the company name in the job title
+- If the JD mentions a recruiter posting for a client, identify the ACTUAL end employer
+- If you genuinely cannot determine the company name, set name to "Unknown — not found in listing"
+- NEVER guess or hallucinate a company name. Getting the company wrong is the worst possible error.
+${useSearch ? '\nUse web search to research the company ONLY AFTER you have identified it from the job data. Search for: founding year, headcount, mission, recent news. If you could not identify the company, search using the job URL and any partial info you have.' : ''}
+
+FOUNDED DATE RULES:
+- Only include a founding year if you found it from a reliable source (company website, Wikipedia, the JD itself)
+- If uncertain, set founded to null — do NOT guess
+
 Cross-reference my CV with the role requirements${useSearch ? ' and live company context' : ''}.
 
 Return ONLY valid JSON in exactly this shape (no markdown, no explanation):
 ${jsonShape}
 
 Requirements:
-- companySnapshot.name: the official company name (extract from the job description text, NOT guessed)
+- companySnapshot.name: the EXACT employer name from the job description (NOT the job board name, NOT guessed)
 - companySnapshot.industry: the company's primary industry or sector
-- companySnapshot.founded: the year the company was founded (from web search or JD), or null
-- companySnapshot.size: approximate headcount band (e.g. "500–2,000 employees") from web search or JD, or null
-- companySnapshot.mission: one punchy sentence capturing the company's core purpose
-- companySnapshot.cultureSignals: 3 specific culture traits observable from the company
-- companySnapshot.recentHighlights: 2 recent, specific company news items or strategic initiatives
+- companySnapshot.founded: verified founding year ONLY — null if uncertain
+- companySnapshot.size: approximate headcount from reliable sources — null if unknown
+- companySnapshot.mission: one sentence capturing the company's core purpose
+- companySnapshot.cultureSignals: 3 specific culture traits (not generic like "teamwork" — cite evidence)
+- companySnapshot.recentHighlights: 2 recent, specific, VERIFIED company news items (not fabricated)
 - briefSections.companyContext: company background, market position, goals, culture
-- briefSections.roleRequirements: decode what the role TRULY needs beyond the JD
-- briefSections.cvAlignment: cite SPECIFIC achievements from the CV and map them to specific role requirements
-- briefSections.narrativeAngle: the compelling story thread that makes this candidate the obvious choice
-- keyRequirements: 4 specific skills/experiences the role demands
-- cvMatchPoints: 4 specific pieces of CV evidence matching each requirement
+- briefSections.roleRequirements: decode what the role TRULY needs beyond the JD — be specific about technical skills, clearances, or qualifications that are non-negotiable
+- briefSections.cvAlignment: cite SPECIFIC achievements from the CV that map to requirements. Be honest — if the CV lacks direct experience in a required area, say so explicitly
+- briefSections.narrativeAngle: the positioning angle. If the candidate is a weak fit, acknowledge this and suggest the strongest possible angle despite the gaps
+- keyRequirements: 4 specific skills/experiences the role demands (include hard requirements like certifications, clearances, years of experience)
+- cvMatchPoints: 4 CV evidence points. If the CV doesn't match a requirement, write "NO DIRECT MATCH — [closest transferable skill]" instead of fabricating a match
 - strategicBrief: all 4 brief sections combined as 4 paragraphs
-- coverLetter: 3 paragraphs, tailored to company brand voice${includeFitScore ? '\n- cvFitScore: integer 0-100\n- cvFitSummary: 2 sentences' : ''}
+- coverLetter: 3 paragraphs, tailored to company brand voice. Even if fit is low, write the best possible letter${includeFitScore ? `
+- cvFitScore: integer 0-100 using this STRICT calibration:
+  90-100 = Perfect match (meets ALL requirements, direct industry experience, exact skills)
+  75-89 = Strong match (meets most requirements, relevant industry, minor gaps)
+  60-74 = Moderate match (meets some requirements, transferable skills, notable gaps)
+  40-59 = Weak match (few direct matches, mostly transferable skills, major gaps)
+  20-39 = Poor match (different industry/skillset, significant retraining needed)
+  0-19 = No match (completely unrelated background)
+  Be HARSH. A marketing professional applying to a defence engineering role is NOT an 88. Score what the CV ACTUALLY demonstrates vs what the role ACTUALLY requires. Do not inflate scores to be encouraging.
+- cvFitSummary: 2 sentences. First sentence: what matches. Second sentence: what's missing or weak. Be direct.` : ''}
 - presentation: exactly 6 slides`;
 
   // PDF: send as inline data (Gemini parses PDFs natively — better than text extraction)
@@ -373,10 +461,15 @@ Requirements:
     ? { inlineData: { data: cvBase64, mimeType: cvMimeType } }
     : { text: `[CV / Resume]\n${cvText}` };
   const parts: any[] = [{ text: prompt }, cvPart];
-  if (hasJobDesc) parts.push({ text: `[Job Description — scraped from ${jobUrl}]\n${fullJobDesc}` });
+  if (hasJobDesc) {
+    const sourceLabel = dataSource === 'scraped' ? 'scraped from listing'
+      : dataSource === 'user-provided' ? 'provided by user'
+      : 'obtained via Google Search verification';
+    parts.push({ text: `[Job Description — ${sourceLabel}]\n${fullJobDesc}` });
+  }
 
-  // When we have scraped job content, use JSON mode (reliable structured output).
-  // Only use googleSearch when scraping failed and we need Gemini to find info.
+  // When we have job content (from any source), use JSON mode for reliable structured output.
+  // Only use googleSearch when ALL data sources failed and we need Gemini to find the listing itself.
   const useGoogleSearch = useSearch && !hasJobDesc;
 
   const callGemini = async () => {
@@ -430,6 +523,27 @@ Requirements:
       content: stripCitations(s.content),
     }));
   }
+
+  // POST-GENERATION VALIDATION: catch common hallucination patterns
+  if (parsed.companySnapshot?.name) {
+    const name = parsed.companySnapshot.name.toLowerCase();
+    // Check if Gemini returned a job board name instead of the actual employer
+    const jobBoards = ['indeed', 'reed', 'linkedin', 'glassdoor', 'spacecareers', 'totaljobs', 'cwjobs', 'monster', 'adzuna', 'jobsite'];
+    const isJobBoard = jobBoards.some(board => name.includes(board));
+    if (isJobBoard && jobUrl) {
+      console.warn(`POST-VALIDATION: Company name "${parsed.companySnapshot.name}" looks like a job board — flagging`);
+      parsed.companySnapshot.name = `${parsed.companySnapshot.name} (may be incorrect — this is the job board, not the employer)`;
+      (parsed.companySnapshot as any).nameConfidence = 'low';
+    }
+    // Check if name is very generic or suspiciously short
+    if (name.length < 3 || name === 'company' || name === 'employer') {
+      parsed.companySnapshot.name = 'Unknown — could not identify employer';
+      (parsed.companySnapshot as any).nameConfidence = 'low';
+    }
+  }
+
+  // Add data source metadata to response
+  (parsed as any)._dataSource = dataSource;
 
   return parsed;
 }
