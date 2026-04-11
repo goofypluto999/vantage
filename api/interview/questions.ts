@@ -81,6 +81,9 @@ export default async function handler(request: any, response: any) {
     if (!roleContext) {
       return response.status(400).json({ error: 'roleContext is required' });
     }
+    if (roleContext.length > 2000) {
+      return response.status(400).json({ error: 'Role context is too long' });
+    }
 
     const prompt = `You are an expert interview coach preparing a candidate for the following role:
 "${roleContext}"
@@ -111,7 +114,7 @@ Only return the JSON array, no other text.`;
       token_balance: newBalance,
     });
   } catch (error: any) {
-    console.error('Interview questions error:', error);
+    console.error('Interview questions error:', error?.message || 'Unknown error');
     const msg = error.message?.includes('Insufficient') ? error.message : 'Failed to generate questions';
     return response.status(500).json({ error: msg });
   }

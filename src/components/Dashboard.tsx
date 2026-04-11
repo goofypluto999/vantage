@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   Upload, Link as LinkIcon, FileText, Loader2, Sparkles, ChevronRight,
-  User, LogOut, CreditCard, Plus, Zap, Crown, Star, Settings, Check,
+  LogOut, CreditCard, Zap, Crown, Star, Settings, Check,
   Mic, BookOpen, Lock, RefreshCw
 } from 'lucide-react';
 import { useAuth } from '../App';

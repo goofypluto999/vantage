@@ -53,6 +53,9 @@ export default async function handler(request: any, response: any) {
       }
     );
 
+    if (!profileRes.ok) {
+      return response.status(500).json({ error: 'Failed to load profile' });
+    }
     const profiles = await profileRes.json();
     if (!profiles.length || !profiles[0].stripe_customer_id) {
       return response.status(200).json({ synced: false, reason: 'No Stripe customer' });
@@ -166,7 +169,7 @@ export default async function handler(request: any, response: any) {
       tokens_added: tokensToAdd,
     });
   } catch (error: any) {
-    console.error('Sync error:', error);
+    console.error('Sync error:', error?.message || 'Unknown error');
     return response.status(500).json({ error: 'Sync failed' });
   }
 }

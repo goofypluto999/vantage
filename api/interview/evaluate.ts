@@ -41,6 +41,9 @@ export default async function handler(request: any, response: any) {
         },
       }
     );
+    if (!profileRes.ok) {
+      return response.status(500).json({ error: 'Failed to load profile' });
+    }
     const profiles = await profileRes.json();
     if (!profiles?.length) return response.status(404).json({ error: 'Profile not found' });
 
@@ -54,6 +57,12 @@ export default async function handler(request: any, response: any) {
     }
     if (answer.length > 5000) {
       return response.status(400).json({ error: 'Answer is too long (max 5,000 characters)' });
+    }
+    if (question.length > 2000) {
+      return response.status(400).json({ error: 'Question is too long' });
+    }
+    if (roleContext && roleContext.length > 2000) {
+      return response.status(400).json({ error: 'Role context is too long' });
     }
 
     const prompt = `You are an expert interview coach evaluating a candidate's answer.
@@ -88,7 +97,7 @@ Return only the JSON object, no other text.`;
       evaluation,
     });
   } catch (error: any) {
-    console.error('Interview evaluate error:', error);
+    console.error('Interview evaluate error:', error?.message || 'Unknown error');
     return response.status(500).json({ error: 'Failed to evaluate answer' });
   }
 }

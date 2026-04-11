@@ -68,6 +68,9 @@ export default async function handler(request: any, response: any) {
       }
     );
 
+    if (!profileRes.ok) {
+      return response.status(500).json({ error: 'Failed to load profile' });
+    }
     const profiles = await profileRes.json();
     const currentProfile = profiles[0] || {};
     let customerId = currentProfile.stripe_customer_id;
@@ -125,7 +128,7 @@ export default async function handler(request: any, response: any) {
 
     return response.status(200).json({ url: session.url });
   } catch (error: any) {
-    console.error('Stripe checkout error:', error);
+    console.error('Stripe checkout error:', error?.message || 'Unknown error');
     return response.status(500).json({ error: 'Failed to create checkout session' });
   }
 }

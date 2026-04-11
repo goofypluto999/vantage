@@ -71,7 +71,7 @@ export default async function handler(request: any, response: any) {
 
     return response.status(200).json({ url: session.url });
   } catch (error) {
-    console.error('Stripe portal error:', error);
+    console.error('Stripe portal error:', (error as any)?.message || 'Unknown error');
     return response.status(500).json({ error: 'Failed to create billing portal session' });
   }
 }

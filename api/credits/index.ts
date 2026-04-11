@@ -52,7 +52,7 @@ export default async function handler(request: any, response: any) {
       token_balance: profile.token_balance ?? 0,
     });
   } catch (error) {
-    console.error('Credits error:', error);
+    console.error('Credits error:', (error as any)?.message || 'Unknown error');
     return response.status(500).json({ error: 'Internal server error' });
   }
 }

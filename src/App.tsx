@@ -1,6 +1,5 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
-import { AnimatePresence, motion } from 'motion/react';
 import { supabase, signOut, fetchProfile, Profile } from './lib/supabase';
 import { createStripeCheckout } from './services/api';
 import LandingPage from './components/LandingPage';
@@ -15,7 +14,7 @@ import PrivacyPolicy from './components/PrivacyPolicy';
 import TermsOfService from './components/TermsOfService';
 import CookiePolicy from './components/CookiePolicy';
 import Account from './components/Account';
-import ThemeProvider, { useTheme } from './contexts/ThemeContext';
+import ThemeProvider from './contexts/ThemeContext';
 
 interface AuthContextType {
   user: any;
@@ -202,6 +201,27 @@ function PricingWrapper() {
   );
 }
 
+class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean }> {
+  state = { hasError: false };
+  static getDerivedStateFromError() { return { hasError: true }; }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0d0b1e', color: '#fff', fontFamily: 'sans-serif' }}>
+          <div style={{ textAlign: 'center' }}>
+            <h1 style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>Something went wrong</h1>
+            <p style={{ color: '#a0a0b0', marginBottom: '1rem' }}>Please refresh the page to try again.</p>
+            <button onClick={() => window.location.reload()} style={{ padding: '0.5rem 1.5rem', borderRadius: '0.5rem', background: '#7c3aed', color: '#fff', border: 'none', cursor: 'pointer' }}>
+              Refresh
+            </button>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 export default function App() {
-  return <AppContent />;
+  return <ErrorBoundary><AppContent /></ErrorBoundary>;
 }

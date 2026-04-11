@@ -19,6 +19,7 @@ async function getTokenBalance(userId: string): Promise<number> {
       },
     }
   );
+  if (!res.ok) return 0;
   const profiles = await res.json();
   if (!profiles || profiles.length === 0) return 0;
   return profiles[0].token_balance ?? 0;
@@ -74,6 +75,12 @@ export default async function handler(request: any, response: any) {
     if (!coverLetter || !tone) {
       return response.status(400).json({ error: 'coverLetter and tone are required' });
     }
+    if (coverLetter.length > 10000) {
+      return response.status(400).json({ error: 'Cover letter text is too long' });
+    }
+    if (roleContext && roleContext.length > 2000) {
+      return response.status(400).json({ error: 'Role context is too long' });
+    }
 
     const prompt = `Rewrite this cover letter in a ${tone} tone. Keep the same factual content and structure but adjust the voice and style.
 
@@ -96,10 +103,6 @@ Return ONLY the rewritten cover letter text, no explanation or preamble.`;
 
     if (!aiResponse.text) throw new Error('No response from AI');
 
-    if (coverLetter.length > 10000) {
-      return response.status(400).json({ error: 'Cover letter text is too long' });
-    }
-
     const newBalance = await deductTokens(user.id);
 
     return response.status(200).json({
@@ -108,7 +111,7 @@ Return ONLY the rewritten cover letter text, no explanation or preamble.`;
       token_balance: newBalance,
     });
   } catch (error: any) {
-    console.error('Rewrite tone error:', error);
+    console.error('Rewrite tone error:', error?.message || 'Unknown error');
     const msg = error.message?.includes('Insufficient') ? error.message : 'Failed to rewrite cover letter';
     return response.status(500).json({ error: msg });
   }

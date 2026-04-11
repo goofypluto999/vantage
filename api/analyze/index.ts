@@ -186,6 +186,7 @@ async function getTokenBalance(userId: string): Promise<number> {
       },
     }
   );
+  if (!res.ok) return 0;
   const profiles = await res.json();
   if (!profiles || profiles.length === 0) return 0;
   return profiles[0].token_balance ?? 0;
@@ -490,7 +491,7 @@ export default async function handler(request: any, response: any) {
       token_balance: newBalance,
     });
   } catch (error: any) {
-    console.error('Analysis error:', error);
+    console.error('Analysis error:', error?.message || 'Unknown error');
     const msg = error.message?.includes('Insufficient') ? error.message : 'Analysis failed';
     return response.status(500).json({ error: msg });
   }
