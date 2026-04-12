@@ -356,8 +356,8 @@ export default function Dashboard() {
             )}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {PLANS.map((plan) => {
-                const isCurrentPlan = !plan.isTopup && profile?.plan === plan.name.toLowerCase();
                 const hasActiveSub = profile?.subscription_status === 'active' || profile?.subscription_status === 'cancelling';
+                const isCurrentPlan = !plan.isTopup && profile?.plan === plan.name.toLowerCase() && hasActiveSub;
                 return (
                   <div
                     key={plan.name}
