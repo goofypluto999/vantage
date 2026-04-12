@@ -83,14 +83,18 @@ export default async function handler(request: any, response: any) {
   let event: Stripe.Event;
 
   try {
+    const isDeployed = process.env.VERCEL || process.env.NODE_ENV === 'production';
+
     if (sig && webhookSecret) {
+      // Always verify signature when both are present
       event = stripe.webhooks.constructEvent(request.body, sig, webhookSecret);
-    } else if (process.env.NODE_ENV !== 'production') {
-      // Only accept unsigned events in local development
-      console.warn('Webhook: accepting unsigned event (development mode only)');
+    } else if (!isDeployed && !webhookSecret) {
+      // ONLY accept unsigned events in local development without a secret configured
+      console.warn('Webhook: accepting unsigned event (local development only)');
       event = request.body as Stripe.Event;
     } else {
-      console.error('Webhook: rejecting unsigned event in production');
+      // Reject in all deployed environments (production + preview)
+      console.error('Webhook: rejecting unsigned event in deployed environment');
       return response.status(400).json({ error: 'Webhook signature verification required' });
     }
   } catch (err) {
@@ -160,16 +164,70 @@ export default async function handler(request: any, response: any) {
         if (profiles.length > 0) {
           const profile = profiles[0];
 
-          if (profile.stripe_subscription_id && profile.stripe_subscription_id !== subscription.id) {
-            break; // Ignore events for old subscriptions
-          }
-
-          const status = subscription.status === 'active' ? 'active' :
+          const status = subscription.cancel_at_period_end ? 'cancelling' :
+                        subscription.status === 'active' ? 'active' :
                         subscription.status === 'canceled' ? 'cancelled' : 'past_due';
 
-          await supabasePatch(`id=eq.${profile.id}`, {
+          // Derive plan from the subscription's price
+          const priceId = subscription.items?.data[0]?.price?.id;
+          const plan = priceId ? getPlanFromPriceId(priceId) : undefined;
+
+          const patch: Record<string, any> = {
             subscription_status: status,
-          });
+            stripe_subscription_id: subscription.id,
+          };
+          if (plan) patch.plan = plan;
+
+          await supabasePatch(`id=eq.${profile.id}`, patch);
+        }
+        break;
+      }
+
+      case 'charge.refunded': {
+        const charge = event.data.object as Stripe.Charge;
+        const customerId = charge.customer as string;
+        if (!customerId) break;
+
+        const profiles = await supabaseGet(
+          `stripe_customer_id=eq.${customerId}&select=id,plan,token_balance`
+        );
+
+        if (profiles.length > 0) {
+          const profile = profiles[0];
+          const planTokens = PLAN_TOKENS[profile.plan] || 10;
+
+          // Determine how many tokens to deduct based on refund amount
+          // Full refund: deduct full plan tokens. Partial: deduct proportionally.
+          const totalPaid = charge.amount; // in pence
+          const refunded = charge.amount_refunded; // in pence
+          const refundRatio = totalPaid > 0 ? refunded / totalPaid : 1;
+          const tokensToDeduct = Math.round(planTokens * refundRatio);
+
+          // Only deduct if user has tokens remaining (can't go negative — DB constraint)
+          if (tokensToDeduct > 0 && profile.token_balance > 0) {
+            const safeDeduct = Math.min(tokensToDeduct, profile.token_balance);
+            try {
+              const deductRes = await fetch(`${SUPABASE_URL}/rest/v1/rpc/deduct_tokens`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'apikey': SUPABASE_SERVICE_KEY,
+                  'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+                },
+                body: JSON.stringify({ p_user_id: profile.id, p_amount: safeDeduct }),
+              });
+              if (deductRes.ok) {
+                console.log(`Refund: deducted ${safeDeduct} tokens from user ${profile.id}`);
+              }
+            } catch (err: any) {
+              console.error(`Refund: failed to deduct tokens: ${err.message}`);
+            }
+          }
+
+          // If full refund, cancel the subscription status
+          if (refundRatio >= 1) {
+            await supabasePatch(`id=eq.${profile.id}`, { subscription_status: 'cancelled' });
+          }
         }
         break;
       }
@@ -185,8 +243,9 @@ export default async function handler(request: any, response: any) {
         if (profiles.length > 0) {
           const profile = profiles[0];
 
+          // Only act on the current or matching subscription
           if (profile.stripe_subscription_id && profile.stripe_subscription_id !== subscription.id) {
-            break; // Ignore events for old subscriptions
+            break;
           }
 
           // Only update status — tokens are kept (user paid for them)

@@ -6,7 +6,7 @@ const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 export type Plan = 'starter' | 'pro' | 'premium';
-export type SubscriptionStatus = 'inactive' | 'active' | 'cancelled' | 'past_due';
+export type SubscriptionStatus = 'inactive' | 'active' | 'cancelling' | 'cancelled' | 'past_due';
 
 export interface Profile {
   id: string;
@@ -87,6 +87,20 @@ export function subscribeToAuthChanges(callback: (event: string, session: Sessio
 export async function getCurrentUser(): Promise<User | null> {
   const { data: { user } } = await supabase.auth.getUser();
   return user;
+}
+
+export function mapAuthError(rawMessage: string): string {
+  const m = rawMessage.toLowerCase();
+  if (m.includes('invalid login credentials')) return 'Incorrect email or password. Please try again.';
+  if (m.includes('email not confirmed')) return 'Please check your email and confirm your account before signing in.';
+  if (m.includes('user already registered')) return 'An account with this email already exists. Try signing in instead.';
+  if (m.includes('signup is not allowed') || m.includes('signups not allowed')) return 'New registrations are temporarily disabled. Please try again later.';
+  if (m.includes('password') && m.includes('too short')) return 'Password must be at least 6 characters.';
+  if (m.includes('password') && m.includes('weak')) return 'Password is too weak. Use a mix of letters, numbers, and symbols.';
+  if (m.includes('rate limit') || m.includes('too many requests')) return 'Too many attempts. Please wait a moment and try again.';
+  if (m.includes('email') && m.includes('invalid')) return 'Please enter a valid email address.';
+  if (m.includes('network') || m.includes('fetch')) return 'Connection error. Please check your internet and try again.';
+  return 'Something went wrong. Please try again.';
 }
 
 export async function fetchProfile(userId: string): Promise<Profile | null> {

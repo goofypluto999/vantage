@@ -123,6 +123,18 @@ export async function getWaitlistCount(): Promise<number> {
   return 0;
 }
 
+function validateStripeUrl(url: string): string {
+  const TRUSTED_PREFIXES = [
+    'https://checkout.stripe.com/',
+    'https://billing.stripe.com/',
+    'https://invoice.stripe.com/',
+  ];
+  if (!TRUSTED_PREFIXES.some(prefix => url.startsWith(prefix))) {
+    throw new Error('Invalid redirect URL');
+  }
+  return url;
+}
+
 export async function createStripeCheckout(plan: string): Promise<{ url: string }> {
   const response = await fetchWithAuth('/stripe/checkout', {
     method: 'POST',
@@ -134,7 +146,8 @@ export async function createStripeCheckout(plan: string): Promise<{ url: string 
     throw new Error(error.error || error.message || 'Failed to create checkout session');
   }
 
-  return response.json();
+  const result = await response.json();
+  return { url: validateStripeUrl(result.url) };
 }
 
 export async function createBillingPortal(): Promise<{ url: string }> {
@@ -147,7 +160,8 @@ export async function createBillingPortal(): Promise<{ url: string }> {
     throw new Error(error.error || error.message || 'Failed to create billing portal session');
   }
 
-  return response.json();
+  const result = await response.json();
+  return { url: validateStripeUrl(result.url) };
 }
 
 export async function syncSubscription(): Promise<{ synced: boolean; plan?: string; credits_remaining?: number }> {
@@ -211,4 +225,20 @@ export async function evaluateAnswer(
 
 export async function logout(): Promise<void> {
   await fetchWithAuth('/auth/logout', { method: 'POST' });
+}
+
+export async function fetchAdminDashboard(): Promise<any> {
+  const response = await fetchWithAuth('/admin/dashboard');
+  if (!response.ok) {
+    const error = await safeJson(response);
+    throw new Error(error.error || 'Admin access denied');
+  }
+  return response.json();
+}
+
+export async function fetchAnalysisHistory(): Promise<any[]> {
+  const response = await fetchWithAuth('/analyses');
+  if (!response.ok) return [];
+  const result = await response.json();
+  return result.analyses || [];
 }

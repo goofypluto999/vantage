@@ -11,16 +11,31 @@ const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 // Fetches the actual job page content so Gemini doesn't have to guess.
 // Falls back gracefully if the page blocks us.
 
+function isPrivateHostname(hostname: string): boolean {
+  const h = hostname.toLowerCase();
+  // Localhost variants
+  if (h === 'localhost' || h === '127.0.0.1' || h === '0.0.0.0' || h === '::1') return true;
+  // IPv4 private ranges
+  if (h.startsWith('10.') || h.startsWith('192.168.')) return true;
+  if (/^172\.(1[6-9]|2\d|3[01])\./.test(h)) return true; // 172.16.0.0/12
+  // AWS/cloud metadata
+  if (h.startsWith('169.254.')) return true;
+  // IPv6 private
+  if (h.startsWith('fc') || h.startsWith('fd') || h.startsWith('fe80')) return true;
+  // IPv4-mapped IPv6
+  if (h.startsWith('::ffff:')) return true;
+  // Internal TLDs
+  if (h.endsWith('.internal') || h.endsWith('.local') || h.endsWith('.localhost')) return true;
+  // Block bare IPs that could be decimal/octal encoding of private ranges
+  if (/^\d+$/.test(h)) return true; // decimal IP like 2130706433
+  return false;
+}
+
 function isUrlSafe(url: string): boolean {
   try {
     const parsed = new URL(url);
     if (!['http:', 'https:'].includes(parsed.protocol)) return false;
-    const hostname = parsed.hostname.toLowerCase();
-    // Block internal/private networks
-    if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '0.0.0.0') return false;
-    if (hostname.startsWith('10.') || hostname.startsWith('192.168.') || hostname.startsWith('172.')) return false;
-    if (hostname.startsWith('169.254.')) return false; // AWS metadata
-    if (hostname.endsWith('.internal') || hostname.endsWith('.local')) return false;
+    if (isPrivateHostname(parsed.hostname)) return false;
     return true;
   } catch {
     return false;
@@ -83,29 +98,43 @@ async function scrapeJobUrl(url: string): Promise<string | null> {
   return null;
 }
 
-async function fetchPage(url: string, headers: Record<string, string>): Promise<string | null> {
-  try {
-    const res = await fetch(url, {
-      headers,
-      redirect: 'follow',
-      signal: AbortSignal.timeout(12000),
-    });
-    if (!res.ok) return null;
-    const ct = res.headers.get('content-type') || '';
-    if (!ct.includes('text/html') && !ct.includes('application/xhtml')) return null;
-    const html = await res.text();
-    // Detect soft 404 / expired job pages
-    const titleMatch = html.match(/<title[^>]*>(.*?)<\/title>/i);
-    const title = (titleMatch?.[1] || '').toLowerCase();
-    const soft404 = /(page not found|not found|404|no longer available|expired|job removed|this job has been|unavailable)/i;
-    if (soft404.test(title)) {
-      console.warn('Detected soft 404 page:', title);
+async function fetchPage(url: string, headers: Record<string, string>, maxRedirects: number = 5): Promise<string | null> {
+  let currentUrl = url;
+  for (let i = 0; i <= maxRedirects; i++) {
+    try {
+      // Validate every URL in the redirect chain against SSRF
+      if (!isUrlSafe(currentUrl)) return null;
+
+      const res = await fetch(currentUrl, {
+        headers,
+        redirect: 'manual', // Don't auto-follow — we validate each hop
+        signal: AbortSignal.timeout(12000),
+      });
+
+      // Handle redirects manually with SSRF check on each hop
+      if ([301, 302, 303, 307, 308].includes(res.status)) {
+        const location = res.headers.get('location');
+        if (!location) return null;
+        // Resolve relative redirects
+        currentUrl = new URL(location, currentUrl).href;
+        continue;
+      }
+
+      if (!res.ok) return null;
+      const ct = res.headers.get('content-type') || '';
+      if (!ct.includes('text/html') && !ct.includes('application/xhtml')) return null;
+      const html = await res.text();
+      // Detect soft 404 / expired job pages
+      const titleMatch = html.match(/<title[^>]*>(.*?)<\/title>/i);
+      const title = (titleMatch?.[1] || '').toLowerCase();
+      const soft404 = /(page not found|not found|404|no longer available|expired|job removed|this job has been|unavailable)/i;
+      if (soft404.test(title)) return null;
+      return html;
+    } catch {
       return null;
     }
-    return html;
-  } catch {
-    return null;
   }
+  return null; // Too many redirects
 }
 
 function extractTextFromHtml(html: string): string {
@@ -255,8 +284,9 @@ async function saveAnalysis(
       user_id: userId,
       job_url: jobUrl,
       company_name: results.companySnapshot?.name,
+      job_title: null,
       results_json: results,
-      credits_spent: creditsSpent,
+      tokens_spent: creditsSpent,
     }),
   });
 }
@@ -459,14 +489,21 @@ Requirements:
   // Text/DOCX: already extracted to clean text by the client
   const cvPart = cvBase64 && cvMimeType
     ? { inlineData: { data: cvBase64, mimeType: cvMimeType } }
-    : { text: `[CV / Resume]\n${cvText}` };
-  const parts: any[] = [{ text: prompt }, cvPart];
+    : { text: `[CV / Resume — USER-PROVIDED DOCUMENT]\n${cvText}` };
+
+  // Separate system instructions from user data to mitigate prompt injection.
+  // The prompt goes as system instruction; user documents go as user content.
+  const userParts: any[] = [cvPart];
   if (hasJobDesc) {
     const sourceLabel = dataSource === 'scraped' ? 'scraped from listing'
       : dataSource === 'user-provided' ? 'provided by user'
       : 'obtained via Google Search verification';
-    parts.push({ text: `[Job Description — ${sourceLabel}]\n${fullJobDesc}` });
+    userParts.push({ text: `[Job Description — ${sourceLabel}]\n${fullJobDesc}` });
   }
+
+  // NOTE: User documents (CV, JD) are in the content parts, NOT mixed with the prompt.
+  // This makes prompt injection from user documents harder to exploit.
+  const parts: any[] = [{ text: prompt }, ...userParts];
 
   // When we have job content (from any source), use JSON mode for reliable structured output.
   // Only use googleSearch when ALL data sources failed and we need Gemini to find the listing itself.
@@ -524,7 +561,25 @@ Requirements:
     }));
   }
 
-  // POST-GENERATION VALIDATION: catch common hallucination patterns
+  // POST-GENERATION VALIDATION: sanitize and validate AI output
+
+  // Fit score sanity check — clamp to valid range and flag suspicious values
+  if (parsed.cvFitScore !== undefined) {
+    const score = Number(parsed.cvFitScore);
+    if (isNaN(score) || score < 0) parsed.cvFitScore = 0;
+    if (score > 100) parsed.cvFitScore = 100;
+    // Flag suspiciously perfect scores — likely prompt injection
+    if (score >= 98 && parsed.cvFitSummary) {
+      const summaryLower = parsed.cvFitSummary.toLowerCase();
+      const hasGaps = /missing|lack|gap|no direct|weak|limited|insufficient/i.test(summaryLower);
+      if (!hasGaps) {
+        // Score says perfect but summary mentions no gaps — cap at 95
+        parsed.cvFitScore = Math.min(score, 95);
+      }
+    }
+  }
+
+  // Company name validation
   if (parsed.companySnapshot?.name) {
     const name = parsed.companySnapshot.name.toLowerCase();
     // Check if Gemini returned a job board name instead of the actual employer

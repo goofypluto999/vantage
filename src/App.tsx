@@ -14,6 +14,7 @@ import PrivacyPolicy from './components/PrivacyPolicy';
 import TermsOfService from './components/TermsOfService';
 import CookiePolicy from './components/CookiePolicy';
 import Account from './components/Account';
+import Admin from './components/Admin';
 import ThemeProvider from './contexts/ThemeContext';
 
 interface AuthContextType {
@@ -129,6 +130,11 @@ function AppContent() {
             <Route path="/account" element={
               <ProtectedRoute>
                 <Account />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin" element={
+              <ProtectedRoute>
+                <Admin />
               </ProtectedRoute>
             } />
             <Route path="*" element={<Navigate to="/" replace />} />

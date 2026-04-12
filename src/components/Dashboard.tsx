@@ -7,9 +7,72 @@ import {
   Mic, BookOpen, Lock, RefreshCw, ClipboardPaste, Type
 } from 'lucide-react';
 import { useAuth } from '../App';
-import { getCreditsRemaining, hasCredits } from '../lib/supabase';
-import { analyzeJob, createStripeCheckout, syncSubscription, rewriteTone } from '../services/api';
+import { supabase, getCreditsRemaining, hasCredits } from '../lib/supabase';
+import { analyzeJob, createStripeCheckout, syncSubscription, rewriteTone, fetchAnalysisHistory } from '../services/api';
 import AIInterviewSession from './AIInterviewSession';
+
+function AnalysisHistory({ onLoad }: { onLoad: (data: any) => void }) {
+  const [history, setHistory] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [loadingId, setLoadingId] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchAnalysisHistory()
+      .then(setHistory)
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
+
+  const handleLoad = async (id: string) => {
+    setLoadingId(id);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      if (!token) return;
+      const res = await fetch(`/api/analyses/${id}`, {
+        headers: { 'Authorization': `Bearer ${token}` },
+      });
+      if (res.ok) {
+        const { analysis } = await res.json();
+        if (analysis?.results_json) onLoad(analysis.results_json);
+      }
+    } catch { /* ignore */ }
+    finally { setLoadingId(null); }
+  };
+
+  if (loading) return null;
+  if (history.length === 0) return null;
+
+  return (
+    <div className="mt-8">
+      <h3 className="text-lg font-display font-bold text-white mb-3">Past Analyses</h3>
+      <div className="space-y-2">
+        {history.slice(0, 10).map((a: any) => (
+          <button
+            key={a.id}
+            onClick={() => handleLoad(a.id)}
+            disabled={loadingId !== null}
+            className="w-full flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors text-left disabled:opacity-50"
+          >
+            <div className="min-w-0 flex-1">
+              <span className="text-white text-sm font-medium truncate block">{a.company_name || 'Unknown Company'}</span>
+              <span className="text-white/30 text-xs">
+                {new Date(a.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
+              </span>
+            </div>
+            <div className="flex-shrink-0 ml-3">
+              {loadingId === a.id ? (
+                <Loader2 className="w-4 h-4 text-violet-400 animate-spin" />
+              ) : (
+                <ChevronRight className="w-4 h-4 text-white/30" />
+              )}
+            </div>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 const PLANS = [
   { name: 'Starter', price: 5, tokens: 10, color: '#6B6B8D', icon: Zap, features: ['10 tokens', 'Strategic Brief', 'Cover Letter', 'Interview Pack'] },
@@ -23,12 +86,15 @@ export default function Dashboard() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [checkoutSuccess, setCheckoutSuccess] = useState(false);
 
-  // Retry profile load if null on mount
+  // Sync subscription state from Stripe on every mount, then refresh profile
   useEffect(() => {
     if (user && !profile) {
       refreshProfile();
     }
-  }, [user, profile]);
+    if (user && profile?.stripe_subscription_id) {
+      syncSubscription().then(() => refreshProfile()).catch(() => {});
+    }
+  }, [user]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Handle post-checkout return — sync from Stripe then refresh profile
   useEffect(() => {
@@ -273,10 +339,14 @@ export default function Dashboard() {
       {!checkoutSuccess && (
         <div className="max-w-5xl mx-auto px-6 pt-6">
           <div className="p-6 rounded-2xl bg-gradient-to-r from-violet-600/10 to-purple-600/10 border border-violet-500/20">
-            {profile?.subscription_status === 'active' ? (
+            {profile?.subscription_status === 'active' || profile?.subscription_status === 'cancelling' ? (
               <>
                 <h2 className="text-lg font-display font-bold text-white mb-1">Your Plan</h2>
-                <p className="text-white/50 text-sm mb-5">Manage your subscription or buy more tokens.</p>
+                <p className="text-white/50 text-sm mb-5">
+                  {profile?.subscription_status === 'cancelling'
+                    ? 'Your subscription will end at the end of the billing period. Tokens are kept.'
+                    : 'Manage your subscription or buy more tokens.'}
+                </p>
               </>
             ) : (
               <>
@@ -307,10 +377,16 @@ export default function Dashboard() {
                     <div className="text-2xl font-bold text-white my-1">{'\u00A3'}{plan.price}<span className="text-sm text-white/40 font-normal">/mo</span></div>
                     <div className="text-xs text-white/50 mb-3">{plan.tokens} tokens</div>
                     {isCurrentPlan ? (
-                      <div className="w-full py-2 rounded-lg text-sm font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center gap-1.5">
-                        <Check className="w-4 h-4" />
-                        Subscribed
-                      </div>
+                      profile?.subscription_status === 'cancelling' ? (
+                        <div className="w-full py-2 rounded-lg text-sm font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center gap-1.5">
+                          Cancelling
+                        </div>
+                      ) : (
+                        <div className="w-full py-2 rounded-lg text-sm font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center gap-1.5">
+                          <Check className="w-4 h-4" />
+                          Subscribed
+                        </div>
+                      )
                     ) : (
                       <button
                         onClick={() => handleCheckout(plan.name.toLowerCase())}
@@ -493,6 +569,9 @@ export default function Dashboard() {
                 <span className="text-white/60 text-sm font-normal ml-1">(3 tokens)</span>
                 <ChevronRight className="w-5 h-5" />
               </button>
+
+              {/* Analysis History */}
+              <AnalysisHistory onLoad={(data: any) => { setResults(data); setStep('results'); }} />
             </motion.div>
           )}
 

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { Mail, Lock, Eye, EyeOff, ArrowRight, ArrowLeft, BrainCircuit, Chrome } from 'lucide-react';
-import { signIn, signInWithGoogle } from '../lib/supabase';
+import { signIn, signInWithGoogle, mapAuthError } from '../lib/supabase';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -21,7 +21,7 @@ export default function Login() {
       await signIn(email, password);
       navigate('/dashboard');
     } catch (err: any) {
-      setError(err.message || 'Invalid email or password');
+      setError(mapAuthError(err.message || ''));
     } finally {
       setLoading(false);
     }
@@ -33,7 +33,7 @@ export default function Login() {
     try {
       await signInWithGoogle();
     } catch (err: any) {
-      setError(err.message || 'Failed to sign in with Google');
+      setError(mapAuthError(err.message || ''));
       setLoading(false);
     }
   };

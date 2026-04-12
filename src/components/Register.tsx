@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { Mail, Lock, User, Eye, EyeOff, ArrowRight, ArrowLeft, BrainCircuit, Chrome, Check } from 'lucide-react';
-import { signUp, signInWithGoogle } from '../lib/supabase';
+import { signUp, signInWithGoogle, mapAuthError } from '../lib/supabase';
 
 const PLANS = [
   { name: 'Starter', price: 5, tokens: 10, color: '#6B6B8D' },
@@ -29,11 +29,7 @@ export default function Register() {
       await signUp(email, password, name);
       setSuccess(true);
     } catch (err: any) {
-      if (err.message.includes('User already registered')) {
-        setError('An account with this email already exists. Try logging in.');
-      } else {
-        setError(err.message || 'Failed to create account');
-      }
+      setError(mapAuthError(err.message || ''));
     } finally {
       setLoading(false);
     }
@@ -45,7 +41,7 @@ export default function Register() {
     try {
       await signInWithGoogle();
     } catch (err: any) {
-      setError(err.message || 'Failed to sign in with Google');
+      setError(mapAuthError(err.message || ''));
       setLoading(false);
     }
   };
