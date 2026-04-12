@@ -107,10 +107,20 @@ export default async function handler(request: any, response: any) {
       case 'checkout.session.completed': {
         const session = event.data.object as Stripe.Checkout.Session;
         const userId = session.metadata?.user_id;
+        const isTopup = session.metadata?.type === 'topup' || session.mode === 'payment';
         const newSubscriptionId = session.subscription as string;
 
         if (!userId) break;
 
+        if (isTopup) {
+          // ONE-TIME TOP-UP (Starter): just add tokens, don't touch plan/subscription
+          const topupTokens = PLAN_TOKENS['starter'] || 10;
+          await addTokensAtomic(userId, topupTokens);
+          console.log(`Webhook: top-up of ${topupTokens} tokens for user ${userId}`);
+          break;
+        }
+
+        // SUBSCRIPTION CHECKOUT (Pro/Premium)
         const profiles = await supabaseGet(`id=eq.${userId}&select=stripe_subscription_id`);
         const current = profiles[0];
 
@@ -130,7 +140,7 @@ export default async function handler(request: any, response: any) {
         }
 
         // Derive plan from the actual Stripe subscription price, not user-controlled metadata
-        let plan = session.metadata?.plan || 'starter';
+        let plan = session.metadata?.plan || 'pro';
         if (newSubscriptionId) {
           try {
             const sub = await stripe.subscriptions.retrieve(newSubscriptionId);

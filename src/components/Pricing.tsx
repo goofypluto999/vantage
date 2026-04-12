@@ -16,8 +16,9 @@ const PLANS = [
     tokens: 10,
     color: '#6B6B8D',
     icon: Zap,
+    isTopup: true,
     features: [
-      '10 job analyses per month',
+      '10 tokens (one-time top-up)',
       'Company intelligence',
       'Strategic brief',
       'Cover letter generation',
@@ -31,8 +32,9 @@ const PLANS = [
     tokens: 30,
     color: '#4F46E5',
     icon: Star,
+    isTopup: false,
     features: [
-      '30 job analyses per month',
+      '30 tokens per month',
       'Everything in Starter',
       'AI Mock Interview (voice)',
       'STAR interview stories',
@@ -46,8 +48,9 @@ const PLANS = [
     tokens: 60,
     color: '#7C3AED',
     icon: Crown,
+    isTopup: false,
     features: [
-      '60 job analyses per month',
+      '60 tokens per month',
       'Everything in Pro',
       'CV Fit Score Analysis',
       'Presentation Deck Builder',
@@ -131,7 +134,7 @@ export default function Pricing({ onLogin, onRegister, onCheckout, isAuthenticat
 
                 <div className="mb-6">
                   <span className="text-4xl font-bold text-white">£{plan.price}</span>
-                  <span className="text-white/50">/month</span>
+                  <span className="text-white/50">{plan.isTopup ? ' one-time' : '/month'}</span>
                 </div>
 
                 <ul className="space-y-3 mb-8">
@@ -151,7 +154,7 @@ export default function Pricing({ onLogin, onRegister, onCheckout, isAuthenticat
                       : 'bg-white/10 text-white hover:bg-white/20'
                   }`}
                 >
-                  {isAuthenticated ? 'Subscribe' : 'Get Started'} <ArrowRight className="w-5 h-5" />
+                  {isAuthenticated ? (plan.isTopup ? 'Buy Tokens' : 'Subscribe') : 'Get Started'} <ArrowRight className="w-5 h-5" />
                 </button>
               </motion.div>
             );

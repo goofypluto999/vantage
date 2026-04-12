@@ -4,10 +4,11 @@ import { motion } from 'motion/react';
 import { Mail, Lock, User, Eye, EyeOff, ArrowRight, ArrowLeft, BrainCircuit, Chrome, Check } from 'lucide-react';
 import { signUp, signInWithGoogle, mapAuthError } from '../lib/supabase';
 
+// Plans shown for reference on the register page
 const PLANS = [
-  { name: 'Starter', price: 5, tokens: 10, color: '#6B6B8D' },
-  { name: 'Pro', price: 12, tokens: 30, color: '#4F46E5' },
-  { name: 'Premium', price: 20, tokens: 60, color: '#7C3AED' },
+  { name: 'Top Up', price: 5, tokens: 10, color: '#6B6B8D', label: 'one-time' },
+  { name: 'Pro', price: 12, tokens: 30, color: '#4F46E5', label: '/month' },
+  { name: 'Premium', price: 20, tokens: 60, color: '#7C3AED', label: '/month' },
 ];
 
 export default function Register() {
@@ -18,7 +19,8 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState('starter');
+  // selectedPlan kept for UI state only — registration doesn't auto-subscribe
+  const [selectedPlan, setSelectedPlan] = useState('pro');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -164,7 +166,7 @@ export default function Register() {
                   >
                     <div className="text-sm font-bold text-white">{plan.name}</div>
                     <div className="text-lg font-bold text-white">£{plan.price}</div>
-                    <div className="text-xs text-white/50">{plan.tokens} tokens</div>
+                    <div className="text-xs text-white/50">{plan.tokens} tokens{plan.label ? ` ${plan.label}` : ''}</div>
                   </button>
                 ))}
               </div>

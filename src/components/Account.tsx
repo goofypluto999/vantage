@@ -52,7 +52,7 @@ export default function Account() {
   const creditsRemaining = profile ? getCreditsRemaining(profile) : 0;
   const planInfo = PLAN_META[profile?.plan || 'starter'] || PLAN_META.starter;
   const PlanIcon = planInfo.icon;
-  const hasActiveSub = profile?.subscription_status === 'active' || profile?.subscription_status === 'past_due';
+  const hasActiveSub = profile?.subscription_status === 'active' || profile?.subscription_status === 'cancelling' || profile?.subscription_status === 'past_due';
 
   const handleSaveName = async () => {
     if (!user) return;
@@ -242,14 +242,20 @@ export default function Account() {
                 <PlanIcon className="w-5 h-5" style={{ color: planInfo.color }} />
               </div>
               <div>
-                <p className="text-white font-bold">{planInfo.label} Plan</p>
+                <p className="text-white font-bold">
+                  {hasActiveSub ? `${planInfo.label} Plan` : 'No active subscription'}
+                </p>
                 <p className={`text-sm capitalize ${
                   profile?.subscription_status === 'active' ? 'text-emerald-400' :
+                  profile?.subscription_status === 'cancelling' ? 'text-amber-400' :
                   profile?.subscription_status === 'cancelled' ? 'text-amber-400' :
                   profile?.subscription_status === 'past_due' ? 'text-red-400' :
                   'text-white/40'
                 }`}>
-                  {profile?.subscription_status === 'cancelled' ? 'Cancelled — tokens kept' : profile?.subscription_status || 'inactive'}
+                  {profile?.subscription_status === 'active' ? `${planInfo.label} — Active` :
+                   profile?.subscription_status === 'cancelling' ? 'Cancelling at end of period' :
+                   profile?.subscription_status === 'cancelled' ? 'Cancelled — tokens kept' :
+                   'Buy tokens or subscribe to a plan'}
                 </p>
               </div>
             </div>

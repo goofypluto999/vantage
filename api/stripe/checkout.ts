@@ -22,11 +22,12 @@ function getAllowedOrigin(requestOrigin: string | undefined): string {
     const origin = allowed.startsWith('http') ? allowed : `https://${allowed}`;
     return origin.replace(/\/$/, '');
   }
-  // Only trust request origin if it matches expected patterns
+  // Only trust localhost in local dev — NEVER trust arbitrary Origin headers
   if (requestOrigin && /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(requestOrigin)) {
     return requestOrigin;
   }
-  return requestOrigin || '';
+  // Hard fail if no trusted origin found — prevents open redirect
+  return '';
 }
 
 export default async function handler(request: any, response: any) {
@@ -108,23 +109,23 @@ export default async function handler(request: any, response: any) {
     }
 
     const origin = getAllowedOrigin(request.headers.origin);
-    const session = await stripe.checkout.sessions.create({
+    const isTopup = planKey === 'starter';
+
+    const sessionParams: Stripe.Checkout.SessionCreateParams = {
       customer: customerId,
       payment_method_types: ['card'],
-      line_items: [
-        {
-          price: stripePriceId,
-          quantity: 1,
-        },
-      ],
-      mode: 'subscription',
+      line_items: [{ price: stripePriceId, quantity: 1 }],
+      mode: isTopup ? 'payment' : 'subscription',
       success_url: `${origin}/dashboard?success=true`,
       cancel_url: `${origin}/dashboard?cancelled=true`,
       metadata: {
         user_id: user.id,
         plan: planKey,
+        type: isTopup ? 'topup' : 'subscription',
       },
-    });
+    };
+
+    const session = await stripe.checkout.sessions.create(sessionParams);
 
     return response.status(200).json({ url: session.url });
   } catch (error: any) {

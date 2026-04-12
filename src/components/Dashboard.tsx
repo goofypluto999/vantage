@@ -75,9 +75,9 @@ function AnalysisHistory({ onLoad }: { onLoad: (data: any) => void }) {
 }
 
 const PLANS = [
-  { name: 'Starter', price: 5, tokens: 10, color: '#6B6B8D', icon: Zap, features: ['10 tokens', 'Strategic Brief', 'Cover Letter', 'Interview Pack'] },
-  { name: 'Pro', price: 12, tokens: 30, color: '#4F46E5', icon: Star, features: ['30 tokens', 'AI Mock Interview', 'STAR Stories', 'Everything in Starter'] },
-  { name: 'Premium', price: 20, tokens: 60, color: '#7C3AED', icon: Crown, features: ['60 tokens', 'CV Fit Score', 'Presentation Deck', 'Priority', 'Everything in Pro'] },
+  { name: 'Starter', price: 5, tokens: 10, color: '#6B6B8D', icon: Zap, isTopup: true, features: ['10 tokens (one-time)', 'Strategic Brief', 'Cover Letter', 'Interview Pack'] },
+  { name: 'Pro', price: 12, tokens: 30, color: '#4F46E5', icon: Star, isTopup: false, features: ['30 tokens/month', 'AI Mock Interview', 'STAR Stories', 'Everything in Starter'] },
+  { name: 'Premium', price: 20, tokens: 60, color: '#7C3AED', icon: Crown, isTopup: false, features: ['60 tokens/month', 'CV Fit Score', 'Presentation Deck', 'Priority', 'Everything in Pro'] },
 ];
 
 export default function Dashboard() {
@@ -324,7 +324,7 @@ export default function Dashboard() {
                 <Sparkles className="w-4 h-4 text-emerald-400" />
               </div>
               <div>
-                <p className="text-emerald-400 font-semibold">Subscription activated!</p>
+                <p className="text-emerald-400 font-semibold">Payment confirmed!</p>
                 <p className="text-emerald-400/70 text-sm">Your tokens have been added to your balance.</p>
               </div>
             </div>
@@ -356,7 +356,8 @@ export default function Dashboard() {
             )}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {PLANS.map((plan) => {
-                const isCurrentPlan = profile?.plan === plan.name.toLowerCase();
+                const isCurrentPlan = !plan.isTopup && profile?.plan === plan.name.toLowerCase();
+                const hasActiveSub = profile?.subscription_status === 'active' || profile?.subscription_status === 'cancelling';
                 return (
                   <div
                     key={plan.name}
@@ -374,8 +375,13 @@ export default function Dashboard() {
                     )}
                     <plan.icon className="w-6 h-6 mb-2 mt-1" style={{ color: isCurrentPlan ? '#34d399' : plan.color }} />
                     <div className={`font-bold ${isCurrentPlan ? 'text-emerald-400' : 'text-white'}`}>{plan.name}</div>
-                    <div className="text-2xl font-bold text-white my-1">{'\u00A3'}{plan.price}<span className="text-sm text-white/40 font-normal">/mo</span></div>
-                    <div className="text-xs text-white/50 mb-3">{plan.tokens} tokens</div>
+                    <div className="text-2xl font-bold text-white my-1">
+                      {'\u00A3'}{plan.price}
+                      <span className="text-sm text-white/40 font-normal">{plan.isTopup ? '' : '/mo'}</span>
+                    </div>
+                    <div className="text-xs text-white/50 mb-3">
+                      {plan.isTopup ? `${plan.tokens} tokens (one-time)` : `${plan.tokens} tokens/month`}
+                    </div>
                     {isCurrentPlan ? (
                       profile?.subscription_status === 'cancelling' ? (
                         <div className="w-full py-2 rounded-lg text-sm font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center gap-1.5">
@@ -394,7 +400,9 @@ export default function Dashboard() {
                         className="w-full py-2 rounded-lg text-sm font-bold transition-all disabled:opacity-50"
                         style={{ background: plan.color, color: '#fff' }}
                       >
-                        {checkoutLoading === plan.name.toLowerCase() ? 'Redirecting...' : 'Upgrade'}
+                        {checkoutLoading === plan.name.toLowerCase() ? 'Redirecting...' :
+                         plan.isTopup ? 'Buy Tokens' :
+                         hasActiveSub ? 'Switch Plan' : 'Subscribe'}
                       </button>
                     )}
                   </div>
