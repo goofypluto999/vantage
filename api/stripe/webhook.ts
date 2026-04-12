@@ -3,6 +3,24 @@
 
 import Stripe from 'stripe';
 
+// Disable Vercel's default body parser — Stripe webhook signature
+// verification requires the raw request body, not a parsed JSON object.
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
+
+// Read raw body from the Node.js request stream
+async function getRawBody(req: any): Promise<Buffer> {
+  return new Promise((resolve, reject) => {
+    const chunks: Buffer[] = [];
+    req.on('data', (chunk: Buffer) => chunks.push(chunk));
+    req.on('end', () => resolve(Buffer.concat(chunks)));
+    req.on('error', reject);
+  });
+}
+
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '');
 
 const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || '';
@@ -83,22 +101,24 @@ export default async function handler(request: any, response: any) {
   let event: Stripe.Event;
 
   try {
+    // Read the raw body from the request stream (bodyParser is disabled)
+    const rawBody = await getRawBody(request);
     const isDeployed = process.env.VERCEL || process.env.NODE_ENV === 'production';
 
     if (sig && webhookSecret) {
-      // Always verify signature when both are present
-      event = stripe.webhooks.constructEvent(request.body, sig, webhookSecret);
+      // Verify signature using raw body — parsed JSON would break HMAC
+      event = stripe.webhooks.constructEvent(rawBody, sig, webhookSecret);
     } else if (!isDeployed && !webhookSecret) {
       // ONLY accept unsigned events in local development without a secret configured
       console.warn('Webhook: accepting unsigned event (local development only)');
-      event = request.body as Stripe.Event;
+      event = JSON.parse(rawBody.toString()) as Stripe.Event;
     } else {
       // Reject in all deployed environments (production + preview)
       console.error('Webhook: rejecting unsigned event in deployed environment');
       return response.status(400).json({ error: 'Webhook signature verification required' });
     }
-  } catch (err) {
-    console.error('Webhook signature verification failed');
+  } catch (err: any) {
+    console.error('Webhook signature verification failed:', err?.message || '');
     return response.status(400).json({ error: 'Webhook verification failed' });
   }
 
