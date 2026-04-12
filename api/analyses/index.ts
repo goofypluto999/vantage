@@ -1,4 +1,6 @@
-// API endpoint for fetching user's analysis history
+// API endpoint for user's analysis history (list + detail)
+// GET /api/analyses — list all user's analyses
+// GET /api/analyses?id=<uuid> — get a specific analysis with full results
 // Vercel serverless function
 
 const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || '';
@@ -17,7 +19,6 @@ export default async function handler(request: any, response: any) {
   const token = authHeader.replace('Bearer ', '');
 
   try {
-    // Verify user
     const userRes = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -31,7 +32,40 @@ export default async function handler(request: any, response: any) {
 
     const user = await userRes.json();
 
-    // Fetch user's analyses (most recent first, limit 50)
+    // Check for specific analysis ID
+    const url = new URL(request.url, `http://${request.headers.host}`);
+    const analysisId = url.searchParams.get('id');
+
+    if (analysisId) {
+      // Validate UUID format
+      if (!/^[0-9a-f-]{36}$/.test(analysisId)) {
+        return response.status(400).json({ error: 'Invalid analysis ID' });
+      }
+
+      // Fetch specific analysis (user_id check ensures ownership)
+      const detailRes = await fetch(
+        `${SUPABASE_URL}/rest/v1/analyses?id=eq.${analysisId}&user_id=eq.${user.id}&select=*&limit=1`,
+        {
+          headers: {
+            'apikey': SUPABASE_SERVICE_KEY,
+            'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+          },
+        }
+      );
+
+      if (!detailRes.ok) {
+        return response.status(500).json({ error: 'Failed to load analysis' });
+      }
+
+      const analyses = await detailRes.json();
+      if (!analyses.length) {
+        return response.status(404).json({ error: 'Analysis not found' });
+      }
+
+      return response.status(200).json({ analysis: analyses[0] });
+    }
+
+    // List all analyses (most recent first, limit 50)
     const analysesRes = await fetch(
       `${SUPABASE_URL}/rest/v1/analyses?user_id=eq.${user.id}&select=id,company_name,job_title,job_url,tokens_spent,created_at&order=created_at.desc&limit=50`,
       {
@@ -47,10 +81,9 @@ export default async function handler(request: any, response: any) {
     }
 
     const analyses = await analysesRes.json();
-
     return response.status(200).json({ analyses });
   } catch (error: any) {
-    console.error('Analyses list error:', error?.message || 'Unknown error');
+    console.error('Analyses error:', error?.message || 'Unknown error');
     return response.status(500).json({ error: 'Failed to load analysis history' });
   }
 }

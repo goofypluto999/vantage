@@ -29,7 +29,7 @@ function AnalysisHistory({ onLoad }: { onLoad: (data: any) => void }) {
       const { data: { session } } = await supabase.auth.getSession();
       const token = session?.access_token;
       if (!token) return;
-      const res = await fetch(`/api/analyses/${id}`, {
+      const res = await fetch(`/api/analyses?id=${id}`, {
         headers: { 'Authorization': `Bearer ${token}` },
       });
       if (res.ok) {
