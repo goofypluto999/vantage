@@ -255,6 +255,26 @@ CREATE TRIGGER profiles_updated_at
 -- -- Create the RPC functions (copy from above)
 
 -- ============================================================================
+-- PROCESSED STRIPE EVENTS (webhook idempotency)
+-- ============================================================================
+-- Prevents double-processing of the same Stripe event (e.g. network retries,
+-- duplicate deliveries). Webhook handler inserts the event_id after successful
+-- processing; a UNIQUE constraint + ON CONFLICT DO NOTHING makes the check atomic.
+
+CREATE TABLE IF NOT EXISTS processed_stripe_events (
+  event_id TEXT PRIMARY KEY,
+  event_type TEXT,
+  processed_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- Only the service_role can insert/read/delete (webhook handler uses service key)
+ALTER TABLE processed_stripe_events ENABLE ROW LEVEL SECURITY;
+
+-- Optional: cleanup old rows (keep 90 days)
+-- Can be run manually or via a scheduled job
+-- DELETE FROM processed_stripe_events WHERE processed_at < NOW() - INTERVAL '90 days';
+
+-- ============================================================================
 -- NOTES
 -- ============================================================================
 --

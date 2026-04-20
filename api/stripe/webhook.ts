@@ -126,6 +126,33 @@ export default async function handler(request: any, response: any) {
     return response.status(400).json({ error: 'Webhook verification failed' });
   }
 
+  // Idempotency: atomically claim this event ID before processing.
+  // If the insert fails with a unique-violation we've seen this event before
+  // (Stripe retry, double delivery, etc.) — return 200 silently.
+  try {
+    const claimRes = await fetch(`${SUPABASE_URL}/rest/v1/processed_stripe_events`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_SERVICE_KEY,
+        'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+        'Prefer': 'return=minimal',
+      },
+      body: JSON.stringify({ event_id: event.id, event_type: event.type }),
+    });
+    if (claimRes.status === 409) {
+      // Unique violation — already processed
+      console.log(`Webhook: event ${event.id} already processed, skipping`);
+      return response.status(200).json({ received: true, duplicate: true });
+    }
+    if (!claimRes.ok && claimRes.status !== 201) {
+      // Unknown error claiming the event — log but continue so we don't lose the event
+      console.error(`Webhook: failed to claim event ${event.id}: ${claimRes.status}`);
+    }
+  } catch (err: any) {
+    console.error('Webhook: idempotency check error (continuing):', err?.message);
+  }
+
   try {
     switch (event.type) {
       case 'checkout.session.completed': {
@@ -228,16 +255,33 @@ export default async function handler(request: any, response: any) {
 
         if (profiles.length > 0) {
           const profile = profiles[0];
-          const planTokens = PLAN_TOKENS[profile.plan] || 10;
 
-          // Determine how many tokens to deduct based on refund amount
-          // Full refund: deduct full plan tokens. Partial: deduct proportionally.
-          const totalPaid = charge.amount; // in pence
-          const refunded = charge.amount_refunded; // in pence
+          // Derive which plan was actually refunded from charge amount + currency,
+          // NOT the user's current plan. Amounts are in the smallest unit (pence/cents).
+          // Known plan prices:
+          //   Starter: £5.00 = 500p  |  $5.00 = 500c  → 10 tokens
+          //   Pro:     £12.00 = 1200p |  $15.00 = 1500c → 30 tokens
+          //   Premium: £20.00 = 2000p |  $25.00 = 2500c → 60 tokens
+          function planTokensForCharge(amount: number, currency: string): number {
+            const isUsd = (currency || '').toLowerCase() === 'usd';
+            if (isUsd) {
+              if (amount >= 2400) return PLAN_TOKENS.premium;
+              if (amount >= 1400) return PLAN_TOKENS.pro;
+              return PLAN_TOKENS.starter;
+            }
+            // GBP
+            if (amount >= 1900) return PLAN_TOKENS.premium;
+            if (amount >= 1100) return PLAN_TOKENS.pro;
+            return PLAN_TOKENS.starter;
+          }
+
+          const totalPaid = charge.amount; // smallest unit
+          const refunded = charge.amount_refunded;
           const refundRatio = totalPaid > 0 ? refunded / totalPaid : 1;
-          const tokensToDeduct = Math.round(planTokens * refundRatio);
+          const chargeTokens = planTokensForCharge(totalPaid, charge.currency || 'gbp');
+          const tokensToDeduct = Math.round(chargeTokens * refundRatio);
 
-          // Only deduct if user has tokens remaining (can't go negative — DB constraint)
+          // Can't go negative — cap at current balance
           if (tokensToDeduct > 0 && profile.token_balance > 0) {
             const safeDeduct = Math.min(tokensToDeduct, profile.token_balance);
             try {
@@ -251,15 +295,17 @@ export default async function handler(request: any, response: any) {
                 body: JSON.stringify({ p_user_id: profile.id, p_amount: safeDeduct }),
               });
               if (deductRes.ok) {
-                console.log(`Refund: deducted ${safeDeduct} tokens from user ${profile.id}`);
+                console.log(`Refund: deducted ${safeDeduct}/${tokensToDeduct} tokens from user ${profile.id} (charge ${charge.id}, ${charge.currency} ${totalPaid})`);
               }
             } catch (err: any) {
               console.error(`Refund: failed to deduct tokens: ${err.message}`);
             }
           }
 
-          // If full refund, cancel the subscription status
-          if (refundRatio >= 1) {
+          // Only downgrade subscription_status on full refund of a SUBSCRIPTION charge.
+          // Starter is a one-time payment — don't touch subscription_status.
+          const isSubscriptionCharge = !!charge.invoice;
+          if (refundRatio >= 1 && isSubscriptionCharge) {
             await supabasePatch(`id=eq.${profile.id}`, { subscription_status: 'cancelled' });
           }
         }
