@@ -135,10 +135,10 @@ function validateStripeUrl(url: string): string {
   return url;
 }
 
-export async function createStripeCheckout(plan: string): Promise<{ url: string }> {
+export async function createStripeCheckout(plan: string, currency: string = 'gbp'): Promise<{ url: string }> {
   const response = await fetchWithAuth('/stripe/checkout', {
     method: 'POST',
-    body: JSON.stringify({ plan }),
+    body: JSON.stringify({ plan, currency }),
   });
 
   if (!response.ok) {

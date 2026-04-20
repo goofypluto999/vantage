@@ -93,10 +93,19 @@ export default async function handler(request: any, response: any) {
         return response.status(200).json({ synced: true, subscription_status: 'inactive' });
       }
 
-      // Use the most recent subscription — update the DB with its actual status
+      // Use the most recent subscription — update status AND plan
       const latest = allSubs.data[0];
-      const status = latest.status === 'active' ? 'active' :
+      const status = latest.cancel_at_period_end ? 'cancelling' :
+                     latest.status === 'active' ? 'active' :
                      latest.status === 'canceled' ? 'cancelled' : 'past_due';
+
+      // Derive plan from latest sub's price
+      const latestPriceId = latest.items?.data[0]?.price?.id || '';
+      const starterPriceNoActive = process.env.STRIPE_PRICE_STARTER || process.env.STRIPE_STARTER_PRICE_ID || '';
+      const proPriceNoActive = process.env.STRIPE_PRICE_PRO || process.env.STRIPE_PRO_PRICE_ID || '';
+      const premiumPriceNoActive = process.env.STRIPE_PRICE_PREMIUM || process.env.STRIPE_PREMIUM_PRICE_ID || '';
+      const latestPlan = latestPriceId === premiumPriceNoActive ? 'premium' :
+                         latestPriceId === proPriceNoActive ? 'pro' : 'starter';
 
       await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${user.id}`, {
         method: 'PATCH',
@@ -106,38 +115,58 @@ export default async function handler(request: any, response: any) {
           'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
           'Prefer': 'return=minimal',
         },
-        body: JSON.stringify({ subscription_status: status }),
+        body: JSON.stringify({
+          subscription_status: status,
+          plan: latestPlan,
+          stripe_subscription_id: latest.id,
+        }),
       });
 
       return response.status(200).json({
         synced: true,
+        plan: latestPlan,
         subscription_status: status,
       });
     }
 
-    // Find the highest-tier active subscription
+    // Separate active subs into non-cancelling and cancelling
     const activeSubs = subscriptions.data;
-    let bestPlan = 'starter';
-    let bestSubId = activeSubs[0].id;
+    const keepingSubs = activeSubs.filter(s => !s.cancel_at_period_end);
+    const cancellingSubs = activeSubs.filter(s => s.cancel_at_period_end);
 
-    for (const sub of activeSubs) {
-      const priceId = sub.items.data[0]?.price?.id || '';
-      // Match price ID to plan
-      const starterPrice = process.env.STRIPE_PRICE_STARTER || process.env.STRIPE_STARTER_PRICE_ID || '';
-      const proPrice = process.env.STRIPE_PRICE_PRO || process.env.STRIPE_PRO_PRICE_ID || '';
-      const premiumPrice = process.env.STRIPE_PRICE_PREMIUM || process.env.STRIPE_PREMIUM_PRICE_ID || '';
+    // Prefer non-cancelling subs; fall back to cancelling ones if none
+    const preferredSubs = keepingSubs.length > 0 ? keepingSubs : cancellingSubs;
+    const isCancelling = keepingSubs.length === 0 && cancellingSubs.length > 0;
 
-      if (priceId === premiumPrice) { bestPlan = 'premium'; bestSubId = sub.id; }
-      else if (priceId === proPrice && bestPlan !== 'premium') { bestPlan = 'pro'; bestSubId = sub.id; }
-      else if (priceId === starterPrice && bestPlan === 'starter') { bestSubId = sub.id; }
+    const starterPrice = process.env.STRIPE_PRICE_STARTER || process.env.STRIPE_STARTER_PRICE_ID || '';
+    const proPrice = process.env.STRIPE_PRICE_PRO || process.env.STRIPE_PRO_PRICE_ID || '';
+    const premiumPrice = process.env.STRIPE_PRICE_PREMIUM || process.env.STRIPE_PREMIUM_PRICE_ID || '';
+
+    function getPlan(priceId: string): string {
+      if (priceId === premiumPrice) return 'premium';
+      if (priceId === proPrice) return 'pro';
+      if (priceId === starterPrice) return 'starter';
+      return 'starter';
     }
 
-    // Cancel any extra active subscriptions (keep only the best one)
+    // Find the highest-tier from the preferred set
+    let bestPlan = 'starter';
+    let bestSubId = preferredSubs[0].id;
+
+    for (const sub of preferredSubs) {
+      const priceId = sub.items.data[0]?.price?.id || '';
+      const plan = getPlan(priceId);
+      if (plan === 'premium') { bestPlan = 'premium'; bestSubId = sub.id; }
+      else if (plan === 'pro' && bestPlan !== 'premium') { bestPlan = 'pro'; bestSubId = sub.id; }
+      else if (plan === 'starter' && bestPlan === 'starter') { bestSubId = sub.id; }
+    }
+
+    // Cancel any extra subscriptions (keep only the best non-cancelling one)
     for (const sub of activeSubs) {
       if (sub.id !== bestSubId) {
         try {
           await stripe.subscriptions.cancel(sub.id);
-          console.log(`Sync: cancelled duplicate subscription ${sub.id}`);
+          console.log(`Sync: cancelled extra subscription ${sub.id}`);
         } catch (e: any) {
           console.warn(`Sync: could not cancel ${sub.id}: ${e.message}`);
         }
@@ -175,7 +204,7 @@ export default async function handler(request: any, response: any) {
       body: JSON.stringify({
         plan: bestPlan,
         stripe_subscription_id: bestSubId,
-        subscription_status: 'active',
+        subscription_status: isCancelling ? 'cancelling' : 'active',
       }),
     });
 
@@ -187,8 +216,6 @@ export default async function handler(request: any, response: any) {
     return response.status(200).json({
       synced: true,
       plan: bestPlan,
-      token_balance: newBalance,
-      tokens_added: tokensToAdd,
     });
   } catch (error: any) {
     console.error('Sync error:', error?.message || 'Unknown error');

@@ -16,6 +16,7 @@ import CookiePolicy from './components/CookiePolicy';
 import Account from './components/Account';
 import Admin from './components/Admin';
 import ThemeProvider from './contexts/ThemeContext';
+import { CurrencyProvider, useCurrency } from './contexts/CurrencyContext';
 
 interface AuthContextType {
   user: any;
@@ -111,6 +112,7 @@ function AppContent() {
   return (
     <AuthContext.Provider value={{ user, profile, loading, signOut: handleSignOut, refreshProfile }}>
       <BrowserRouter>
+        <CurrencyProvider>
         <ThemeProvider>
           <Routes>
             <Route path="/" element={<LandingPageWrapper />} />
@@ -141,6 +143,7 @@ function AppContent() {
           </Routes>
           <CookieConsent />
         </ThemeProvider>
+        </CurrencyProvider>
       </BrowserRouter>
     </AuthContext.Provider>
   );
@@ -186,10 +189,11 @@ function RegisterWrapper() {
 function PricingWrapper() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { currency } = useCurrency();
 
   const handleCheckout = async (plan: string) => {
     try {
-      const { url } = await createStripeCheckout(plan);
+      const { url } = await createStripeCheckout(plan, currency);
       window.location.href = url;
     } catch (err: any) {
       console.error('Checkout failed:', err.message);

@@ -7,6 +7,7 @@ import {
   Mic, BookOpen, Lock, RefreshCw, ClipboardPaste, Type
 } from 'lucide-react';
 import { useAuth } from '../App';
+import { useCurrency } from '../contexts/CurrencyContext';
 import { supabase, getCreditsRemaining, hasCredits } from '../lib/supabase';
 import { analyzeJob, createStripeCheckout, syncSubscription, rewriteTone, fetchAnalysisHistory } from '../services/api';
 import AIInterviewSession from './AIInterviewSession';
@@ -75,13 +76,14 @@ function AnalysisHistory({ onLoad }: { onLoad: (data: any) => void }) {
 }
 
 const PLANS = [
-  { name: 'Starter', price: 5, tokens: 10, color: '#6B6B8D', icon: Zap, isTopup: true, features: ['10 tokens (one-time)', 'Strategic Brief', 'Cover Letter', 'Interview Pack'] },
-  { name: 'Pro', price: 12, tokens: 30, color: '#4F46E5', icon: Star, isTopup: false, features: ['30 tokens/month', 'AI Mock Interview', 'STAR Stories', 'Everything in Starter'] },
-  { name: 'Premium', price: 20, tokens: 60, color: '#7C3AED', icon: Crown, isTopup: false, features: ['60 tokens/month', 'CV Fit Score', 'Presentation Deck', 'Priority', 'Everything in Pro'] },
+  { name: 'Starter', gbp: 5, usd: 5, tokens: 10, color: '#6B6B8D', icon: Zap, isTopup: true, features: ['10 tokens (one-time)', 'Strategic Brief', 'Cover Letter', 'Interview Pack'] },
+  { name: 'Pro', gbp: 12, usd: 15, tokens: 30, color: '#4F46E5', icon: Star, isTopup: false, features: ['30 tokens/month', 'AI Mock Interview', 'STAR Stories', 'Everything in Starter'] },
+  { name: 'Premium', gbp: 20, usd: 25, tokens: 60, color: '#7C3AED', icon: Crown, isTopup: false, features: ['60 tokens/month', 'CV Fit Score', 'Presentation Deck', 'Priority', 'Everything in Pro'] },
 ];
 
 export default function Dashboard() {
   const { user, profile, signOut, refreshProfile } = useAuth();
+  const { currency, setCurrency, symbol } = useCurrency();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [checkoutSuccess, setCheckoutSuccess] = useState(false);
@@ -257,7 +259,7 @@ export default function Dashboard() {
   const handleCheckout = async (plan: string) => {
     setCheckoutLoading(plan);
     try {
-      const { url } = await createStripeCheckout(plan);
+      const { url } = await createStripeCheckout(plan, currency);
       window.location.href = url;
     } catch (err: any) {
       setError(err.message || 'Failed to start checkout');
@@ -281,6 +283,22 @@ export default function Dashboard() {
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
               <div className="w-2 h-2 bg-emerald-400 rounded-full" />
               <span className="text-sm font-bold text-emerald-400">{profile ? creditsRemaining : '--'} Tokens</span>
+            </div>
+
+            {/* Currency toggle */}
+            <div className="flex items-center rounded-full bg-white/5 border border-white/10 p-0.5" role="group" aria-label="Currency">
+              <button
+                onClick={() => setCurrency('gbp')}
+                className={`px-2.5 py-1 rounded-full text-xs font-bold transition-colors ${currency === 'gbp' ? 'bg-violet-600 text-white' : 'text-white/50 hover:text-white'}`}
+                aria-pressed={currency === 'gbp'}
+                title="British Pounds"
+              >{'\u00A3 GBP'}</button>
+              <button
+                onClick={() => setCurrency('usd')}
+                className={`px-2.5 py-1 rounded-full text-xs font-bold transition-colors ${currency === 'usd' ? 'bg-violet-600 text-white' : 'text-white/50 hover:text-white'}`}
+                aria-pressed={currency === 'usd'}
+                title="US Dollars"
+              >$ USD</button>
             </div>
 
             {profile?.plan && (
@@ -376,7 +394,7 @@ export default function Dashboard() {
                     <plan.icon className="w-6 h-6 mb-2 mt-1" style={{ color: isCurrentPlan ? '#34d399' : plan.color }} />
                     <div className={`font-bold ${isCurrentPlan ? 'text-emerald-400' : 'text-white'}`}>{plan.name}</div>
                     <div className="text-2xl font-bold text-white my-1">
-                      {'\u00A3'}{plan.price}
+                      {symbol}{currency === 'usd' ? plan.usd : plan.gbp}
                       <span className="text-sm text-white/40 font-normal">{plan.isTopup ? '' : '/mo'}</span>
                     </div>
                     <div className="text-xs text-white/50 mb-3">

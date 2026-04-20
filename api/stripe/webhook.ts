@@ -32,15 +32,19 @@ const PLAN_TOKENS: Record<string, number> = {
   'premium': 60,
 };
 
-// Map Stripe price IDs to plan names for trusted plan derivation
+// Map Stripe price IDs to plan names for trusted plan derivation.
+// Supports both GBP and USD price IDs (Path B multi-currency).
 function getPlanFromPriceId(priceId: string): string {
-  const starterPrice = process.env.STRIPE_PRICE_STARTER || process.env.STRIPE_STARTER_PRICE_ID || '';
-  const proPrice = process.env.STRIPE_PRICE_PRO || process.env.STRIPE_PRO_PRICE_ID || '';
-  const premiumPrice = process.env.STRIPE_PRICE_PREMIUM || process.env.STRIPE_PREMIUM_PRICE_ID || '';
+  const starterGbp = process.env.STRIPE_PRICE_STARTER || process.env.STRIPE_STARTER_PRICE_ID || '';
+  const proGbp = process.env.STRIPE_PRICE_PRO || process.env.STRIPE_PRO_PRICE_ID || '';
+  const premiumGbp = process.env.STRIPE_PRICE_PREMIUM || process.env.STRIPE_PREMIUM_PRICE_ID || '';
+  const starterUsd = process.env.STRIPE_PRICE_STARTER_USD || '';
+  const proUsd = process.env.STRIPE_PRICE_PRO_USD || '';
+  const premiumUsd = process.env.STRIPE_PRICE_PREMIUM_USD || '';
 
-  if (priceId === premiumPrice) return 'premium';
-  if (priceId === proPrice) return 'pro';
-  if (priceId === starterPrice) return 'starter';
+  if (priceId === premiumGbp || priceId === premiumUsd) return 'premium';
+  if (priceId === proGbp || priceId === proUsd) return 'pro';
+  if (priceId === starterGbp || priceId === starterUsd) return 'starter';
   return 'starter'; // fallback
 }
 

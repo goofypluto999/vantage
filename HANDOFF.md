@@ -1,192 +1,269 @@
-# Vantage -- Agent Handoff Document
-
-**Date:** 2026-04-11
-**Status:** Auth + Payments built, but token/credit system is broken and needs a rewrite.
-
----
-
-## What Is Vantage?
-
-AI-powered job preparation SaaS. User uploads CV + job URL, gets:
-- Company intelligence snapshot (auto-scraped from URL + Gemini Google Search)
-- Role/CV fit analysis with score
-- Strategic brief and narrative angle
-- Personalised cover letter (4 tones: Formal / Warm / Direct / Creative)
-- Presentation outline
-- Interview prep flashcards + AI mock interview with voice
+# VANTAGE AI — FULL SESSION HANDOFF
+**Date:** 2026-04-12
+**From:** Security hardening + subscription fix session
+**To:** Next Claude session — CRM, Stripe live mode, subscription validation, promotion prep
 
 ---
 
-## Tech Stack
+## WHAT VANTAGE IS
 
-| Layer | Technology |
-|-------|-----------|
-| Framework | React 19 + TypeScript + Vite 6 |
-| Styling | Tailwind CSS v4 (`@tailwindcss/vite` plugin -- NO config file) |
-| Animations | Framer Motion (`motion/react` import, NOT `framer-motion`) |
-| 3D (landing) | Three.js + `@react-three/fiber` + `@react-three/drei` |
-| AI | `@google/genai` SDK -- model: `models/gemini-2.5-flash` |
+Vantage AI is a job preparation SaaS. Users upload their CV, paste/link a job listing, and get back:
+- Company intelligence snapshot (name, industry, culture, recent news)
+- CV fit score (0-100, calibrated)
+- Strategic brief (company context, role requirements, CV alignment, narrative angle)
+- Tailored cover letter (with tone rewriting: Formal/Warm/Direct/Creative)
+- Interview prep pack (AI-generated Q&A flashcards)
+- AI mock interview (speech recognition, live evaluation)
+- Presentation deck (6 slides)
+
+**Live URL:** https://vantage-livid.vercel.app/
+**Owner:** Giova (adlixir on Vercel)
+
+---
+
+## TECH STACK
+
+| Layer | Tech |
+|-------|------|
+| Frontend | React 19 + TypeScript + Vite 6 + Tailwind CSS v4 |
+| Animations | motion/react (Framer Motion) -- NEVER change this import |
+| 3D | Three.js + @react-three/fiber + drei (landing page globe) |
+| Backend | Vercel serverless functions (TypeScript, `api/` directory) |
 | Auth | Supabase Auth (email + Google OAuth) |
 | Database | Supabase PostgreSQL with RLS |
-| Payments | Stripe (subscriptions via checkout sessions + webhooks) |
-| Backend | Vercel serverless functions (TypeScript, in `api/` directory) |
-| Doc parsing | `mammoth` (DOCX to text, client-side) |
-| Speech | Web Speech API (`SpeechRecognition`) |
-| Icons | `lucide-react` |
+| Payments | Stripe subscriptions (checkout + webhooks + billing portal) |
+| AI | Google Gemini 2.5 Flash (`@google/genai`, model ID: `models/gemini-2.5-flash`) |
+| Doc parsing | mammoth (DOCX), base64 (PDF -- Gemini parses natively) |
+| Deployment | Vercel (frontend + serverless) |
 
 ---
 
-## What Works (DO NOT BREAK THESE)
+## PROJECT STRUCTURE
 
-These features have been live-tested and verified working:
-
-1. **Landing page** -- Full glassmorphic design, 3D globe, all sections render correctly in light/dark mode
-2. **Auth flow** -- Register, login, logout, Google OAuth, forgot/reset password all work
-3. **CV upload** -- PDF, DOCX, and TXT files parse correctly
-4. **URL scraping** -- Server-side scraper with soft 404 detection, JSON-LD extraction, minimum content length checks
-5. **AI analysis** -- Gemini generates all sections (company snapshot, match points, strategic brief, cover letter, presentation, fit score)
-6. **Cover letter tone switching** -- All 4 tones work, results cached in a Map ref
-7. **Interview prep flashcards** -- Toggle on/off, Q&A format
-8. **AI mock interview** -- Server-side question generation + answer evaluation, Pro/Premium gated
-9. **Dark/light theme** -- Full theme system via ThemeContext, persists in localStorage
-10. **Dark background CSS** -- `html, body { background: #0d0b1e; }` prevents white flash on results page
-
----
-
-## What's Broken (THIS IS YOUR MAIN JOB)
-
-### The Token/Credit System
-
-The current implementation uses `credits_total` and `credits_used` fields. The problem: when a user upgrades plans, `credits_total` gets SET to a fixed value instead of ADDING tokens.
-
-**Current broken behavior:**
-- User signs up -> gets starter plan -> `credits_total = 10`, `credits_used = 0` -> 10 remaining (correct)
-- User runs 3 analyses (costs 9 credits) -> `credits_total = 10`, `credits_used = 9` -> 1 remaining (correct)
-- User upgrades to Pro -> webhook sets `credits_total = 30`, preserves `credits_used = 9` -> 21 remaining
-- **BUT**: the user expected to ADD 30 tokens to their remaining 1, giving them 31 total
-
-**Where the bug lives:**
-1. `api/stripe/webhook.ts` line 105: `credits_total: PLAN_CREDITS[plan] || 10` -- REPLACES instead of ADDS
-2. `api/stripe/sync.ts` line 123: `credits_total: newCreditsTotal` -- same bug, REPLACES instead of ADDS
-3. `api/stripe/checkout.ts` line 80-88: cancels existing subscription before creating new one, which can trigger `subscription.deleted` webhook that zeroes out credits
-
-**The user wants a complete rewrite. See `WALLET-SPEC.md` for the exact requirements.**
-
-### Additional Issues
-
-- Stripe checkout cancels the old subscription immediately (line 80-88 in checkout.ts), which fires a `subscription.deleted` webhook that can race with the `checkout.session.completed` webhook and zero out the user's credits
-- The sync endpoint (`api/stripe/sync.ts`) also replaces credits instead of adding
-- No purchase history -- user can't see what they bought or when
+```
+C:\Cloaude Logic\vantage\
++-- api/                          # Vercel serverless functions
+|   +-- analyze/index.ts          # Main AI analysis (679 lines, 60s timeout)
+|   +-- rewrite-tone/index.ts     # Cover letter tone rewrite (1 token)
+|   +-- interview/questions.ts    # Interview Q&A generation (2 tokens, Pro+)
+|   +-- interview/evaluate.ts     # Answer evaluation (free, Pro+)
+|   +-- stripe/checkout.ts        # Create Stripe checkout session
+|   +-- stripe/webhook.ts         # Stripe webhook handler (signature verified)
+|   +-- stripe/sync.ts            # Fallback subscription sync
+|   +-- stripe/portal.ts          # Stripe billing portal session
+|   +-- credits/index.ts          # GET token balance
+|   +-- waitlist/index.ts         # Public waitlist signup
++-- src/
+|   +-- App.tsx                   # Routes, auth context, ErrorBoundary
+|   +-- lib/supabase.ts           # Supabase client, Profile type, helpers
+|   +-- services/api.ts           # All API client functions
+|   +-- components/
+|       +-- LandingPage.tsx       # Marketing page (1028 lines)
+|       +-- Dashboard.tsx         # Main workspace (842 lines)
+|       +-- AIInterviewSession.tsx # Mock interview (1013 lines)
+|       +-- Account.tsx           # User settings + subscription
+|       +-- Pricing.tsx           # Plan cards + checkout
+|       +-- Login.tsx / Register.tsx / ForgotPassword.tsx / ResetPassword.tsx
+|       +-- InterviewPrep.tsx     # Flashcard prep
+|       +-- Waitlist.tsx          # Early access signup
+|       +-- CookieConsent.tsx / legal pages
++-- database/schema.sql           # Full DB schema (run in Supabase SQL Editor)
++-- vercel.json                   # Deployment config, security headers, timeouts
++-- CLAUDE.md                     # Project-level instructions
++-- HANDOFF.md                    # THIS FILE
+```
 
 ---
 
-## Profile Schema (Supabase)
+## SECOND BRAIN (LightRAG)
 
+A dedicated knowledge graph for Vantage runs on **port 9622** (separate from Foresay on 9621).
+
+**Location:** `C:\Cloaude Logic\vantage-brain\` (17 Obsidian notes)
+**Start manually:** `& "C:\Cloaude Logic\vantage-brain\lightrag-service.bat"`
+**Re-index after edits:** `"C:\Users\giova\AppData\Local\Programs\Python\Python313\python.exe" "C:\Cloaude Logic\vantage-brain\index-vault.py"`
+
+**Key notes:**
+- `stripe-integration.md` -- Full subscription lifecycle, race conditions, historical bugs
+- `security-hardening.md` -- Complete audit results and fixes applied
+- `token-system.md` -- Atomic operations, additive model, never expire
+- `database-schema.md` -- Tables, RLS, RPC functions
+- `ai-analysis.md` -- Scraping pipeline, Gemini prompts, anti-hallucination
+- `debug-log.md` -- All past bugs and how they were fixed
+
+**Query the brain before making complex changes.**
+
+---
+
+## DATABASE (Supabase)
+
+### Tables
+- **profiles** -- User data, plan, token_balance, Stripe IDs, subscription_status
+- **analyses** -- Saved job analysis results (JSONB)
+- **waitlist** -- Pre-signup emails
+- **api_usage** -- Audit trail for rate limiting
+
+### Security (Hardened 2026-04-11)
+- RLS enabled on ALL tables
+- Column-level REVOKE on sensitive fields (plan, token_balance, stripe_*, subscription_status)
+- `add_tokens` and `deduct_tokens` RPC locked to service_role only
+- Input validation: amounts must be positive, add_tokens capped at 1000/call
+
+### Subscription Status CHECK Constraint
+**CRITICAL:** The constraint MUST include 'cancelling'. If it doesn't, webhook/sync writes silently fail.
 ```sql
-CREATE TABLE profiles (
-  id UUID PRIMARY KEY REFERENCES auth.users(id),
-  email TEXT NOT NULL,
-  full_name TEXT,
-  avatar_url TEXT,
-  plan TEXT NOT NULL DEFAULT 'starter',
-  credits_total INTEGER NOT NULL DEFAULT 10,
-  credits_used INTEGER NOT NULL DEFAULT 0,
-  stripe_customer_id TEXT,
-  stripe_subscription_id TEXT,
-  subscription_status TEXT DEFAULT 'inactive',
-  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
+CHECK (subscription_status IN ('inactive', 'active', 'cancelling', 'cancelled', 'past_due'))
 ```
 
-Auto-created on signup via `handle_new_user()` trigger. RLS enabled -- users can only access their own row.
-
----
-
-## Credit Costs
-
-| Action | Credits |
-|--------|---------|
-| Full job analysis | 3 |
-| Cover letter tone rewrite | 1 |
-| Interview question generation | 2 |
-| Interview answer evaluation | 0 (free, but Pro/Premium only) |
-
----
-
-## Plan Tiers
-
-| Plan | Credits Given | Price |
-|------|--------------|-------|
-| Starter | 10 | ~$5 |
-| Pro | 30 | ~$12 |
-| Premium | 60 | ~$20 |
-
----
-
-## Environment Variables (Vercel)
-
-```
-# Supabase
-VITE_SUPABASE_URL=...
-VITE_SUPABASE_ANON_KEY=...
-SUPABASE_URL=...                    # Same as VITE_ version, for serverless functions
-SUPABASE_SERVICE_ROLE_KEY=...       # Service role key (server-side only)
-
-# Gemini
-VITE_GEMINI_API_KEY=...
-GEMINI_API_KEY=...                  # Same key, for serverless functions
-
-# Stripe
-VITE_STRIPE_PUBLISHABLE_KEY=...
-STRIPE_SECRET_KEY=...
-STRIPE_WEBHOOK_SECRET=...
-STRIPE_PRICE_STARTER=...           # (or STRIPE_STARTER_PRICE_ID)
-STRIPE_PRICE_PRO=...               # (or STRIPE_PRO_PRICE_ID)
-STRIPE_PRICE_PREMIUM=...           # (or STRIPE_PREMIUM_PRICE_ID)
+If not yet applied, run:
+```sql
+ALTER TABLE profiles DROP CONSTRAINT IF EXISTS profiles_subscription_status_check;
+ALTER TABLE profiles ADD CONSTRAINT profiles_subscription_status_check
+  CHECK (subscription_status IN ('inactive', 'active', 'cancelling', 'cancelled', 'past_due'));
 ```
 
 ---
 
-## Dev Commands
+## STRIPE INTEGRATION
 
-```bash
-npm install          # Install dependencies
-npm run dev          # Dev server on http://localhost:3000
-npm run build        # Production build
-npx tsc --noEmit     # TypeScript check (MUST be clean)
+### Plans (TEST MODE -- NOT LIVE YET)
+| Plan | Price | Tokens | Env Var |
+|------|-------|--------|---------|
+| Starter | 5 GBP/mo | 10 | `STRIPE_PRICE_STARTER` |
+| Pro | 12 GBP/mo | 30 | `STRIPE_PRICE_PRO` |
+| Premium | 20 GBP/mo | 60 | `STRIPE_PRICE_PREMIUM` |
+
+### Subscription Lifecycle
+```
+active (green) -> cancelling (amber) -> cancelled (amber, period ended)
 ```
 
-Deployed on Vercel. Serverless functions are in `api/` directory, auto-deployed by Vercel.
+### Token Model
+- Tokens are **additive** -- buying a new plan ADDS tokens to existing balance
+- Tokens **never expire**, even after cancellation (user paid for them)
+- Tokens are **never replaced** -- old balance + new purchase = total
+- Atomic operations via PostgreSQL RPC (no race conditions on balance)
+
+### Key Flows
+1. **Checkout:** Frontend -> `/api/stripe/checkout` -> Stripe hosted page -> `/dashboard?success=true` -> sync fallback + webhook
+2. **Webhook:** Stripe -> `/api/stripe/webhook` -> verify signature -> update plan/status/tokens
+3. **Sync:** Frontend calls `/api/stripe/sync` as fallback -> reads Stripe API -> updates DB
+4. **Cancellation:** Stripe sets `cancel_at_period_end=true` -> webhook/sync detect -> status = 'cancelling'
+5. **Portal:** `/api/stripe/portal` -> Stripe billing portal
+
+### Historical Bugs (ALL FIXED in code, need SQL migration to fully work)
+- Plan not updating after downgrade (sync picked highest-tier including cancelling subs)
+- Webhook ignoring new subscription events (sub ID mismatch = silent drop)
+- Dashboard not syncing on mount (only synced after checkout return)
+- subscription_status CHECK constraint missing 'cancelling' (DB rejects writes silently)
 
 ---
 
-## Critical Rules (READ THESE)
+## SECURITY HARDENING (Completed 2026-04-11)
 
-1. **Framer Motion import**: `import { motion } from 'motion/react'` -- NOT `framer-motion`
-2. **Gemini model string**: Must be `'models/gemini-2.5-flash'` (needs the `models/` prefix)
-3. **Gemini constraint**: `googleSearch` tool and `responseMimeType: 'application/json'` are MUTUALLY EXCLUSIVE. Never combine both.
-4. **Tailwind v4**: No `tailwind.config.js`. Uses `@import "tailwindcss"` in CSS.
-5. **CSS 3D transforms**: Tailwind v4 doesn't reliably apply `preserve-3d` and `backface-hidden`. Always use inline styles for 3D CSS.
-6. **Supabase auth deadlock**: The `onAuthStateChange` callback must NOT await Supabase DB queries. Profile fetch is deferred with a 50ms `setTimeout` to avoid internal lock conflicts. See `App.tsx` lines 76-91.
-7. **Always run `npx tsc --noEmit`** after any code changes and fix all errors before finishing.
-8. **Dark background**: `html, body { background: #0d0b1e; }` in `index.css` prevents white flash. Do not remove.
+### Fixed in Code (deployed)
+- RLS column lockdown + RPC functions locked to service_role
+- SSRF: manual redirect following, comprehensive IP blocklist
+- Prompt injection: prompt/data separation, score post-validation
+- Webhook: rejects unsigned events on all Vercel environments
+- CSP + HSTS headers
+- Open redirect fixed (checkout/portal + frontend Stripe URL validation)
+- Stale .env file deleted, .gitignore catch-all
+- Tone parameter allowlist, error message sanitization
+
+### Needs SQL Migration (may or may not have been run yet)
+- Column-level REVOKE on sensitive profile fields
+- RPC EXECUTE revoked from authenticated/anon
+- CHECK constraint updated for 'cancelling'
+- Input validation on RPC functions
+
+### Still Needs (future work)
+- Rate limiting (Vercel Edge Middleware or Upstash Redis)
+- Webhook/sync race condition (DB-level idempotency key)
+- Auth error message mapping (raw Supabase errors shown in login forms)
 
 ---
 
-## Deployment
+## WHAT MUST HAPPEN NEXT (PRIORITY ORDER)
 
-- **Frontend + API**: Vercel (single project, `vercel.json` routes API calls to serverless functions)
-- **Database**: Supabase (hosted PostgreSQL)
-- **Payments**: Stripe (test mode, `sk_test_` keys)
-- **Stripe webhook**: Must be configured in Stripe Dashboard to point to `https://your-domain.vercel.app/api/stripe/webhook`
+### 1. VERIFY SQL MIGRATION WAS RUN
+```sql
+-- Check constraint includes 'cancelling':
+SELECT conname, pg_get_constraintdef(oid)
+FROM pg_constraint
+WHERE conrelid = 'profiles'::regclass AND contype = 'c';
+
+-- Check RPC is locked down:
+SELECT has_function_privilege('authenticated', 'add_tokens(uuid, integer)', 'EXECUTE');
+-- Should return FALSE
+```
+If not applied, the full migration SQL is in `database/schema.sql`.
+
+### 2. VERIFY SUBSCRIPTION SYSTEM END-TO-END
+Subscribe -> check tokens -> cancel -> check status shows 'Cancelling' -> subscribe to different plan -> check plan updates
+
+### 3. SWITCH STRIPE TO LIVE MODE
+- Create live products in Stripe Dashboard (same 3 plans, GBP)
+- Update all `STRIPE_*` env vars in Vercel with live keys
+- Set up live webhook endpoint -> get new `STRIPE_WEBHOOK_SECRET`
+- Redeploy
+
+### 4. BUILD ADMIN/CRM VISIBILITY
+Giova currently has ZERO visibility into signups, payments, cancellations, or usage. Options:
+- **Minimum:** Stripe Dashboard (already works) + Supabase table queries
+- **Better:** Admin API endpoint + simple admin page
+- **Best:** Email notifications on new signups/cancellations + admin dashboard
+
+### 5. DEFINE REFUND POLICY
+- Stripe handles refunds natively
+- Need webhook handler for `charge.refunded` to deduct tokens
+- Policy decision: full refund within X days? Pro-rated? Tokens kept or removed?
+
+### 6. PROMOTION PREP (2+ sessions away)
+- Stripe live mode working
+- Admin visibility exists
+- Landing page real testimonials
+- Email onboarding
 
 ---
 
-## What's NOT Built Yet
+## CONVENTIONS
 
-- Results persistence (analyses table exists but not wired up)
-- Email onboarding / transactional emails
-- Analytics
-- Mobile optimization pass
-- Real plan enforcement after wallet rewrite
+- **TypeScript:** Always run `npx tsc --noEmit` after changes, zero errors required
+- **Framer Motion:** Import from `motion/react` ONLY
+- **Tailwind CSS v4:** No config file. 3D transforms use inline styles.
+- **Gemini:** Model ID = `models/gemini-2.5-flash`. googleSearch and responseMimeType are mutually exclusive.
+- **Git:** New commits only (never amend). Conventional messages.
+- **Security:** All API endpoints validate auth. Never expose service keys. Tokens via RPC only.
+
+---
+
+## ENV VARS (names only)
+
+```
+VITE_SUPABASE_URL            # Public
+VITE_SUPABASE_ANON_KEY       # Public
+SUPABASE_URL                 # Server-side
+SUPABASE_SERVICE_ROLE_KEY    # Server-side ONLY
+
+GEMINI_API_KEY               # Server-side
+VITE_GEMINI_API_KEY          # Reference only
+
+VITE_STRIPE_PUBLISHABLE_KEY  # Public
+STRIPE_SECRET_KEY            # Server-side ONLY
+STRIPE_WEBHOOK_SECRET        # Server-side ONLY
+STRIPE_PRICE_STARTER         # Price ID
+STRIPE_PRICE_PRO             # Price ID
+STRIPE_PRICE_PREMIUM         # Price ID
+```
+
+---
+
+## FIRST ACTIONS FOR NEXT SESSION
+
+1. Read this handoff + `CLAUDE.md`
+2. Start LightRAG: `& "C:\Cloaude Logic\vantage-brain\lightrag-service.bat"`
+3. Query brain for any context needed
+4. Verify SQL migration applied (run check queries above)
+5. Test subscription end-to-end
+6. Proceed with Giova's priorities

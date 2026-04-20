@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS profiles (
   token_balance INTEGER NOT NULL DEFAULT 10 CHECK (token_balance >= 0),
   stripe_customer_id TEXT,
   stripe_subscription_id TEXT,
-  subscription_status TEXT DEFAULT 'inactive' CHECK (subscription_status IN ('inactive', 'active', 'cancelled', 'past_due')),
+  subscription_status TEXT DEFAULT 'inactive' CHECK (subscription_status IN ('inactive', 'active', 'cancelling', 'cancelled', 'past_due')),
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -88,9 +88,17 @@ DROP POLICY IF EXISTS "Users can manage own profile" ON profiles;
 CREATE POLICY "Users can read own profile" ON profiles
   FOR SELECT USING (auth.uid() = id);
 
+-- Users can ONLY update safe columns (full_name, avatar_url).
+-- Sensitive fields (plan, token_balance, subscription_status, stripe_*) are
+-- updated ONLY by service_role via API endpoints.
+-- Column-level grants enforce this even if RLS row-match passes.
 CREATE POLICY "Users can update own profile" ON profiles
   FOR UPDATE USING (auth.uid() = id)
   WITH CHECK (auth.uid() = id);
+
+-- REVOKE update on sensitive columns from authenticated users
+REVOKE UPDATE (plan, token_balance, stripe_customer_id, stripe_subscription_id, subscription_status) ON profiles FROM authenticated;
+REVOKE UPDATE (plan, token_balance, stripe_customer_id, stripe_subscription_id, subscription_status) ON profiles FROM anon;
 
 -- Analyses: users can only see their own analyses
 CREATE POLICY "Users can view own analyses" ON analyses
@@ -111,6 +119,7 @@ CREATE POLICY "Users can view own usage" ON api_usage
 -- ============================================================================
 
 -- Deduct tokens atomically. Returns new balance, raises exception if insufficient.
+-- ONLY callable by service_role (API endpoints), NOT by authenticated users.
 CREATE OR REPLACE FUNCTION deduct_tokens(p_user_id UUID, p_amount INTEGER)
 RETURNS INTEGER
 LANGUAGE plpgsql
@@ -120,6 +129,11 @@ AS $$
 DECLARE
   new_balance INTEGER;
 BEGIN
+  -- Validate amount is positive
+  IF p_amount <= 0 THEN
+    RAISE EXCEPTION 'Amount must be positive';
+  END IF;
+
   UPDATE profiles
   SET token_balance = token_balance - p_amount,
       updated_at = NOW()
@@ -136,6 +150,7 @@ END;
 $$;
 
 -- Add tokens atomically. Returns new balance.
+-- ONLY callable by service_role (API endpoints), NOT by authenticated users.
 CREATE OR REPLACE FUNCTION add_tokens(p_user_id UUID, p_amount INTEGER)
 RETURNS INTEGER
 LANGUAGE plpgsql
@@ -145,6 +160,11 @@ AS $$
 DECLARE
   new_balance INTEGER;
 BEGIN
+  -- Validate amount is positive and reasonable (max 1000 per call)
+  IF p_amount <= 0 OR p_amount > 1000 THEN
+    RAISE EXCEPTION 'Invalid token amount';
+  END IF;
+
   UPDATE profiles
   SET token_balance = token_balance + p_amount,
       updated_at = NOW()
@@ -158,6 +178,13 @@ BEGIN
   RETURN new_balance;
 END;
 $$;
+
+-- Lock RPC functions to service_role only
+REVOKE EXECUTE ON FUNCTION add_tokens FROM authenticated, anon, public;
+GRANT EXECUTE ON FUNCTION add_tokens TO service_role;
+
+REVOKE EXECUTE ON FUNCTION deduct_tokens FROM authenticated, anon, public;
+GRANT EXECUTE ON FUNCTION deduct_tokens TO service_role;
 
 -- ============================================================================
 -- TRIGGERS

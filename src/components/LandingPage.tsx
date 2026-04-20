@@ -11,6 +11,7 @@ import {
 import * as THREE from 'three';
 import Waitlist from './Waitlist';
 import DemoWalkthrough from './DemoWalkthrough';
+import { useCurrency } from '../contexts/CurrencyContext';
 
 // ============================================================================
 // 3D: DOT-MATRIX GLOBE  (fibonacci sphere of points + orbital rings)
@@ -199,6 +200,7 @@ function GlassCard({ children, className = "" }: { children: React.ReactNode; cl
 function Navbar({ onStart, showLogin }: { onStart: () => void; showLogin?: () => void }) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { currency, setCurrency } = useCurrency();
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 20);
@@ -257,6 +259,19 @@ function Navbar({ onStart, showLogin }: { onStart: () => void; showLogin?: () =>
           transition={{ duration: 0.6, delay: 0.3 }}
           className="hidden md:flex items-center gap-2"
         >
+          {/* Currency toggle */}
+          <div className="flex items-center rounded-full bg-white/40 border border-white/60 p-0.5 mr-1" role="group" aria-label="Currency">
+            <button
+              onClick={() => setCurrency('gbp')}
+              className={`px-2.5 py-1 rounded-full text-xs font-bold transition-colors ${currency === 'gbp' ? 'bg-[#4F46E5] text-white' : 'text-[#4F46E5] hover:bg-white/50'}`}
+              aria-pressed={currency === 'gbp'}
+            >{'\u00A3'}</button>
+            <button
+              onClick={() => setCurrency('usd')}
+              className={`px-2.5 py-1 rounded-full text-xs font-bold transition-colors ${currency === 'usd' ? 'bg-[#4F46E5] text-white' : 'text-[#4F46E5] hover:bg-white/50'}`}
+              aria-pressed={currency === 'usd'}
+            >$</button>
+          </div>
           <button
             onClick={showLogin}
             className="px-4 py-2.5 text-[#4F46E5] text-sm font-bold rounded-full hover:bg-white/30 transition-all"
@@ -504,6 +519,13 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
   const { scrollYProgress } = useScroll();
   const heroOpacity = useTransform(scrollYProgress, [0, 0.15], [1, 0]);
   const heroScale   = useTransform(scrollYProgress, [0, 0.15], [1, 0.95]);
+
+  const { currency, setCurrency, symbol } = useCurrency();
+  const prices = {
+    starter: currency === 'usd' ? 5 : 5,
+    pro: currency === 'usd' ? 15 : 12,
+    premium: currency === 'usd' ? 25 : 20,
+  };
 
   const [showHowItWorks, setShowHowItWorks] = useState(false);
   const [showDemo, setShowDemo] = useState(false);
@@ -814,8 +836,8 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
           <GlassCard className="flex-1 flex flex-col items-center !p-10 md:mt-6">
             <h3 className="font-display font-bold text-xl text-[#3B3A5C]">Starter</h3>
             <div className="mt-4 flex items-baseline gap-1">
-              <span className="text-2xl font-semibold text-[#6B6B8D]">£</span>
-              <span className="text-6xl font-mono font-bold text-[#2D2B4E]">5</span>
+              <span className="text-2xl font-semibold text-[#6B6B8D]">{symbol}</span>
+              <span className="text-6xl font-mono font-bold text-[#2D2B4E]">{prices.starter}</span>
             </div>
             <span className="bg-white/50 text-[#4F46E5] font-mono text-xs px-3 py-1 rounded-full mt-3 font-bold border border-white">100 Credits</span>
             <ul className="mt-8 space-y-3 w-full flex-grow text-sm text-[#3B3A5C] font-medium">
@@ -834,8 +856,8 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
             </div>
             <h3 className="font-display font-bold text-xl text-[#3B3A5C]">Pro</h3>
             <div className="mt-4 flex items-baseline gap-1">
-              <span className="text-2xl font-semibold text-[#6B6B8D]">£</span>
-              <span className="text-6xl font-mono font-bold text-[#2D2B4E]">12</span>
+              <span className="text-2xl font-semibold text-[#6B6B8D]">{symbol}</span>
+              <span className="text-6xl font-mono font-bold text-[#2D2B4E]">{prices.pro}</span>
             </div>
             <span className="bg-white/50 text-[#4F46E5] font-mono text-xs px-3 py-1 rounded-full mt-3 font-bold border border-white">300 Credits</span>
             <ul className="mt-8 space-y-3 w-full flex-grow text-sm text-[#3B3A5C] font-medium">
@@ -852,8 +874,8 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
           <GlassCard className="flex-1 flex flex-col items-center !p-10 md:mt-6">
             <h3 className="font-display font-bold text-xl text-[#3B3A5C]">Premium</h3>
             <div className="mt-4 flex items-baseline gap-1">
-              <span className="text-2xl font-semibold text-[#6B6B8D]">£</span>
-              <span className="text-6xl font-mono font-bold text-[#2D2B4E]">20</span>
+              <span className="text-2xl font-semibold text-[#6B6B8D]">{symbol}</span>
+              <span className="text-6xl font-mono font-bold text-[#2D2B4E]">{prices.premium}</span>
             </div>
             <span className="bg-white/50 text-[#4F46E5] font-mono text-xs px-3 py-1 rounded-full mt-3 font-bold border border-white">500 Credits</span>
             <ul className="mt-8 space-y-3 w-full flex-grow text-sm text-[#3B3A5C] font-medium">
@@ -929,7 +951,7 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
               Initialize Vantage <ChevronRight className="w-5 h-5" />
             </button>
             <p className="mt-5 text-sm text-[#6B6B8D] font-medium relative z-10">
-              Start with 100 credits for just £5. No subscription. No commitment.
+              Start with 10 tokens for just {symbol}{prices.starter}. No subscription. No commitment.
             </p>
           </div>
         </motion.div>

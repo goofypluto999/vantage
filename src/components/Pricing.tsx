@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { Check, Zap, Star, Crown, ArrowRight } from 'lucide-react';
+import { useCurrency } from '../contexts/CurrencyContext';
 
 interface PricingProps {
   onLogin?: () => void;
@@ -12,7 +13,8 @@ interface PricingProps {
 const PLANS = [
   {
     name: 'Starter',
-    price: 5,
+    gbp: 5,
+    usd: 5,
     tokens: 10,
     color: '#6B6B8D',
     icon: Zap,
@@ -28,7 +30,8 @@ const PLANS = [
   },
   {
     name: 'Pro',
-    price: 12,
+    gbp: 12,
+    usd: 15,
     tokens: 30,
     color: '#4F46E5',
     icon: Star,
@@ -44,7 +47,8 @@ const PLANS = [
   },
   {
     name: 'Premium',
-    price: 20,
+    gbp: 20,
+    usd: 25,
     tokens: 60,
     color: '#7C3AED',
     icon: Crown,
@@ -62,6 +66,7 @@ const PLANS = [
 ];
 
 export default function Pricing({ onLogin, onRegister, onCheckout, isAuthenticated }: PricingProps) {
+  const { currency, setCurrency, symbol } = useCurrency();
   return (
     <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #0d0b1e 0%, #1a1635 50%, #2d2654 100%)' }}>
       {/* Header */}
@@ -74,6 +79,19 @@ export default function Pricing({ onLogin, onRegister, onCheckout, isAuthenticat
             <span className="text-lg font-display font-bold text-white">Vantage</span>
           </a>
           <div className="flex items-center gap-4">
+            {/* Currency toggle */}
+            <div className="flex items-center rounded-full bg-white/5 border border-white/10 p-0.5" role="group" aria-label="Currency">
+              <button
+                onClick={() => setCurrency('gbp')}
+                className={`px-2.5 py-1 rounded-full text-xs font-bold transition-colors ${currency === 'gbp' ? 'bg-violet-600 text-white' : 'text-white/50 hover:text-white'}`}
+                aria-pressed={currency === 'gbp'}
+              >{'\u00A3 GBP'}</button>
+              <button
+                onClick={() => setCurrency('usd')}
+                className={`px-2.5 py-1 rounded-full text-xs font-bold transition-colors ${currency === 'usd' ? 'bg-violet-600 text-white' : 'text-white/50 hover:text-white'}`}
+                aria-pressed={currency === 'usd'}
+              >$ USD</button>
+            </div>
             {isAuthenticated ? (
               <a href="/dashboard" className="text-white/70 hover:text-white font-semibold">
                 Dashboard
@@ -133,7 +151,7 @@ export default function Pricing({ onLogin, onRegister, onCheckout, isAuthenticat
                 </div>
 
                 <div className="mb-6">
-                  <span className="text-4xl font-bold text-white">£{plan.price}</span>
+                  <span className="text-4xl font-bold text-white">{symbol}{currency === 'usd' ? plan.usd : plan.gbp}</span>
                   <span className="text-white/50">{plan.isTopup ? ' one-time' : '/month'}</span>
                 </div>
 

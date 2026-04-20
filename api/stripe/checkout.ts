@@ -9,12 +9,27 @@ const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL |
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 
 const VALID_PLANS = ['starter', 'pro', 'premium'] as const;
+const VALID_CURRENCIES = ['gbp', 'usd'] as const;
 
-const PLAN_PRICES: Record<string, string> = {
+const PLAN_PRICES_GBP: Record<string, string> = {
   'starter': process.env.STRIPE_PRICE_STARTER || process.env.STRIPE_STARTER_PRICE_ID || '',
   'pro': process.env.STRIPE_PRICE_PRO || process.env.STRIPE_PRO_PRICE_ID || '',
   'premium': process.env.STRIPE_PRICE_PREMIUM || process.env.STRIPE_PREMIUM_PRICE_ID || '',
 };
+
+const PLAN_PRICES_USD: Record<string, string> = {
+  'starter': process.env.STRIPE_PRICE_STARTER_USD || '',
+  'pro': process.env.STRIPE_PRICE_PRO_USD || '',
+  'premium': process.env.STRIPE_PRICE_PREMIUM_USD || '',
+};
+
+function getPriceForPlan(plan: string, currency: string): string {
+  if (currency === 'usd') {
+    // Fall back to GBP if USD is not configured
+    return PLAN_PRICES_USD[plan] || PLAN_PRICES_GBP[plan];
+  }
+  return PLAN_PRICES_GBP[plan];
+}
 
 function getAllowedOrigin(requestOrigin: string | undefined): string {
   const allowed = process.env.APP_URL || process.env.VERCEL_URL;
@@ -35,7 +50,7 @@ export default async function handler(request: any, response: any) {
     return response.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { priceId, plan } = request.body as { priceId?: string; plan?: string };
+  const { priceId, plan, currency } = request.body as { priceId?: string; plan?: string; currency?: string };
 
   const authHeader = request.headers.authorization;
   if (!authHeader) {
@@ -103,7 +118,12 @@ export default async function handler(request: any, response: any) {
       return response.status(400).json({ error: 'Invalid plan' });
     }
 
-    const stripePriceId = PLAN_PRICES[planKey];
+    const currencyKey = (currency || 'gbp').toLowerCase();
+    if (!VALID_CURRENCIES.includes(currencyKey as any)) {
+      return response.status(400).json({ error: 'Invalid currency' });
+    }
+
+    const stripePriceId = getPriceForPlan(planKey, currencyKey);
     if (!stripePriceId) {
       return response.status(500).json({ error: 'Plan pricing is not configured' });
     }
@@ -122,6 +142,7 @@ export default async function handler(request: any, response: any) {
         user_id: user.id,
         plan: planKey,
         type: isTopup ? 'topup' : 'subscription',
+        currency: currencyKey,
       },
     };
 

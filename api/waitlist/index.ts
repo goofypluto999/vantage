@@ -66,7 +66,7 @@ export default async function handler(request: any, response: any) {
       if (errorData.code === '23505') {
         return response.status(409).json({ success: false, error: 'Email already on waitlist' });
       }
-      return response.status(500).json({ success: false, error: errorData.message || 'Failed to add to waitlist' });
+      return response.status(500).json({ success: false, error: 'Failed to add to waitlist' });
     }
 
     // Count uses service key to bypass RLS (no SELECT policy on waitlist)
@@ -82,7 +82,7 @@ export default async function handler(request: any, response: any) {
 
     return response.status(201).json({ success: true, position: total });
   } catch (error: any) {
-    console.error('Waitlist error:', error?.message || error);
-    return response.status(500).json({ success: false, error: error?.message || 'Internal server error' });
+    console.error('Waitlist error');
+    return response.status(500).json({ success: false, error: 'Internal server error' });
   }
 }

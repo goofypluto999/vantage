@@ -17,7 +17,7 @@ function getAllowedOrigin(requestOrigin: string | undefined): string {
   if (requestOrigin && /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(requestOrigin)) {
     return requestOrigin;
   }
-  return requestOrigin || '';
+  return '';
 }
 
 export default async function handler(request: any, response: any) {

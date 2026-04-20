@@ -75,6 +75,10 @@ export default async function handler(request: any, response: any) {
     if (!coverLetter || !tone) {
       return response.status(400).json({ error: 'coverLetter and tone are required' });
     }
+    const VALID_TONES = ['Formal', 'Warm', 'Direct', 'Creative'];
+    if (!VALID_TONES.includes(tone)) {
+      return response.status(400).json({ error: 'Invalid tone' });
+    }
     if (coverLetter.length > 10000) {
       return response.status(400).json({ error: 'Cover letter text is too long' });
     }
