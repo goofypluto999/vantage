@@ -2,7 +2,7 @@ import { motion } from 'motion/react';
 import { Link } from 'react-router-dom';
 import { Star, ArrowLeft, Shield, Mail } from 'lucide-react';
 
-const LAST_UPDATED = '9 April 2026';
+const LAST_UPDATED = '20 April 2026';
 
 const sections = [
   {
@@ -124,12 +124,12 @@ const sections = [
   {
     id: 'your-rights',
     title: '9. Your Rights',
-    content: `Under UK GDPR and applicable data protection law, you have the following rights:\n\n- Right of Access: request a copy of the personal data we hold about you\n- Right to Rectification: request correction of inaccurate or incomplete data\n- Right to Erasure: request deletion of your personal data ("right to be forgotten")\n- Right to Data Portability: request your data in a structured, machine-readable format\n- Right to Restrict Processing: request that we limit how we process your data\n- Right to Object: object to processing based on legitimate interests\n- Right to Withdraw Consent: withdraw consent at any time where processing is based on consent\n\nTo exercise any of these rights, contact us at support@usevantage.co.uk. We will respond to your request within one month, as required by law. We may ask you to verify your identity before processing your request.`,
+    content: `Under UK GDPR and applicable data protection law, you have the following rights:\n\n- Right of Access: request a copy of the personal data we hold about you\n- Right to Rectification: request correction of inaccurate or incomplete data\n- Right to Erasure: request deletion of your personal data ("right to be forgotten")\n- Right to Data Portability: request your data in a structured, machine-readable format\n- Right to Restrict Processing: request that we limit how we process your data\n- Right to Object: object to processing based on legitimate interests\n- Right to Withdraw Consent: withdraw consent at any time where processing is based on consent\n\nTo exercise any of these rights, contact us at giovanni.sizino.ennes@hotmail.co.uk. We will respond to your request within one month, as required by law. We may ask you to verify your identity before processing your request.`,
   },
   {
     id: 'children',
     title: '10. Children',
-    content: `Vantage is not intended for use by anyone under the age of 16. We do not knowingly collect personal data from children under 16. If you believe we have inadvertently collected data from a child under 16, please contact us immediately at support@usevantage.co.uk and we will delete it promptly.`,
+    content: `Vantage is not intended for use by anyone under the age of 16. We do not knowingly collect personal data from children under 16. If you believe we have inadvertently collected data from a child under 16, please contact us immediately at giovanni.sizino.ennes@hotmail.co.uk and we will delete it promptly.`,
   },
   {
     id: 'security',
@@ -144,7 +144,7 @@ const sections = [
   {
     id: 'contact',
     title: '13. Contact',
-    content: `If you have any questions, concerns, or requests regarding this Privacy Policy or how we handle your personal data, please contact us:\n\nEmail: support@usevantage.co.uk`,
+    content: `If you have any questions, concerns, or requests regarding this Privacy Policy or how we handle your personal data, please contact us:\n\nEmail: giovanni.sizino.ennes@hotmail.co.uk`,
   },
   {
     id: 'ico',
@@ -265,10 +265,10 @@ export default function PrivacyPolicy() {
               Questions about this policy?
             </p>
             <a
-              href="mailto:support@usevantage.co.uk"
+              href="mailto:giovanni.sizino.ennes@hotmail.co.uk"
               className="text-violet-400 hover:text-violet-300 font-semibold transition-colors"
             >
-              support@usevantage.co.uk
+              giovanni.sizino.ennes@hotmail.co.uk
             </a>
           </div>
         </motion.div>

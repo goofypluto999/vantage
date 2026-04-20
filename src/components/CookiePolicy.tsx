@@ -255,10 +255,10 @@ export default function CookiePolicy() {
             <p className={textClass}>
               If you have questions about our use of cookies, contact us at{' '}
               <a
-                href="mailto:support@usevantage.co.uk"
+                href="mailto:giovanni.sizino.ennes@hotmail.co.uk"
                 className="text-violet-400 hover:text-violet-300 underline underline-offset-2"
               >
-                support@usevantage.co.uk
+                giovanni.sizino.ennes@hotmail.co.uk
               </a>
               .
             </p>

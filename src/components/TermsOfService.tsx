@@ -136,17 +136,19 @@ export default function TermsOfService() {
               </ul>
             </section>
 
-            {/* 6. Credit System */}
+            {/* 6. Token System */}
             <section className={sectionClass}>
-              <h2 className={headingClass}>6. Credit System</h2>
+              <h2 className={headingClass}>6. Token System</h2>
               <p className={bodyClass}>
-                Each subscription plan includes a monthly allocation of credits. Credits are consumed when you use the Service to generate analyses, cover letters, interview preparation materials, and other AI-generated outputs.
+                The Service operates on an additive token balance model. Tokens are awarded when you pay for the Starter top-up, when you subscribe to Pro or Premium, and each time a subscription renews. Tokens are consumed when you use AI features (for example, a full analysis currently costs 3 tokens).
               </p>
               <ul className={`${listClass} mt-3`}>
-                <li>Credits reset at the beginning of each billing cycle. Unused credits from the previous period are forfeited and do not carry over.</li>
-                <li>The number of credits consumed per action is specified within the Service interface and may vary by feature.</li>
-                <li>We reserve the right to modify credit allocations, consumption rates, and the credit system generally at any time with reasonable notice.</li>
-                <li>Credits have no monetary value, cannot be exchanged for cash, transferred to another account, or refunded.</li>
+                <li>Tokens are <span className={emphasisClass}>additive and do not expire</span>. Balances carry over indefinitely and are never reset at a billing boundary.</li>
+                <li>Upgrading, downgrading, or switching plans adds the new plan's tokens to your existing balance; it does not replace or reduce your current balance.</li>
+                <li>Cancelling a subscription does not remove any tokens you have already been granted. You keep all previously awarded tokens.</li>
+                <li>The number of tokens consumed per action is indicated within the Service interface and may change with reasonable notice.</li>
+                <li>We reserve the right to modify token grants, consumption rates, and the token system generally at any time with reasonable notice. Changes will not retroactively reduce balances you have already paid for.</li>
+                <li>Tokens have <span className={emphasisClass}>no monetary value</span>, cannot be exchanged for cash, transferred to another account, resold, or refunded once delivered.</li>
               </ul>
             </section>
 
@@ -341,7 +343,7 @@ export default function TermsOfService() {
             <section className={sectionClass}>
               <h2 className={headingClass}>17. Dispute Resolution</h2>
               <p className={bodyClass}>
-                In the event of any dispute, claim, or controversy arising out of or relating to these Terms or the Service, you agree to first attempt to resolve the matter informally by contacting us at <a href="mailto:support@usevantage.co.uk" className="text-violet-400 hover:text-violet-300 underline underline-offset-2 transition-colors">support@usevantage.co.uk</a>.
+                In the event of any dispute, claim, or controversy arising out of or relating to these Terms or the Service, you agree to first attempt to resolve the matter informally by contacting us at <a href="mailto:giovanni.sizino.ennes@hotmail.co.uk" className="text-violet-400 hover:text-violet-300 underline underline-offset-2 transition-colors">giovanni.sizino.ennes@hotmail.co.uk</a>.
               </p>
               <p className={`${bodyClass} mt-3`}>
                 If the dispute is not resolved within <span className={emphasisClass}>thirty (30) days</span> of your initial written notification, either party may pursue formal resolution through the courts of England and Wales in accordance with Section 16 above.
@@ -395,14 +397,8 @@ export default function TermsOfService() {
               <div className="mt-4 bg-violet-500/5 border border-violet-500/10 rounded-xl p-5">
                 <p className="text-white/70 text-sm">
                   <span className={emphasisClass}>Email:</span>{' '}
-                  <a href="mailto:support@usevantage.co.uk" className="text-violet-400 hover:text-violet-300 underline underline-offset-2 transition-colors">
-                    support@usevantage.co.uk
-                  </a>
-                </p>
-                <p className="text-white/70 text-sm mt-2">
-                  <span className={emphasisClass}>Website:</span>{' '}
-                  <a href="https://usevantage.co.uk" className="text-violet-400 hover:text-violet-300 underline underline-offset-2 transition-colors" target="_blank" rel="noopener noreferrer">
-                    usevantage.co.uk
+                  <a href="mailto:giovanni.sizino.ennes@hotmail.co.uk" className="text-violet-400 hover:text-violet-300 underline underline-offset-2 transition-colors">
+                    giovanni.sizino.ennes@hotmail.co.uk
                   </a>
                 </p>
               </div>
@@ -413,7 +409,7 @@ export default function TermsOfService() {
           {/* Footer */}
           <div className="mt-12 text-center">
             <p className="text-white/30 text-xs">
-              These Terms of Service were last updated on 9 April 2026.
+              These Terms of Service were last updated on 20 April 2026.
             </p>
             <div className="mt-4 flex items-center justify-center gap-6 text-xs">
               <Link to="/" className="text-white/40 hover:text-white/70 transition-colors">Home</Link>
