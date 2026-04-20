@@ -83,7 +83,7 @@ const PLANS = [
 
 export default function Dashboard() {
   const { user, profile, signOut, refreshProfile } = useAuth();
-  const { currency, setCurrency, symbol } = useCurrency();
+  const { currency, symbol } = useCurrency();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [checkoutSuccess, setCheckoutSuccess] = useState(false);
@@ -283,22 +283,6 @@ export default function Dashboard() {
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
               <div className="w-2 h-2 bg-emerald-400 rounded-full" />
               <span className="text-sm font-bold text-emerald-400">{profile ? creditsRemaining : '--'} Tokens</span>
-            </div>
-
-            {/* Currency toggle */}
-            <div className="flex items-center rounded-full bg-white/5 border border-white/10 p-0.5" role="group" aria-label="Currency">
-              <button
-                onClick={() => setCurrency('gbp')}
-                className={`px-2.5 py-1 rounded-full text-xs font-bold transition-colors ${currency === 'gbp' ? 'bg-violet-600 text-white' : 'text-white/50 hover:text-white'}`}
-                aria-pressed={currency === 'gbp'}
-                title="British Pounds"
-              >{'\u00A3 GBP'}</button>
-              <button
-                onClick={() => setCurrency('usd')}
-                className={`px-2.5 py-1 rounded-full text-xs font-bold transition-colors ${currency === 'usd' ? 'bg-violet-600 text-white' : 'text-white/50 hover:text-white'}`}
-                aria-pressed={currency === 'usd'}
-                title="US Dollars"
-              >$ USD</button>
             </div>
 
             {profile?.plan && (
