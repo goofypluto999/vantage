@@ -99,13 +99,16 @@ export default async function handler(request: any, response: any) {
                      latest.status === 'active' ? 'active' :
                      latest.status === 'canceled' ? 'cancelled' : 'past_due';
 
-      // Derive plan from latest sub's price
+      // Derive plan from latest sub's price (supports both GBP and USD price IDs)
       const latestPriceId = latest.items?.data[0]?.price?.id || '';
-      const starterPriceNoActive = process.env.STRIPE_PRICE_STARTER || process.env.STRIPE_STARTER_PRICE_ID || '';
-      const proPriceNoActive = process.env.STRIPE_PRICE_PRO || process.env.STRIPE_PRO_PRICE_ID || '';
-      const premiumPriceNoActive = process.env.STRIPE_PRICE_PREMIUM || process.env.STRIPE_PREMIUM_PRICE_ID || '';
-      const latestPlan = latestPriceId === premiumPriceNoActive ? 'premium' :
-                         latestPriceId === proPriceNoActive ? 'pro' : 'starter';
+      const starterGbpNA = process.env.STRIPE_PRICE_STARTER || process.env.STRIPE_STARTER_PRICE_ID || '';
+      const proGbpNA = process.env.STRIPE_PRICE_PRO || process.env.STRIPE_PRO_PRICE_ID || '';
+      const premiumGbpNA = process.env.STRIPE_PRICE_PREMIUM || process.env.STRIPE_PREMIUM_PRICE_ID || '';
+      const starterUsdNA = process.env.STRIPE_PRICE_STARTER_USD || '';
+      const proUsdNA = process.env.STRIPE_PRICE_PRO_USD || '';
+      const premiumUsdNA = process.env.STRIPE_PRICE_PREMIUM_USD || '';
+      const latestPlan = (latestPriceId === premiumGbpNA || latestPriceId === premiumUsdNA) ? 'premium' :
+                         (latestPriceId === proGbpNA || latestPriceId === proUsdNA) ? 'pro' : 'starter';
 
       await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${user.id}`, {
         method: 'PATCH',
@@ -138,14 +141,17 @@ export default async function handler(request: any, response: any) {
     const preferredSubs = keepingSubs.length > 0 ? keepingSubs : cancellingSubs;
     const isCancelling = keepingSubs.length === 0 && cancellingSubs.length > 0;
 
-    const starterPrice = process.env.STRIPE_PRICE_STARTER || process.env.STRIPE_STARTER_PRICE_ID || '';
-    const proPrice = process.env.STRIPE_PRICE_PRO || process.env.STRIPE_PRO_PRICE_ID || '';
-    const premiumPrice = process.env.STRIPE_PRICE_PREMIUM || process.env.STRIPE_PREMIUM_PRICE_ID || '';
+    const starterGbp = process.env.STRIPE_PRICE_STARTER || process.env.STRIPE_STARTER_PRICE_ID || '';
+    const proGbp = process.env.STRIPE_PRICE_PRO || process.env.STRIPE_PRO_PRICE_ID || '';
+    const premiumGbp = process.env.STRIPE_PRICE_PREMIUM || process.env.STRIPE_PREMIUM_PRICE_ID || '';
+    const starterUsd = process.env.STRIPE_PRICE_STARTER_USD || '';
+    const proUsd = process.env.STRIPE_PRICE_PRO_USD || '';
+    const premiumUsd = process.env.STRIPE_PRICE_PREMIUM_USD || '';
 
     function getPlan(priceId: string): string {
-      if (priceId === premiumPrice) return 'premium';
-      if (priceId === proPrice) return 'pro';
-      if (priceId === starterPrice) return 'starter';
+      if (priceId === premiumGbp || priceId === premiumUsd) return 'premium';
+      if (priceId === proGbp || priceId === proUsd) return 'pro';
+      if (priceId === starterGbp || priceId === starterUsd) return 'starter';
       return 'starter';
     }
 
