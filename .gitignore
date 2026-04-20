@@ -27,3 +27,5 @@ npm-debug.log*
 .cache/
 .vite/
 .vercel
+giovanni-cv.pdf
+*.pdf
