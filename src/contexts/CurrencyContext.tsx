@@ -17,14 +17,26 @@ const CurrencyContext = createContext<CurrencyContextType>({
 });
 
 const STORAGE_KEY = 'vantage-currency';
+const GEO_COOKIE = 'vantage-geo';
+
+function readGeoCountry(): string {
+  if (typeof document === 'undefined') return '';
+  const match = document.cookie.match(new RegExp('(?:^|; )' + GEO_COOKIE + '=([^;]+)'));
+  return match ? decodeURIComponent(match[1]).toUpperCase() : '';
+}
 
 function detectDefaultCurrency(): Currency {
   if (typeof window === 'undefined') return 'gbp';
+  // Manual override (user clicked toggle) always wins
   try {
     const stored = window.localStorage.getItem(STORAGE_KEY);
     if (stored === 'usd' || stored === 'gbp') return stored;
   } catch { /* ignore */ }
-  // Detect from browser locale — en-US, es-US, etc. default to USD
+  // Edge middleware sets vantage-geo cookie with ISO country code from the user's real IP
+  const country = readGeoCountry();
+  if (country === 'US') return 'usd';
+  if (country) return 'gbp'; // Any other detected country → GBP
+  // Fallback if cookie not set yet (first request before middleware runs, or static cache)
   const locale = (navigator.language || '').toLowerCase();
   if (locale.endsWith('-us') || locale === 'en-us') return 'usd';
   return 'gbp';

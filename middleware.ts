@@ -1,6 +1,8 @@
-// Vercel Edge Middleware — rate limiting for API routes
+// Vercel Edge Middleware — rate limiting + geo country cookie.
 // In-memory sliding window. Resets on cold starts but protects against abuse.
 // For production at scale, replace with Upstash Redis.
+
+import { next } from '@vercel/edge';
 
 interface RateBucket {
   count: number;
@@ -37,10 +39,28 @@ function getLimit(pathname: string) {
   return null;
 }
 
+// Set a geo country cookie on non-API page loads so the frontend can
+// default currency based on real IP geolocation (not browser language).
+function geoCookieResponse(request: Request): Response {
+  const country = request.headers.get('x-vercel-ip-country') || '';
+  const response = next();
+  if (country) {
+    // 30-day cookie, readable by client JS so CurrencyContext can use it
+    response.headers.append(
+      'Set-Cookie',
+      `vantage-geo=${country}; Path=/; Max-Age=2592000; SameSite=Lax`
+    );
+  }
+  return response;
+}
+
 export default function middleware(request: Request): Response | undefined {
   const url = new URL(request.url);
 
-  if (!url.pathname.startsWith('/api/')) return undefined;
+  // Non-API routes: set geo cookie for currency defaulting, then pass through
+  if (!url.pathname.startsWith('/api/')) {
+    return geoCookieResponse(request);
+  }
   if (url.pathname.startsWith('/api/stripe/webhook')) return undefined;
 
   const limit = getLimit(url.pathname);
@@ -86,5 +106,6 @@ export default function middleware(request: Request): Response | undefined {
 }
 
 export const config = {
-  matcher: '/api/:path*',
+  // Match everything EXCEPT static assets, favicons, and source maps
+  matcher: ['/', '/((?!_next/|assets/|favicon|robots|sitemap|.*\\.).*)', '/api/:path*'],
 };
