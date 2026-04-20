@@ -52,6 +52,12 @@ export async function signUp(email: string, password: string, fullName?: string)
     }
   });
   if (error) throw error;
+  // Supabase's email-enumeration protection returns a success response with
+  // an empty identities array when the email is already registered.
+  // Detect that case and surface a clear error to the user.
+  if (data?.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) {
+    throw new Error('User already registered');
+  }
   return data;
 }
 
