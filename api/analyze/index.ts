@@ -407,7 +407,8 @@ Rules:
       const preflightRes = await ai.models.generateContent({
         model: 'models/gemini-2.5-flash',
         contents: [{ parts: [{ text: preflightPrompt }] }],
-        config: { tools: [{ googleSearch: {} }] },
+        // temperature: 0 — job data extraction, must be deterministic
+        config: { tools: [{ googleSearch: {} }], temperature: 0 },
       });
 
       if (preflightRes.text && preflightRes.text.length > 50) {
@@ -556,12 +557,16 @@ Requirements:
   const useGoogleSearch = useSearch && !hasJobDesc;
 
   const callGemini = async () => {
+    // temperature: 0 — deterministic output for the same CV+role inputs.
+    // Prevents fit-score drift across re-runs. Creative variation is already
+    // available to the user via the tone switcher (rewrite-tone endpoint),
+    // which remains stochastic by design.
     const res = await ai.models.generateContent({
       model: 'models/gemini-2.5-flash',
       contents: [{ parts }],
       config: useGoogleSearch
-        ? { tools: [{ googleSearch: {} }] }
-        : { responseMimeType: 'application/json' },
+        ? { tools: [{ googleSearch: {} }], temperature: 0 }
+        : { responseMimeType: 'application/json', temperature: 0 },
     });
     return res;
   };

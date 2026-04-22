@@ -85,7 +85,8 @@ Return only the JSON object, no other text.`;
     const aiResponse = await ai.models.generateContent({
       model: 'models/gemini-2.5-flash',
       contents: [{ parts: [{ text: prompt }] }],
-      config: { responseMimeType: 'application/json' },
+      // temperature: 0 — grading must be deterministic for the same answer
+      config: { responseMimeType: 'application/json', temperature: 0 },
     });
 
     if (!aiResponse.text) throw new Error('No response from AI');
