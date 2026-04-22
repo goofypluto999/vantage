@@ -447,7 +447,7 @@ Rules:
     "cvMatchPoints": ["<CV evidence that matches req 1>", "<CV evidence that matches req 2>", "<CV evidence that matches req 3>", "<CV evidence that matches req 4>"],
     "strategicBrief": "<single string combining all 4 brief sections as 4 paragraphs>",
     "coverLetter": "<3 paragraphs, tailored to brand voice>"${includeFitScore ? ',\n  "cvFitScore": <integer 0-100>,\n  "cvFitSummary": "<2 sentences>"' : ''},
-    "presentation": [{"title":"...","content":"..."}]
+    "presentation": [{"title":"<slide label>","content":"<what the candidate actually says on this slide — speaker-ready script in first person>"}]
   }`;
 
   const prompt = `You are a brutally honest career analyst. No sugar-coating, no dopamine-pushing, no flattery. Clinical accuracy only.
@@ -499,7 +499,37 @@ Requirements:
   0-19 = No match (completely unrelated background)
   Be HARSH. A marketing professional applying to a defence engineering role is NOT an 88. Score what the CV ACTUALLY demonstrates vs what the role ACTUALLY requires. Do not inflate scores to be encouraging.
 - cvFitSummary: 2 sentences. First sentence: what matches. Second sentence: what's missing or weak. Be direct.` : ''}
-- presentation: exactly 6 slides`;
+- presentation: exactly 6 slides — this is NOT a descriptive summary. It is a ready-to-deliver opening pitch the candidate can walk a hiring manager through in the first 5 minutes of an interview (or a "tell me about yourself" / panel pitch scenario).
+
+  Each slide's "content" MUST be written in FIRST PERSON as a short SPEAKER SCRIPT the candidate can literally say out loud (natural spoken English, not bullet points, not analyst prose). 2-4 sentences, 50-90 words. Use the hiring company's actual name. Reference specific CV achievements with numbers/outcomes where available. If the CV lacks a number, use the strongest concrete detail instead — never fabricate metrics.
+
+  The 6 slides MUST follow this exact structure and order:
+
+  Slide 1 — "Opening Hook"
+  title: "Opening Hook"
+  content: A confident 2-sentence opener the candidate delivers in the first 30 seconds. Mention one specific, verified thing about the company (a recent initiative, their growth, a product, a value) and tie it to why this role matters to the candidate personally. No fluff, no "thank you for having me."
+
+  Slide 2 — "Why <CompanyName>"
+  title: "Why <actual company name>"
+  content: A first-person explanation of why THIS company specifically — not the industry, not the job title. Cite a specific company signal (mission line, recent news, stated culture) from the Company Snapshot. Say what resonates and why. No generic "I love your mission."
+
+  Slide 3 — "Why This Role"
+  title: "Why This Role"
+  content: How this role fits the candidate's trajectory. Connect 1-2 things they've already done to what the role requires. Be honest: if there's a clear progression, name it. If the role is a stretch, position it as the next deliberate step, not a random jump.
+
+  Slide 4 — "My Top 3 Proof Points"
+  title: "My Top 3 Proof Points"
+  content: A spoken version of the 3 strongest CV evidence items mapped to the role's hardest requirements. Phrase each as "When I did X, I delivered Y." Use real numbers/outcomes from the CV. If the CV has no hard numbers for a point, describe the concrete scope (team size, scale, stakeholders) instead. Keep it tight — this is the highest-value slide.
+
+  Slide 5 — "My First 90 Days"
+  title: "My First 90 Days"
+  content: A credible, specific 30/60/90-style plan tailored to this role at this company. What would the candidate learn first, what would they deliver by day 30, by day 90. Ground it in the role requirements — don't invent initiatives the company hasn't signalled.
+
+  Slide 6 — "A Question For You"
+  title: "A Question For You"
+  content: A single sharp question the candidate would ask the interviewer that demonstrates they've done their homework. Should reference a specific company detail (recent hire, product launch, stated priority) and force a substantive answer — not yes/no, not softball. This is the candidate flipping the interview and showing seniority.
+
+  Write the content as if the candidate is rehearsing — natural, spoken, ready to deliver. No meta-commentary like "The candidate will then...", no third person, no slide-design instructions.`;
 
   // PDF: send as inline data (Gemini parses PDFs natively — better than text extraction)
   // Text/DOCX: already extracted to clean text by the client
