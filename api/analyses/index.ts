@@ -37,8 +37,8 @@ export default async function handler(request: any, response: any) {
     const analysisId = url.searchParams.get('id');
 
     if (analysisId) {
-      // Validate UUID format
-      if (!/^[0-9a-f-]{36}$/.test(analysisId)) {
+      // Validate strict UUID v4-ish format (hyphens in correct positions)
+      if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(analysisId)) {
         return response.status(400).json({ error: 'Invalid analysis ID' });
       }
 

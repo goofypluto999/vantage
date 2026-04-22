@@ -267,6 +267,22 @@ async function deductTokens(userId: string, amount: number): Promise<number> {
   return res.json();
 }
 
+async function refundTokens(userId: string, amount: number): Promise<void> {
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/rpc/add_tokens`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_SERVICE_KEY,
+        'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+      },
+      body: JSON.stringify({ p_user_id: userId, p_amount: amount }),
+    });
+  } catch (err: any) {
+    console.error('Refund failed for user', userId, 'amount', amount, err?.message || '');
+  }
+}
+
 async function saveAnalysis(
   userId: string,
   jobUrl: string,
@@ -663,10 +679,32 @@ export default async function handler(request: any, response: any) {
       return response.status(400).json({ error: 'Job description is too long' });
     }
 
-    const results = await generateJobIntelligence(cvText, jobUrl, jobDescText, includeFitScore, cvBase64, cvMimeType);
+    // Deduct FIRST (atomic; raises 'Insufficient tokens' if balance too low).
+    // Refund on any failure so the user isn't charged for a failed analysis.
+    let newBalance: number;
+    try {
+      newBalance = await deductTokens(user.id, COST_PER_ANALYSIS);
+    } catch (err: any) {
+      if (err.message?.includes('Insufficient')) {
+        return response.status(403).json({ error: 'Insufficient tokens' });
+      }
+      throw err;
+    }
 
-    const newBalance = await deductTokens(user.id, COST_PER_ANALYSIS);
-    await saveAnalysis(user.id, jobUrl, results, COST_PER_ANALYSIS);
+    let results: JobIntelligence;
+    try {
+      results = await generateJobIntelligence(cvText, jobUrl, jobDescText, includeFitScore, cvBase64, cvMimeType);
+    } catch (err) {
+      await refundTokens(user.id, COST_PER_ANALYSIS);
+      throw err;
+    }
+
+    // Persist analysis (best-effort — don't fail the request if this fails)
+    try {
+      await saveAnalysis(user.id, jobUrl, results, COST_PER_ANALYSIS);
+    } catch (err: any) {
+      console.error('saveAnalysis failed (non-fatal):', err?.message || 'unknown');
+    }
 
     return response.status(200).json({
       success: true,

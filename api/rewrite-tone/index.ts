@@ -9,23 +9,7 @@ const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 
 const COST = 1;
 
-async function getTokenBalance(userId: string): Promise<number> {
-  const res = await fetch(
-    `${SUPABASE_URL}/rest/v1/profiles?id=eq.${userId}&select=token_balance`,
-    {
-      headers: {
-        'apikey': SUPABASE_SERVICE_KEY,
-        'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
-      },
-    }
-  );
-  if (!res.ok) return 0;
-  const profiles = await res.json();
-  if (!profiles || profiles.length === 0) return 0;
-  return profiles[0].token_balance ?? 0;
-}
-
-async function deductTokens(userId: string): Promise<number> {
+async function deductTokens(userId: string, amount: number): Promise<number> {
   const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/deduct_tokens`, {
     method: 'POST',
     headers: {
@@ -33,7 +17,7 @@ async function deductTokens(userId: string): Promise<number> {
       'apikey': SUPABASE_SERVICE_KEY,
       'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
     },
-    body: JSON.stringify({ p_user_id: userId, p_amount: COST }),
+    body: JSON.stringify({ p_user_id: userId, p_amount: amount }),
   });
   if (!res.ok) {
     const errText = await res.text();
@@ -41,6 +25,24 @@ async function deductTokens(userId: string): Promise<number> {
     throw new Error('Failed to deduct tokens');
   }
   return res.json();
+}
+
+async function refundTokens(userId: string, amount: number): Promise<void> {
+  // Best-effort refund via add_tokens RPC. If this fails we log but don't crash
+  // the request — the user will see the generation error and we'll eat the cost.
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/rpc/add_tokens`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_SERVICE_KEY,
+        'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+      },
+      body: JSON.stringify({ p_user_id: userId, p_amount: amount }),
+    });
+  } catch (err: any) {
+    console.error('Refund failed for user', userId, 'amount', amount, err?.message || '');
+  }
 }
 
 export default async function handler(request: any, response: any) {
@@ -65,12 +67,8 @@ export default async function handler(request: any, response: any) {
     if (!userRes.ok) return response.status(401).json({ error: 'Invalid token' });
 
     const user = await userRes.json();
-    const balance = await getTokenBalance(user.id);
 
-    if (balance < COST) {
-      return response.status(403).json({ error: 'Insufficient tokens', token_balance: balance });
-    }
-
+    // Validate inputs BEFORE spending tokens
     const { coverLetter, tone, roleContext } = request.body;
     if (!coverLetter || !tone) {
       return response.status(400).json({ error: 'coverLetter and tone are required' });
@@ -84,6 +82,18 @@ export default async function handler(request: any, response: any) {
     }
     if (roleContext && roleContext.length > 2000) {
       return response.status(400).json({ error: 'Role context is too long' });
+    }
+
+    // Deduct FIRST (atomic; raises 'Insufficient tokens' if balance too low).
+    // If generation fails after this, we refund.
+    let newBalance: number;
+    try {
+      newBalance = await deductTokens(user.id, COST);
+    } catch (err: any) {
+      if (err.message?.includes('Insufficient')) {
+        return response.status(403).json({ error: 'Insufficient tokens' });
+      }
+      throw err;
     }
 
     const prompt = `Rewrite this cover letter in a ${tone} tone. Keep the same factual content and structure but adjust the voice and style.
@@ -100,14 +110,18 @@ ${coverLetter}
 
 Return ONLY the rewritten cover letter text, no explanation or preamble.`;
 
-    const aiResponse = await ai.models.generateContent({
-      model: 'models/gemini-2.5-flash',
-      contents: [{ parts: [{ text: prompt }] }],
-    });
-
-    if (!aiResponse.text) throw new Error('No response from AI');
-
-    const newBalance = await deductTokens(user.id);
+    let aiResponse;
+    try {
+      aiResponse = await ai.models.generateContent({
+        model: 'models/gemini-2.5-flash',
+        contents: [{ parts: [{ text: prompt }] }],
+      });
+      if (!aiResponse.text) throw new Error('No response from AI');
+    } catch (err) {
+      // Refund on AI failure so the user isn't charged for nothing
+      await refundTokens(user.id, COST);
+      throw err;
+    }
 
     return response.status(200).json({
       success: true,

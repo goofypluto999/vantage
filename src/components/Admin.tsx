@@ -65,6 +65,18 @@ function formatTime(iso: string): string {
   return new Date(iso).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
 }
 
+// Defence-in-depth: user-supplied URLs (job_url) must be http(s) only.
+// Blocks javascript: / data: / vbscript: URLs that would XSS the admin on click.
+function safeHref(u: string | null | undefined): string | undefined {
+  if (!u) return undefined;
+  try {
+    const parsed = new URL(u);
+    return parsed.protocol === 'http:' || parsed.protocol === 'https:' ? u : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 function StatCard({ icon: Icon, label, value, sub, color }: {
   icon: typeof Users; label: string; value: string | number; sub?: string; color: string;
 }) {
@@ -222,8 +234,8 @@ export default function Admin() {
                       <div key={a.id} className="flex items-center justify-between p-3 rounded-lg bg-white/5">
                         <div>
                           <span className="text-white text-sm font-medium">{a.company_name || 'Unknown Company'}</span>
-                          {a.job_url && (
-                            <a href={a.job_url} target="_blank" rel="noopener noreferrer" className="ml-2">
+                          {safeHref(a.job_url) && (
+                            <a href={safeHref(a.job_url)} target="_blank" rel="noopener noreferrer" className="ml-2">
                               <ExternalLink className="w-3 h-3 inline text-white/30 hover:text-white/60" />
                             </a>
                           )}
@@ -310,8 +322,8 @@ export default function Admin() {
                           <span className="text-white text-sm font-medium truncate">{a.company_name || 'Unknown Company'}</span>
                           {a.job_title && <span className="text-white/40 text-xs truncate hidden md:inline">- {a.job_title}</span>}
                         </div>
-                        {a.job_url && (
-                          <a href={a.job_url} target="_blank" rel="noopener noreferrer" className="text-violet-400/60 text-xs hover:text-violet-400 truncate block max-w-[300px]">
+                        {safeHref(a.job_url) && (
+                          <a href={safeHref(a.job_url)} target="_blank" rel="noopener noreferrer" className="text-violet-400/60 text-xs hover:text-violet-400 truncate block max-w-[300px]">
                             {a.job_url}
                           </a>
                         )}

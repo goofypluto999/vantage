@@ -32,7 +32,9 @@ CREATE TABLE IF NOT EXISTS analyses (
   user_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
   company_name TEXT,
   job_title TEXT,
-  job_url TEXT,
+  -- job_url MUST be NULL or http(s) only. Blocks javascript:/data:/vbscript: URLs
+  -- that could stored-XSS the admin dashboard when rendered as an anchor href.
+  job_url TEXT CHECK (job_url IS NULL OR job_url ~* '^https?://'),
   results_json JSONB,
   tokens_spent INTEGER NOT NULL DEFAULT 3,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
@@ -185,6 +187,26 @@ GRANT EXECUTE ON FUNCTION add_tokens TO service_role;
 
 REVOKE EXECUTE ON FUNCTION deduct_tokens FROM authenticated, anon, public;
 GRANT EXECUTE ON FUNCTION deduct_tokens TO service_role;
+
+-- ============================================================================
+-- RETROACTIVE MIGRATION for existing databases (idempotent)
+-- Run this in the Supabase SQL Editor if the schema was created before the
+-- job_url CHECK constraint was added.
+-- ============================================================================
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.check_constraints
+    WHERE constraint_name = 'analyses_job_url_http_only'
+  ) THEN
+    -- First, null out any existing rows with non-http(s) URLs so the constraint applies cleanly
+    UPDATE analyses SET job_url = NULL
+      WHERE job_url IS NOT NULL AND job_url !~* '^https?://';
+    ALTER TABLE analyses
+      ADD CONSTRAINT analyses_job_url_http_only
+      CHECK (job_url IS NULL OR job_url ~* '^https?://');
+  END IF;
+END $$;
 
 -- ============================================================================
 -- TRIGGERS

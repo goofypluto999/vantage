@@ -223,10 +223,6 @@ export async function evaluateAnswer(
   return response.json();
 }
 
-export async function logout(): Promise<void> {
-  await fetchWithAuth('/auth/logout', { method: 'POST' });
-}
-
 export async function fetchAdminDashboard(): Promise<any> {
   const response = await fetchWithAuth('/admin/dashboard');
   if (!response.ok) {

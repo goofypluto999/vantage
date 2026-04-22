@@ -42,6 +42,22 @@ async function deductTokens(userId: string): Promise<number> {
   return res.json();
 }
 
+async function refundTokens(userId: string, amount: number): Promise<void> {
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/rpc/add_tokens`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_SERVICE_KEY,
+        'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+      },
+      body: JSON.stringify({ p_user_id: userId, p_amount: amount }),
+    });
+  } catch (err: any) {
+    console.error('Refund failed for user', userId, 'amount', amount, err?.message || '');
+  }
+}
+
 export default async function handler(request: any, response: any) {
   if (request.method !== 'POST') {
     return response.status(405).json({ error: 'Method not allowed' });
@@ -72,17 +88,24 @@ export default async function handler(request: any, response: any) {
       return response.status(403).json({ error: 'AI Mock Interview requires a Pro or Premium plan' });
     }
 
-    const balance = profile.token_balance ?? 0;
-    if (balance < COST) {
-      return response.status(403).json({ error: 'Insufficient tokens', token_balance: balance });
-    }
-
+    // Validate inputs BEFORE spending tokens
     const { roleContext } = request.body;
     if (!roleContext) {
       return response.status(400).json({ error: 'roleContext is required' });
     }
     if (roleContext.length > 2000) {
       return response.status(400).json({ error: 'Role context is too long' });
+    }
+
+    // Deduct FIRST (atomic). Refund if generation fails.
+    let newBalance: number;
+    try {
+      newBalance = await deductTokens(user.id);
+    } catch (err: any) {
+      if (err.message?.includes('Insufficient')) {
+        return response.status(403).json({ error: 'Insufficient tokens' });
+      }
+      throw err;
     }
 
     const prompt = `You are an expert interview coach preparing a candidate for the following role:
@@ -96,17 +119,20 @@ Return a JSON array of exactly 5 objects. Each object must have:
 
 Only return the JSON array, no other text.`;
 
-    const aiResponse = await ai.models.generateContent({
-      model: 'models/gemini-2.5-flash',
-      contents: [{ parts: [{ text: prompt }] }],
-      config: { responseMimeType: 'application/json' },
-    });
-
-    if (!aiResponse.text) throw new Error('No response from AI');
-
-    const questions = JSON.parse(aiResponse.text);
-
-    const newBalance = await deductTokens(user.id);
+    let questions: any;
+    try {
+      const aiResponse = await ai.models.generateContent({
+        model: 'models/gemini-2.5-flash',
+        contents: [{ parts: [{ text: prompt }] }],
+        config: { responseMimeType: 'application/json' },
+      });
+      if (!aiResponse.text) throw new Error('No response from AI');
+      questions = JSON.parse(aiResponse.text);
+    } catch (err) {
+      // Refund on AI failure
+      await refundTokens(user.id, COST);
+      throw err;
+    }
 
     return response.status(200).json({
       success: true,
