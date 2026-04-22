@@ -32,19 +32,24 @@ const PLAN_TOKENS: Record<string, number> = {
   'premium': 120,
 };
 
+// Trim env vars — paste errors in Vercel can leave trailing whitespace/newlines
+// which would cause price IDs to never match and silently mis-classify plans.
+const cleanEnv = (v: string | undefined) => (v || '').trim();
+
 // Map Stripe price IDs to plan names for trusted plan derivation.
 // Supports both GBP and USD price IDs (Path B multi-currency).
 function getPlanFromPriceId(priceId: string): string {
-  const starterGbp = process.env.STRIPE_PRICE_STARTER || process.env.STRIPE_STARTER_PRICE_ID || '';
-  const proGbp = process.env.STRIPE_PRICE_PRO || process.env.STRIPE_PRO_PRICE_ID || '';
-  const premiumGbp = process.env.STRIPE_PRICE_PREMIUM || process.env.STRIPE_PREMIUM_PRICE_ID || '';
-  const starterUsd = process.env.STRIPE_PRICE_STARTER_USD || '';
-  const proUsd = process.env.STRIPE_PRICE_PRO_USD || '';
-  const premiumUsd = process.env.STRIPE_PRICE_PREMIUM_USD || '';
+  const id = (priceId || '').trim();
+  const starterGbp = cleanEnv(process.env.STRIPE_PRICE_STARTER) || cleanEnv(process.env.STRIPE_STARTER_PRICE_ID);
+  const proGbp = cleanEnv(process.env.STRIPE_PRICE_PRO) || cleanEnv(process.env.STRIPE_PRO_PRICE_ID);
+  const premiumGbp = cleanEnv(process.env.STRIPE_PRICE_PREMIUM) || cleanEnv(process.env.STRIPE_PREMIUM_PRICE_ID);
+  const starterUsd = cleanEnv(process.env.STRIPE_PRICE_STARTER_USD);
+  const proUsd = cleanEnv(process.env.STRIPE_PRICE_PRO_USD);
+  const premiumUsd = cleanEnv(process.env.STRIPE_PRICE_PREMIUM_USD);
 
-  if (priceId === premiumGbp || priceId === premiumUsd) return 'premium';
-  if (priceId === proGbp || priceId === proUsd) return 'pro';
-  if (priceId === starterGbp || priceId === starterUsd) return 'starter';
+  if (id === premiumGbp || id === premiumUsd) return 'premium';
+  if (id === proGbp || id === proUsd) return 'pro';
+  if (id === starterGbp || id === starterUsd) return 'starter';
   return 'starter'; // fallback
 }
 

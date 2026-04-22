@@ -100,13 +100,15 @@ export default async function handler(request: any, response: any) {
                      latest.status === 'canceled' ? 'cancelled' : 'past_due';
 
       // Derive plan from latest sub's price (supports both GBP and USD price IDs)
-      const latestPriceId = latest.items?.data[0]?.price?.id || '';
-      const starterGbpNA = process.env.STRIPE_PRICE_STARTER || process.env.STRIPE_STARTER_PRICE_ID || '';
-      const proGbpNA = process.env.STRIPE_PRICE_PRO || process.env.STRIPE_PRO_PRICE_ID || '';
-      const premiumGbpNA = process.env.STRIPE_PRICE_PREMIUM || process.env.STRIPE_PREMIUM_PRICE_ID || '';
-      const starterUsdNA = process.env.STRIPE_PRICE_STARTER_USD || '';
-      const proUsdNA = process.env.STRIPE_PRICE_PRO_USD || '';
-      const premiumUsdNA = process.env.STRIPE_PRICE_PREMIUM_USD || '';
+      // Trim env + id so trailing whitespace from paste errors can't break matching.
+      const cleanEnv = (v: string | undefined) => (v || '').trim();
+      const latestPriceId = (latest.items?.data[0]?.price?.id || '').trim();
+      const starterGbpNA = cleanEnv(process.env.STRIPE_PRICE_STARTER) || cleanEnv(process.env.STRIPE_STARTER_PRICE_ID);
+      const proGbpNA = cleanEnv(process.env.STRIPE_PRICE_PRO) || cleanEnv(process.env.STRIPE_PRO_PRICE_ID);
+      const premiumGbpNA = cleanEnv(process.env.STRIPE_PRICE_PREMIUM) || cleanEnv(process.env.STRIPE_PREMIUM_PRICE_ID);
+      const starterUsdNA = cleanEnv(process.env.STRIPE_PRICE_STARTER_USD);
+      const proUsdNA = cleanEnv(process.env.STRIPE_PRICE_PRO_USD);
+      const premiumUsdNA = cleanEnv(process.env.STRIPE_PRICE_PREMIUM_USD);
       const latestPlan = (latestPriceId === premiumGbpNA || latestPriceId === premiumUsdNA) ? 'premium' :
                          (latestPriceId === proGbpNA || latestPriceId === proUsdNA) ? 'pro' : 'starter';
 
@@ -141,17 +143,19 @@ export default async function handler(request: any, response: any) {
     const preferredSubs = keepingSubs.length > 0 ? keepingSubs : cancellingSubs;
     const isCancelling = keepingSubs.length === 0 && cancellingSubs.length > 0;
 
-    const starterGbp = process.env.STRIPE_PRICE_STARTER || process.env.STRIPE_STARTER_PRICE_ID || '';
-    const proGbp = process.env.STRIPE_PRICE_PRO || process.env.STRIPE_PRO_PRICE_ID || '';
-    const premiumGbp = process.env.STRIPE_PRICE_PREMIUM || process.env.STRIPE_PREMIUM_PRICE_ID || '';
-    const starterUsd = process.env.STRIPE_PRICE_STARTER_USD || '';
-    const proUsd = process.env.STRIPE_PRICE_PRO_USD || '';
-    const premiumUsd = process.env.STRIPE_PRICE_PREMIUM_USD || '';
+    const trim = (v: string | undefined) => (v || '').trim();
+    const starterGbp = trim(process.env.STRIPE_PRICE_STARTER) || trim(process.env.STRIPE_STARTER_PRICE_ID);
+    const proGbp = trim(process.env.STRIPE_PRICE_PRO) || trim(process.env.STRIPE_PRO_PRICE_ID);
+    const premiumGbp = trim(process.env.STRIPE_PRICE_PREMIUM) || trim(process.env.STRIPE_PREMIUM_PRICE_ID);
+    const starterUsd = trim(process.env.STRIPE_PRICE_STARTER_USD);
+    const proUsd = trim(process.env.STRIPE_PRICE_PRO_USD);
+    const premiumUsd = trim(process.env.STRIPE_PRICE_PREMIUM_USD);
 
     function getPlan(priceId: string): string {
-      if (priceId === premiumGbp || priceId === premiumUsd) return 'premium';
-      if (priceId === proGbp || priceId === proUsd) return 'pro';
-      if (priceId === starterGbp || priceId === starterUsd) return 'starter';
+      const id = (priceId || '').trim();
+      if (id === premiumGbp || id === premiumUsd) return 'premium';
+      if (id === proGbp || id === proUsd) return 'pro';
+      if (id === starterGbp || id === starterUsd) return 'starter';
       return 'starter';
     }
 

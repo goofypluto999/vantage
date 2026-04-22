@@ -11,16 +11,20 @@ const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 const VALID_PLANS = ['starter', 'pro', 'premium'] as const;
 const VALID_CURRENCIES = ['gbp', 'usd'] as const;
 
+// Trim env vars — paste errors in Vercel can leave trailing whitespace/newlines
+// which Stripe treats as a different (non-existent) price ID.
+const cleanEnv = (v: string | undefined) => (v || '').trim();
+
 const PLAN_PRICES_GBP: Record<string, string> = {
-  'starter': process.env.STRIPE_PRICE_STARTER || process.env.STRIPE_STARTER_PRICE_ID || '',
-  'pro': process.env.STRIPE_PRICE_PRO || process.env.STRIPE_PRO_PRICE_ID || '',
-  'premium': process.env.STRIPE_PRICE_PREMIUM || process.env.STRIPE_PREMIUM_PRICE_ID || '',
+  'starter': cleanEnv(process.env.STRIPE_PRICE_STARTER) || cleanEnv(process.env.STRIPE_STARTER_PRICE_ID),
+  'pro': cleanEnv(process.env.STRIPE_PRICE_PRO) || cleanEnv(process.env.STRIPE_PRO_PRICE_ID),
+  'premium': cleanEnv(process.env.STRIPE_PRICE_PREMIUM) || cleanEnv(process.env.STRIPE_PREMIUM_PRICE_ID),
 };
 
 const PLAN_PRICES_USD: Record<string, string> = {
-  'starter': process.env.STRIPE_PRICE_STARTER_USD || '',
-  'pro': process.env.STRIPE_PRICE_PRO_USD || '',
-  'premium': process.env.STRIPE_PRICE_PREMIUM_USD || '',
+  'starter': cleanEnv(process.env.STRIPE_PRICE_STARTER_USD),
+  'pro': cleanEnv(process.env.STRIPE_PRICE_PRO_USD),
+  'premium': cleanEnv(process.env.STRIPE_PRICE_PREMIUM_USD),
 };
 
 function getPriceForPlan(plan: string, currency: string): string {
