@@ -27,6 +27,15 @@ async function verifyAdmin(token: string): Promise<{ isAdmin: boolean; userId?: 
     return { isAdmin: false };
   }
 
+  // Defense-in-depth: require a confirmed email before granting admin.
+  // Supabase's confirmation flow is normally enabled in the project settings,
+  // but we don't want admin access to silently open up if that setting is ever
+  // flipped off. OAuth sign-ins (Google) always have email_confirmed_at set,
+  // so this check is a no-op for the intended admin path.
+  if (!user.email_confirmed_at) {
+    return { isAdmin: false };
+  }
+
   return {
     isAdmin: adminEmails.includes(user.email?.toLowerCase()),
     userId: user.id,
