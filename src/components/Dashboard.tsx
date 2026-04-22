@@ -76,9 +76,9 @@ function AnalysisHistory({ onLoad }: { onLoad: (data: any) => void }) {
 }
 
 const PLANS = [
-  { name: 'Starter', gbp: 5, usd: 5, tokens: 10, color: '#6B6B8D', icon: Zap, isTopup: true, features: ['10 tokens (one-time)', 'Strategic Brief', 'Cover Letter', 'Interview Pack'] },
-  { name: 'Pro', gbp: 12, usd: 15, tokens: 30, color: '#4F46E5', icon: Star, isTopup: false, features: ['30 tokens/month', 'AI Mock Interview', 'STAR Stories', 'Everything in Starter'] },
-  { name: 'Premium', gbp: 20, usd: 25, tokens: 60, color: '#7C3AED', icon: Crown, isTopup: false, features: ['60 tokens/month', 'CV Fit Score', 'Presentation Deck', 'Priority', 'Everything in Pro'] },
+  { name: 'Starter', gbp: 5, usd: 5, tokens: 20, color: '#6B6B8D', icon: Zap, isTopup: true, features: ['20 tokens (one-time)', 'Strategic Brief', 'Cover Letter', 'Interview Pack'] },
+  { name: 'Pro', gbp: 12, usd: 15, tokens: 60, color: '#4F46E5', icon: Star, isTopup: false, features: ['60 tokens/month', 'AI Mock Interview', 'STAR Stories', 'Everything in Starter'] },
+  { name: 'Premium', gbp: 20, usd: 25, tokens: 120, color: '#7C3AED', icon: Crown, isTopup: false, features: ['120 tokens/month', 'CV Fit Score', 'Presentation Deck', 'Priority', 'Everything in Pro'] },
 ];
 
 export default function Dashboard() {

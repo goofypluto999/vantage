@@ -10,9 +10,9 @@ const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL |
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 
 const PLAN_CREDITS: Record<string, number> = {
-  'starter': 10,
-  'pro': 30,
-  'premium': 60,
+  'starter': 20,
+  'pro': 60,
+  'premium': 120,
 };
 
 export default async function handler(request: any, response: any) {

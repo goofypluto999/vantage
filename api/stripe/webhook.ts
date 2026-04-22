@@ -27,9 +27,9 @@ const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL |
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 
 const PLAN_TOKENS: Record<string, number> = {
-  'starter': 10,
-  'pro': 30,
-  'premium': 60,
+  'starter': 20,
+  'pro': 60,
+  'premium': 120,
 };
 
 // Map Stripe price IDs to plan names for trusted plan derivation.
@@ -214,6 +214,77 @@ export default async function handler(request: any, response: any) {
         break;
       }
 
+      case 'invoice.payment_succeeded': {
+        // Handles monthly subscription RENEWALS.
+        //
+        // billing_reason values we see:
+        //   'subscription_create' — first month of a new subscription.
+        //        SKIP here — checkout.session.completed already added tokens.
+        //   'subscription_cycle' — auto-renewal at the end of each billing period.
+        //        ADD plan's full monthly tokens here.
+        //   'subscription_update' — prorated invoice from a plan change via the
+        //        Stripe Billing Portal. SKIP — plan upgrades should go through
+        //        /api/stripe/checkout, which generates a checkout.session.completed.
+        //        (If portal plan-changes are later enabled, handle this branch.)
+        //   'manual' / others — out of scope.
+        //
+        // Idempotency: the processed_stripe_events row inserted at the top of
+        // this handler prevents Stripe retries from double-adding tokens.
+        const invoice = event.data.object as Stripe.Invoice;
+
+        if (invoice.billing_reason !== 'subscription_cycle') {
+          break;
+        }
+
+        const customerId = typeof invoice.customer === 'string'
+          ? invoice.customer
+          : invoice.customer?.id;
+        const subscriptionId = typeof invoice.subscription === 'string'
+          ? invoice.subscription
+          : invoice.subscription?.id;
+
+        if (!customerId || !subscriptionId) {
+          console.warn(`Renewal: missing customer or subscription on invoice ${invoice.id}`);
+          break;
+        }
+
+        const profiles = await supabaseGet(
+          `stripe_customer_id=eq.${customerId}&select=id,stripe_subscription_id,plan`
+        );
+
+        if (profiles.length === 0) {
+          console.warn(`Renewal: no profile for customer ${customerId}`);
+          break;
+        }
+
+        const profile = profiles[0];
+
+        // Only refill tokens if this invoice is for the user's CURRENT
+        // subscription. If they have a stale/cancelled sub somehow firing
+        // events, skip.
+        if (profile.stripe_subscription_id && profile.stripe_subscription_id !== subscriptionId) {
+          console.log(`Renewal: ignoring non-current sub ${subscriptionId} for user ${profile.id}`);
+          break;
+        }
+
+        // Derive plan from the invoice's line item price (trusted — from Stripe)
+        const lineItem = invoice.lines?.data?.[0];
+        const price = lineItem && typeof lineItem.price === 'object' ? lineItem.price : null;
+        const priceId = price?.id;
+        const plan = priceId ? getPlanFromPriceId(priceId) : profile.plan;
+
+        // Starter is one-time, shouldn't appear on a subscription cycle — guard anyway
+        if (plan === 'starter' || !PLAN_TOKENS[plan]) {
+          console.warn(`Renewal: unexpected plan "${plan}" on invoice ${invoice.id}`);
+          break;
+        }
+
+        const tokensToAdd = PLAN_TOKENS[plan];
+        await addTokensAtomic(profile.id, tokensToAdd);
+        console.log(`Renewal: added ${tokensToAdd} tokens to user ${profile.id} (plan ${plan}, invoice ${invoice.id})`);
+        break;
+      }
+
       case 'customer.subscription.updated': {
         const subscription = event.data.object as Stripe.Subscription;
         const customerId = subscription.customer as string;
@@ -259,9 +330,9 @@ export default async function handler(request: any, response: any) {
           // Derive which plan was actually refunded from charge amount + currency,
           // NOT the user's current plan. Amounts are in the smallest unit (pence/cents).
           // Known plan prices:
-          //   Starter: £5.00 = 500p  |  $5.00 = 500c  → 10 tokens
-          //   Pro:     £12.00 = 1200p |  $15.00 = 1500c → 30 tokens
-          //   Premium: £20.00 = 2000p |  $25.00 = 2500c → 60 tokens
+          //   Starter: £5.00 = 500p  |  $5.00 = 500c  → 20 tokens
+          //   Pro:     £12.00 = 1200p |  $15.00 = 1500c → 60 tokens
+          //   Premium: £20.00 = 2000p |  $25.00 = 2500c → 120 tokens
           function planTokensForCharge(amount: number, currency: string): number {
             const isUsd = (currency || '').toLowerCase() === 'usd';
             if (isUsd) {

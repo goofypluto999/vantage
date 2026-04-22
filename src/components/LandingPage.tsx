@@ -829,7 +829,7 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-16">
           <p className="text-xs font-bold text-[#4F46E5] uppercase tracking-widest mb-3">Transparent</p>
           <h2 className="text-4xl lg:text-5xl font-display font-bold text-[#2D2B4E]">Simple Pricing.</h2>
-          <p className="text-[#6B6B8D] mt-3 font-medium">Pay only for what you use. No subscriptions.</p>
+          <p className="text-[#6B6B8D] mt-3 font-medium">Start with a one-time top-up. Scale with a monthly plan.</p>
         </motion.div>
 
         <div className="flex flex-col md:flex-row justify-center items-stretch gap-6 lg:gap-8">
@@ -839,11 +839,12 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
               <span className="text-2xl font-semibold text-[#6B6B8D]">{symbol}</span>
               <span className="text-6xl font-mono font-bold text-[#2D2B4E]">{prices.starter}</span>
             </div>
-            <span className="bg-white/50 text-[#4F46E5] font-mono text-xs px-3 py-1 rounded-full mt-3 font-bold border border-white">100 Credits</span>
+            <span className="bg-white/50 text-[#4F46E5] font-mono text-xs px-3 py-1 rounded-full mt-3 font-bold border border-white">20 tokens &middot; one-time</span>
             <ul className="mt-8 space-y-3 w-full flex-grow text-sm text-[#3B3A5C] font-medium">
+              <li className="flex gap-3"><CheckCircle className="w-4 h-4 text-[#A8E6CF] flex-shrink-0 mt-0.5" /> Company Intelligence</li>
               <li className="flex gap-3"><CheckCircle className="w-4 h-4 text-[#A8E6CF] flex-shrink-0 mt-0.5" /> Strategic Brief + Cover Letter</li>
-              <li className="flex gap-3"><CheckCircle className="w-4 h-4 text-[#A8E6CF] flex-shrink-0 mt-0.5" /> 2 Full Generations</li>
-              <li className="flex gap-3"><CheckCircle className="w-4 h-4 text-[#A8E6CF] flex-shrink-0 mt-0.5" /> Basic Interview Pack</li>
+              <li className="flex gap-3"><CheckCircle className="w-4 h-4 text-[#A8E6CF] flex-shrink-0 mt-0.5" /> Interview Pack with Flashcards</li>
+              <li className="flex gap-3"><CheckCircle className="w-4 h-4 text-[#A8E6CF] flex-shrink-0 mt-0.5" /> No subscription &middot; tokens never expire</li>
             </ul>
             <button onClick={onStart} className="w-full py-3.5 mt-8 rounded-full bg-white/50 hover:bg-white text-[#4F46E5] font-bold border border-white hover:shadow-md transition-all">
               Get Started
@@ -859,12 +860,12 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
               <span className="text-2xl font-semibold text-[#6B6B8D]">{symbol}</span>
               <span className="text-6xl font-mono font-bold text-[#2D2B4E]">{prices.pro}</span>
             </div>
-            <span className="bg-white/50 text-[#4F46E5] font-mono text-xs px-3 py-1 rounded-full mt-3 font-bold border border-white">300 Credits</span>
+            <span className="bg-white/50 text-[#4F46E5] font-mono text-xs px-3 py-1 rounded-full mt-3 font-bold border border-white">60 tokens / month</span>
             <ul className="mt-8 space-y-3 w-full flex-grow text-sm text-[#3B3A5C] font-medium">
               <li className="flex gap-3"><CheckCircle className="w-4 h-4 text-[#A8E6CF] flex-shrink-0 mt-0.5" /> Everything in Starter</li>
-              <li className="flex gap-3"><CheckCircle className="w-4 h-4 text-[#A8E6CF] flex-shrink-0 mt-0.5" /> Full Interview Workspace</li>
-              <li className="flex gap-3"><CheckCircle className="w-4 h-4 text-[#A8E6CF] flex-shrink-0 mt-0.5" /> Mock Interview Drill</li>
-              <li className="flex gap-3"><CheckCircle className="w-4 h-4 text-[#A8E6CF] flex-shrink-0 mt-0.5" /> Timed Practice Mode</li>
+              <li className="flex gap-3"><CheckCircle className="w-4 h-4 text-[#A8E6CF] flex-shrink-0 mt-0.5" /> AI Mock Interview (voice)</li>
+              <li className="flex gap-3"><CheckCircle className="w-4 h-4 text-[#A8E6CF] flex-shrink-0 mt-0.5" /> STAR Interview Stories</li>
+              <li className="flex gap-3"><CheckCircle className="w-4 h-4 text-[#A8E6CF] flex-shrink-0 mt-0.5" /> Timed Practice Sessions</li>
             </ul>
             <button onClick={onStart} className="w-full py-3.5 mt-8 rounded-full bg-[#4F46E5] text-white font-bold hover:bg-[#6366F1] shadow-[0_8px_20px_rgba(79,70,229,0.35)] hover:-translate-y-1 transition-all">
               Upgrade to Pro
@@ -877,12 +878,13 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
               <span className="text-2xl font-semibold text-[#6B6B8D]">{symbol}</span>
               <span className="text-6xl font-mono font-bold text-[#2D2B4E]">{prices.premium}</span>
             </div>
-            <span className="bg-white/50 text-[#4F46E5] font-mono text-xs px-3 py-1 rounded-full mt-3 font-bold border border-white">500 Credits</span>
+            <span className="bg-white/50 text-[#4F46E5] font-mono text-xs px-3 py-1 rounded-full mt-3 font-bold border border-white">120 tokens / month</span>
             <ul className="mt-8 space-y-3 w-full flex-grow text-sm text-[#3B3A5C] font-medium">
               <li className="flex gap-3"><CheckCircle className="w-4 h-4 text-[#A8E6CF] flex-shrink-0 mt-0.5" /> Everything in Pro</li>
-              <li className="flex gap-3"><CheckCircle className="w-4 h-4 text-[#A8E6CF] flex-shrink-0 mt-0.5" /> Presentation Deck Generator</li>
-              <li className="flex gap-3"><CheckCircle className="w-4 h-4 text-[#A8E6CF] flex-shrink-0 mt-0.5" /> Priority Human Review</li>
               <li className="flex gap-3"><CheckCircle className="w-4 h-4 text-[#A8E6CF] flex-shrink-0 mt-0.5" /> CV Fit Score Analysis</li>
+              <li className="flex gap-3"><CheckCircle className="w-4 h-4 text-[#A8E6CF] flex-shrink-0 mt-0.5" /> Presentation Deck Builder</li>
+              <li className="flex gap-3"><CheckCircle className="w-4 h-4 text-[#A8E6CF] flex-shrink-0 mt-0.5" /> Priority Processing</li>
+              <li className="flex gap-3"><CheckCircle className="w-4 h-4 text-[#A8E6CF] flex-shrink-0 mt-0.5" /> Beta Features Early Access</li>
             </ul>
             <button onClick={onStart} className="w-full py-3.5 mt-8 rounded-full bg-white/50 hover:bg-white text-[#4F46E5] font-bold border border-white hover:shadow-md transition-all">
               Go Premium
@@ -904,8 +906,8 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
             { q: "How long does it take?",            a: "Under 5 minutes from upload to full brief. The AI does the heavy research while you review the output." },
             { q: "Do I need any experience with AI?", a: "None. Upload your CV, paste a job URL, and click generate. It handles everything else." },
             { q: "Is my CV data private?",            a: "Completely. Your data is never stored, never used for training, and never shared. Each session is ephemeral." },
-            { q: "Can I use it multiple times?",      a: "Yes — credits work per generation. One generation = one full output pack. Use them whenever you need them — they do not expire." },
-            { q: "What if the output is not right?",  a: "You can regenerate or refine with additional context. Your credits are only consumed on successful generations." },
+            { q: "How do tokens work?",               a: "One full job analysis costs 3 tokens. Cover letter tone rewrites and interview questions cost 1 token each. Starter tokens are a one-time top-up and never expire. Pro and Premium tokens refresh each month with your subscription." },
+            { q: "What if the output is not right?",  a: "You can regenerate or refine with additional context. Tokens are only consumed on successful generations — if the AI fails, we refund them automatically." },
           ].map(({ q, a }) => (
             <FaqItem key={q} question={q} answer={a} />
           ))}
@@ -951,7 +953,7 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
               Initialize Vantage <ChevronRight className="w-5 h-5" />
             </button>
             <p className="mt-5 text-sm text-[#6B6B8D] font-medium relative z-10">
-              Start with 10 tokens for just {symbol}{prices.starter}. No subscription. No commitment.
+              Start with 20 tokens for just {symbol}{prices.starter}. No subscription. No commitment.
             </p>
           </div>
         </motion.div>

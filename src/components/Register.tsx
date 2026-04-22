@@ -7,9 +7,9 @@ import { useCurrency } from '../contexts/CurrencyContext';
 
 // Plans shown for reference on the register page
 const PLANS = [
-  { name: 'Top Up', gbp: 5, usd: 5, tokens: 10, color: '#6B6B8D', label: 'one-time' },
-  { name: 'Pro', gbp: 12, usd: 15, tokens: 30, color: '#4F46E5', label: '/month' },
-  { name: 'Premium', gbp: 20, usd: 25, tokens: 60, color: '#7C3AED', label: '/month' },
+  { name: 'Top Up', gbp: 5, usd: 5, tokens: 20, color: '#6B6B8D', label: 'one-time' },
+  { name: 'Pro', gbp: 12, usd: 15, tokens: 60, color: '#4F46E5', label: '/month' },
+  { name: 'Premium', gbp: 20, usd: 25, tokens: 120, color: '#7C3AED', label: '/month' },
 ];
 
 export default function Register() {
