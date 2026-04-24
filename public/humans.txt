@@ -1,0 +1,16 @@
+/* TEAM */
+Founder: Gio
+Built in: 2026
+Location: UK
+
+/* THANKS */
+To everyone who tried the early builds and told me what was broken.
+
+/* PRODUCT */
+Name: Vantage
+Tagline: Clarity in the Chaos.
+What: AI job preparation. Upload your CV, paste a job link, get the full prep pack in ~90 seconds.
+
+Last update: 2026-04-24
+Standards: HTML5, CSS3
+Components: React 19, TypeScript, Vite, Tailwind v4, Supabase, Stripe, Gemini 2.5 Flash

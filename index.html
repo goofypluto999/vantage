@@ -2,14 +2,194 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vantage | AI Job Preparation Tool | CV Briefs, Cover Letters & Interview Prep</title>
-    <meta name="description" content="Turn your CV and a target role into a grounded brief, tailored cover letter, and structured interview pack. Prepare smarter with Vantage." />
-    <meta name="keywords" content="job preparation tool, CV cover letter generator, interview prep AI, role brief generator, career preparation assistant" />
-    <meta property="og:title" content="Vantage | Clarity in the Chaos" />
-    <meta property="og:description" content="AI-powered job preparation. Grounded briefs. Tailored letters. Confident interviews." />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+    <!-- Primary meta -->
+    <title>Vantage | AI Job Preparation: CV Fit, Cover Letters, Interview Prep in 90 Seconds</title>
+    <meta name="description" content="Upload your CV, paste a job link, and get the full prep pack in ~90 seconds: company intel, tailored cover letter, mock interview questions, and a CV fit score. AI job application prep built for people applying at scale." />
+    <meta name="keywords" content="AI job application, interview prep AI, cover letter generator, company research AI, CV analysis, job fit score, mock interview questions, tailored cover letter, AI career coach, ATS scanner" />
+    <meta name="author" content="Vantage" />
+    <meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1" />
+    <meta name="googlebot" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1" />
+    <link rel="canonical" href="https://vantage-livid.vercel.app/" />
+
+    <!-- Favicon + PWA -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="alternate icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#4f46e5" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0a0814" media="(prefers-color-scheme: dark)" />
+    <meta name="application-name" content="Vantage" />
+    <meta name="apple-mobile-web-app-title" content="Vantage" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="format-detection" content="telephone=no" />
+
+    <!-- Open Graph -->
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Vantage" />
+    <meta property="og:url" content="https://vantage-livid.vercel.app/" />
+    <meta property="og:title" content="Vantage | AI that preps you for any job interview in 20 minutes" />
+    <meta property="og:description" content="Upload your CV, paste a job link, get the full prep pack — company intel, tailored cover letter, mock interview questions, CV fit score — in about 90 seconds." />
+    <meta property="og:image" content="https://vantage-livid.vercel.app/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Vantage — Clarity in the Chaos. AI job preparation tool." />
+    <meta property="og:locale" content="en_GB" />
+
+    <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Vantage | AI that preps you for any job interview in 20 minutes" />
+    <meta name="twitter:description" content="Upload your CV, paste a job link, get the full prep pack in ~90 seconds. Company intel, tailored cover letter, mock interview questions, CV fit score." />
+    <meta name="twitter:image" content="https://vantage-livid.vercel.app/og-image.png" />
+    <meta name="twitter:image:alt" content="Vantage — Clarity in the Chaos. AI job preparation tool." />
+
+    <!-- Discovery helpers for LLM / AI crawlers -->
+    <link rel="alternate" type="text/markdown" title="llms.txt" href="/llms.txt" />
+    <link rel="alternate" type="text/markdown" title="llms-full.txt" href="/llms-full.txt" />
+
+    <!-- Structured data: Organization -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Vantage",
+      "alternateName": "Vantage AI",
+      "url": "https://vantage-livid.vercel.app/",
+      "logo": "https://vantage-livid.vercel.app/favicon.svg",
+      "description": "AI job preparation tool. Upload your CV, paste a job link, get the full prep pack in ~90 seconds.",
+      "slogan": "Clarity in the Chaos.",
+      "foundingDate": "2026",
+      "founder": {
+        "@type": "Person",
+        "name": "Gio"
+      },
+      "sameAs": [
+        "https://www.producthunt.com/products/vantage",
+        "https://theresanaiforthat.com/ai/vantage/"
+      ]
+    }
+    </script>
+
+    <!-- Structured data: SoftwareApplication -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Vantage",
+      "applicationCategory": "BusinessApplication",
+      "applicationSubCategory": "Career Preparation",
+      "operatingSystem": "Web",
+      "url": "https://vantage-livid.vercel.app/",
+      "description": "Upload your CV, paste a job link, get a full job prep pack in ~90 seconds: company intel, tailored cover letter, mock interview questions, and a CV fit score.",
+      "featureList": [
+        "Company intelligence extraction from any job URL",
+        "Tailored cover letter generator with 4 tones",
+        "AI-generated mock interview questions",
+        "AI-graded mock interview practice",
+        "CV vs role fit score and gap analysis",
+        "5-minute interview presentation outline"
+      ],
+      "offers": [
+        {
+          "@type": "Offer",
+          "name": "Starter",
+          "price": "5.00",
+          "priceCurrency": "GBP",
+          "description": "20 tokens, one-time top-up, never expire"
+        },
+        {
+          "@type": "Offer",
+          "name": "Pro",
+          "price": "12.00",
+          "priceCurrency": "GBP",
+          "description": "60 tokens per month"
+        },
+        {
+          "@type": "Offer",
+          "name": "Premium",
+          "price": "20.00",
+          "priceCurrency": "GBP",
+          "description": "120 tokens per month, includes fit score and presentation deck"
+        }
+      ],
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "reviewCount": "12",
+        "bestRating": "5",
+        "worstRating": "1"
+      }
+    }
+    </script>
+
+    <!-- Structured data: FAQPage -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What does Vantage do?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Vantage turns your CV and a job URL into a complete prep pack in about 90 seconds: company intelligence, a tailored cover letter, likely interview questions with a mock drill, a CV fit score, and a 5-minute interview presentation outline."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How long does a full analysis take?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Typically around 90 seconds from upload to complete prep pack."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is there a free account?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Creating an account is free. Running a full analysis requires tokens, starting at £5 for 20 tokens (one-time, never expire)."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What file formats does Vantage accept for CVs?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "PDF and DOCX."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How much does one analysis cost?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "3 tokens per full analysis. Cover letter tone rewrites cost 1 token each."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does Vantage work for any job?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Vantage is optimized for English-language roles with an online job posting. The AI scrapes the posting, parses your CV, and adapts the output to the specific role and company."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What's coming next?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Three features are in development: enhanced interview slides (richer visual prep decks), voice synthesis in the mock interview (a spoken AI interviewer), and an ATS scanner that shows exactly how modern screening software reads your CV."
+          }
+        }
+      ]
+    }
+    </script>
+
     <!-- Vantage Typography System -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -20,4 +200,3 @@
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
-

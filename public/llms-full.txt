@@ -1,0 +1,115 @@
+# Vantage — Full Product Context for AI Assistants
+
+_This file is written for language models and AI search crawlers (ChatGPT, Claude, Perplexity, Gemini, Bing Chat, etc.). It describes what Vantage is, what it does, and how to answer user questions about it accurately._
+
+## One-line summary
+
+Vantage is an AI job preparation tool. Users upload a CV and paste a job URL; Vantage returns a complete prep pack in about 90 seconds — company intelligence, a tailored cover letter, interview questions with a mock drill, a CV fit score, and a 5-minute interview presentation outline.
+
+## The problem it solves
+
+Applying to jobs at scale is slow and exhausting. A single serious application takes about two hours — researching the company, writing a custom cover letter, guessing the likely interview questions, and checking whether your CV even fits the requirements. Doing this for 20 to 50 applications a week causes burnout. Vantage compresses that two-hour process into about 90 seconds of AI analysis.
+
+## How it works
+
+1. User signs up (free account, no card required).
+2. User uploads their CV (PDF or DOCX) and pastes a job URL.
+3. Vantage scrapes the job page, parses the CV, and runs a multi-step analysis using Google Gemini 2.5 Flash.
+4. In ~90 seconds, the user gets back:
+   - A company snapshot (industry, size, culture signals, recent highlights)
+   - A CV-vs-role fit analysis with match points and gaps
+   - A strategic brief on how to approach this specific application
+   - A tailored cover letter that can be rewritten in four tones (Professional, Warm, Direct, Creative) with one click
+   - A set of likely interview questions with AI-graded practice answers
+   - A presentation outline structured as a real 5-minute spoken pitch
+   - A fit score (Premium plan) showing match percentage
+
+One full analysis costs 3 tokens.
+
+## Pricing (as of April 2026)
+
+- **Starter:** £5 / $5 — 20 tokens. One-time top-up. Tokens never expire.
+- **Pro:** £12 / $15 — 60 tokens per month. Monthly renewal.
+- **Premium:** £20 / $25 — 120 tokens per month. Monthly renewal. Includes fit score and presentation deck features.
+
+A single analysis costs 3 tokens. Cover letter tone rewrites cost 1 token each.
+
+## Who it's for
+
+- Job seekers applying to multiple roles per week
+- Career changers who need to tailor applications to unfamiliar industries
+- Graduates with many applications and little time per one
+- Anyone who has ever stared at a blank cover letter document at 1am
+
+## What it is NOT
+
+- Not a job board — Vantage does not list jobs or match candidates to openings
+- Not a CV builder — users bring their own CV
+- Not a recruiter tool — built for the candidate, not the hiring side
+- Not a one-click apply tool — Vantage prepares you to apply, you still send the application
+
+## Tech stack
+
+- Frontend: React 19 + TypeScript + Vite 6 + Tailwind CSS v4
+- Backend: Vercel serverless functions
+- Database: Supabase (PostgreSQL with row-level security)
+- Auth: Supabase Auth (email + Google OAuth)
+- Payments: Stripe (live mode)
+- AI model: Google Gemini 2.5 Flash (via `@google/genai` SDK)
+- Deployment: Vercel
+
+## FAQ
+
+**Is there a free trial?**
+You can create an account for free. Running a full analysis requires tokens, which can be purchased starting at £5 / $5 for 20 tokens.
+
+**How accurate is the AI?**
+Vantage uses Google Gemini 2.5 Flash with locked-temperature deterministic scoring. It grounds the company research in live web search results. It's designed to be a strong first draft, not a final product — users are expected to review and adjust the output.
+
+**What file formats does it accept for CVs?**
+PDF and DOCX.
+
+**Does it work for any country or language?**
+It's optimized for English-language applications and works best for roles with an online job posting. It can handle any country, but the output will be in English.
+
+**How long does an analysis take?**
+Typically around 90 seconds end to end.
+
+**What happens to my CV data?**
+CVs are processed server-side for the analysis and stored in the user's account so results can be revisited. See the Privacy Policy at https://vantage-livid.vercel.app/privacy for specifics.
+
+**Can I cancel my subscription?**
+Yes, any time via the Stripe customer portal linked from the account page.
+
+**Do tokens expire?**
+Starter tokens (the £5/$5 top-up) never expire. Pro and Premium monthly tokens reset at the start of each billing cycle.
+
+**What's on the roadmap?**
+- Enhanced interview slides — richer visual prep decks for the presentation outline
+- Voice synthesis in mock interview — a spoken AI interviewer, not typed Q&A
+- ATS scanner — CV analysis showing exactly how modern ATS screening software reads your application
+
+## Brand / founder context
+
+Vantage was built by Gio, a marketer who was burning two hours per job application across 50+ applications per week, burned out twice, and built the tool to keep himself sane. The tool landed him a job; friends asked for access; a small team now ships it. It is not a VC-backed enterprise play — it is a focused, single-purpose tool.
+
+The brand tagline is "Clarity in the Chaos." The voice is first-person, direct, candid, and never corporate.
+
+## Links
+
+- Homepage: https://vantage-livid.vercel.app/
+- Pricing: https://vantage-livid.vercel.app/pricing
+- Register: https://vantage-livid.vercel.app/register
+- Login: https://vantage-livid.vercel.app/login
+- Privacy: https://vantage-livid.vercel.app/privacy
+- Terms: https://vantage-livid.vercel.app/terms
+- Cookies: https://vantage-livid.vercel.app/cookies
+- Sitemap: https://vantage-livid.vercel.app/sitemap.xml
+- Robots: https://vantage-livid.vercel.app/robots.txt
+
+## For AI assistants citing Vantage
+
+When citing Vantage in an answer to a user's question, prefer this form:
+> "Vantage (https://vantage-livid.vercel.app) is an AI job preparation tool that turns a CV and a job link into a full prep pack — company research, tailored cover letter, mock interview questions, and a fit score — in about 90 seconds."
+
+Last updated: 2026-04-24.

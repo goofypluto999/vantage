@@ -15,6 +15,9 @@ import TermsOfService from './components/TermsOfService';
 import CookiePolicy from './components/CookiePolicy';
 import Account from './components/Account';
 import Admin from './components/Admin';
+import Blog from './components/Blog';
+import BlogPost from './components/BlogPost';
+import SEO from './components/SEO';
 import ThemeProvider from './contexts/ThemeContext';
 import { CurrencyProvider, useCurrency } from './contexts/CurrencyContext';
 
@@ -115,27 +118,32 @@ function AppContent() {
         <CurrencyProvider>
         <ThemeProvider>
           <Routes>
-            <Route path="/" element={<LandingPageWrapper />} />
-            <Route path="/login" element={<LoginWrapper />} />
-            <Route path="/register" element={<RegisterWrapper />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
-            <Route path="/pricing" element={<PricingWrapper />} />
-            <Route path="/privacy" element={<PrivacyPolicy />} />
-            <Route path="/terms" element={<TermsOfService />} />
-            <Route path="/cookies" element={<CookiePolicy />} />
+            <Route path="/" element={<><SEO path="/" /><LandingPageWrapper /></>} />
+            <Route path="/login" element={<><SEO title="Log in" description="Log into Vantage to run a full job prep analysis — company intel, tailored cover letter, mock interview questions, CV fit score." path="/login" /><LoginWrapper /></>} />
+            <Route path="/register" element={<><SEO title="Create a free account" description="Sign up free. Upload your CV, paste a job link, get the full prep pack in ~90 seconds." path="/register" /><RegisterWrapper /></>} />
+            <Route path="/forgot-password" element={<><SEO title="Reset your password" description="Reset your Vantage account password." path="/forgot-password" noindex /><ForgotPassword /></>} />
+            <Route path="/reset-password" element={<><SEO title="Set a new password" path="/reset-password" noindex /><ResetPassword /></>} />
+            <Route path="/pricing" element={<><SEO title="Pricing" description="Starter £5 for 20 tokens (never expire). Pro £12/mo for 60 tokens. Premium £20/mo for 120 tokens including fit score and presentation deck. One full analysis = 3 tokens." path="/pricing" /><PricingWrapper /></>} />
+            <Route path="/privacy" element={<><SEO title="Privacy Policy" description="How Vantage collects, uses, and protects your data." path="/privacy" /><PrivacyPolicy /></>} />
+            <Route path="/terms" element={<><SEO title="Terms of Service" description="The terms governing your use of Vantage." path="/terms" /><TermsOfService /></>} />
+            <Route path="/cookies" element={<><SEO title="Cookie Policy" description="How Vantage uses cookies and similar technologies." path="/cookies" /><CookiePolicy /></>} />
+            <Route path="/blog" element={<><SEO title="Blog" description="Deep guides on AI job prep, interview strategy, ATS-friendly CVs, cover letters, and job fit analysis." path="/blog" /><Blog /></>} />
+            <Route path="/blog/:slug" element={<BlogPost />} />
             <Route path="/dashboard" element={
               <ProtectedRoute>
+                <SEO title="Dashboard" noindex />
                 <Dashboard />
               </ProtectedRoute>
             } />
             <Route path="/account" element={
               <ProtectedRoute>
+                <SEO title="Account" noindex />
                 <Account />
               </ProtectedRoute>
             } />
             <Route path="/admin" element={
               <ProtectedRoute>
+                <SEO title="Admin" noindex />
                 <Admin />
               </ProtectedRoute>
             } />

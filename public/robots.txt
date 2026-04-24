@@ -1,0 +1,114 @@
+# robots.txt for Vantage
+# https://vantage-livid.vercel.app
+# Last updated: 2026-04-24
+
+# ---------- Default: allow all search + AI crawlers ----------
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /account
+Disallow: /admin
+Disallow: /reset-password
+Disallow: /api/
+
+# ---------- Explicit allow for AI / LLM crawlers ----------
+# We want Vantage surfacing in ChatGPT, Perplexity, Claude, Gemini answers.
+
+User-agent: GPTBot
+Allow: /
+Disallow: /dashboard
+Disallow: /account
+Disallow: /admin
+Disallow: /reset-password
+Disallow: /api/
+
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /dashboard
+Disallow: /account
+Disallow: /admin
+Disallow: /reset-password
+Disallow: /api/
+
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /dashboard
+Disallow: /account
+Disallow: /admin
+Disallow: /reset-password
+Disallow: /api/
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /dashboard
+Disallow: /account
+Disallow: /admin
+Disallow: /reset-password
+Disallow: /api/
+
+User-agent: Perplexity-User
+Allow: /
+Disallow: /dashboard
+Disallow: /account
+Disallow: /admin
+Disallow: /reset-password
+Disallow: /api/
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /dashboard
+Disallow: /account
+Disallow: /admin
+Disallow: /reset-password
+Disallow: /api/
+
+User-agent: Claude-Web
+Allow: /
+Disallow: /dashboard
+Disallow: /account
+Disallow: /admin
+Disallow: /reset-password
+Disallow: /api/
+
+User-agent: anthropic-ai
+Allow: /
+Disallow: /dashboard
+Disallow: /account
+Disallow: /admin
+Disallow: /reset-password
+Disallow: /api/
+
+User-agent: Google-Extended
+Allow: /
+Disallow: /dashboard
+Disallow: /account
+Disallow: /admin
+Disallow: /reset-password
+Disallow: /api/
+
+User-agent: Applebot-Extended
+Allow: /
+Disallow: /dashboard
+Disallow: /account
+Disallow: /admin
+Disallow: /reset-password
+Disallow: /api/
+
+User-agent: cohere-ai
+Allow: /
+Disallow: /dashboard
+Disallow: /account
+Disallow: /admin
+Disallow: /reset-password
+Disallow: /api/
+
+User-agent: Bytespider
+Allow: /
+Disallow: /dashboard
+Disallow: /account
+Disallow: /admin
+Disallow: /reset-password
+Disallow: /api/
+
+# ---------- Sitemap ----------
+Sitemap: https://vantage-livid.vercel.app/sitemap.xml
