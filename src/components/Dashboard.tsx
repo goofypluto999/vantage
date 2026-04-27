@@ -350,10 +350,19 @@ export default function Dashboard() {
                     : 'Manage your subscription or buy more tokens.'}
                 </p>
               </>
+            ) : (profile?.token_balance ?? 0) >= 3 ? (
+              <>
+                <h2 className="text-lg font-display font-bold text-white mb-1">
+                  You have {profile?.token_balance} free tokens — that's {Math.floor((profile?.token_balance ?? 0) / 3)} full {Math.floor((profile?.token_balance ?? 0) / 3) === 1 ? 'analysis' : 'analyses'} on us.
+                </h2>
+                <p className="text-white/50 text-sm mb-5">
+                  Upload your CV + paste a job link below to run one. Top up only if you want more after that.
+                </p>
+              </>
             ) : (
               <>
-                <h2 className="text-lg font-display font-bold text-white mb-1">Complete your subscription to start using Vantage</h2>
-                <p className="text-white/50 text-sm mb-5">Choose a plan to get tokens and begin analysing jobs.</p>
+                <h2 className="text-lg font-display font-bold text-white mb-1">Top up to keep going</h2>
+                <p className="text-white/50 text-sm mb-5">Each analysis costs 3 tokens. Pick a plan to continue.</p>
               </>
             )}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">

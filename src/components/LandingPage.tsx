@@ -968,7 +968,7 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
               Initialize Vantage <ChevronRight className="w-5 h-5" />
             </button>
             <p className="mt-5 text-sm text-[#6B6B8D] font-medium relative z-10">
-              Start with 20 tokens for just {symbol}{prices.starter}. No subscription. No commitment.
+              Free signup. 10 tokens on us — that's 3 full analyses. No credit card needed.
             </p>
           </div>
         </motion.div>

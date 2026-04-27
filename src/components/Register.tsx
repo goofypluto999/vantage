@@ -156,10 +156,10 @@ export default function Register() {
             <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/[0.04] p-4 flex items-start gap-3">
               <Check className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
               <div className="text-sm">
-                <div className="text-white font-semibold">Your account is free.</div>
+                <div className="text-white font-semibold">10 free tokens on us — that's 3 full analyses.</div>
                 <div className="text-white/60 mt-0.5">
-                  No credit card needed to sign up. Tokens for full analyses start at £5 / $5
-                  for 20 tokens (one-time, never expire) — only if and when you want one.
+                  Account is free. No credit card needed to sign up. After your free analyses,
+                  top-ups start at {'£'}5 / $5 for 20 more tokens (one-time, never expire).
                 </div>
               </div>
             </div>
