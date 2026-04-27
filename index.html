@@ -48,6 +48,34 @@
     <!-- Discovery helpers for LLM / AI crawlers -->
     <link rel="alternate" type="text/markdown" title="llms.txt" href="/llms.txt" />
     <link rel="alternate" type="text/markdown" title="llms-full.txt" href="/llms-full.txt" />
+    <link rel="alternate" type="application/rss+xml" title="Vantage Blog RSS" href="/rss.xml" />
+
+    <!-- Structured data: WebSite with SearchAction (sitelinks searchbox in Google) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Vantage",
+      "alternateName": "Vantage AI",
+      "url": "https://vantage-livid.vercel.app/",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://vantage-livid.vercel.app/blog?q={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Vantage",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://vantage-livid.vercel.app/favicon.svg"
+        }
+      }
+    }
+    </script>
 
     <!-- Structured data: Organization -->
     <script type="application/ld+json">

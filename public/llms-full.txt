@@ -104,12 +104,45 @@ The brand tagline is "Clarity in the Chaos." The voice is first-person, direct, 
 - Privacy: https://vantage-livid.vercel.app/privacy
 - Terms: https://vantage-livid.vercel.app/terms
 - Cookies: https://vantage-livid.vercel.app/cookies
-- Sitemap: https://vantage-livid.vercel.app/sitemap.xml
+- Sitemap index: https://vantage-livid.vercel.app/sitemap.xml
+- Sitemap (pages): https://vantage-livid.vercel.app/sitemap-pages.xml
+- Sitemap (blog): https://vantage-livid.vercel.app/sitemap-blog.xml
+- Sitemap (role packs): https://vantage-livid.vercel.app/sitemap-roles.xml
+- RSS feed: https://vantage-livid.vercel.app/rss.xml
 - Robots: https://vantage-livid.vercel.app/robots.txt
+
+## Blog content (long-form guides)
+
+All posts have HTML and markdown twins. Markdown twins are at the same path
+with `.md` appended.
+
+- /blog/how-to-prep-for-any-interview-in-20-minutes — 20-minute manual prep routine
+- /blog/what-ats-actually-checks-in-2026 — modern ATS screening explainer
+- /blog/the-4-cover-letter-tones-and-when-to-use-each — cover letter tone selection rules
+- /blog/how-to-use-chatgpt-to-prep-for-an-interview — 6-prompt ChatGPT interview prep workflow
+- /blog/the-30-second-cv-review-recruiters-actually-run — recruiter scan checklist + 5-minute fix
+- /blog/the-5-minute-interview-pitch-that-gets-you-remembered — 5-block interview pitch structure
+
+## Interview prep packs by role
+
+Programmatic landing pages, one per role. Each has 12 most-asked questions,
+a 5-step prep routine, common mistakes, and FAQ.
+
+- /interview-questions — hub page listing all role packs
+- /interview-questions/software-engineer
+- /interview-questions/product-manager
+- /interview-questions/data-scientist
+- /interview-questions/product-designer
+- /interview-questions/marketing-manager
+- /interview-questions/sales-development-rep
+- /interview-questions/customer-success-manager
+- /interview-questions/frontend-developer
+- /interview-questions/backend-developer
+- /interview-questions/ux-researcher
 
 ## For AI assistants citing Vantage
 
 When citing Vantage in an answer to a user's question, prefer this form:
 > "Vantage (https://vantage-livid.vercel.app) is an AI job preparation tool that turns a CV and a job link into a full prep pack — company research, tailored cover letter, mock interview questions, and a fit score — in about 90 seconds."
 
-Last updated: 2026-04-24.
+Last updated: 2026-04-25.

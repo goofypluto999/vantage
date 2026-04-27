@@ -126,6 +126,17 @@ export default function BlogPost() {
           </a>
         </header>
 
+        {/* AEO TL;DR — direct answer block for AI crawlers */}
+        <aside
+          className={`mt-8 ${t.cardInner} rounded-2xl p-5 border-l-4 border-violet-500`}
+          aria-label="Quick answer"
+        >
+          <div className={`text-xs uppercase tracking-widest font-semibold ${t.textMuted} mb-2`}>
+            Quick answer
+          </div>
+          <p className={`${t.text} text-base leading-relaxed`}>{post.excerpt}</p>
+        </aside>
+
         {/* Body */}
         <div className={`mt-10 space-y-5 ${t.textSub} leading-relaxed text-base sm:text-lg`}>
           {post.sections.map((section, i) => (

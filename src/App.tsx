@@ -17,6 +17,8 @@ import Account from './components/Account';
 import Admin from './components/Admin';
 import Blog from './components/Blog';
 import BlogPost from './components/BlogPost';
+import InterviewQuestionsHub from './components/InterviewQuestionsHub';
+import InterviewQuestionsPage from './components/InterviewQuestionsPage';
 import SEO from './components/SEO';
 import ThemeProvider from './contexts/ThemeContext';
 import { CurrencyProvider, useCurrency } from './contexts/CurrencyContext';
@@ -129,6 +131,8 @@ function AppContent() {
             <Route path="/cookies" element={<><SEO title="Cookie Policy" description="How Vantage uses cookies and similar technologies." path="/cookies" /><CookiePolicy /></>} />
             <Route path="/blog" element={<><SEO title="Blog" description="Deep guides on AI job prep, interview strategy, ATS-friendly CVs, cover letters, and job fit analysis." path="/blog" /><Blog /></>} />
             <Route path="/blog/:slug" element={<BlogPost />} />
+            <Route path="/interview-questions" element={<InterviewQuestionsHub />} />
+            <Route path="/interview-questions/:role" element={<InterviewQuestionsPage />} />
             <Route path="/dashboard" element={
               <ProtectedRoute>
                 <SEO title="Dashboard" noindex />

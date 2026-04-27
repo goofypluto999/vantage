@@ -277,6 +277,236 @@ export const blogPosts: BlogPost[] = [
       { type: 'p', text: 'Pick a tone. Write the letter. Ship it.' },
     ],
   },
+
+  {
+    slug: 'how-to-use-chatgpt-to-prep-for-an-interview',
+    title: 'How to use ChatGPT to prep for an interview (without sounding like a bot)',
+    description: 'A working ChatGPT interview prep workflow used by real candidates in 2026. Specific prompts, the exact order to run them, and how to keep your answers sounding human.',
+    publishedAt: '2026-04-25',
+    author: 'Gio',
+    readingTime: '8 min read',
+    tags: ['ChatGPT', 'AI', 'Interview Prep', 'Job Search'],
+    excerpt: 'ChatGPT can prep an interview faster than any human coach — if you run the right prompts in the right order. Most people use it wrong and end up with answers that sound like a press release. Here is the workflow that does not.',
+    hook: 'Most people use ChatGPT for interview prep wrong, then sound like a press release in the room.',
+    sections: [
+      { type: 'p', text: 'There are two ways to use ChatGPT for interview prep. The first is to dump a job description in and ask "what questions will they ask me." The output sounds plausible. You memorise it. You walk into the interview, and the interviewer hits you with one curveball, and the entire scaffolding collapses.' },
+      { type: 'p', text: 'The second way is the workflow below. It takes 25 minutes, hits five distinct angles, and leaves you with an interview prep doc that holds together when the interviewer goes off-script.' },
+
+      { type: 'callout', text: 'Quick answer: paste the job description, then run six prompts in this order — company brief, CV-fit gaps, likely questions, story bank, mock-drill rebuttals, opener and closer. Do not ask for a "complete prep guide" in one prompt. The combined answer always sounds generic.' },
+
+      { type: 'h2', text: 'The 6-prompt ChatGPT interview prep workflow' },
+      { type: 'ol', items: [
+        'Prompt 1 — Company brief from the job link.',
+        'Prompt 2 — CV-to-role fit, with gaps named.',
+        'Prompt 3 — 10 likely questions, ranked by probability.',
+        'Prompt 4 — STAR story bank from your CV.',
+        'Prompt 5 — Mock-drill rebuttals to your weakest answer.',
+        'Prompt 6 — Opener and closer for the call itself.',
+      ] },
+
+      { type: 'h2', text: 'Prompt 1 — Company brief' },
+      { type: 'p', text: 'Paste the company URL or job description. Ask:' },
+      { type: 'callout', text: 'In 200 words, what does this company do, who are their customers, what have they shipped or announced this quarter, and what is the one thing about their culture they keep emphasising publicly?' },
+      { type: 'p', text: 'You want named facts. If the answer is generic ("they are a leading provider of solutions"), reject it and ask "name three specific products or initiatives." This is your "I read about you" reference for the interview.' },
+
+      { type: 'h2', text: 'Prompt 2 — CV-to-role fit' },
+      { type: 'p', text: 'Paste your CV and the job description. Ask:' },
+      { type: 'callout', text: 'List the three strongest matches between this CV and this role, with one specific line from each. Then list the three biggest gaps the interviewer will likely probe.' },
+      { type: 'p', text: 'The matches are your talking points. The gaps are what the interviewer is going to ask about. Both are useful. People skip the gaps because they feel uncomfortable. Senior candidates lean into them.' },
+
+      { type: 'h2', text: 'Prompt 3 — Likely questions' },
+      { type: 'callout', text: 'Based on this job description and CV, give me 10 questions the interviewer is likely to ask. Rank them by probability. For each, add one sentence on what they are actually testing.' },
+      { type: 'p', text: 'The "what they are testing" is the trick. Most candidates answer the surface question. Senior candidates answer the underlying competency. "Tell me about a time you failed" is testing self-awareness, not failure. Knowing the test changes your answer.' },
+
+      { type: 'h2', text: 'Prompt 4 — STAR story bank' },
+      { type: 'callout', text: 'From this CV, suggest five STAR stories I can adapt to most behavioural questions. For each, give me Situation/Task/Action/Result in one short paragraph each.' },
+      { type: 'p', text: 'Five stories cover most behavioural questions. Practising five short stories is a hundred times more useful than memorising twenty long ones. Cover: a leadership moment, a failure, a stretch project, a conflict, and a piece of feedback you took.' },
+
+      { type: 'h2', text: 'Prompt 5 — Mock-drill rebuttals' },
+      { type: 'callout', text: 'Here is my draft answer to question 3 [paste your answer]. Now play a tough interviewer and write three follow-up questions or pushbacks. Then write a 60-second rebuttal for each.' },
+      { type: 'p', text: 'This is the prompt 90% of people skip. It is also the one that closes the gap between "I have an answer" and "I can hold the answer under pressure." Run it for your two weakest answers, not your strongest.' },
+
+      { type: 'h2', text: 'Prompt 6 — Opener and closer' },
+      { type: 'callout', text: 'Write me a 30-second opener for when the interviewer says "tell me about yourself" and a 60-second closer for when they ask "do you have any questions for me." Use the company brief and CV from earlier in the conversation. Make it sound like me, not a corporate template.' },
+      { type: 'p', text: 'These are the two moments interviewers remember. Most candidates have a generic version. A specific opener that ties to the company\'s actual roadmap stands out, every time.' },
+
+      { type: 'h2', text: 'How to keep it sounding like you' },
+      { type: 'p', text: 'Three rules:' },
+      { type: 'ol', items: [
+        'Read every output out loud. If a sentence feels stiff, rewrite it in your own voice. The fastest tell of AI-written prep is the rhythm.',
+        'Insert one specific number or detail per answer. Generic outputs do not have numbers.',
+        'Remove every "leverage", "synergy", "passionate about". You probably do not say those words in real life.',
+      ] },
+
+      { type: 'h2', text: 'When the manual workflow breaks down' },
+      { type: 'p', text: 'This 6-prompt sequence works. It also takes 25 minutes per role. If you are applying to 30 roles a week, that is a part-time job by itself. The reason Vantage exists is that it runs all six prompts in parallel against your CV and the live job link, and gives you back the prep doc in about 90 seconds, with the company brief grounded against the actual website rather than a generic web search.' },
+      { type: 'callout', text: 'Vantage runs the same six steps automatically. One upload, one paste, one prep pack. We also cache the AI-graded mock interview so you can rehearse the question they are most likely to ask.' },
+
+      { type: 'h2', text: 'FAQ' },
+      { type: 'h3', text: 'Should I use ChatGPT, Claude, or Gemini?' },
+      { type: 'p', text: 'Any of them. The workflow matters more than the model. Claude tends to write more nuanced behavioural answers. ChatGPT is fastest. Gemini is best when you want it to fetch and cite live web pages. Pick whichever you already pay for.' },
+      { type: 'h3', text: 'Will the interviewer notice I used AI?' },
+      { type: 'p', text: 'Only if you read the answers verbatim. Use the AI to draft, then rewrite in your voice. The interviewer will not notice you used AI any more than they would notice you used a notepad.' },
+      { type: 'h3', text: 'How do I avoid hallucinated company facts?' },
+      { type: 'p', text: 'Always ground the company brief against the live website. Either paste the URL into a model with web access (ChatGPT, Gemini, Claude with browsing), or do this step manually. Never trust a model\'s memory for company-specific details.' },
+
+      { type: 'p', text: 'Six prompts. Twenty-five minutes. Or ninety seconds with Vantage. Either way, prep beats no prep, every time.' },
+    ],
+  },
+
+  {
+    slug: 'the-30-second-cv-review-recruiters-actually-run',
+    title: 'The 30-second CV review test recruiters actually run',
+    description: 'Recruiters spend less than a minute on your CV before deciding. Here is the exact 30-second scan they run, what they look for, and how to write a CV that wins it.',
+    publishedAt: '2026-04-25',
+    author: 'Gio',
+    readingTime: '5 min read',
+    tags: ['CV', 'Resume', 'Recruiting', 'Job Search'],
+    excerpt: 'Recruiters spend 30 seconds on your CV before deciding whether to read it properly. Here is the exact scan they run — and how to write a CV that survives it.',
+    hook: 'Your CV gets 30 seconds of attention. Maybe.',
+    sections: [
+      { type: 'p', text: 'A senior recruiter at a UK-based tech company once let me sit behind her while she went through 80 applications for a single role. She averaged 28 seconds per CV. She rejected 71 of them in that time. The 9 that survived got a second pass that took about 90 seconds each.' },
+      { type: 'p', text: 'This is what happens to your CV in those 30 seconds — and what to fix.' },
+
+      { type: 'callout', text: 'Quick answer: recruiters check four things in 30 seconds — the top third of page one, the most recent role title, the company names you have worked at, and one signal of seniority. Win those four, and you survive the scan. Lose any one, and the next click is reject.' },
+
+      { type: 'h2', text: 'The 30-second recruiter scan' },
+      { type: 'ol', items: [
+        '5 seconds — top third of page one. Name, title, summary line.',
+        '8 seconds — most recent job. Title, company, dates, top bullet.',
+        '7 seconds — companies you have worked at. Names recognisable? Brand-equity stack visible?',
+        '5 seconds — seniority signal. Years of experience, scope, scale, leadership.',
+        '5 seconds — second-page-only check. Are there impressive projects, awards, or scope they would have missed?',
+      ] },
+
+      { type: 'h2', text: 'What they actually look for in each second' },
+
+      { type: 'h3', text: 'Top third of page one' },
+      { type: 'p', text: 'Your name, your current or most recent title, and a one-line summary. This is where most CVs fail — they bury the relevant title in the middle of the page or never state it at all. Make the title match the role you are applying for as closely as honesty allows. "Senior Software Engineer" beats "Tech Lead" if the role title is "Senior Software Engineer."' },
+
+      { type: 'h3', text: 'Most recent job' },
+      { type: 'p', text: 'They are looking for: relevant title, recognisable company, current or recent dates, and one bullet that signals what you actually did. The bullet matters. "Led a team of five" is better than "Software engineer responsibilities included writing code."' },
+
+      { type: 'h3', text: 'Companies stack' },
+      { type: 'p', text: 'Recruiters scan the right column for company names. If you have worked at known companies, even briefly, those names buy you another 30 seconds of attention. If your companies are unknown, lean on scale ("£12M ARR SaaS, Series A") or named clients ("led the Stripe integration") to substitute.' },
+
+      { type: 'h3', text: 'Seniority signal' },
+      { type: 'p', text: 'Years of experience, team size led, budget owned, revenue impact. One of these has to be visible in the first third of page one. "8 years of experience" is the lowest-effort signal; "led a team of 12" is the highest-quality.' },
+
+      { type: 'h2', text: 'What kills you in 30 seconds' },
+      { type: 'ul', items: [
+        'A summary that says "passionate," "results-driven," or "team player." All three appear in 80% of rejected CVs.',
+        'Most recent role buried below older, more impressive ones. Reverse chronological is non-negotiable.',
+        'A list of skills with no roles attached. Looks padded. Reads junior.',
+        'A two-column CV where the recruiter has to scan in two directions.',
+        'A photo. Outside specific roles and specific countries (Germany, France for some industries), it costs you on UK and US applications.',
+        'No dates on roles. Reads as hiding something.',
+        'A cover-letter-shaped paragraph at the top of the CV. Cover letter goes in the cover letter field.',
+      ] },
+
+      { type: 'h2', text: 'The 5-minute fix' },
+      { type: 'ol', items: [
+        'Rewrite your top-of-CV summary as one sentence: [Years] of experience as [closest title to the role you want], with [strongest single proof point].',
+        'Make sure your most recent role lists a specific scope or scale in the first bullet.',
+        'Compress everything older than 8 years into a "Previous experience" line.',
+        'Delete every adjective. Keep nouns and verbs.',
+        'Run the CV through a spelling check, then read it out loud once.',
+      ] },
+
+      { type: 'h2', text: 'Why "tailored CVs" is a real thing' },
+      { type: 'p', text: 'A CV tailored to the specific role wins the 30-second scan. A generic CV does not. The recruiter is doing pattern-matching against the JD they were briefed on this morning. The closer your title, your top bullet, and your seniority signal match the JD, the more likely you survive the scan.' },
+      { type: 'callout', text: 'Vantage scores your CV-to-role fit and shows you exactly which gaps will fail the 30-second scan. Upload your CV, paste the JD, and the fit score plus the rewritten bullets come back in about 90 seconds. The premium plan also includes the 5-minute interview pitch deck and AI-graded mock interview.' },
+
+      { type: 'h2', text: 'FAQ' },
+      { type: 'h3', text: 'How long should my CV be?' },
+      { type: 'p', text: 'One page for under 10 years experience. Two pages maximum past that. Senior roles can stretch to two; junior roles cannot. Three pages always reads as "could not edit."' },
+      { type: 'h3', text: 'Should I list every skill?' },
+      { type: 'p', text: 'No. List the skills the JD asks for, plus three you genuinely lead with. Padded skill lists hurt more than they help — recruiters read them as inability to prioritise.' },
+      { type: 'h3', text: 'Does design matter?' },
+      { type: 'p', text: 'Less than you think. A clean, single-column black-text CV in a standard font wins more often than a designed one — except for design, marketing, and creative roles, where a tasteful piece of layout helps.' },
+
+      { type: 'p', text: 'Win the 30 seconds. The next 90 seconds become available automatically.' },
+    ],
+  },
+
+  {
+    slug: 'the-5-minute-interview-pitch-that-gets-you-remembered',
+    title: 'The 5-minute interview pitch that gets you remembered',
+    description: 'Most candidates wing the "tell us about yourself" question. The strongest candidates have a 5-minute pitch they can compress to 90 seconds. Here is exactly how to build it.',
+    publishedAt: '2026-04-25',
+    author: 'Gio',
+    readingTime: '6 min read',
+    tags: ['Interview Prep', 'Pitch', 'Job Search', 'Career'],
+    excerpt: 'The strongest candidates walk into a final-round interview with a structured 5-minute pitch they can compress to 90 seconds on demand. Here is the exact structure I use, the trick to making it land, and the version Vantage generates for you.',
+    hook: 'The strongest candidates walk into the room with a 5-minute pitch already loaded.',
+    sections: [
+      { type: 'p', text: 'Most candidates answer "tell us about yourself" with a chronological CV recap. It takes three minutes, the interviewer\'s eyes glaze over by minute two, and they remember nothing. The opener is the most important moment of the interview, and most people waste it.' },
+      { type: 'p', text: 'A 5-minute interview pitch fixes this. Even when you only deliver a 90-second version, having the 5-minute structure underneath is what makes the 90 seconds memorable.' },
+
+      { type: 'callout', text: 'Quick answer: a 5-minute interview pitch has five 60-second blocks — origin, expertise, why-now, why-them, and one big ask. The trick is to deliver the 90-second version by default and have the longer version ready when the interviewer asks "tell me more about that one." Without the longer version underneath, the 90-second version sounds rehearsed.' },
+
+      { type: 'h2', text: 'The 5-minute structure' },
+      { type: 'ol', items: [
+        'Block 1 — Origin (60 seconds): one specific moment in your career that explains why you do what you do.',
+        'Block 2 — Expertise (60 seconds): the one thing you are unusually good at, with a proof point.',
+        'Block 3 — Why now (60 seconds): why this particular role, this particular moment.',
+        'Block 4 — Why them (60 seconds): why this specific company, with a reference to something they shipped or announced.',
+        'Block 5 — The ask (60 seconds): what you would want to do in the first 90 days, framed as a question.',
+      ] },
+
+      { type: 'h2', text: 'Block 1 — Origin' },
+      { type: 'p', text: 'Pick one specific moment, not a CV recap. "I started writing software when I broke my dad\'s computer at 11" beats "I have always been passionate about technology." The first sentence is concrete, has a date, and tells me something I cannot find on LinkedIn.' },
+      { type: 'p', text: 'Constraint: this block must contain at least one piece of information that does not appear on your CV. If everything you say is already on the page in front of them, you are wasting the slot.' },
+
+      { type: 'h2', text: 'Block 2 — Expertise' },
+      { type: 'p', text: 'Name the one thing you are unusually good at. Then prove it with a 30-second story. "I am unusually good at debugging complex production incidents" is the headline. "Last year I traced a billing bug that had been mis-billing customers for six months across three replicas" is the proof.' },
+      { type: 'p', text: 'Pick the expertise that is most relevant to the role. If the role is in customer success, your expertise should not be in algorithm design.' },
+
+      { type: 'h2', text: 'Block 3 — Why now' },
+      { type: 'p', text: 'Why this kind of role, this kind of company, at this stage of your career. The honest version is best: "I have done two startups end to end and want to put what I learned into a Series B that has product-market fit but needs a step change in how they ship." Beats "I am looking for the next opportunity."' },
+
+      { type: 'h2', text: 'Block 4 — Why them' },
+      { type: 'p', text: 'Reference one thing the company has shipped, said, or announced in the last 6 months. Specific. Not "I love your culture" — that is meaningless filler. "I read your engineering blog post about how you re-architected the rate limiter — that kind of mid-stage refactoring is exactly what I want to be doing." That works.' },
+      { type: 'p', text: 'If you cannot name something specific, you have not done enough company research, and the rest of the pitch will not save you.' },
+
+      { type: 'h2', text: 'Block 5 — The ask' },
+      { type: 'p', text: 'Frame your first 90 days as a question, not a statement. "If I joined, I would want to spend the first 30 days shadowing the senior engineers and understanding the on-call rotation — does that match what you would expect?" This invites the interviewer to correct or affirm your understanding, which gives you their actual mental model of the role.' },
+      { type: 'p', text: 'It also signals senior thinking. Junior candidates state what they will do. Senior candidates ask whether their plan matches reality.' },
+
+      { type: 'h2', text: 'How to compress 5 minutes into 90 seconds' },
+      { type: 'p', text: 'Most interviews do not have time for the full 5-minute version. Build the long version first, then strip it down:' },
+      { type: 'ul', items: [
+        'Block 1: one sentence on origin.',
+        'Block 2: one sentence on expertise + one proof point.',
+        'Block 3: one sentence on why now.',
+        'Block 4: one sentence on why them with a specific reference.',
+        'Block 5: one sentence ask.',
+      ] },
+      { type: 'p', text: 'The 90-second version contains the same five beats. Practising the 5-minute version is what makes the 90-second version sound natural rather than rushed.' },
+
+      { type: 'h2', text: 'How to actually rehearse it' },
+      { type: 'ol', items: [
+        'Write the long version out, full sentences. About 600 words.',
+        'Read it out loud, time yourself. Adjust until it lands at 4:45-5:15.',
+        'Compress to bullets only. Five bullets, one per block.',
+        'Deliver from bullets, three times in a row, recording yourself.',
+        'Watch it back. Cut filler words. Re-record once.',
+      ] },
+      { type: 'p', text: 'You will be surprised how much faster it gets after the second recording. Most candidates skip rehearsal because it feels self-indulgent. The candidates who get offers do not skip it.' },
+
+      { type: 'callout', text: 'Vantage generates a 5-minute presentation outline as part of every analysis on the Premium plan. Origin, expertise, why-now, why-them, and the ask — all five blocks, structured around your CV and the specific role. Edit, rehearse, walk in confident.' },
+
+      { type: 'h2', text: 'FAQ' },
+      { type: 'h3', text: 'What if the interview is only 30 minutes?' },
+      { type: 'p', text: 'Default to the 90-second version. If the interviewer interrupts and asks "tell me more about that," you have the longer version loaded and can expand any block on demand. That is the magic of building the long version first.' },
+      { type: 'h3', text: 'Should I send the pitch in advance?' },
+      { type: 'p', text: 'No, unless they specifically asked. Surprise structure beats announced structure. You also do not want them to be re-reading it back to you.' },
+      { type: 'h3', text: 'What if my CV is unimpressive?' },
+      { type: 'p', text: 'The pitch is a leveller. Specific stories beat generic credentials. A candidate from a no-name company with one sharp 60-second proof point beats a Stanford grad who cannot pick a single moment to talk about.' },
+
+      { type: 'p', text: 'Build the long version. Deliver the short version. Walk in remembered.' },
+    ],
+  },
 ];
 
 export function getPostBySlug(slug: string): BlogPost | undefined {

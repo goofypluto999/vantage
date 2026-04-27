@@ -1,6 +1,6 @@
 # robots.txt for Vantage
 # https://vantage-livid.vercel.app
-# Last updated: 2026-04-24
+# Last updated: 2026-04-25
 
 # ---------- Default: allow all search + AI crawlers ----------
 User-agent: *
@@ -110,5 +110,8 @@ Disallow: /admin
 Disallow: /reset-password
 Disallow: /api/
 
-# ---------- Sitemap ----------
+# ---------- Sitemaps (index + sub-sitemaps) ----------
 Sitemap: https://vantage-livid.vercel.app/sitemap.xml
+Sitemap: https://vantage-livid.vercel.app/sitemap-pages.xml
+Sitemap: https://vantage-livid.vercel.app/sitemap-blog.xml
+Sitemap: https://vantage-livid.vercel.app/sitemap-roles.xml

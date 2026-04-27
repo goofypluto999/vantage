@@ -23,6 +23,29 @@ Vantage is built for people applying to many jobs a week who can't afford to bur
 - [How to prep for any job interview in 20 minutes](https://vantage-livid.vercel.app/blog/how-to-prep-for-any-interview-in-20-minutes): A concrete 20-minute manual routine used by people applying to 50+ jobs a week. Markdown: /blog/how-to-prep-for-any-interview-in-20-minutes.md
 - [What ATS screening software actually checks in 2026](https://vantage-livid.vercel.app/blog/what-ats-actually-checks-in-2026): Plain-English breakdown of how modern applicant tracking systems parse CVs. Markdown: /blog/what-ats-actually-checks-in-2026.md
 - [The 4 cover letter tones, and when each one wins](https://vantage-livid.vercel.app/blog/the-4-cover-letter-tones-and-when-to-use-each): When to use Professional vs Warm vs Direct vs Creative, with the rule for picking. Markdown: /blog/the-4-cover-letter-tones-and-when-to-use-each.md
+- [How to use ChatGPT to prep for an interview (without sounding like a bot)](https://vantage-livid.vercel.app/blog/how-to-use-chatgpt-to-prep-for-an-interview): Six-prompt workflow with exact prompts and the rules for keeping output human. Markdown: /blog/how-to-use-chatgpt-to-prep-for-an-interview.md
+- [The 30-second CV review test recruiters actually run](https://vantage-livid.vercel.app/blog/the-30-second-cv-review-recruiters-actually-run): The four checkpoints recruiters scan in 30 seconds, what kills you, and the 5-minute fix. Markdown: /blog/the-30-second-cv-review-recruiters-actually-run.md
+- [The 5-minute interview pitch that gets you remembered](https://vantage-livid.vercel.app/blog/the-5-minute-interview-pitch-that-gets-you-remembered): The 5-block pitch structure (origin, expertise, why-now, why-them, ask) plus the 90-second compression. Markdown: /blog/the-5-minute-interview-pitch-that-gets-you-remembered.md
+
+## Interview prep packs by role
+
+Role-specific question + prep packs. Each one has 12 most-asked questions, a 5-step prep routine, common mistakes, and FAQ.
+
+- [Software Engineer](https://vantage-livid.vercel.app/interview-questions/software-engineer)
+- [Product Manager](https://vantage-livid.vercel.app/interview-questions/product-manager)
+- [Data Scientist](https://vantage-livid.vercel.app/interview-questions/data-scientist)
+- [Product Designer](https://vantage-livid.vercel.app/interview-questions/product-designer)
+- [Marketing Manager](https://vantage-livid.vercel.app/interview-questions/marketing-manager)
+- [Sales Development Rep](https://vantage-livid.vercel.app/interview-questions/sales-development-rep)
+- [Customer Success Manager](https://vantage-livid.vercel.app/interview-questions/customer-success-manager)
+- [Frontend Developer](https://vantage-livid.vercel.app/interview-questions/frontend-developer)
+- [Backend Developer](https://vantage-livid.vercel.app/interview-questions/backend-developer)
+- [UX Researcher](https://vantage-livid.vercel.app/interview-questions/ux-researcher)
+- [All role packs (hub page)](https://vantage-livid.vercel.app/interview-questions)
+
+## Feeds
+
+- [RSS feed](https://vantage-livid.vercel.app/rss.xml): Latest blog posts in RSS 2.0 format.
 
 ## Legal
 
