@@ -33,6 +33,7 @@ const sitemapFiles = [
   'public/sitemap-pages.xml',
   'public/sitemap-blog.xml',
   'public/sitemap-roles.xml',
+  'public/sitemap-companies.xml',
 ];
 
 const urls = [];

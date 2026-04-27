@@ -48,6 +48,17 @@ function parseRolePacks() {
   return packs;
 }
 
+function parseCompanyPacks() {
+  const src = readFileSync(resolve(ROOT, 'src/data/companyPacks.ts'), 'utf-8');
+  const packs = [];
+  const re = /\{\s*slug:\s*'([^']+)',\s*company:\s*'([^']+)',\s*updated:\s*'([^']+)'/g;
+  let m;
+  while ((m = re.exec(src)) !== null) {
+    packs.push({ slug: m[1], company: m[2], updated: m[3] });
+  }
+  return packs;
+}
+
 // ---------- Writers ----------
 
 function urlEntry(loc, lastmod, priority, changefreq) {
@@ -89,6 +100,21 @@ ${entries.join('\n')}
 </urlset>
 `;
   writeFileSync(resolve(ROOT, 'public/sitemap-roles.xml'), xml);
+  return entries.length;
+}
+
+function writeCompaniesSitemap(packs) {
+  const latest = packs.map((p) => p.updated).sort().reverse()[0] ?? '2026-04-25';
+  const entries = [
+    urlEntry(`${HOST}/interview-prep`, latest, '0.9', 'weekly'),
+    ...packs.map((p) => urlEntry(`${HOST}/interview-prep/${p.slug}`, p.updated, '0.85', 'monthly')),
+  ];
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${entries.join('\n')}
+</urlset>
+`;
+  writeFileSync(resolve(ROOT, 'public/sitemap-companies.xml'), xml);
   return entries.length;
 }
 
@@ -150,17 +176,20 @@ function escapeXml(s) {
 // ---------- Run ----------
 
 const posts = parseBlogPosts();
-const packs = parseRolePacks();
+const rolePacks = parseRolePacks();
+const companyPacksData = parseCompanyPacks();
 
 const blogCount = writeBlogSitemap(posts);
-const rolesCount = writeRolesSitemap(packs);
+const rolesCount = writeRolesSitemap(rolePacks);
+const companiesCount = writeCompaniesSitemap(companyPacksData);
 const rssCount = writeRss(posts);
 
 console.log(`[generate-feeds] blog sitemap: ${blogCount} entries (${posts.length} posts + index)`);
-console.log(`[generate-feeds] roles sitemap: ${rolesCount} entries (${packs.length} packs + hub)`);
+console.log(`[generate-feeds] roles sitemap: ${rolesCount} entries (${rolePacks.length} packs + hub)`);
+console.log(`[generate-feeds] companies sitemap: ${companiesCount} entries (${companyPacksData.length} packs + hub)`);
 console.log(`[generate-feeds] RSS: ${rssCount} items`);
 
-if (posts.length === 0 || packs.length === 0) {
+if (posts.length === 0 || rolePacks.length === 0 || companyPacksData.length === 0) {
   console.error('[generate-feeds] WARNING: parser produced 0 entries from one or more data files. Check the regex.');
   process.exit(1);
 }
