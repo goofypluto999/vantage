@@ -212,19 +212,22 @@ END $$;
 -- TRIGGERS
 -- ============================================================================
 
--- Auto-create profile on user signup
+-- Auto-create profile on user signup, granting 10 free tokens.
+-- 10 tokens = 3 full analyses (3 tokens each) + tone rewrites.
+-- See migration-2026-04-28-free-trial-grant.sql for context.
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER
 SECURITY DEFINER
 SET search_path = public
 AS $$
 BEGIN
-  INSERT INTO public.profiles (id, email, full_name, avatar_url)
+  INSERT INTO public.profiles (id, email, full_name, avatar_url, token_balance)
   VALUES (
     NEW.id,
     NEW.email,
     NEW.raw_user_meta_data->>'full_name',
-    NEW.raw_user_meta_data->>'avatar_url'
+    NEW.raw_user_meta_data->>'avatar_url',
+    10
   );
   RETURN NEW;
 END;
