@@ -3,14 +3,6 @@ import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { Mail, Lock, User, Eye, EyeOff, ArrowRight, ArrowLeft, BrainCircuit, Chrome, Check } from 'lucide-react';
 import { signUp, signInWithGoogle, mapAuthError } from '../lib/supabase';
-import { useCurrency } from '../contexts/CurrencyContext';
-
-// Plans shown for reference on the register page
-const PLANS = [
-  { name: 'Top Up', gbp: 5, usd: 5, tokens: 20, color: '#6B6B8D', label: 'one-time' },
-  { name: 'Pro', gbp: 12, usd: 15, tokens: 60, color: '#4F46E5', label: '/month' },
-  { name: 'Premium', gbp: 20, usd: 25, tokens: 120, color: '#7C3AED', label: '/month' },
-];
 
 export default function Register() {
   const [email, setEmail] = useState('');
@@ -20,9 +12,6 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
-  // selectedPlan kept for UI state only — registration doesn't auto-subscribe
-  const [selectedPlan, setSelectedPlan] = useState('pro');
-  const { currency, setCurrency, symbol } = useCurrency();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -161,42 +150,17 @@ export default function Register() {
               </div>
             </div>
 
-            <div>
-              <div className="flex items-center justify-between mb-3">
-                <label className="block text-sm font-semibold text-white/70">Choose your plan</label>
-                {/* Currency toggle */}
-                <div className="flex items-center rounded-full bg-white/5 border border-white/10 p-0.5" role="group" aria-label="Currency">
-                  <button
-                    type="button"
-                    onClick={() => setCurrency('gbp')}
-                    className={`px-2.5 py-1 rounded-full text-xs font-bold transition-colors ${currency === 'gbp' ? 'bg-violet-600 text-white' : 'text-white/50 hover:text-white'}`}
-                    aria-pressed={currency === 'gbp'}
-                  >{'\u00A3 GBP'}</button>
-                  <button
-                    type="button"
-                    onClick={() => setCurrency('usd')}
-                    className={`px-2.5 py-1 rounded-full text-xs font-bold transition-colors ${currency === 'usd' ? 'bg-violet-600 text-white' : 'text-white/50 hover:text-white'}`}
-                    aria-pressed={currency === 'usd'}
-                  >$ USD</button>
+            {/* Free-tier reassurance — replaces the old plan picker which scared
+                visitors off at signup (every CTA elsewhere says "free" but the picker
+                screamed paid plans). Plan picker now lives on dashboard, post-signup. */}
+            <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/[0.04] p-4 flex items-start gap-3">
+              <Check className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
+              <div className="text-sm">
+                <div className="text-white font-semibold">Your account is free.</div>
+                <div className="text-white/60 mt-0.5">
+                  No credit card needed to sign up. Tokens for full analyses start at £5 / $5
+                  for 20 tokens (one-time, never expire) — only if and when you want one.
                 </div>
-              </div>
-              <div className="grid grid-cols-3 gap-3">
-                {PLANS.map((plan) => (
-                  <button
-                    key={plan.name}
-                    type="button"
-                    onClick={() => setSelectedPlan(plan.name.toLowerCase())}
-                    className={`p-3 rounded-xl border-2 transition-all text-center ${
-                      selectedPlan === plan.name.toLowerCase()
-                        ? 'border-violet-500 bg-violet-500/10'
-                        : 'border-white/10 bg-white/5 hover:border-white/20'
-                    }`}
-                  >
-                    <div className="text-sm font-bold text-white">{plan.name}</div>
-                    <div className="text-lg font-bold text-white">{symbol}{currency === 'usd' ? plan.usd : plan.gbp}</div>
-                    <div className="text-xs text-white/50">{plan.tokens} tokens{plan.label ? ` ${plan.label}` : ''}</div>
-                  </button>
-                ))}
               </div>
             </div>
 
