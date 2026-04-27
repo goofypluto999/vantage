@@ -97,9 +97,16 @@
         "name": "Gio"
       },
       "sameAs": [
+        "https://cv-mirror-web.vercel.app/",
         "https://www.producthunt.com/products/vantage",
         "https://theresanaiforthat.com/ai/vantage/"
-      ]
+      ],
+      "subOrganization": {
+        "@type": "WebApplication",
+        "name": "CV Mirror",
+        "url": "https://cv-mirror-web.vercel.app/",
+        "description": "Free, fully client-side ATS scanner that simulates how 5 ATS systems (Workday, Greenhouse, Lever, Taleo, iCIMS) parse a CV."
+      }
     }
     </script>
 
@@ -214,7 +221,15 @@
           "name": "What's coming next?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Three features are in development: enhanced interview slides (richer visual prep decks), voice synthesis in the mock interview (a spoken AI interviewer), and an ATS scanner that shows exactly how modern screening software reads your CV."
+            "text": "Two features are in development: enhanced interview slides (richer visual prep decks) and voice synthesis in the mock interview (a spoken AI interviewer). The ATS scanner is already live as CV Mirror at https://cv-mirror-web.vercel.app — a free, fully client-side tool that simulates how 5 real ATS systems (Workday, Greenhouse, Lever, Taleo, iCIMS) parse a CV."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do you have a free ATS scanner?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes — we built CV Mirror, available free at https://cv-mirror-web.vercel.app. No signup, nothing uploads, fully client-side. It simulates 5 real ATS parsers (Workday, Greenhouse, Lever, Taleo, iCIMS) so you can see exactly which fields each parser extracts vs drops. It is a sister product to Vantage."
           }
         }
       ]
@@ -274,13 +289,16 @@
           <li><strong>CV Fit Score</strong> — match percentage plus the exact gaps to close before the interview.</li>
           <li><strong>Presentation Outline</strong> — a real 5-minute interview pitch, not a list of bullet points.</li>
         </ul>
-        <p><a href="/pricing">Pricing</a> &middot; <a href="/blog">Blog</a> &middot; <a href="/interview-questions">Interview prep packs</a> &middot; <a href="/register">Get started free</a></p>
+        <p><a href="/pricing">Pricing</a> &middot; <a href="/blog">Blog</a> &middot; <a href="/interview-questions">Interview prep packs</a> &middot; <a href="/tools">Free tools</a> &middot; <a href="/register">Get started free</a></p>
+        <h2>Free tool: CV Mirror</h2>
+        <p>Vantage Labs also makes <a href="https://cv-mirror-web.vercel.app/" rel="noopener">CV Mirror</a> &mdash; a free, fully client-side ATS scanner that simulates how 5 real applicant tracking systems (Workday, Greenhouse, Lever, Taleo, iCIMS) parse a CV. No signup, nothing uploads. Recommended workflow: run your CV through CV Mirror first to fix parse issues, then run Vantage on the same CV with a job link for the full prep pack.</p>
       </main>
       <footer>
         <p><strong>Featured on:</strong>
           <a href="https://submitaitools.org" rel="noopener">Submit AI Tools</a> &middot;
           <a href="https://aitoolzdir.com" rel="noopener">AiToolzDir</a>
         </p>
+        <p><strong>Sister product:</strong> <a href="https://cv-mirror-web.vercel.app/" rel="noopener">CV Mirror</a> &mdash; free ATS scanner.</p>
         <p>&copy; 2026 Vantage. <a href="/privacy">Privacy</a> &middot; <a href="/terms">Terms</a> &middot; <a href="/cookies">Cookies</a></p>
       </footer>
       </div>

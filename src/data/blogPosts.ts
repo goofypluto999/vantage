@@ -182,7 +182,7 @@ export const blogPosts: BlogPost[] = [
 
       { type: 'h2', text: 'Where this is going' },
       { type: 'p', text: 'ATS software is getting better at the semantic step every quarter. Over the next year, keyword-stuffed CVs will rank lower, not higher, as the models get more accurate at detecting manipulation. The winning move now is the same as the winning move always has been: be honest, be specific, be readable.' },
-      { type: 'callout', text: 'We are building an ATS Scanner inside Vantage that shows you exactly how the parsing, keyword, and semantic steps read your CV — and what to change before you hit submit. It is in development and ships next.' },
+      { type: 'callout', text: 'We built a free tool — CV Mirror at cv-mirror-web.vercel.app — that simulates how 5 real ATS systems (Workday, Greenhouse, Lever, Taleo, iCIMS) parse your CV. No signup, nothing uploads, fully client-side. Use it to see exactly which fields each parser extracts vs drops before you hit submit. Recommended workflow: CV Mirror first to fix the parse, then Vantage for the full prep pack.' },
 
       { type: 'p', text: 'Ship your application. But ship a version that survives the parse.' },
     ],

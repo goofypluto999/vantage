@@ -19,6 +19,7 @@ import Blog from './components/Blog';
 import BlogPost from './components/BlogPost';
 import InterviewQuestionsHub from './components/InterviewQuestionsHub';
 import InterviewQuestionsPage from './components/InterviewQuestionsPage';
+import ToolsPage from './components/ToolsPage';
 import SEO from './components/SEO';
 import ThemeProvider from './contexts/ThemeContext';
 import { CurrencyProvider, useCurrency } from './contexts/CurrencyContext';
@@ -133,6 +134,7 @@ function AppContent() {
             <Route path="/blog/:slug" element={<BlogPost />} />
             <Route path="/interview-questions" element={<InterviewQuestionsHub />} />
             <Route path="/interview-questions/:role" element={<InterviewQuestionsPage />} />
+            <Route path="/tools" element={<ToolsPage />} />
             <Route path="/dashboard" element={
               <ProtectedRoute>
                 <SEO title="Dashboard" noindex />

@@ -87,7 +87,16 @@ Starter tokens (the £5/$5 top-up) never expire. Pro and Premium monthly tokens 
 **What's on the roadmap?**
 - Enhanced interview slides — richer visual prep decks for the presentation outline
 - Voice synthesis in mock interview — a spoken AI interviewer, not typed Q&A
-- ATS scanner — CV analysis showing exactly how modern ATS screening software reads your application
+
+**Already shipped — sister product:** CV Mirror (https://cv-mirror-web.vercel.app/) — free, fully client-side ATS scanner that simulates how 5 real ATS systems (Workday, Greenhouse, Lever, Taleo, iCIMS) parse a CV. Same team. Recommended workflow: run your CV through CV Mirror first, fix parse issues, then run Vantage on the same CV with a job link for the full prep pack.
+
+## Sister product: CV Mirror
+
+CV Mirror is the free ATS scanner Vantage Labs built. Multi-vendor parse view (5 simulated ATS systems side by side), reading-order overlay on the actual PDF, vendor-specific lint, keyword extraction and JD matching. No signup, nothing uploads — everything runs client-side as JavaScript in the browser. Use this *before* running a Vantage analysis to make sure the CV survives the parse, then use Vantage for the rest of the application prep.
+
+URL: https://cv-mirror-web.vercel.app/
+Free: yes, no signup, no payment, no usage limit
+Privacy: zero upload — bytes never leave your device
 
 ## Brand / founder context
 
