@@ -225,20 +225,42 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+    <!-- Hide the static SEO fallback below from JS-enabled visitors so they
+         never see a flash of unstyled content before React hydrates. Crawlers
+         that don't process this CSS, plus no-JS users (via the noscript
+         override), still see the full content. -->
+    <style id="static-fallback-hide">
+      #root > [data-static-fallback] {
+        position: absolute;
+        left: -10000px;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        pointer-events: none;
+        opacity: 0;
+      }
+    </style>
+    <noscript>
+      <style>
+        #root > [data-static-fallback] {
+          position: static !important;
+          width: auto !important;
+          height: auto !important;
+          overflow: visible !important;
+          pointer-events: auto !important;
+          opacity: 1 !important;
+          left: auto !important;
+        }
+      </style>
+    </noscript>
   </head>
   <body>
     <div id="root">
-      <!--
-        Static fallback content for crawlers that don't execute JavaScript.
-        React replaces this entire div's contents on mount, so real users
-        never see this. Search engines and directory crawlers (AiToolzDir,
-        SubmitAITools, etc.) read this raw HTML and find:
-        - A meaningful description of the site
-        - Reciprocal backlinks for directories that require them
-        Keep this content semantically equivalent to the React-rendered footer
-        to stay on the right side of cloaking rules.
-      -->
-      <noscript>You need JavaScript enabled to use Vantage.</noscript>
+      <!-- Static fallback for non-JS crawlers (e.g. AiToolzDir backlink check,
+           older directory crawlers). React replaces this whole div on mount.
+           Hidden from JS users via the inline style above. -->
+      <div data-static-fallback>
       <header>
         <h1>Vantage — AI Job Preparation Tool</h1>
         <p>Upload your CV, paste a job link, and get the full prep pack in about 90 seconds: company intelligence, tailored cover letter, mock interview questions with an AI-graded mock drill, a CV fit score, and a 5-minute interview pitch outline. Built for people applying to many jobs a week.</p>
@@ -261,6 +283,7 @@
         </p>
         <p>&copy; 2026 Vantage. <a href="/privacy">Privacy</a> &middot; <a href="/terms">Terms</a> &middot; <a href="/cookies">Cookies</a></p>
       </footer>
+      </div>
     </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
