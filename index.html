@@ -227,7 +227,41 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <!--
+        Static fallback content for crawlers that don't execute JavaScript.
+        React replaces this entire div's contents on mount, so real users
+        never see this. Search engines and directory crawlers (AiToolzDir,
+        SubmitAITools, etc.) read this raw HTML and find:
+        - A meaningful description of the site
+        - Reciprocal backlinks for directories that require them
+        Keep this content semantically equivalent to the React-rendered footer
+        to stay on the right side of cloaking rules.
+      -->
+      <noscript>You need JavaScript enabled to use Vantage.</noscript>
+      <header>
+        <h1>Vantage — AI Job Preparation Tool</h1>
+        <p>Upload your CV, paste a job link, and get the full prep pack in about 90 seconds: company intelligence, tailored cover letter, mock interview questions with an AI-graded mock drill, a CV fit score, and a 5-minute interview pitch outline. Built for people applying to many jobs a week.</p>
+      </header>
+      <main>
+        <h2>What you get in one analysis</h2>
+        <ul>
+          <li><strong>Company Intel</strong> — deep company research, tech stack, recent news, culture signals.</li>
+          <li><strong>Tailored Cover Letter</strong> — four tones to pick from: Professional, Warm, Direct, Creative.</li>
+          <li><strong>Mock Interview Questions</strong> — AI-generated likely questions plus an AI-graded mock interview.</li>
+          <li><strong>CV Fit Score</strong> — match percentage plus the exact gaps to close before the interview.</li>
+          <li><strong>Presentation Outline</strong> — a real 5-minute interview pitch, not a list of bullet points.</li>
+        </ul>
+        <p><a href="/pricing">Pricing</a> &middot; <a href="/blog">Blog</a> &middot; <a href="/interview-questions">Interview prep packs</a> &middot; <a href="/register">Get started free</a></p>
+      </main>
+      <footer>
+        <p><strong>Featured on:</strong>
+          <a href="https://submitaitools.org" rel="noopener">Submit AI Tools</a> &middot;
+          <a href="https://aitoolzdir.com" rel="noopener">AiToolzDir</a>
+        </p>
+        <p>&copy; 2026 Vantage. <a href="/privacy">Privacy</a> &middot; <a href="/terms">Terms</a> &middot; <a href="/cookies">Cookies</a></p>
+      </footer>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
