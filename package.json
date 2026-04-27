@@ -5,11 +5,14 @@
   "type": "module",
   "scripts": {
     "dev": "vite --port=3000 --host=0.0.0.0",
+    "prebuild": "node scripts/generate-feeds.mjs",
     "build": "vite build",
     "preview": "vite preview",
     "clean": "rm -rf dist",
     "lint": "tsc --noEmit",
-    "vercel-build": "vite build"
+    "vercel-build": "node scripts/generate-feeds.mjs && vite build",
+    "seo:feeds": "node scripts/generate-feeds.mjs",
+    "seo:ping": "node scripts/indexnow-ping.mjs"
   },
   "dependencies": {
     "@google/genai": "^1.29.0",

@@ -4,11 +4,11 @@
     <title>Vantage Blog — AI Job Prep, CV Optimisation, Interview Strategy</title>
     <link>https://vantage-livid.vercel.app/blog</link>
     <atom:link href="https://vantage-livid.vercel.app/rss.xml" rel="self" type="application/rss+xml" />
-    <description>Practical, current guides on AI job preparation, CV optimisation, ATS-friendly resumes, cover letters, interview strategy, and the actual workflows people apply with 30+ jobs a week.</description>
+    <description>Practical, current guides on AI job preparation, CV optimisation, ATS-friendly resumes, cover letters, and interview strategy.</description>
     <language>en-gb</language>
     <copyright>Vantage 2026</copyright>
     <lastBuildDate>Sat, 25 Apr 2026 00:00:00 +0000</lastBuildDate>
-    <generator>Vantage Static</generator>
+    <generator>Vantage scripts/generate-feeds.mjs</generator>
     <image>
       <url>https://vantage-livid.vercel.app/og-image.png</url>
       <title>Vantage</title>
@@ -16,63 +16,46 @@
     </image>
 
     <item>
-      <title>The 5-minute interview pitch that gets you remembered</title>
-      <link>https://vantage-livid.vercel.app/blog/the-5-minute-interview-pitch-that-gets-you-remembered</link>
-      <guid isPermaLink="true">https://vantage-livid.vercel.app/blog/the-5-minute-interview-pitch-that-gets-you-remembered</guid>
+      <title>How to use ChatGPT to prep for an interview (without sounding like a bot)</title>
+      <link>https://vantage-livid.vercel.app/blog/how-to-use-chatgpt-to-prep-for-an-interview</link>
+      <guid isPermaLink="true">https://vantage-livid.vercel.app/blog/how-to-use-chatgpt-to-prep-for-an-interview</guid>
       <pubDate>Sat, 25 Apr 2026 00:00:00 +0000</pubDate>
-      <author>Gio</author>
-      <category>Interview Prep</category>
-      <description>The strongest candidates walk into the room with a structured 5-minute pitch they can compress to 90 seconds. Origin, expertise, why-now, why-them, and one ask. Here is the structure and the rehearsal protocol.</description>
+      <description>A working ChatGPT interview prep workflow used by real candidates in 2026. Specific prompts, the exact order to run them, and how to keep your answers sounding human.</description>
     </item>
-
     <item>
       <title>The 30-second CV review test recruiters actually run</title>
       <link>https://vantage-livid.vercel.app/blog/the-30-second-cv-review-recruiters-actually-run</link>
       <guid isPermaLink="true">https://vantage-livid.vercel.app/blog/the-30-second-cv-review-recruiters-actually-run</guid>
       <pubDate>Sat, 25 Apr 2026 00:00:00 +0000</pubDate>
-      <author>Gio</author>
-      <category>CV</category>
-      <description>Recruiters spend 30 seconds on your CV. Here is the exact 4-checkpoint scan they run, what kills you, and a 5-minute fix that gets you past it.</description>
+      <description>Recruiters spend less than a minute on your CV before deciding. Here is the exact 30-second scan they run, what they look for, and how to write a CV that wins it.</description>
     </item>
-
     <item>
-      <title>How to use ChatGPT to prep for an interview (without sounding like a bot)</title>
-      <link>https://vantage-livid.vercel.app/blog/how-to-use-chatgpt-to-prep-for-an-interview</link>
-      <guid isPermaLink="true">https://vantage-livid.vercel.app/blog/how-to-use-chatgpt-to-prep-for-an-interview</guid>
+      <title>The 5-minute interview pitch that gets you remembered</title>
+      <link>https://vantage-livid.vercel.app/blog/the-5-minute-interview-pitch-that-gets-you-remembered</link>
+      <guid isPermaLink="true">https://vantage-livid.vercel.app/blog/the-5-minute-interview-pitch-that-gets-you-remembered</guid>
       <pubDate>Sat, 25 Apr 2026 00:00:00 +0000</pubDate>
-      <author>Gio</author>
-      <category>AI</category>
-      <description>A working ChatGPT interview prep workflow used by real candidates in 2026. Six prompts in order, plus the rules to keep your answers sounding human.</description>
+      <description>Most candidates wing the &quot;tell us about yourself&quot; question. The strongest candidates have a 5-minute pitch they can compress to 90 seconds. Here is exactly how to build it.</description>
     </item>
-
-    <item>
-      <title>The 4 cover letter tones, and when each one wins</title>
-      <link>https://vantage-livid.vercel.app/blog/the-4-cover-letter-tones-and-when-to-use-each</link>
-      <guid isPermaLink="true">https://vantage-livid.vercel.app/blog/the-4-cover-letter-tones-and-when-to-use-each</guid>
-      <pubDate>Fri, 24 Apr 2026 00:00:00 +0000</pubDate>
-      <author>Gio</author>
-      <category>Cover Letter</category>
-      <description>Professional, Warm, Direct, Creative — when each tone wins, when each one fails, and how to pick the right one in 30 seconds.</description>
-    </item>
-
-    <item>
-      <title>What ATS screening software actually checks in 2026</title>
-      <link>https://vantage-livid.vercel.app/blog/what-ats-actually-checks-in-2026</link>
-      <guid isPermaLink="true">https://vantage-livid.vercel.app/blog/what-ats-actually-checks-in-2026</guid>
-      <pubDate>Fri, 24 Apr 2026 00:00:00 +0000</pubDate>
-      <author>Gio</author>
-      <category>ATS</category>
-      <description>Most ATS-friendly CV advice is from 2017. Here is what modern applicant tracking systems — including semantic ranking — actually check in 2026.</description>
-    </item>
-
     <item>
       <title>How to prep for any job interview in 20 minutes</title>
       <link>https://vantage-livid.vercel.app/blog/how-to-prep-for-any-interview-in-20-minutes</link>
       <guid isPermaLink="true">https://vantage-livid.vercel.app/blog/how-to-prep-for-any-interview-in-20-minutes</guid>
       <pubDate>Fri, 24 Apr 2026 00:00:00 +0000</pubDate>
-      <author>Gio</author>
-      <category>Interview Prep</category>
-      <description>A concrete 20-minute interview prep routine used by people applying to 50+ jobs a week. Company research, fit check, likely questions, and a mock drill.</description>
+      <description>A concrete 20-minute interview prep routine used by people applying to 50+ jobs a week. Company research, fit check, likely questions, and a mock drill — no BS, no fluff.</description>
+    </item>
+    <item>
+      <title>What ATS screening software actually checks in 2026</title>
+      <link>https://vantage-livid.vercel.app/blog/what-ats-actually-checks-in-2026</link>
+      <guid isPermaLink="true">https://vantage-livid.vercel.app/blog/what-ats-actually-checks-in-2026</guid>
+      <pubDate>Fri, 24 Apr 2026 00:00:00 +0000</pubDate>
+      <description>A plain-English breakdown of how modern applicant tracking systems parse CVs in 2026. What gets flagged, what gets filtered, and what to fix before you hit submit.</description>
+    </item>
+    <item>
+      <title>The 4 cover letter tones, and when each one wins</title>
+      <link>https://vantage-livid.vercel.app/blog/the-4-cover-letter-tones-and-when-to-use-each</link>
+      <guid isPermaLink="true">https://vantage-livid.vercel.app/blog/the-4-cover-letter-tones-and-when-to-use-each</guid>
+      <pubDate>Fri, 24 Apr 2026 00:00:00 +0000</pubDate>
+      <description>Not every role wants the same cover letter. The right tone depends on the company culture. Here are the four tones that cover most cases, with examples and a rule for when each one wins.</description>
     </item>
   </channel>
 </rss>

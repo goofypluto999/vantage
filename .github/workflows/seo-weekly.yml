@@ -1,0 +1,85 @@
+name: SEO weekly health check
+
+# Runs every Monday at 09:00 UTC. Fully automated.
+#
+# - Lighthouse audit on /, /pricing, /blog, /interview-questions
+# - Re-pings IndexNow (in case sitemap-known URLs were de-indexed for any reason)
+# - Validates every URL in every sitemap returns 200
+# - Posts a summary in the GitHub Actions run output
+#
+# What this replaces: the "weekly check (5 minutes)" item in the playbook.
+# Now you just glance at the green check on the Actions tab.
+#
+# Manual trigger: Actions tab → SEO weekly health check → Run workflow
+
+on:
+  schedule:
+    - cron: '0 9 * * 1'   # every Monday 09:00 UTC
+  workflow_dispatch:
+
+jobs:
+  health-check:
+    name: SEO health check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Validate every sitemap URL returns 200
+        run: |
+          set -e
+          fail=0
+          for sm in sitemap-pages.xml sitemap-blog.xml sitemap-roles.xml; do
+            echo ""
+            echo "=== $sm ==="
+            urls=$(curl -fsSL "https://vantage-livid.vercel.app/$sm" | grep -oE '<loc>[^<]+</loc>' | sed 's/<\/\?loc>//g')
+            for u in $urls; do
+              code=$(curl -s -o /dev/null -w "%{http_code}" "$u")
+              if [ "$code" != "200" ]; then
+                echo "  FAIL  $code  $u"
+                fail=$((fail+1))
+              else
+                echo "  ok    $code  $u"
+              fi
+            done
+          done
+          if [ $fail -gt 0 ]; then
+            echo ""
+            echo "$fail URL(s) failed the 200 check. Investigate."
+            exit 1
+          fi
+
+      - name: Lighthouse audit on key pages
+        uses: treosh/lighthouse-ci-action@v11
+        with:
+          urls: |
+            https://vantage-livid.vercel.app/
+            https://vantage-livid.vercel.app/pricing
+            https://vantage-livid.vercel.app/blog
+            https://vantage-livid.vercel.app/interview-questions
+            https://vantage-livid.vercel.app/interview-questions/software-engineer
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+
+      - name: Re-ping IndexNow (weekly refresh)
+        run: node scripts/indexnow-ping.mjs
+
+      - name: Validate llms.txt + RSS still healthy
+        run: |
+          set -e
+          echo "llms.txt:"
+          curl -fsSL -o /tmp/llms.txt -w "  HTTP %{http_code} | %{content_type} | %{size_download}B\n" https://vantage-livid.vercel.app/llms.txt
+          if ! grep -q "interview-questions" /tmp/llms.txt; then
+            echo "ERROR: llms.txt missing interview-questions section"
+            exit 1
+          fi
+          echo "rss.xml:"
+          curl -fsSL -o /tmp/rss.xml -w "  HTTP %{http_code} | %{content_type} | %{size_download}B\n" https://vantage-livid.vercel.app/rss.xml
+          if ! grep -q "<rss" /tmp/rss.xml; then
+            echo "ERROR: rss.xml is not valid RSS"
+            exit 1
+          fi

@@ -6,25 +6,6 @@
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
-
-  <url>
-    <loc>https://vantage-livid.vercel.app/blog/how-to-prep-for-any-interview-in-20-minutes</loc>
-    <lastmod>2026-04-24</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://vantage-livid.vercel.app/blog/what-ats-actually-checks-in-2026</loc>
-    <lastmod>2026-04-24</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://vantage-livid.vercel.app/blog/the-4-cover-letter-tones-and-when-to-use-each</loc>
-    <lastmod>2026-04-24</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
   <url>
     <loc>https://vantage-livid.vercel.app/blog/how-to-use-chatgpt-to-prep-for-an-interview</loc>
     <lastmod>2026-04-25</lastmod>
@@ -40,6 +21,24 @@
   <url>
     <loc>https://vantage-livid.vercel.app/blog/the-5-minute-interview-pitch-that-gets-you-remembered</loc>
     <lastmod>2026-04-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://vantage-livid.vercel.app/blog/how-to-prep-for-any-interview-in-20-minutes</loc>
+    <lastmod>2026-04-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://vantage-livid.vercel.app/blog/what-ats-actually-checks-in-2026</loc>
+    <lastmod>2026-04-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://vantage-livid.vercel.app/blog/the-4-cover-letter-tones-and-when-to-use-each</loc>
+    <lastmod>2026-04-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>

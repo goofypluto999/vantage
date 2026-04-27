@@ -1,0 +1,46 @@
+name: SEO post-deploy
+
+# Runs after every push to master.
+# - Pings IndexNow with all sitemap URLs (Bing/Yandex/Seznam pick up new pages within hours)
+# - Confirms the production site is live and the sitemap index is reachable
+#
+# What this replaces: nothing. There is no manual step here. This runs on every push.
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  ping:
+    name: IndexNow ping + smoke test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Wait for Vercel deploy to propagate
+        # 90 seconds is enough for the Vercel CDN to cut over for static files.
+        run: sleep 90
+
+      - name: Smoke test — homepage + sitemap index
+        run: |
+          set -e
+          echo "Homepage:"
+          curl -fsSL -o /dev/null -w "  HTTP %{http_code} | %{content_type} | %{size_download}B\n" https://vantage-livid.vercel.app/
+          echo "Sitemap index:"
+          curl -fsSL -o /tmp/sm.xml -w "  HTTP %{http_code} | %{content_type} | %{size_download}B\n" https://vantage-livid.vercel.app/sitemap.xml
+          if ! grep -q "<sitemapindex" /tmp/sm.xml; then
+            echo "ERROR: sitemap.xml is not a sitemap index"
+            exit 1
+          fi
+          echo "robots.txt:"
+          curl -fsSL -o /dev/null -w "  HTTP %{http_code} | %{content_type} | %{size_download}B\n" https://vantage-livid.vercel.app/robots.txt
+          echo "llms.txt:"
+          curl -fsSL -o /dev/null -w "  HTTP %{http_code} | %{content_type} | %{size_download}B\n" https://vantage-livid.vercel.app/llms.txt
+
+      - name: Ping IndexNow
+        run: node scripts/indexnow-ping.mjs
