@@ -13,6 +13,21 @@ import Waitlist from './Waitlist';
 import DemoWalkthrough from './DemoWalkthrough';
 import { useCurrency } from '../contexts/CurrencyContext';
 
+// Directories that require a reciprocal backlink before approving submission.
+// To add: append a new entry, redeploy. Footer auto-renders.
+// `badgeUrl` is optional — if omitted, the directory name renders as a text link.
+const FEATURED_ON: { name: string; url: string; badgeUrl?: string }[] = [
+  {
+    name: 'Submit AI Tools',
+    url: 'https://submitaitools.org',
+    badgeUrl: 'https://submitaitools.org/static_submitaitools/images/submitaitools.png',
+  },
+  {
+    name: 'AiToolzDir',
+    url: 'https://aitoolzdir.com',
+  },
+];
+
 // ============================================================================
 // 3D: DOT-MATRIX GLOBE  (fibonacci sphere of points + orbital rings)
 // ============================================================================
@@ -995,6 +1010,30 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
                   Built with care. Your data is never used for training.
                 </p>
               </div>
+            </div>
+          </div>
+
+          {/* Featured On — backlinks for directories that require reciprocal links.
+              To add a new directory: append an entry to FEATURED_ON below, redeploy. */}
+          <div className="border-b border-[#6B6B8D]/20 py-6">
+            <div className="text-[10px] uppercase tracking-widest text-[#6B6B8D] font-bold mb-3">Featured on</div>
+            <div className="flex flex-wrap gap-4 items-center">
+              {FEATURED_ON.map((d) => (
+                <a
+                  key={d.url}
+                  href={d.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[12px] text-[#6B6B8D] hover:text-[#4F46E5] transition flex items-center gap-2 opacity-80 hover:opacity-100"
+                  aria-label={`Featured on ${d.name}`}
+                >
+                  {d.badgeUrl ? (
+                    <img src={d.badgeUrl} alt={`Featured on ${d.name}`} className="h-9 rounded" loading="lazy" />
+                  ) : (
+                    <span className="font-semibold">{d.name}</span>
+                  )}
+                </a>
+              ))}
             </div>
           </div>
 
