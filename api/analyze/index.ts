@@ -11,6 +11,28 @@ const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 // Fetches the actual job page content so Gemini doesn't have to guess.
 // Falls back gracefully if the page blocks us.
 
+/**
+ * Detects responses that LOOK like text but are actually anti-bot challenges,
+ * auth walls, or access-denied pages. Returning these as "scraped text" causes
+ * Gemini to hallucinate a fake job from challenge-page boilerplate.
+ *
+ * Validated by test-blocked-page-detector.mjs (14/14 cases). Don't broaden the
+ * patterns without re-running that suite — false positives reject real jobs.
+ */
+function looksLikeBlockedPage(text: string): boolean {
+  const t = text.toLowerCase();
+  // Cloudflare challenge / Anti-bot
+  if (/just a moment|verifying you are human|cf-browser-verification|cf-challenge|sorry, you have been blocked|performance & security by cloudflare|please enable cookies/i.test(t)) return true;
+  // LinkedIn auth wall — only for short pages (a real LinkedIn job >3000 chars
+  // can mention "sign in to save" without being blocked)
+  if (/sign in to view this job|join linkedin to view|sign up \| linkedin|to view this profile/i.test(t) && t.length < 3000) return true;
+  // Indeed bot check
+  if (/hold on, we are checking your browser|please verify you'?re a human|indeed has detected unusual/i.test(t)) return true;
+  // Generic access denied (only when it appears at the very start of the page)
+  if (/^.{0,200}(access denied|403 forbidden|robot or human\?|are you a robot)/i.test(t)) return true;
+  return false;
+}
+
 function isPrivateHostname(hostname: string): boolean {
   const h = hostname.toLowerCase();
   // Localhost variants
@@ -69,7 +91,10 @@ async function scrapeJobUrl(url: string): Promise<string | null> {
     });
     if (jinaRes.ok) {
       const text = await jinaRes.text();
-      if (text.length > 200 && !text.includes('returned error')) return text.slice(0, 12000);
+      // Jina can return Cloudflare challenge text verbatim — guard against that.
+      if (text.length > 200 && !text.includes('returned error') && !looksLikeBlockedPage(text)) {
+        return text.slice(0, 12000);
+      }
     }
   } catch { /* Jina failed, continue */ }
 
@@ -91,7 +116,7 @@ async function scrapeJobUrl(url: string): Promise<string | null> {
     });
     if (searchRes.ok) {
       const text = await searchRes.text();
-      if (text.length > 200) return text.slice(0, 12000);
+      if (text.length > 200 && !looksLikeBlockedPage(text)) return text.slice(0, 12000);
     }
   } catch { /* Jina search failed, continue */ }
 
@@ -185,6 +210,14 @@ function extractTextFromHtml(html: string): string {
   // return null so Gemini falls back to googleSearch instead of analyzing the job board itself
   if (combined.length < 200) {
     console.warn('Extracted text too short, likely not a valid job page');
+    return null;
+  }
+
+  // Reject anti-bot challenge / auth-wall pages — they pass the length check
+  // but are not real job descriptions. Without this, Gemini hallucinates a
+  // fake job from Cloudflare challenge boilerplate.
+  if (looksLikeBlockedPage(combined)) {
+    console.warn('Extracted text looks like a bot-check / auth-wall page, discarding');
     return null;
   }
 
@@ -426,6 +459,22 @@ Rules:
   const hasJobDesc = fullJobDesc.length > 50;
   const useSearch = Boolean(jobUrl);
   const dataSource = scrapedJobText ? 'scraped' : jobDescText ? 'user-provided' : preflightJobInfo ? 'gemini-preflight' : 'none';
+
+  // SAFETY GATE: if a URL was provided but every layer (scrape + Gemini preflight)
+  // failed to return usable text AND the user didn't paste a JD, abort here.
+  // Producing a "best-effort" analysis from no data wastes 3 tokens and ships
+  // garbage. Throwing here triggers the handler's refund path (line 733).
+  // Common cause: Indeed / LinkedIn / Reed block automated readers.
+  if (dataSource === 'none' && jobUrl) {
+    const err: any = new Error(
+      "We couldn't read the job page at that URL. Sites like Indeed, LinkedIn, " +
+      "and Reed often block automated readers. Please paste the job description " +
+      "into the 'Job Description' field below (or upload it as a file) and try again. " +
+      'Your tokens were not charged.'
+    );
+    err.code = 'JOB_PARSE_FAILED';
+    throw err;
+  }
 
   const jsonShape = `{
     "companySnapshot": {
@@ -748,7 +797,15 @@ export default async function handler(request: any, response: any) {
     });
   } catch (error: any) {
     console.error('Analysis error:', error?.message || 'Unknown error');
-    const msg = error.message?.includes('Insufficient') ? error.message : 'Analysis failed';
-    return response.status(500).json({ error: msg });
+    // Insufficient tokens — surface the message
+    if (error.message?.includes('Insufficient')) {
+      return response.status(403).json({ error: error.message });
+    }
+    // Friendly job-parse failure — tokens already refunded by the inner catch.
+    // Surface the message verbatim so the user knows to paste the JD text.
+    if (error.code === 'JOB_PARSE_FAILED') {
+      return response.status(422).json({ error: error.message, code: 'JOB_PARSE_FAILED' });
+    }
+    return response.status(500).json({ error: 'Analysis failed' });
   }
 }
