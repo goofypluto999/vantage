@@ -464,7 +464,7 @@ export default function Dashboard() {
               <div className="grid md:grid-cols-3 gap-5 mb-6">
                 {/* CV Upload */}
                 <div
-                  className={`p-6 rounded-2xl border-2 border-dashed transition-all cursor-pointer ${
+                  className={`p-6 rounded-2xl border-2 border-dashed transition-all cursor-pointer relative ${
                     isDragging ? 'border-violet-500 bg-violet-500/10' : 'border-white/10 bg-white/5 hover:border-white/20'
                   }`}
                   onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
@@ -476,6 +476,7 @@ export default function Dashboard() {
                   }}
                   onClick={() => fileInputRef.current?.click()}
                 >
+                  <span className="absolute top-3 right-3 text-[10px] font-bold uppercase tracking-widest text-violet-300/70">Required</span>
                   <input
                     ref={fileInputRef}
                     type="file"
@@ -492,7 +493,7 @@ export default function Dashboard() {
                     ) : (
                       <>
                         <Upload className="w-8 h-8 text-white/30 mx-auto mb-2" />
-                        <p className="text-white/50 text-sm">Upload CV</p>
+                        <p className="text-white/50 text-sm">Upload your CV</p>
                         <p className="text-white/30 text-xs">PDF, DOCX, TXT</p>
                       </>
                     )}
@@ -563,18 +564,22 @@ export default function Dashboard() {
                   )}
                 </div>
 
-                {/* Job URL */}
-                <div className="p-6 rounded-2xl bg-white/5 border border-white/10">
+                {/* Job posting URL */}
+                <div className="p-6 rounded-2xl bg-white/5 border border-white/10 relative">
+                  <span className="absolute top-3 right-3 text-[10px] font-bold uppercase tracking-widest text-violet-300/70">Required</span>
                   <label className="block text-xs font-bold text-white/40 uppercase tracking-widest mb-3">
-                    Job URL
+                    Job posting URL
                   </label>
                   <input
                     type="url"
                     value={jobUrl}
                     onChange={(e) => setJobUrl(e.target.value)}
-                    placeholder="https://..."
+                    placeholder="https://company.com/careers/role-id"
                     className="w-full bg-transparent text-white placeholder-white/30 outline-none text-sm"
                   />
+                  <p className="mt-2 text-[11px] text-white/30">
+                    The link to the actual job posting (careers page, Indeed, LinkedIn, Reed, etc.).
+                  </p>
                 </div>
               </div>
 
@@ -615,6 +620,18 @@ export default function Dashboard() {
                 <span className="text-white/60 text-sm font-normal ml-1">(3 tokens)</span>
                 <ChevronRight className="w-5 h-5" />
               </button>
+
+              {/* Explain why the button is disabled — silent disabled state was confusing
+                  users who didn't realise CV + Job URL were both required. */}
+              {(!cvFile || !jobUrl) && canAnalyze && (
+                <p className="mt-2 text-center text-xs text-white/40">
+                  {!cvFile && !jobUrl
+                    ? 'Add your CV and a job posting URL above to enable.'
+                    : !cvFile
+                    ? 'Upload your CV above to enable.'
+                    : 'Add a job posting URL above to enable.'}
+                </p>
+              )}
 
               {/* Analysis History */}
               <AnalysisHistory onLoad={(data: any) => { setResults(data); setStep('results'); }} />
