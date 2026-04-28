@@ -536,7 +536,7 @@ export default function Dashboard() {
                       ) : (
                         <>
                           <FileText className="w-6 h-6 text-white/30 mx-auto mb-1" />
-                          <p className="text-white/50 text-xs">Upload JD</p>
+                          <p className="text-white/50 text-xs">Upload Job Description</p>
                         </>
                       )}
                     </div>
@@ -577,6 +577,33 @@ export default function Dashboard() {
                   />
                 </div>
               </div>
+
+              {/* Pre-emptive warning for URLs that commonly block automated readers.
+                  Without this, users paste an Indeed URL, get a useless analysis,
+                  and bounce. Showing this BEFORE submission saves tokens + trust. */}
+              {(() => {
+                if (!jobUrl) return null;
+                let host = '';
+                try { host = new URL(jobUrl).hostname.toLowerCase().replace(/^www\./, ''); }
+                catch { return null; }
+                const blocked = ['indeed.com', 'indeed.co.uk', 'linkedin.com', 'reed.co.uk', 'glassdoor.com', 'glassdoor.co.uk', 'totaljobs.com', 'cwjobs.co.uk', 'monster.com'];
+                const matched = blocked.find(d => host === d || host.endsWith('.' + d));
+                if (!matched) return null;
+                const hasJd = (jdMode === 'file' && jobDescFile) || (jdMode === 'text' && jobDescText.trim().length > 50);
+                if (hasJd) return null;
+                return (
+                  <div className="mt-4 p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-start gap-3">
+                    <CreditCard className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
+                    <div className="flex-1 text-sm">
+                      <p className="text-amber-300 font-semibold">Heads up — {matched} often blocks automated readers</p>
+                      <p className="text-amber-200/70 mt-1">
+                        For best results, also paste the job description text into the Job Description box above
+                        (or upload it as a file). Without it, the analysis will likely fail and your tokens won't be charged.
+                      </p>
+                    </div>
+                  </div>
+                );
+              })()}
 
               <button
                 onClick={handleStart}
