@@ -7,7 +7,7 @@
     <description>Practical, current guides on AI job preparation, CV optimisation, ATS-friendly resumes, cover letters, and interview strategy.</description>
     <language>en-gb</language>
     <copyright>Vantage 2026</copyright>
-    <lastBuildDate>Sat, 25 Apr 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 28 Apr 2026 00:00:00 +0000</lastBuildDate>
     <generator>Vantage scripts/generate-feeds.mjs</generator>
     <image>
       <url>https://vantage-livid.vercel.app/og-image.png</url>
@@ -15,6 +15,27 @@
       <link>https://vantage-livid.vercel.app/blog</link>
     </image>
 
+    <item>
+      <title>Why tailoring every resume might be costing you interviews (and the smarter alternative)</title>
+      <link>https://vantage-livid.vercel.app/blog/tailoring-every-resume-vs-the-smarter-alternative</link>
+      <guid isPermaLink="true">https://vantage-livid.vercel.app/blog/tailoring-every-resume-vs-the-smarter-alternative</guid>
+      <pubDate>Tue, 28 Apr 2026 00:00:00 +0000</pubDate>
+      <description>The &quot;rewrite your resume for every job&quot; advice is exhausting and may be costing you interviews. Here is what actually works for high-volume applicants in 2026.</description>
+    </item>
+    <item>
+      <title>500 applications, zero interviews: the ATS parse problem nobody talks about</title>
+      <link>https://vantage-livid.vercel.app/blog/500-applications-zero-interviews-the-ats-parse-problem</link>
+      <guid isPermaLink="true">https://vantage-livid.vercel.app/blog/500-applications-zero-interviews-the-ats-parse-problem</guid>
+      <pubDate>Tue, 28 Apr 2026 00:00:00 +0000</pubDate>
+      <description>If you have applied to hundreds of jobs and got nothing back, the problem might not be your CV content. It might be that the ATS literally cannot read your CV. Here is how to find out in 60 seconds.</description>
+    </item>
+    <item>
+      <title>How to spot a ghost job in 30 seconds (the Indeed problem in 2026)</title>
+      <link>https://vantage-livid.vercel.app/blog/how-to-spot-a-ghost-job-in-30-seconds</link>
+      <guid isPermaLink="true">https://vantage-livid.vercel.app/blog/how-to-spot-a-ghost-job-in-30-seconds</guid>
+      <pubDate>Tue, 28 Apr 2026 00:00:00 +0000</pubDate>
+      <description>A viral Reddit post called Indeed &quot;the Tinder of job hunting&quot; — and a UK-focused thread reported 50% of postings were fake. Here is how to spot a ghost job in 30 seconds before you waste a tailored application on it.</description>
+    </item>
     <item>
       <title>How to use ChatGPT to prep for an interview (without sounding like a bot)</title>
       <link>https://vantage-livid.vercel.app/blog/how-to-use-chatgpt-to-prep-for-an-interview</link>

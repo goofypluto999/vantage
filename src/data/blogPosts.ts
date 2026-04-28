@@ -507,6 +507,214 @@ export const blogPosts: BlogPost[] = [
       { type: 'p', text: 'Build the long version. Deliver the short version. Walk in remembered.' },
     ],
   },
+
+  {
+    slug: 'tailoring-every-resume-vs-the-smarter-alternative',
+    title: 'Why tailoring every resume might be costing you interviews (and the smarter alternative)',
+    description: 'The "rewrite your resume for every job" advice is exhausting and may be costing you interviews. Here is what actually works for high-volume applicants in 2026.',
+    publishedAt: '2026-04-28',
+    author: 'Gio',
+    readingTime: '6 min read',
+    tags: ['CV', 'Resume', 'Job Search', 'Tailoring'],
+    excerpt: 'Spending an hour per application tailoring your resume is the standard advice. Real high-volume applicants are quietly admitting it does not work. Here is what does — and a 90-second alternative for when manual is impossible.',
+    hook: 'The "rewrite your resume for every job" advice sounds smart. At application volume, it falls apart.',
+    sections: [
+      { type: 'p', text: 'A post on r/jobsearchhacks this week hit 900+ upvotes with the most viral resume confession of the month: someone admitting they stopped tailoring their resume for every job, did something "dumber," and got more interviews. The replies were full of people quietly agreeing.' },
+      { type: 'p', text: 'The standard advice — rewrite your resume to mirror each job description — is real and has real evidence behind it. The problem is the cost. At 30 applications a week, an hour each, that is your weekend gone, and the per-application return diminishes fast.' },
+      { type: 'p', text: 'Here is what is actually happening when "tailoring" stops working — and what to do instead.' },
+
+      { type: 'callout', text: 'Quick answer: stop rewriting from scratch. Build one strong "master resume" with three swappable angles, then change only the top of page one for each application. Saves 90% of the time, captures 80% of the keyword-match win.' },
+
+      { type: 'h2', text: 'Why tailoring every resume stops paying off' },
+      { type: 'p', text: 'Three reasons:' },
+      { type: 'ol', items: [
+        'Modern ATS parsers do stemmed and synonym matching. "Manage" matches "managed" matches "management". You do not need to literally write every keyword variant.',
+        'The semantic-ranking layer in newer ATSes (post-2024) reads the whole CV against the JD as embeddings. Word-by-word mirroring hits diminishing returns once you have the right concepts.',
+        'When you spend an hour per application, you usually only get to 10 applications a week. At 10 applications you need each to convert at 10% to land an interview a week. That hit rate is rare. Volume math wins until you are applying at senior IC+ level.',
+      ] },
+
+      { type: 'h2', text: 'The smarter alternative — the master + 3 angles approach' },
+      { type: 'p', text: 'Build one strong CV with these three properties:' },
+      { type: 'ol', items: [
+        'Single-column, standard sections (Experience, Education, Skills), no fancy layout. Survives every ATS parser. (We built a free tool — CV Mirror — that shows you exactly how 5 real ATS systems parse your CV. Drop it before any application: cv-mirror-web.vercel.app.)',
+        'Three pre-written "top of page one" variants — one for each direction you might apply (e.g. IC engineer / engineering manager / staff+). The variant changes only your title-line, summary sentence, and most-recent-role first bullet.',
+        'A fourth, optional variant for career change or pivot applications.',
+      ] },
+      { type: 'p', text: 'Now per application, your work shrinks to: pick the right top-of-page-one variant, scan the JD for 3 unique keywords you do not already have, and edit one bullet. Five minutes max. Twelve applications an hour instead of one.' },
+
+      { type: 'h2', text: 'When tailoring still pays' },
+      { type: 'p', text: 'Tailoring per application earns its time when:' },
+      { type: 'ul', items: [
+        'You have a referral and the application matters more than usual.',
+        'The role is a stretch — you need to bend the framing to fit.',
+        'You are at staff+ level and applying to a small set of high-stake openings.',
+        'The JD is unusual enough that your master resume genuinely does not cover it.',
+      ] },
+      { type: 'p', text: 'Outside those cases, the master + 3 angles version captures most of the win at 10% of the cost.' },
+
+      { type: 'h2', text: 'How AI changes the math (the new piece nobody talks about yet)' },
+      { type: 'p', text: 'In 2026, the cost of "tailoring per application" has cratered for one reason: the rewrite is no longer the slow part. Tools like Vantage take your CV and a job link and generate a tailored cover letter, brief, mock interview, and pitch outline in about 90 seconds. The CV side stays the master, and the per-application surface shifts to the cover letter and interview prep — which is where applicants actually fail.' },
+      { type: 'p', text: 'Net effect: do not spend hours rewriting your CV per application. Spend the saved time on a tighter cover letter and 20 minutes of company research. That is what closes interviews.' },
+      { type: 'callout', text: 'Vantage handles this exact flow: upload CV once, paste a job link, get the prep pack (company brief, tailored cover letter in 4 tones, mock interview Qs, fit score, 5-min pitch outline) in 90 seconds. Genuinely free signup, 3 free analyses included.' },
+
+      { type: 'h2', text: 'FAQ' },
+      { type: 'h3', text: 'But will my CV still get past the ATS without keyword tailoring?' },
+      { type: 'p', text: 'Modern ATSes (Workday, Greenhouse, Lever, etc.) do stemmed + synonym matching. As long as your master CV covers each "must-have" skill from the JD at least twice in role context, you are fine. Run CV Mirror to see what each parser actually extracts.' },
+      { type: 'h3', text: 'How many resume variants is too many?' },
+      { type: 'p', text: 'Three is the sweet spot. Four if you do career-change occasionally. Past that you stop being able to keep them up to date and quality drops.' },
+      { type: 'h3', text: 'Does this work at senior+ level?' },
+      { type: 'p', text: 'Less. At staff+ level, applications are fewer and higher-stake, so the per-application time investment is justified. The master + 3 angles approach is for people in the 10–50 applications-per-week band.' },
+
+      { type: 'p', text: 'Stop trying to perfect every application. Build one strong CV, three swappable angles, automate the cover letter, ship more applications. The volume math wins.' },
+    ],
+  },
+
+  {
+    slug: '500-applications-zero-interviews-the-ats-parse-problem',
+    title: '500 applications, zero interviews: the ATS parse problem nobody talks about',
+    description: 'If you have applied to hundreds of jobs and got nothing back, the problem might not be your CV content. It might be that the ATS literally cannot read your CV. Here is how to find out in 60 seconds.',
+    publishedAt: '2026-04-28',
+    author: 'Gio',
+    readingTime: '6 min read',
+    tags: ['ATS', 'CV', 'Job Search', 'Resume Parser'],
+    excerpt: 'The Reddit post hit 50+ upvotes this week — someone applied to nearly 500 jobs in 5 months and got zero interviews. Comments blamed the market, the resume, the cover letter. Almost nobody mentioned the most common silent failure: the ATS parser literally cannot read the CV. Here is how to check in 60 seconds.',
+    hook: '500 applications, zero interviews — and the most common cause is a bug, not your career.',
+    sections: [
+      { type: 'p', text: 'A post on r/jobsearchhacks this week described the pattern: 5 months of job hunting, nearly 500 applications, zero interviews except a few "weird AI screening calls." The replies blamed the market, the resume content, cover letter quality, networking. Almost nobody mentioned the most common silent failure mode in 2026 hiring: the ATS literally cannot read the CV.' },
+      { type: 'p', text: 'When the ATS fails to parse your file, you do not get a rejection email. You get nothing. Forever. The CV ends up classified as "Other / could not parse" and silently drops out of the recruiter\'s queue. From outside, it looks identical to "company decided to ghost me."' },
+      { type: 'p', text: 'Here is the 60-second check that tells you whether the parse is the problem.' },
+
+      { type: 'callout', text: 'Quick answer: open your CV in Google Docs, upload the PDF, then look at the raw text. If it reads coherently, ATS parsers will mostly handle it. If it looks scrambled, columns merged, sections out of order — you have a parse failure that no amount of keyword tailoring will fix.' },
+
+      { type: 'h2', text: 'How ATS parse failures actually fail' },
+      { type: 'p', text: 'There are five common failure modes. Each one is silent — the ATS does not warn you, and the recruiter does not know.' },
+      { type: 'ol', items: [
+        'Multi-column layouts. Workday and iCIMS read PDFs in document-stream order. Two-column CVs get interleaved. Your most recent role gets read after your education section because of where it falls in the source order, not where it visually appears.',
+        'Image-only PDF. If you exported your CV as an image (some "designer" CV tools do this by default), the parser sees nothing. Zero text extracted.',
+        'Headers and footers. Some ATSes (historically Lever) drop content placed in PDF headers and footers. If your name and contact info are up there, the parser populates "name: blank, email: blank."',
+        'Fancy bullets and emoji. Greenhouse strips emoji codepoints. "Projects 🚀" can lose its surrounding context. Some non-ASCII bullets collapse to spaces, merging two lines.',
+        'Date format mismatches. Workday and Taleo prefer Month-Year format ("Sep 2024 – Mar 2026"). ISO dates ("2024-09 to 2026-03") often fail to populate the employment-duration fields, so the ATS thinks you have 0 years of experience for skills you actually used for years.',
+      ] },
+
+      { type: 'h2', text: 'The 60-second test' },
+      { type: 'ol', items: [
+        'Open Google Drive. Upload your CV PDF.',
+        'Right-click → "Open with" → "Google Docs". This triggers Google\'s text extractor.',
+        'Read the resulting text. Does your name come first? Does your most recent role come before older ones? Does each role have its dates next to it?',
+        'If yes, you are mostly fine for parse-compatibility. The problem is content or volume.',
+        'If no — if columns merged, sections jumbled, or chunks missing — you have a parse failure. That is the silent reason behind the no-interview pattern.',
+      ] },
+
+      { type: 'callout', text: 'Faster check: we built a free tool — CV Mirror — that simulates how 5 real ATS parsers (Workday, Greenhouse, Lever, Taleo, iCIMS) actually read your PDF, side by side. No signup. Nothing uploads. Results in 10 seconds: cv-mirror-web.vercel.app.' },
+
+      { type: 'h2', text: 'What to fix when the parse is wrong' },
+      { type: 'ul', items: [
+        'Switch to single-column layout. Move sidebars (Skills, Tools, Languages) above or below the main content, never beside it.',
+        'Re-export from Word/Google Docs as a text-based PDF. If you used Canva or a designer tool, this is the most likely fix.',
+        'Move name, email, phone out of the header into the document body — first line of page one.',
+        'Use standard "•" or "-" bullets. Skip the fancy icons.',
+        'Convert ISO dates to "Sep 2024 – Mar 2026" format throughout.',
+        'Re-run the 60-second test until the extracted text reads coherently.',
+      ] },
+
+      { type: 'h2', text: 'Why this matters more in 2026 than it did in 2018' },
+      { type: 'p', text: 'Two reasons:' },
+      { type: 'ol', items: [
+        'Application volume is up. Recruiters are not reading every CV manually any more. The ATS-only filter is the de-facto first pass at most companies.',
+        'AI screening is layered on top of the parser, not replacing it. If the parser drops your most recent role, the AI screen never sees it. Garbage in, garbage out.',
+      ] },
+      { type: 'p', text: 'The cruellest version of this: the more polished your CV looks visually (multi-column, custom icons, fancy fonts), the more likely it fails the parse. Beautiful CVs are not always ATS-friendly CVs.' },
+
+      { type: 'h2', text: 'After you fix the parse' },
+      { type: 'p', text: 'Once the parse is clean, the rest of the application stack matters again — content, keyword fit, cover letter, mock interview prep. If 500 applications still produces no interviews after the parse is fixed, the issue moves to volume strategy or career positioning, not the CV file itself.' },
+      { type: 'p', text: 'But fix the parse first. Otherwise nothing downstream matters.' },
+
+      { type: 'h2', text: 'FAQ' },
+      { type: 'h3', text: 'Does every ATS have this problem?' },
+      { type: 'p', text: 'Yes, to varying degrees. Workday and iCIMS are worst at multi-column. Greenhouse strips Unicode hardest. Lever was historically worst with headers/footers. None of them are perfect.' },
+      { type: 'h3', text: 'What if my CV passes the Google Docs test but I still get nothing?' },
+      { type: 'p', text: 'Then the parse is fine and the issue is upstream — content, fit, or volume. The next test is keyword density vs the JD, then a fit-score check against your target roles.' },
+      { type: 'h3', text: 'Should I just use a "plain" Word resume template?' },
+      { type: 'p', text: 'Yes. The plainest, most boring single-column Word/Google Docs template will outperform 80% of designed CVs at the parse step. You can always add visual flair to a "human-eyes" version once you know recruiters are seeing it.' },
+
+      { type: 'p', text: 'If you have applied to hundreds of jobs and got nothing, do the 60-second parse test before you do anything else. Most "I cannot find a job" stories have this same hidden bug.' },
+    ],
+  },
+
+  {
+    slug: 'how-to-spot-a-ghost-job-in-30-seconds',
+    title: 'How to spot a ghost job in 30 seconds (the Indeed problem in 2026)',
+    description: 'A viral Reddit post called Indeed "the Tinder of job hunting" — and a UK-focused thread reported 50% of postings were fake. Here is how to spot a ghost job in 30 seconds before you waste a tailored application on it.',
+    publishedAt: '2026-04-28',
+    author: 'Gio',
+    readingTime: '5 min read',
+    tags: ['Job Search', 'Ghost Jobs', 'Indeed', 'LinkedIn'],
+    excerpt: 'Two posts on Reddit this week described the same pattern — "Indeed is the Tinder of job hunting" with a flood of fake listings, and 50% of UK postings turning out to be ghosts. Here is the 30-second check that tells you whether a posting is real before you spend an hour on a tailored application.',
+    hook: 'Half the jobs on the major boards are not actually hiring. Here is how to tell which.',
+    sections: [
+      { type: 'p', text: 'Two viral threads on Reddit this week — one in r/jobs, one in r/UKJobs — described the same pattern. Half the listings on Indeed and similar boards are evergreen, fake, scams, or "warm bodies, not hiring." A user who applied to dozens reported that 50% of postings in their field turned out to be ghosts.' },
+      { type: 'p', text: 'You can spend an hour on a tailored cover letter for a posting where there is literally no role to fill. The application goes into a black hole. You blame yourself. You should not — the posting was already fake when you found it.' },
+      { type: 'p', text: 'Here is the 30-second check that tells you whether a posting is real before you spend the application energy.' },
+
+      { type: 'callout', text: 'Quick answer: real jobs have a specific named hiring manager or recruiter, a posting age under 30 days, and a company careers page that lists the same role. Fake jobs are anonymous, have been live for 60+ days, and disappear when you check the company website directly.' },
+
+      { type: 'h2', text: 'The 5 signals of a ghost job' },
+      { type: 'ol', items: [
+        'Posting age over 60 days. Real roles get filled or the company gives up. A 90-day-old posting that has been "renewed" is almost certainly a ghost — the platform reposts it to keep the listing fresh, but the company is not actively hiring.',
+        'No named recruiter or hiring manager. If the contact is "Recruitment Team" or just an email like jobs@company.com, the listing is being posted by an automation. Real urgent hires have a real person attached.',
+        'The role is not on the company\'s own careers page. Open the company website, go to /careers or /jobs, and search for the role title. If it is not there, the listing on Indeed/LinkedIn is either an aggregator scrape (often outdated) or a fake.',
+        'Salary range is missing or absurdly wide. "$60k – $200k" is not a real range. Real roles have a band that the recruiter has been authorised on.',
+        'The job description reads as generic. If the listing could apply to half the roles in your field — no team named, no product named, no specific tech stack — it is probably evergreen pipeline-building, not active hiring.',
+      ] },
+
+      { type: 'h2', text: 'The 30-second check' },
+      { type: 'ol', items: [
+        'Open the listing. Note the post date.',
+        'Open the company\'s actual website in another tab. Find their /careers or /jobs page.',
+        'Search the careers page for the role title.',
+        'If the role appears on the company careers page AND was posted in the last 30 days AND has a named contact: real, apply.',
+        'If the role does NOT appear on the company\'s own careers page: probably ghost or aggregator scrape. Skip OR apply directly via the company site if you find a similar role.',
+        'If posted 60+ days ago: probably ghost. Treat as low priority.',
+      ] },
+
+      { type: 'h2', text: 'Why ghost jobs exist' },
+      { type: 'p', text: 'Three reasons companies post jobs they are not actively hiring for:' },
+      { type: 'ul', items: [
+        'Pipeline building — they want to collect CVs in case a real opening comes up.',
+        'Internal candidate already chosen, but legal/HR policy requires "open posting." The decision is already made.',
+        'Aggregator drift — the original posting was real and got filled, but Indeed/LinkedIn keep showing it because the company never marked it as filled.',
+        'Scams — rare but real, especially in remote/data-entry/admin postings. If they ask for money or personal info upfront, leave.',
+      ] },
+
+      { type: 'h2', text: 'How to find real jobs faster' },
+      { type: 'ol', items: [
+        'Go to company careers pages directly, not job boards. The signal-to-noise ratio is 10x better.',
+        'Use the "lastmod" filter on Google: search "[role title] careers [city]" with Tools → "Past month". Filters out aggregator drift.',
+        'Build a list of 50–100 companies you would actually want to work at. Check their careers pages weekly. This beats spraying 200 applications across job boards.',
+        'For job board postings, always cross-check on the company site before applying. 60 seconds saves you an hour of tailoring time.',
+      ] },
+
+      { type: 'callout', text: 'Once you know the role is real, the next problem is making the application count. Vantage takes your CV and the job link, scrapes the company\'s actual careers page if available, generates a tailored cover letter, mock interview Qs, and fit score in 90 seconds. Genuinely free signup with 3 free analyses included.' },
+
+      { type: 'h2', text: 'When ghost jobs are NOT a waste' },
+      { type: 'p', text: 'Two cases where it can still pay to apply to a possible-ghost:' },
+      { type: 'ul', items: [
+        'You are using the application as a way to enter the company\'s talent CRM. Your CV gets stored against your email; future real openings sometimes auto-match.',
+        'You can identify the hiring manager via LinkedIn and reach out directly. The "ghost" was just an automated posting, but the team is real.',
+      ] },
+      { type: 'p', text: 'Outside those cases, ghost jobs eat your time without giving anything back. Skipping them is a strategy, not laziness.' },
+
+      { type: 'h2', text: 'FAQ' },
+      { type: 'h3', text: 'Are LinkedIn postings as bad as Indeed?' },
+      { type: 'p', text: 'Slightly better but not by much. LinkedIn has the "Easy Apply" pipeline-building problem. Some companies use LinkedIn jobs purely to collect candidates, with no specific role attached. Same 30-second check applies.' },
+      { type: 'h3', text: 'Should I just stop using Indeed entirely?' },
+      { type: 'p', text: 'No, but treat it as a discovery tool, not a primary application channel. Find roles on Indeed, then apply via the company website where possible.' },
+      { type: 'h3', text: 'How much time should I spend on each application?' },
+      { type: 'p', text: 'Real role: 30–60 minutes (CV check, cover letter, basic prep). Possible ghost: 5 minutes max, just submit the master CV. Confirmed ghost: don\'t apply.' },
+
+      { type: 'p', text: 'Half the postings out there are not real jobs. Spending an hour each on them is the fastest way to burn out without progress. The 30-second check is the difference.' },
+    ],
+  },
 ];
 
 export function getPostBySlug(slug: string): BlogPost | undefined {
