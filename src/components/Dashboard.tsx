@@ -341,30 +341,63 @@ export default function Dashboard() {
       {!checkoutSuccess && (
         <div className="max-w-5xl mx-auto px-6 pt-6">
           <div className="p-6 rounded-2xl bg-gradient-to-r from-violet-600/10 to-purple-600/10 border border-violet-500/20">
-            {profile?.subscription_status === 'active' || profile?.subscription_status === 'cancelling' ? (
-              <>
-                <h2 className="text-lg font-display font-bold text-white mb-1">Your Plan</h2>
-                <p className="text-white/50 text-sm mb-5">
-                  {profile?.subscription_status === 'cancelling'
-                    ? 'Your subscription will end at the end of the billing period. Tokens are kept.'
-                    : 'Manage your subscription or buy more tokens.'}
-                </p>
-              </>
-            ) : (profile?.token_balance ?? 0) >= 3 ? (
-              <>
-                <h2 className="text-lg font-display font-bold text-white mb-1">
-                  You have {profile?.token_balance} free tokens — that's {Math.floor((profile?.token_balance ?? 0) / 3)} full {Math.floor((profile?.token_balance ?? 0) / 3) === 1 ? 'analysis' : 'analyses'} on us.
-                </h2>
-                <p className="text-white/50 text-sm mb-5">
-                  Upload your CV + paste a job link below to run one. Top up only if you want more after that.
-                </p>
-              </>
-            ) : (
-              <>
-                <h2 className="text-lg font-display font-bold text-white mb-1">Top up to keep going</h2>
-                <p className="text-white/50 text-sm mb-5">Each analysis costs 3 tokens. Pick a plan to continue.</p>
-              </>
-            )}
+            {(() => {
+              const tokens = profile?.token_balance ?? 0;
+              const analyses = Math.floor(tokens / 3);
+              const analysesWord = analyses === 1 ? 'analysis' : 'analyses';
+              const hasActiveSub = profile?.subscription_status === 'active' || profile?.subscription_status === 'cancelling';
+              // "Free / on us" wording is only honest for users who have NEVER paid.
+              // stripe_customer_id is set the first time the user opens a checkout
+              // session — once it's set, they've at least intended to pay, so the
+              // celebratory "free" copy stops being right.
+              const everPaid = !!(profile?.stripe_customer_id && profile.stripe_customer_id.length > 0);
+
+              if (hasActiveSub) {
+                return (
+                  <>
+                    <h2 className="text-lg font-display font-bold text-white mb-1">Your Plan</h2>
+                    <p className="text-white/50 text-sm mb-5">
+                      {profile?.subscription_status === 'cancelling'
+                        ? 'Your subscription will end at the end of the billing period. Tokens are kept.'
+                        : 'Manage your subscription or buy more tokens.'}
+                    </p>
+                  </>
+                );
+              }
+
+              if (tokens >= 3 && !everPaid) {
+                return (
+                  <>
+                    <h2 className="text-lg font-display font-bold text-white mb-1">
+                      You have {tokens} free tokens — that's {analyses} full {analysesWord} on us.
+                    </h2>
+                    <p className="text-white/50 text-sm mb-5">
+                      Upload your CV + paste a job link below to run one. Top up only if you want more after that.
+                    </p>
+                  </>
+                );
+              }
+
+              if (tokens >= 3) {
+                return (
+                  <>
+                    <h2 className="text-lg font-display font-bold text-white mb-1">
+                      You have {tokens} tokens — ready when you are.
+                    </h2>
+                    <p className="text-white/50 text-sm mb-5">
+                      That's {analyses} full {analysesWord}. Top up below or subscribe for monthly tokens.
+                    </p>
+                  </>
+                );
+              }
+
+              return (
+                <>
+                  <h2 className="text-lg font-display font-bold text-white mb-1">Top up to keep going</h2>
+                  <p className="text-white/50 text-sm mb-5">Each analysis costs 3 tokens. Pick a plan to continue.</p>
+                </>
+              );
+            })()}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {PLANS.map((plan) => {
                 const hasActiveSub = profile?.subscription_status === 'active' || profile?.subscription_status === 'cancelling';
