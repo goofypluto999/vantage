@@ -599,18 +599,18 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
             className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/30 backdrop-blur-[20px] border border-white/50 text-[#2D2B4E] text-xs font-bold tracking-widest uppercase mb-8 shadow-[0_4px_16px_rgba(0,0,0,0.06)]"
           >
             <span className="w-2 h-2 rounded-full bg-[#4F46E5] animate-pulse" />
-            Vantage Intelligence System
+            3 Free Analyses · No Card Needed
           </motion.div>
 
           <motion.h1
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, delay: 0.45 }}
-            className="text-7xl md:text-8xl lg:text-[96px] font-display font-[800] tracking-[-0.04em] leading-[1.05] drop-shadow-sm"
+            className="text-6xl md:text-7xl lg:text-[88px] font-display font-[800] tracking-[-0.04em] leading-[1.05] drop-shadow-sm"
           >
-            Clarity in the <br />
+            90 seconds from CV <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#4F46E5] to-[#7C3AED]">
-              Chaos.
+              to interview-ready.
             </span>
           </motion.h1>
 
@@ -620,8 +620,9 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
             transition={{ duration: 0.8, delay: 0.65 }}
             className="mt-6 text-xl text-[#3B3A5C] max-w-2xl mx-auto font-medium leading-relaxed"
           >
-            The ultimate unfair advantage — perfectly packaged. Transform your raw experience
-            into a hyper-targeted, undeniable strategic narrative.
+            Upload your CV, paste a job link. Get a tailored cover letter, mock interview
+            questions, fit score, and a 5-minute pitch outline — in the time it takes to
+            make coffee.
           </motion.p>
 
           <motion.div
@@ -635,23 +636,20 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
                 onClick={onStart}
                 className="group inline-flex items-center gap-2 px-10 py-4 bg-[#4F46E5] text-white rounded-full font-bold text-base hover:-translate-y-1 hover:shadow-[0_12px_32px_rgba(79,70,229,0.45)] active:scale-95 transition-all"
               >
-                Access Workspace <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                Get 3 free analyses <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </button>
               <button
                 onClick={() => setShowDemo(true)}
                 className="inline-flex items-center gap-2 px-8 py-4 bg-white/35 backdrop-blur-[20px] border border-white/55 text-[#2D2B4E] rounded-full font-semibold text-base hover:bg-white/55 hover:-translate-y-1 active:scale-95 transition-all"
               >
-                <Play className="w-4 h-4" /> Watch Demo
-              </button>
-              <button
-                onClick={() => setShowHowItWorks(true)}
-                className="inline-flex items-center gap-2 px-8 py-4 bg-white/35 backdrop-blur-[20px] border border-white/55 text-[#2D2B4E] rounded-full font-semibold text-base hover:bg-white/55 hover:-translate-y-1 active:scale-95 transition-all"
-              >
-                See How It Works
+                <Play className="w-4 h-4" /> See it work (60s)
               </button>
             </div>
             <p className="text-xs text-[#3B3A5C] uppercase tracking-widest flex items-center gap-2 font-bold">
-              <Lock className="w-3 h-3" /> 100% Private &amp; Secure
+              <Lock className="w-3 h-3" /> No subscription · Cancel any time · EU-hosted
+            </p>
+            <p className="text-[11px] text-[#6B6B8D] mt-1 font-medium">
+              Built solo in 60 days · Free ATS scanner open-source on GitHub
             </p>
           </motion.div>
         </motion.div>
