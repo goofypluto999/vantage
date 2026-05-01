@@ -134,7 +134,55 @@ function AppContent() {
         <CurrencyProvider>
         <ThemeProvider>
           <Routes>
-            <Route path="/" element={<><SEO path="/" /><LandingPageWrapper /></>} />
+            <Route path="/" element={<>
+              <SEO
+                path="/"
+                jsonLd={[
+                  {
+                    '@context': 'https://schema.org',
+                    '@type': 'SoftwareApplication',
+                    name: 'Vantage AI',
+                    url: 'https://vantage-livid.vercel.app/',
+                    applicationCategory: 'BusinessApplication',
+                    applicationSubCategory: 'JobSearchApplication',
+                    operatingSystem: 'Web',
+                    description: 'AI job preparation tool. Upload CV, paste job link, get the full prep pack in ~90 seconds: company brief, tailored cover letter, mock interview questions, fit score, 5-minute pitch outline.',
+                    offers: [
+                      { '@type': 'Offer', name: 'Free trial', price: '0', priceCurrency: 'GBP', description: '3 free analyses on signup, no card required' },
+                      { '@type': 'Offer', name: 'Starter pack', price: '5', priceCurrency: 'GBP', description: '20 tokens (~6 analyses), one-time, never expires' },
+                      { '@type': 'Offer', name: 'Pro', price: '12', priceCurrency: 'GBP', description: '60 tokens per month' },
+                      { '@type': 'Offer', name: 'Premium', price: '20', priceCurrency: 'GBP', description: '120 tokens per month, includes fit score and presentation deck' },
+                    ],
+                    creator: {
+                      '@type': 'Organization',
+                      name: 'Vantage Labs',
+                      url: 'https://vantage-livid.vercel.app',
+                    },
+                  },
+                  {
+                    '@context': 'https://schema.org',
+                    '@type': 'Service',
+                    name: 'AI Job Application Preparation',
+                    serviceType: 'Career Services',
+                    provider: {
+                      '@type': 'Organization',
+                      name: 'Vantage Labs',
+                      url: 'https://vantage-livid.vercel.app',
+                    },
+                    areaServed: {
+                      '@type': 'Place',
+                      name: 'Worldwide',
+                    },
+                    description: 'AI-powered preparation pack for job applications: company intelligence, tailored cover letter (4 tones), mock interview questions, CV-to-role fit score, and 5-minute pitch outline. Generated in approximately 90 seconds per application.',
+                    audience: {
+                      '@type': 'Audience',
+                      audienceType: 'Job seekers, including those affected by recent layoffs (Oracle, Meta, ASML, Snap, Nike) in 2026',
+                    },
+                  },
+                ]}
+              />
+              <LandingPageWrapper />
+            </>} />
             <Route path="/login" element={<><SEO title="Log in" description="Log into Vantage to run a full job prep analysis — company intel, tailored cover letter, mock interview questions, CV fit score." path="/login" /><LoginWrapper /></>} />
             <Route path="/register" element={<><SEO title="Create a free account" description="Sign up free. Upload your CV, paste a job link, get the full prep pack in ~90 seconds." path="/register" /><RegisterWrapper /></>} />
             <Route path="/forgot-password" element={<><SEO title="Reset your password" description="Reset your Vantage account password." path="/forgot-password" noindex /><ForgotPassword /></>} />

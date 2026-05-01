@@ -29,3 +29,12 @@ npm-debug.log*
 .vercel
 giovanni-cv.pdf
 *.pdf
+
+# Local audit / scan outputs — never commit, may contain matched secrets
+_gitleaks*.json
+_npm-audit*.json
+gitleaks-report.*
+*.audit.json
+
+# Local SQL operational files (may contain user emails / test data)
+database/cleanup-*.sql

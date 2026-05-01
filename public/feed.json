@@ -1,0 +1,58 @@
+{
+  "version": "https://jsonfeed.org/version/1.1",
+  "title": "Vantage AI",
+  "home_page_url": "https://vantage-livid.vercel.app",
+  "feed_url": "https://vantage-livid.vercel.app/feed.json",
+  "description": "AI job preparation. Upload your CV, paste a job link, get the full prep pack in ~90 seconds.",
+  "language": "en-GB",
+  "authors": [
+    { "name": "Vantage Labs", "url": "https://vantage-livid.vercel.app" }
+  ],
+  "items": [
+    {
+      "id": "https://vantage-livid.vercel.app/blog/just-laid-off-april-2026-cv-fix",
+      "url": "https://vantage-livid.vercel.app/blog/just-laid-off-april-2026-cv-fix",
+      "title": "Just laid off in April 2026? The 3 things to fix in your CV before you apply to a single job.",
+      "summary": "~42,000 tech employees were laid off in April 2026 alone. If you're one of them, this is the foundation work to do before you start applying.",
+      "date_published": "2026-04-30T00:00:00.000Z",
+      "tags": ["Layoffs", "Job Search", "ATS"],
+      "authors": [{ "name": "Gio" }]
+    },
+    {
+      "id": "https://vantage-livid.vercel.app/blog/oracle-meta-asml-layoff-cv-checklist",
+      "url": "https://vantage-livid.vercel.app/blog/oracle-meta-asml-layoff-cv-checklist",
+      "title": "Oracle, Meta, ASML, Snap, Nike: a layoff-week CV checklist",
+      "summary": "A specific 5-step checklist for tech employees laid off in April/May 2026.",
+      "date_published": "2026-04-30T00:00:00.000Z",
+      "tags": ["Layoffs", "Job Search", "2026"],
+      "authors": [{ "name": "Gio" }]
+    },
+    {
+      "id": "https://vantage-livid.vercel.app/blog/tailoring-every-resume-vs-the-smarter-alternative",
+      "url": "https://vantage-livid.vercel.app/blog/tailoring-every-resume-vs-the-smarter-alternative",
+      "title": "Tailoring every resume vs the smarter alternative",
+      "summary": "Why fully tailoring every resume might be costing you interviews — and the smarter system used by people who apply at scale.",
+      "date_published": "2026-04-28T00:00:00.000Z",
+      "tags": ["Job Search", "ATS"],
+      "authors": [{ "name": "Gio" }]
+    },
+    {
+      "id": "https://vantage-livid.vercel.app/blog/500-applications-zero-interviews-the-ats-parse-problem",
+      "url": "https://vantage-livid.vercel.app/blog/500-applications-zero-interviews-the-ats-parse-problem",
+      "title": "500 applications, zero interviews: the ATS parse problem nobody talks about",
+      "summary": "Why hundreds of applications can return zero replies — and a 60-second test that diagnoses it.",
+      "date_published": "2026-04-28T00:00:00.000Z",
+      "tags": ["ATS", "Job Search"],
+      "authors": [{ "name": "Gio" }]
+    },
+    {
+      "id": "https://vantage-livid.vercel.app/blog/how-to-spot-a-ghost-job-in-30-seconds",
+      "url": "https://vantage-livid.vercel.app/blog/how-to-spot-a-ghost-job-in-30-seconds",
+      "title": "How to spot a ghost job in 30 seconds",
+      "summary": "Half the postings out there are not real jobs. Here's the 30-second check that decides if you should apply — or skip and save the hour.",
+      "date_published": "2026-04-28T00:00:00.000Z",
+      "tags": ["Job Search", "Career"],
+      "authors": [{ "name": "Gio" }]
+    }
+  ]
+}

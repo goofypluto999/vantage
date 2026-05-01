@@ -73,6 +73,8 @@ Company-specific interview prep packs. Each one has the company's signature inte
 - [Uber](https://vantage-livid.vercel.app/interview-prep/uber) — owner / doer rubric, marketplace system design, Operations case format
 - [DoorDash](https://vantage-livid.vercel.app/interview-prep/doordash) — SQL screen, three-user-group framework, marketplace dispatch
 - [Spotify](https://vantage-livid.vercel.app/interview-prep/spotify) — paid take-home, Squad model, cross-functional weighting
+- [Snowflake](https://vantage-livid.vercel.app/interview-prep/snowflake) — SQL fluency required, multi-tenant data-warehouse depth, "Put customers first" rubric
+- [Databricks](https://vantage-livid.vercel.app/interview-prep/databricks) — Spark / lakehouse depth, "Truth seeking" rubric, Mosaic AI org distinction
 - [Stripe](https://vantage-livid.vercel.app/interview-prep/stripe) — long take-homes, code-quality bar, writing emphasis
 - [Shopify](https://vantage-livid.vercel.app/interview-prep/shopify) — Ruby ecosystem comfort, "trust the team" culture
 - [Airbnb](https://vantage-livid.vercel.app/interview-prep/airbnb) — design-systems thinking, host/guest empathy

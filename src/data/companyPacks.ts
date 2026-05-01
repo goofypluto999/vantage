@@ -830,6 +830,120 @@ export const companyPacks: CompanyPack[] = [
   },
 
   {
+    slug: 'snowflake',
+    company: 'Snowflake',
+    updated: '2026-05-01',
+    intro:
+      'Snowflake interviews in 2026 weight data-platform depth, SQL fluency, and customer-context judgement. Loops vary by org (Engineering, Sales, Solutions Architecture, Customer Success) but share the same cultural rubric. Here is the prep pack.',
+    tldr:
+      'Snowflake engineering loops: 2 technical (coding + system design with data-warehouse flavour), 1 SQL deep-dive, 1 behavioural anchored on "Put customers first", 1 hiring-manager fit. Solutions Architects do 2 customer-scenario rounds + 1 technical depth + 1 cultural fit. SQL is non-negotiable for almost every engineering or customer-facing role.',
+    signature: [
+      'SQL fluency required across most roles, including senior engineering — the screen tests joins, window functions, query optimisation.',
+      'System design questions tilt toward data-warehouse architecture, partitioning, query optimisation, multi-tenancy at scale.',
+      '"Put customers first" rubric is real — interviewers expect specific evidence of customer-driven decisions.',
+      'Compensation tilted toward equity (RSUs); base is competitive but understanding vest mechanics matters at offer.',
+    ],
+    questions: [
+      'Walk me through a query optimisation problem you solved. What was the bottleneck and how did you fix it?',
+      'Implement a function to detect skew in a partition strategy.',
+      'Design a multi-tenant data warehouse with per-tenant compute isolation.',
+      'Tell me about a time customer feedback changed a technical decision you owned.',
+      'Write SQL to find users whose query cost increased 5x month-over-month.',
+      'How would you architect cross-cloud replication for a Snowflake-style platform?',
+      'Implement a streaming ingest pipeline that supports exactly-once semantics.',
+      'Walk me through a customer escalation that taught you something.',
+      'How do you debug a query that\'s 10x slower in one region than another?',
+      'Why Snowflake vs Databricks vs BigQuery?',
+      'Tell me about a time you made a build / buy / partner decision.',
+      'How would you design micro-partitioning for a 100PB table?',
+    ],
+    prepSteps: [
+      'Brush up on SQL — Snowflake leans on advanced patterns (window functions, recursive CTEs, query plans).',
+      'Read Snowflake\'s engineering / architecture blog posts on the multi-cluster shared-data architecture.',
+      'For Solutions Architect roles: practice 3-5 customer scenario walkthroughs (data migration, performance tuning, governance).',
+      'Pick one project where you owned a customer-driven technical decision. Sharpen the story around the customer impact.',
+      'Practice "Why Snowflake vs Databricks" — interviewers ask this directly. Have a real opinion grounded in workload differences.',
+    ],
+    mistakes: [
+      'Underestimating the SQL screen. Senior IC candidates get filtered here regularly.',
+      'Generic "customer-focused" answers. The behavioural rubric wants specific stories with named customer outcomes.',
+      'Treating system design as a generic FAANG question. Snowflake wants data-warehouse-specific depth.',
+      'Negotiating without understanding RSU vesting cliff and refresh cadence.',
+    ],
+    faq: [
+      {
+        q: 'How long does the Snowflake hiring process take?',
+        a: 'Four to eight weeks. Faster for engineering, slower for cross-org leadership and Solutions Architecture roles which include customer reference panels.',
+      },
+      {
+        q: 'Is Snowflake harder than Databricks to interview at?',
+        a: 'Comparable bar, different shape. Snowflake leans more on SQL fluency and multi-tenant data-warehouse depth. Databricks leans more on Spark / lakehouse architecture.',
+      },
+      {
+        q: 'Do Solutions Architect roles need coding?',
+        a: 'Light coding — SQL is required, but you don\'t need LeetCode-level algorithm fluency. The customer-scenario rounds and technical depth on data architecture matter more.',
+      },
+    ],
+  },
+
+  {
+    slug: 'databricks',
+    company: 'Databricks',
+    updated: '2026-05-01',
+    intro:
+      'Databricks interviews in 2026 weight data-engineering depth, ML / AI platform context, and the lakehouse architecture. Loops are 4-5 rounds. Here is the prep pack.',
+    tldr:
+      'Databricks engineering loops: 2 coding (LeetCode-medium pace, often Spark / SQL flavoured), 1 system design with lakehouse / data-pipeline depth, 1 behavioural anchored on "Truth seeking" and "Customer obsession", 1 hiring-manager fit. ML engineering roles add a model deployment / ML platform round. Spark fluency matters for data-platform roles; less so for product / Mosaic AI roles.',
+    signature: [
+      'Spark / lakehouse architecture depth required for data-platform engineering roles.',
+      '"Truth-seeking" rubric explicitly probes how candidates handle disagreement with data.',
+      'Mosaic AI / GenAI orgs follow a different loop — more ML-systems flavour, less Spark.',
+      'Compensation heavily equity-weighted; pre-IPO equity has different risk profile than public companies.',
+    ],
+    questions: [
+      'Walk me through a Spark job you optimised. What was the shuffle bottleneck?',
+      'Implement a function to detect data-skew in a Spark partition.',
+      'Design a real-time feature store for ML training and serving.',
+      'Tell me about a time you changed your mind based on data.',
+      'How would you architect cross-cloud Delta Lake replication?',
+      'Implement a streaming aggregation that handles out-of-order events.',
+      'Walk me through how you would debug a Spark job that\'s 10x slower than expected.',
+      'Tell me about a customer-driven technical decision you made.',
+      'How does Delta Lake handle ACID transactions on object storage?',
+      'Why Databricks vs Snowflake vs MotherDuck?',
+      'Implement a model deployment pipeline with canary rollouts.',
+      'Walk me through a build / buy / partner decision.',
+    ],
+    prepSteps: [
+      'Read 3-5 Databricks engineering blog posts on Delta Lake, Photon, Unity Catalog, Mosaic AI.',
+      'Practice Spark-flavoured coding (PySpark / Scala Spark) if interviewing on data-platform teams.',
+      'For ML engineering roles: brush up on MLflow, model registry, A/B testing for models.',
+      'Pick one project that involved data scale (>1TB) and sharpen the story around the architectural decisions.',
+      'Practice "Databricks vs Snowflake" — interviewers expect a real opinion based on workload differences (lakehouse vs warehouse, structured vs unstructured).',
+    ],
+    mistakes: [
+      'Generic "I\'m data-driven" answers. Truth-seeking rubric wants specific stories where data overrode intuition.',
+      'Faking Spark depth. Interviewers can tell within 5 minutes if you\'ve only used Spark in tutorials.',
+      'Treating Mosaic AI roles like core data-platform roles. The skill mix differs.',
+      'Underestimating the equity question — pre-IPO Databricks equity has different risk than public-company stock; understand the secondary market and refresh cadence.',
+    ],
+    faq: [
+      {
+        q: 'How long does the Databricks hiring process take?',
+        a: 'Four to eight weeks. Slightly faster than Snowflake on average; some orgs (Mosaic AI) move faster for senior candidates.',
+      },
+      {
+        q: 'Is Spark required for engineering roles?',
+        a: 'Yes for data-platform engineering. No for some product / SDK / ML-platform roles, where general distributed-systems background substitutes. Read the JD carefully.',
+      },
+      {
+        q: 'How does Databricks differ from Snowflake in interviews?',
+        a: 'Databricks weights lakehouse / Spark / ML-platform depth more. Snowflake weights data-warehouse / SQL / multi-tenant compute more. Both expect customer-context judgement.',
+      },
+    ],
+  },
+
+  {
     slug: 'uber',
     company: 'Uber',
     updated: '2026-05-01',
