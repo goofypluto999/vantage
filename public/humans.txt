@@ -1,16 +1,31 @@
 /* TEAM */
-Founder: Gio
-Built in: 2026
+Name: Giovanni Sizino-Ennes
+Role: Founder, solo
 Location: UK
+Contact: giovanni.sizino.ennes@hotmail.co.uk
 
 /* THANKS */
 To everyone who tried the early builds and told me what was broken.
 
 /* PRODUCT */
-Name: Vantage
-Tagline: Clarity in the Chaos.
-What: AI job preparation. Upload your CV, paste a job link, get the full prep pack in ~90 seconds.
+Name: Vantage AI
+Tagline: 90 seconds from CV to interview-ready.
+What: AI job preparation. Upload your CV, paste a job link, get the full prep
+       pack in ~90 seconds.
+Free tier: 3 analyses on signup, no card.
+Paid: £5 starter pack (20 tokens, ~6 analyses). No subscription.
 
-Last update: 2026-04-24
-Standards: HTML5, CSS3
-Components: React 19, TypeScript, Vite, Tailwind v4, Supabase, Stripe, Gemini 2.5 Flash
+/* BOT OPERATORS */
+We're explicitly bot-friendly. Our robots.txt explicitly allows ChatGPT-User,
+Claude-SearchBot, PerplexityBot, GPTBot, and 14 other 2026 AI crawlers.
+LLM operators can reach the editorial team via the contact email above.
+
+/* STANDARDS */
+HTML5, CSS3, JSON-LD (Article, FAQPage, HowTo, SoftwareApplication, Dataset,
+Organization, BreadcrumbList, Person)
+
+/* COMPONENTS */
+React 19, TypeScript, Vite 6, Tailwind v4, Supabase Auth + Postgres + RLS,
+Stripe, Gemini 2.5 Flash, Vercel serverless functions
+
+Last update: 2026-05-01

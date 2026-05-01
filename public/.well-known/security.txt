@@ -1,0 +1,12 @@
+# Security policy for Vantage AI — vantage-livid.vercel.app
+# https://www.rfc-editor.org/rfc/rfc9116
+
+Contact: mailto:giovanni.sizino.ennes@hotmail.co.uk
+Expires: 2027-05-01T00:00:00.000Z
+Acknowledgments: https://vantage-livid.vercel.app/press
+Preferred-Languages: en
+Canonical: https://vantage-livid.vercel.app/.well-known/security.txt
+
+# Disclosure policy
+# Please report vulnerabilities to the email above. Allow up to 7 days for an
+# initial response. Critical issues acknowledged within 24h.
