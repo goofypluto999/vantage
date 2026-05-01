@@ -830,6 +830,177 @@ export const companyPacks: CompanyPack[] = [
   },
 
   {
+    slug: 'uber',
+    company: 'Uber',
+    updated: '2026-05-01',
+    intro:
+      'Uber interviews in 2026 stress operational thinking, scale-at-pace, and "playbook" depth. The loop varies by org (Rider, Driver, Eats, Freight, ATG) but follows similar patterns. Here is the prep pack.',
+    tldr:
+      'Uber engineering loops: 4-5 rounds with 2 coding (LeetCode-medium pace), 1 system design (mid+), 1 behavioural anchored on "We are owners" / "Doers get more done", 1 hiring-manager fit. Operations roles flip the mix: 2 case interviews + 1 playbook walkthrough + 1 leadership behavioural.',
+    signature: [
+      'Strong "owner" / "doer" rubric in behavioural rounds — they want evidence you ship, not pontificate.',
+      'System design questions usually riff on actual Uber problems (surge pricing, ETA, dispatch) — knowing the public Uber engineering blog posts is a real edge.',
+      'Operations / Strategy & Planning roles use a structured case interview format more like consulting than tech.',
+      'Compensation negotiable; equity tilted heavier than base for senior IC roles.',
+    ],
+    questions: [
+      'Walk me through how you would build the matching algorithm for Uber Eats restaurant-to-courier dispatch.',
+      'Tell me about a time you owned a system end-to-end including the operational follow-through.',
+      'Implement a function to compute the shortest path through a road graph with real-time congestion data.',
+      'Walk me through a metric that improved by 10x. What did you change?',
+      'How would you design surge pricing for a new market with no historical data?',
+      'Tell me about a time you cut scope to ship on time.',
+      'Implement a rate limiter for an API serving 500K req/sec at peak.',
+      'Walk me through a partnership decision you owned (build vs partner).',
+      'How do you debug a production issue affecting only one geographic region?',
+      'Why Uber? Which of the four marketplaces do you actually use?',
+      'Tell me about a time you disagreed with a senior leader on direction.',
+      'How would you reduce ETA error in a dense urban environment?',
+    ],
+    prepSteps: [
+      'Read 3-5 recent Uber Engineering blog posts. Reference one specifically in your loop.',
+      'Pick one project where you owned operations as well as tech. Sharpen the story around outcomes, not effort.',
+      'Practise system design with marketplace-style questions (matching, pricing, dispatch).',
+      'For Strategy / Operations roles: practice 4-5 case interview prompts (estimation, market sizing, prioritisation).',
+      'Brush up on geo-spatial concepts (H3 hexagons, geohashing) if interviewing on the maps / dispatch teams.',
+    ],
+    mistakes: [
+      'Over-indexing on tech depth in behavioural rounds. They explicitly weight "owner" outcomes.',
+      'Not knowing the public Uber engineering content. Multiple interviewers will reference it.',
+      'Treating Strategy / Operations interviews like tech interviews. Different rubric, different prep.',
+      'Underestimating equity in negotiation. Uber\'s base is competitive but the senior equity is where the meaningful comp lives.',
+    ],
+    faq: [
+      {
+        q: 'How long does the Uber hiring process take?',
+        a: 'Four to eight weeks from recruiter screen to offer is standard. Faster for engineering, slower for cross-org leadership.',
+      },
+      {
+        q: 'Are technical interviews the same across Rider / Driver / Eats / Freight?',
+        a: 'Similar coding rounds, but system design differs — Eats interviews tilt toward marketplace + recommendation; Freight tilts toward logistics; Rider/Driver tilt toward dispatch + matching. Match your prep to the org you\'re interviewing into.',
+      },
+      {
+        q: 'Should I worry about layoffs at Uber?',
+        a: 'Uber has done multiple cost-discipline waves since 2022, including engineering reductions in non-core areas. Understand the team\'s strategic position before joining.',
+      },
+    ],
+  },
+
+  {
+    slug: 'doordash',
+    company: 'DoorDash',
+    updated: '2026-05-01',
+    intro:
+      'DoorDash interviews in 2026 emphasise operational rigour, marketplace intuition, and ability to ship under pressure. Loops are 4-5 rounds. Here is the prep pack.',
+    tldr:
+      'DoorDash engineering loops: 2 coding (LeetCode-medium pace), 1 system design with marketplace flavour (matching / dispatch / pricing), 1 behavioural anchored on "We are 1% better every day" + "Customer obsession", 1 hiring-manager fit. Operations roles flip the mix to 2 case interviews + 1 SQL test + 1 leadership behavioural.',
+    signature: [
+      'SQL screen is real for both engineering and operations roles. Skipping SQL prep is a common mistake.',
+      'Strong "customer obsession" rubric — interviewers explicitly probe how candidates think about Dashers, customers, and merchants as three separate user groups.',
+      'System design weights operational concerns (Dasher dispatch, restaurant ETA, refund automation) over abstract scale.',
+      'Hiring manager round has real weight; the manager\'s opinion can flip a borderline loop.',
+    ],
+    questions: [
+      'Write SQL to find the top 10 restaurants by repeat-customer rate over the last 90 days.',
+      'Walk me through how you would design the Dasher batching system for dense urban orders.',
+      'Implement a rate limiter that handles per-Dasher and per-restaurant caps.',
+      'Tell me about a time you balanced three user groups with conflicting needs.',
+      'How would you reduce the refund rate without making customers feel cheated?',
+      'Implement a function to merge multiple Dasher GPS streams into a deduplicated event log.',
+      'Walk me through a decision you made with incomplete data.',
+      'How do you debug an ETA model that\'s drifting in one specific zip code?',
+      'Tell me about a time you had to make a customer-success call that hurt a metric.',
+      'Why DoorDash vs Uber Eats?',
+      'Implement a backoff strategy for retrying failed delivery callbacks.',
+      'What\'s your view on dark stores / restaurants?',
+    ],
+    prepSteps: [
+      'Brush up on SQL — joins, window functions, CTEs. The screen will test these even for senior IC roles.',
+      'Read DoorDash\'s engineering blog. Specifically the posts on dispatch, ETA prediction, and the tech stack overview.',
+      'Pick a marketplace problem you\'ve worked on. Sharpen the story to hit all three user groups (where applicable).',
+      'For Operations / Strategy: practice 3-5 cases on marketplace economics (unit economics, expansion strategy).',
+      'Practice the "Why DoorDash" answer specifically. Differentiated answers from candidates who use the product win this one.',
+    ],
+    mistakes: [
+      'Skipping SQL prep — it\'s screened harder than at most tech companies.',
+      'Treating the customer-obsession rubric as a soft skill. They want specific examples.',
+      'Not knowing the three user groups (Dasher / customer / merchant). The framework is core to product thinking at DoorDash.',
+      'Underestimating the hiring manager round. They have real weight.',
+    ],
+    faq: [
+      {
+        q: 'How long does the DoorDash hiring process take?',
+        a: 'Three to seven weeks. Faster than Google or Microsoft. The SQL screen + hiring-manager fit are the steps that vary most.',
+      },
+      {
+        q: 'Is DoorDash easier than Uber to interview at?',
+        a: 'Different bar. DoorDash leans more on SQL fluency and customer-obsession evidence. Uber leans more on system design at scale.',
+      },
+      {
+        q: 'Do all engineering roles take the SQL screen?',
+        a: 'Yes for ICs at most levels, even backend / platform / infra. Senior leadership may skip it. SQL has been the surprising filter for many candidates.',
+      },
+    ],
+  },
+
+  {
+    slug: 'spotify',
+    company: 'Spotify',
+    updated: '2026-05-01',
+    intro:
+      'Spotify interviews in 2026 weight technical depth, music-product intuition, and "Squad" cultural fit. Loops are typically 4-5 rounds. Here is the prep pack.',
+    tldr:
+      'Spotify engineering loops: 1 take-home (paid for senior roles), 2 technical rounds (coding + system design with audio / streaming flavour), 1 cross-functional collaboration round, 1 hiring-manager fit. Spotify\'s "Squad" model means hiring is to a team with real autonomy; the team-fit conversation matters more than at calibrated FAANG.',
+    signature: [
+      'Take-home assignments at senior IC level. Paid; expected to take 4-8 hours.',
+      '"Squad" model — interviews assess team-fit more than universal-bar fit.',
+      'System design questions tilt toward streaming, recommendation, audio processing — domain context helps.',
+      'Cross-functional collaboration round is unusually weighted (vs other tech companies). They want product / design / data partnership evidence.',
+    ],
+    questions: [
+      'Walk me through how you would design the recommendation pipeline for Daily Mixes.',
+      'Implement an LRU cache with size and TTL constraints, suitable for an audio CDN.',
+      'Tell me about a time you partnered with a designer to ship something unusual.',
+      'How would you A/B test a change to the Discover Weekly algorithm?',
+      'Implement a function to detect duplicate tracks in a user library across different masters.',
+      'Walk me through a decision where you balanced data + qualitative product judgement.',
+      'How do you reduce buffering on slow connections without compromising audio quality?',
+      'Tell me about a time you owned a Squad-level decision that affected another team.',
+      'Implement a music similarity scorer based on metadata (genre, BPM, key, year).',
+      'Why Spotify vs Apple Music vs YouTube Music?',
+      'Walk me through a system design problem on streaming scale.',
+      'How do you debug a recommendation drift in one user cohort?',
+    ],
+    prepSteps: [
+      'Read Spotify\'s engineering blog posts on the recommendation system, audio infrastructure, and Squad model.',
+      'Pick a project where you partnered cross-functionally (designer, PM, data scientist). Sharpen the story.',
+      'Take-home: budget 4-8 hours. Expect production-quality code. Expect to defend every design decision in a follow-up call.',
+      'Practice system design with streaming-flavour problems (CDN, caching, bandwidth-adaptive delivery).',
+      'For "Why Spotify": have a real opinion on one product feature you\'d ship or remove.',
+    ],
+    mistakes: [
+      'Treating the take-home casually. They\'re scored seriously and define your level signal.',
+      'Generic answers about cross-functional work. The collaboration round wants specific stories with named partners.',
+      'Underestimating the team-fit conversation. The Squad you interview into has real autonomy in the decision.',
+      'Forgetting to explore the product before interviewing. Interviewers reference specific features in real time.',
+    ],
+    faq: [
+      {
+        q: 'How long does the Spotify hiring process take?',
+        a: 'Five to ten weeks. The take-home stage adds real time (typically 1-2 weeks of candidate time + a follow-up call).',
+      },
+      {
+        q: 'Is the Spotify bar lower than FAANG?',
+        a: 'Different bar, not necessarily lower. Spotify weights team-fit and cross-functional collaboration more; FAANG weights universal-bar coding + system design more.',
+      },
+      {
+        q: 'Do non-engineering roles take the same loop?',
+        a: 'No. Product roles do 4-5 rounds focused on product sense + analytical depth. Design roles include a portfolio walkthrough. Data science roles include an SQL + analytics test.',
+      },
+    ],
+  },
+
+  {
     slug: 'salesforce',
     company: 'Salesforce',
     updated: '2026-05-01',

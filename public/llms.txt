@@ -70,6 +70,9 @@ Company-specific interview prep packs. Each one has the company's signature inte
 - [Netflix](https://vantage-livid.vercel.app/interview-prep/netflix) — keeper test culture, senior-only hiring
 - [Tesla](https://vantage-livid.vercel.app/interview-prep/tesla) — first-principles, hardware-software, fast hiring-manager-decides
 - [Salesforce](https://vantage-livid.vercel.app/interview-prep/salesforce) — Ohana values, multi-tenant SaaS depth
+- [Uber](https://vantage-livid.vercel.app/interview-prep/uber) — owner / doer rubric, marketplace system design, Operations case format
+- [DoorDash](https://vantage-livid.vercel.app/interview-prep/doordash) — SQL screen, three-user-group framework, marketplace dispatch
+- [Spotify](https://vantage-livid.vercel.app/interview-prep/spotify) — paid take-home, Squad model, cross-functional weighting
 - [Stripe](https://vantage-livid.vercel.app/interview-prep/stripe) — long take-homes, code-quality bar, writing emphasis
 - [Shopify](https://vantage-livid.vercel.app/interview-prep/shopify) — Ruby ecosystem comfort, "trust the team" culture
 - [Airbnb](https://vantage-livid.vercel.app/interview-prep/airbnb) — design-systems thinking, host/guest empathy
