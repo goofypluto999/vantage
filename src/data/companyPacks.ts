@@ -600,6 +600,291 @@ export const companyPacks: CompanyPack[] = [
       },
     ],
   },
+
+  {
+    slug: 'microsoft',
+    company: 'Microsoft',
+    updated: '2026-05-01',
+    intro:
+      'Microsoft interviews in 2026 are organised by org (Cloud + AI, Office, Azure, Gaming, Research). Five rounds is standard for engineering, with one round explicitly assessing "growth mindset." Here is the prep pack.',
+    tldr:
+      'Microsoft engineering loops: 4 technical (2 coding, 1 system design at mid-level+, 1 deep technical on a previous project) plus 1 behavioural anchored on the "growth mindset" rubric. Prep medium-difficulty coding speed, one ship-to-prod story you can defend in detail, and the three growth-mindset signals (learn-it-all, customer obsession, partner & team).',
+    signature: [
+      'Five-round loop with explicit growth-mindset evaluation in the as-appropriate "AsAppropriate" round.',
+      'Coding interviews use a shared editor (Codility-style) with a real compile + run loop.',
+      'Deep-dive technical: an interviewer reads a project from your CV and grills you for 45 minutes on technical decisions.',
+      'Hiring is to a team, not to a level. The loop signals fit; the team-match conversation seals it.',
+    ],
+    questions: [
+      'Walk me through a system you shipped that you would now redesign. What changed?',
+      'Implement a function to find the kth largest element in a stream. Optimise for memory.',
+      'Design a real-time collaborative editor like the one in Office Online.',
+      'Tell me about a time a customer told you something you didn\'t want to hear. What did you do?',
+      'How would you scale Azure Functions cold-start to under 50ms?',
+      'Describe a technical decision you got wrong. How did you find out?',
+      'Why Microsoft? What product do you actually use?',
+      'Implement an LRU cache. Then add TTL.',
+      'Tell me about a time you partnered with another team to ship something.',
+      'How do you decide between buy / build / open-source for a new dependency?',
+      'Walk me through a debugging session that took longer than expected.',
+      'What does "growth mindset" mean to you in technical work?',
+    ],
+    prepSteps: [
+      'Run 30 medium LeetCode problems — Microsoft tags lean toward strings, trees, dynamic programming.',
+      'Pick one shipped project. Be ready to defend every technical decision for 45 minutes — assume the interviewer has read your CV.',
+      'Prepare three behavioural stories framed around growth mindset: a learning moment, a customer-obsession moment, a partnership moment.',
+      'Read two recent Microsoft Research blog posts. Be ready to reference one.',
+      'Practise in a shared online editor (Codility, HackerRank) — no IDE help.',
+    ],
+    mistakes: [
+      'Treating the deep-dive technical as a casual chat. Interviewers prepare specific gotchas from your CV.',
+      'Saying "I learned X" without a specific decision the learning changed. Growth mindset needs evidence.',
+      'Skipping system design prep at SDE-2 level and above. The bar is real.',
+      'Mismatching the team-fit conversation. Research the org you\'re interviewing into and reference its actual focus.',
+    ],
+    faq: [
+      {
+        q: 'How long does the Microsoft hiring process take?',
+        a: 'Five to eight weeks from recruiter screen to offer is standard. Team-match after the loop adds 1-3 weeks depending on role availability.',
+      },
+      {
+        q: 'Is Microsoft easier or harder than Google?',
+        a: 'Comparable bar, different shape. Microsoft leans more on past-project depth via the deep-dive round; Google leans more on system design and behavioural calibration.',
+      },
+      {
+        q: 'Do non-engineering roles (PM, sales) follow the same loop?',
+        a: 'No. PMs do 4 rounds: 2 product / case interviews, 1 technical depth (lighter than SDE), 1 behavioural. Sales is 3-5 rounds heavy on customer scenarios.',
+      },
+    ],
+  },
+
+  {
+    slug: 'openai',
+    company: 'OpenAI',
+    updated: '2026-05-01',
+    intro:
+      'OpenAI interviews in 2026 emphasise depth in machine learning, distributed systems, and high-context judgement. Loops vary by team but a 5-round loop is typical. Here is the prep pack.',
+    tldr:
+      'OpenAI engineering loops weight ML / training infrastructure heavily for research roles, distributed systems heavily for product engineering, and one strong "what would you build / deprecate at OpenAI?" judgement round across all roles. Prep depth in your domain, not breadth across all of CS.',
+    signature: [
+      'Domain-specific depth: research-engineering loops have ML eval rounds; product-engineering loops have distributed-systems-at-scale rounds.',
+      'Take-home assignments are common at the screening stage and well-paid (OpenAI compensates for take-homes).',
+      'Mission-fit is genuinely scored. "What is OpenAI\'s mission and where do you disagree with it?" is a real question.',
+      'Compensation tilts heavily toward equity (PPUs). Understand the mechanics before negotiating.',
+    ],
+    questions: [
+      'Walk me through how you would debug a model that suddenly started outputting garbage on production.',
+      'Design the request routing for a multi-region inference service.',
+      'Implement KV-cache management for a transformer at inference time. What goes wrong at scale?',
+      'OpenAI\'s mission — restate it in your own words. Where do you disagree?',
+      'Tell me about a time you shipped something with a meaningful safety implication.',
+      'How would you build the eval set for a new safety classifier?',
+      'Walk me through a decision where you had to choose between speed and correctness.',
+      'What would you deprecate in OpenAI\'s product line if you could?',
+      'How do you reason about emergent behaviour in large models?',
+      'Implement a tokenizer in 30 minutes. What edge cases do you handle first?',
+      'Why OpenAI vs Anthropic vs DeepMind?',
+      'Describe a time you worked on something where the outcome was genuinely uncertain.',
+    ],
+    prepSteps: [
+      'Read OpenAI\'s most recent technical blog posts — the past 90 days. Be specific about which research line you find most interesting and why.',
+      'Pick one ML-adjacent or distributed-systems project you shipped. Be ready to defend every choice including model size, training mix, deployment topology.',
+      'Prepare a mission-fit answer that includes one specific disagreement framed constructively. Generic agreement scores low.',
+      'Practise on take-home problems with a 4-hour timer. OpenAI take-homes typically expect production-quality code, not prototype.',
+      'Brush up on inference-side optimisations (KV cache, batching, speculative decoding) if interviewing on the inference team.',
+    ],
+    mistakes: [
+      'Reciting OpenAI\'s mission verbatim without engaging with it. The judgement round wants real opinions.',
+      'Underestimating the take-home — OpenAI pays for serious engineering work and expects it.',
+      'Trying to fake ML knowledge. Interviewers can tell within 5 minutes. Be specific about what you do and don\'t know.',
+      'Negotiating compensation without understanding PPU mechanics — anchoring against TC numbers from levels.fyi without context is a red flag.',
+    ],
+    faq: [
+      {
+        q: 'How long does the OpenAI hiring process take?',
+        a: 'Six to twelve weeks. Slower than most companies — the take-home stage and team-match add real time.',
+      },
+      {
+        q: 'Do I need a PhD to interview at OpenAI?',
+        a: 'For research roles typically yes. For research-engineering, a strong ML systems track record can substitute. For product-engineering, no.',
+      },
+      {
+        q: 'Is the technical bar at OpenAI higher than at Google or Meta?',
+        a: 'In domain depth, often yes. In coding speed, similar. The loop weights deep judgement and ML / systems intuition more than algorithmic puzzles.',
+      },
+    ],
+  },
+
+  {
+    slug: 'anthropic',
+    company: 'Anthropic',
+    updated: '2026-05-01',
+    intro:
+      'Anthropic interviews in 2026 prioritise mission-fit, technical depth, and the ability to reason carefully about consequences. Loops are typically 5 rounds with paid take-homes common. Here is the prep pack.',
+    tldr:
+      'Anthropic engineering loops include 1 paid take-home, 2 technical rounds (coding + ML / systems for research-engineering), 1 behavioural deeply focused on "responsible scaling" judgement, and 1 team-fit. Prep depth in your domain, mission alignment with safety / alignment work, and explicit reasoning about consequences.',
+    signature: [
+      'Paid take-homes at the screening stage. Anthropic explicitly compensates for these — average $1k-$2k per take-home.',
+      'Behavioural interview probes for "constitutional AI" thinking — how you weigh harms vs benefits in real decisions.',
+      'Coding interviews use a real IDE (or your IDE of choice). Less Google-Docs-vibe than other companies.',
+      'Compensation is competitive but the equity is illiquid. Long-term thinking expected.',
+    ],
+    questions: [
+      'Tell me about a time you noticed something would go wrong before anyone else did. What did you do?',
+      'Implement a function to score the "harmfulness" of a model output. What edge cases do you handle?',
+      'Walk me through Anthropic\'s Responsible Scaling Policy. Where would you push back?',
+      'Design an A/B test for a safety classifier when the negative class is extremely rare.',
+      'Tell me about a technical decision you made that had downstream safety implications.',
+      'How would you build evals for a new "agentic" model capability?',
+      'Why Anthropic vs OpenAI? Be specific.',
+      'Describe a project where you had to reason about adversarial users.',
+      'Implement gradient accumulation in PyTorch. When does it break?',
+      'What does "honesty" mean to you in the context of building AI systems?',
+      'Walk me through a time you said no to a leadership ask.',
+      'How do you stay calibrated about your own uncertainty?',
+    ],
+    prepSteps: [
+      'Read Anthropic\'s recent research papers (Claude, alignment, interpretability) — the past 6 months. Form opinions.',
+      'Read Anthropic\'s Responsible Scaling Policy end-to-end. Have specific things you agree and disagree with.',
+      'Pick one shipped project where you had to reason about safety / harm / adversarial use. Sharpen the story.',
+      'Practise the take-home in a real environment. Production-quality code. Anthropic take-homes are typically eval design or systems work, not LeetCode.',
+      'Prepare 3 stories around responsible decision-making — choosing not to ship something, pushing back on a deadline for safety reasons, etc.',
+    ],
+    mistakes: [
+      'Generic agreement with the mission. Interviewers want substantive engagement, not flattery.',
+      'Treating the take-home as a screening hurdle. They\'re evaluated as the second-most-important signal in the loop.',
+      'Skipping interpretability / mech interp prep if interviewing on relevant teams. Read the recent papers.',
+      'Mismatching tone — Anthropic interviewers are more reserved than OpenAI\'s. Confidence reads as honest precision, not bravado.',
+    ],
+    faq: [
+      {
+        q: 'How long does the Anthropic hiring process take?',
+        a: 'Six to ten weeks typically. The paid take-home stage adds real time; the team-fit conversation can move fast or slow depending on team availability.',
+      },
+      {
+        q: 'Is Anthropic harder to interview at than OpenAI?',
+        a: 'Comparable bar, different shape. Anthropic weights judgement around safety / consequences more; OpenAI weights raw research-engineering depth more. Both are competitive.',
+      },
+      {
+        q: 'Do I need ML background for non-research engineering roles?',
+        a: 'For some teams (Inference, Tools), strong distributed systems background substitutes for ML depth. For Alignment Science / Interpretability roles, ML / research background is required.',
+      },
+    ],
+  },
+
+  {
+    slug: 'tesla',
+    company: 'Tesla',
+    updated: '2026-05-01',
+    intro:
+      'Tesla interviews in 2026 are fast, technical, and high-pressure. Hiring decisions are made by hiring managers without the committee model used at FAANG. Here is the prep pack.',
+    tldr:
+      'Tesla engineering loops are 3-5 rounds, fast-moving, with hiring-manager final say. Coding depth + raw work-rate + ability to reason about hardware-software interfaces (not just web stack) wins. Behavioural rounds explicitly probe "first-principles thinking" and intolerance for bureaucratic friction.',
+    signature: [
+      'Hiring-manager-decides model — no calibration committee. Build rapport with the manager.',
+      'Pace is faster than FAANG — interviews start sooner, decisions move faster, sometimes in days.',
+      'Hardware-software interface knowledge is a differentiator (firmware, embedded, real-time systems).',
+      'Compensation is heavily equity-weighted; understand the lockup mechanics before negotiating.',
+    ],
+    questions: [
+      'Walk me through a problem you solved by going back to first principles.',
+      'Implement a function to detect anomalies in a sensor stream in real-time.',
+      'Design a system to coordinate fleet-wide software updates across 5 million vehicles.',
+      'Tell me about a time you ignored conventional wisdom and shipped anyway.',
+      'How would you debug a bug that only reproduces under specific physical conditions?',
+      'Describe a project where you cut scope aggressively. What did you cut and why?',
+      'Walk me through a memory-constrained problem you optimised.',
+      'Why Tesla vs a more comfortable company?',
+      'Implement a state machine for a multi-stage charging protocol.',
+      'Tell me about a leadership decision you disagreed with publicly.',
+      'How do you balance shipping fast with safety-critical correctness?',
+      'What\'s your view on Tesla\'s autonomy strategy?',
+    ],
+    prepSteps: [
+      'Read 3-5 recent Tesla AI / engineering posts and Andrej Karpathy\'s public talks if interviewing on Autonomy.',
+      'Pick one project you shipped under unusual constraints (small team, short deadline, hardware constraints). Sharpen the story.',
+      'Prepare a "first-principles" story: a time you ignored standard advice based on the actual physics or math of the problem.',
+      'Practise coding in C / C++ if interviewing for firmware, embedded, or real-time roles. Web-stack-only candidates struggle.',
+      'Prepare a thoughtful answer to "Why Tesla?" that doesn\'t reference Elon Musk. Reference the actual engineering ambition.',
+    ],
+    mistakes: [
+      'Treating Tesla like a FAANG. The committee doesn\'t exist; the manager\'s opinion is what matters.',
+      'Pretending to agree with everything about the company. Tesla hires people who push back substantively.',
+      'Missing the hardware-software dimension if interviewing on autonomy or vehicle software roles.',
+      'Negotiating like FAANG. Tesla\'s offer process is more flexible but less data-rich. Anchor on what you know is fair, not on levels.fyi.',
+    ],
+    faq: [
+      {
+        q: 'How long does the Tesla hiring process take?',
+        a: 'Three to six weeks. Faster than FAANG. Some teams move offer in 1-2 weeks for senior candidates.',
+      },
+      {
+        q: 'Is Tesla harder than Google?',
+        a: 'Different bar. Tesla\'s technical depth requirement is comparable; the work-rate and pressure expectations are higher.',
+      },
+      {
+        q: 'Should I worry about layoffs at Tesla?',
+        a: 'Tesla has done multiple rounds of layoffs in the last 3 years. Understand the financial environment when weighing the offer. Your manager\'s area\'s funding is the signal that matters.',
+      },
+    ],
+  },
+
+  {
+    slug: 'salesforce',
+    company: 'Salesforce',
+    updated: '2026-05-01',
+    intro:
+      'Salesforce interviews in 2026 are structured, multi-round, and weight customer-obsession heavily. Loops vary by org (Slack, Tableau, Mulesoft, core CRM) but follow a similar pattern. Here is the prep pack.',
+    tldr:
+      'Salesforce engineering loops are 4-5 rounds: 2 technical (coding + system design), 1 behavioural anchored on the "Ohana" values, 1 hiring-manager fit. Prep medium-difficulty coding, customer-impact storytelling, and explicit alignment with the values.',
+    signature: [
+      'Values are scored explicitly: Trust, Customer Success, Innovation, Equality, Sustainability.',
+      'System design rounds tilt toward enterprise SaaS at scale (multi-tenancy, data isolation, audit logging).',
+      'Some orgs (Slack, Tableau) retain their pre-acquisition interview style and feel different.',
+      'Compensation includes restricted stock units with 4-year vest. Signing bonus negotiable.',
+    ],
+    questions: [
+      'Walk me through a time you championed a customer\'s perspective inside a technical decision.',
+      'Implement a function to merge multi-tenant logs while preserving tenant isolation.',
+      'Design a multi-tenant SaaS database that supports per-tenant query quotas.',
+      'Tell me about a time you partnered with sales / customer success to ship something.',
+      'How would you handle a P0 bug affecting one customer at 4am Friday?',
+      'Implement a rate limiter that handles per-tenant burst patterns.',
+      'Walk me through a decision where you balanced trust / customer success against shipping speed.',
+      'How do you think about compliance (SOC 2, GDPR) in your engineering work?',
+      'Why Salesforce? What\'s your honest read on the AI strategy?',
+      'Tell me about a time you mentored someone outside your team.',
+      'Describe a system you scaled from one tenant to thousands. What broke first?',
+      'How would you design audit logging that works even when the database is down?',
+    ],
+    prepSteps: [
+      'Read Salesforce\'s recent earnings calls or analyst-day presentations. Have specific opinions on AI strategy and Slack integration.',
+      'Pick one project where you balanced multiple customer needs. Be specific about the trade-offs.',
+      'Prepare three values-anchored behavioural stories: one for trust, one for customer success, one for innovation.',
+      'Brush up on multi-tenancy patterns: shared schema vs separate schema, data isolation, per-tenant configuration.',
+      'If interviewing into Slack or Tableau, study their pre-acquisition culture in addition to Salesforce\'s. The teams retain meaningful autonomy.',
+    ],
+    mistakes: [
+      'Generic answers about the values. The behavioural rubric explicitly looks for customer-impact specifics.',
+      'Treating the system design round as a generic FAANG-style question. Salesforce wants enterprise SaaS specifics.',
+      'Underestimating the hiring manager round. They have meaningful weight in the decision.',
+      'Negotiating without understanding the RSU vest structure. Salesforce\'s offers are flexible if you anchor correctly.',
+    ],
+    faq: [
+      {
+        q: 'How long does the Salesforce hiring process take?',
+        a: 'Four to eight weeks. Faster for engineering, slower for cross-org senior leadership.',
+      },
+      {
+        q: 'Are interviews at Slack / Tableau different?',
+        a: 'Yes, materially. Slack retains a more startup-y, async-first style; Tableau is more analytics-focused. Research the specific org\'s culture in addition to Salesforce\'s.',
+      },
+      {
+        q: 'Do I need Apex / Lightning experience for Salesforce engineering roles?',
+        a: 'For platform engineering, helpful but not required. Most engineering teams hire on general distributed systems / SaaS background. Apex experience matters more for customer-facing implementation roles.',
+      },
+    ],
+  },
 ];
 
 export function getCompanyPack(slug: string): CompanyPack | undefined {
