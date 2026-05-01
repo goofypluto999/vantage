@@ -23,6 +23,7 @@ import ToolsPage from './components/ToolsPage';
 import ComparePage from './components/ComparePage';
 import InterviewPrepCompanyHub from './components/InterviewPrepCompanyHub';
 import InterviewPrepCompanyPage from './components/InterviewPrepCompanyPage';
+import LaidOffPage from './components/LaidOffPage';
 import SEO from './components/SEO';
 import ThemeProvider from './contexts/ThemeContext';
 import { CurrencyProvider, useCurrency } from './contexts/CurrencyContext';
@@ -141,6 +142,9 @@ function AppContent() {
             <Route path="/compare" element={<ComparePage />} />
             <Route path="/interview-prep" element={<InterviewPrepCompanyHub />} />
             <Route path="/interview-prep/:company" element={<InterviewPrepCompanyPage />} />
+            <Route path="/laid-off" element={<LaidOffPage />} />
+            <Route path="/just-laid-off" element={<Navigate to="/laid-off" replace />} />
+            <Route path="/laid-off-2026" element={<Navigate to="/laid-off" replace />} />
             <Route path="/dashboard" element={
               <ProtectedRoute>
                 <SEO title="Dashboard" noindex />

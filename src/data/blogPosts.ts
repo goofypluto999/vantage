@@ -715,6 +715,110 @@ export const blogPosts: BlogPost[] = [
       { type: 'p', text: 'Half the postings out there are not real jobs. Spending an hour each on them is the fastest way to burn out without progress. The 30-second check is the difference.' },
     ],
   },
+
+  {
+    slug: 'just-laid-off-april-2026-cv-fix',
+    title: 'Just laid off in April 2026? The 3 things to fix in your CV before you apply to a single job.',
+    description: '~42,000 tech employees were laid off in April 2026 alone — Oracle, Meta, ASML, Snap, Nike. If you\'re one of them, this is the foundation work to do before you start applying. ATS parser checks, formatting strip-down, exact-match keyword tuning.',
+    publishedAt: '2026-04-30',
+    author: 'Gio',
+    readingTime: '7 min read',
+    tags: ['Layoffs', 'Job Search', 'ATS', 'CV', '2026'],
+    excerpt: 'April 2026 was the worst month for tech layoffs since 2023. The temptation when you\'ve just been let go is to spray and pray — update LinkedIn, open Indeed, fire off 100 applications in 48 hours. That path produces 200 applications and 4 replies. Here\'s the foundation work that changes the math.',
+    hook: 'The temptation when you\'ve just been laid off is to spray and pray. That path produces 200 applications and 4 replies. Here\'s the foundation work that changes the math.',
+    sections: [
+      { type: 'p', text: 'April 2026 has been the worst month for tech layoffs since the 2023 correction. Oracle (up to 30,000), Meta (8,000, effective May 20), ASML (1,700), Snap (1,000), Nike (1,400). That\'s roughly 42,000 people newly job-hunting in a single month, all changing their LinkedIn frame to "Open to Work" within hours of the announcement.' },
+      { type: 'p', text: 'If you\'re one of them, the temptation right now is to start applying. The market feels urgent. Your runway is finite. The instinct is to fire off 100 applications in 48 hours and hope something hits.' },
+      { type: 'p', text: 'That path produces 200 applications and 4 replies. Then you assume the market is broken. Usually the market is fine. Your CV just isn\'t being read the way you think it\'s being read.' },
+      { type: 'p', text: 'Here are the three things to fix before you send your next application.' },
+
+      { type: 'h2', text: '1. Run your CV through every major ATS parser' },
+      { type: 'p', text: 'You wrote your CV for a human. Recruiters at most companies above 200 people don\'t see your CV first. An ATS does. And every major ATS reads PDFs differently.' },
+      { type: 'ul', items: [
+        'Workday reads the document in stream order, top to bottom. Multi-column layouts get interleaved. Your "Skills" sidebar gets shuffled into the middle of your job history.',
+        'Greenhouse strips emoji codepoints. Your "Projects 🚀" loses its surrounding context.',
+        'Lever historically drops anything in PDF headers and footers. If your contact info lives in a header, it disappears.',
+        'Taleo struggles with non-standard section names. "My Story" instead of "Summary" gets ignored.',
+        'iCIMS has its own parsing quirks — newer deployments are better, older ones lose entire sections.',
+      ] },
+      { type: 'p', text: 'The "0–100 ATS score" tools online are inventing the number. There is no single ATS score to give. Different parsers extract different fields from the same PDF.' },
+      { type: 'callout', text: 'The fix isn\'t paying for a scanner. The fix is using a tool that simulates each parser side by side. CV Mirror does this for free, in your browser, with no signup. The MCP server version is open-source on GitHub.' },
+
+      { type: 'h2', text: '2. Strip the formatting until it\'s boring' },
+      { type: 'p', text: 'Every "creative" template you bought from Etsy or downloaded from Canva is a parse risk. Multi-column layouts. Tables for layout. Icons in section headers. Sidebars. Pictures. All of these increase the chance that some piece of your career history quietly disappears in a parser somewhere.' },
+      { type: 'p', text: 'The CV that gets parsed correctly across all 5 major ATSes is visually boring:' },
+      { type: 'ul', items: [
+        'Single column. Always.',
+        'Standard section names ("Summary", "Experience", "Education", "Skills")',
+        'Reverse chronological',
+        'No tables, no images, no icons in section headers',
+        'Plain font (Calibri, Helvetica, Arial)',
+        'Save as PDF, but make sure it\'s text-searchable (Ctrl+F your name on the PDF — if it doesn\'t find it, the file is image-based and the parser sees nothing)',
+      ] },
+      { type: 'p', text: 'You can have a beautiful designed CV for the human round. It should be a different file. The one you submit to the ATS should be optimized for being read by software.' },
+
+      { type: 'h2', text: '3. Use the JD\'s exact words, not synonyms' },
+      { type: 'p', text: 'Most ATSes do basic stemming (so "manage" matches "managing"), but exact-match wins. If the job description says "React", don\'t write "ReactJS" or "React.js". If it says "stakeholder management", don\'t write "cross-functional alignment".' },
+      { type: 'p', text: 'The mistake people make here is keyword stuffing. A "Skills" section with 47 buzzwords reads as desperate to a human and doesn\'t help with most modern ATSes (which look for context, not raw keyword frequency).' },
+      { type: 'p', text: 'The right move: re-read the JD before each application. Use their exact terminology in your bullet points. One CV, customized 5% per application.' },
+
+      { type: 'h2', text: 'After the parse — the rest of the application' },
+      { type: 'p', text: 'You spent 8 years building a career. Don\'t spend 30 seconds on the CV that decides whether anyone reads about it. The foundation work above takes about 60 minutes total. After that, every application benefits.' },
+      { type: 'p', text: 'Then the next problem is the rest of the application: the cover letter, the company research, the interview prep, the fit score. That\'s another hour per application, manually. At 30 applications a week, that\'s your whole weekend gone.' },
+      { type: 'callout', text: 'Vantage AI compresses that hour into ~90 seconds per application. Cover letter (4 tones), company brief, mock interview questions, fit score, 5-minute pitch outline. Free for the first 3 analyses, no card. £5 starter pack if you want more, no subscription.' },
+
+      { type: 'h2', text: 'Genuine note to anyone caught in the cuts' },
+      { type: 'p', text: 'The volume in April 2026 was historic. The system is dumber than it should be. The recruiters are buried. The ATSes are slower than usual. None of that is your fault. The work above is just the part you can control.' },
+      { type: 'p', text: 'Hope this is useful. Genuinely.' },
+    ],
+  },
+
+  {
+    slug: 'oracle-meta-asml-layoff-cv-checklist',
+    title: 'Oracle, Meta, ASML, Snap, Nike: a layoff-week CV checklist',
+    description: 'A specific 5-step checklist for tech employees laid off in April/May 2026. CV format, ATS parse, recruiter outreach, interview prep, and the LinkedIn moves to make in week one.',
+    publishedAt: '2026-04-30',
+    author: 'Gio',
+    readingTime: '6 min read',
+    tags: ['Layoffs', 'Job Search', 'Career', 'LinkedIn', '2026'],
+    excerpt: 'If you got a layoff email this month from Oracle, Meta, ASML, Snap, Nike, or one of the smaller tech companies cutting in April 2026, here\'s the week-one checklist that\'s actually worth your time. Five steps. Specific. Order matters.',
+    hook: 'The week-one checklist that\'s actually worth your time when you\'ve just been laid off. Five steps. Specific. Order matters.',
+    sections: [
+      { type: 'p', text: 'April 2026 will go down as the worst month for tech layoffs since 2023. ~42,000 people newly job-hunting from Oracle alone (up to 30k), plus Meta (8k), ASML (1.7k), Snap (1k), Nike (1.4k). If you\'re reading this with a recent layoff email open in another tab, this checklist is for you.' },
+      { type: 'p', text: 'The order matters. Most people do these in the wrong order and waste 2 weeks.' },
+
+      { type: 'h2', text: 'Step 1 — Don\'t apply to anything for 48 hours' },
+      { type: 'p', text: 'You\'re going to want to start applying immediately. Resist. The first 48 hours after a layoff are emotionally loaded and the CV you put together in that window is going to be worse than the one you write on Tuesday.' },
+      { type: 'p', text: 'Use those 48 hours for one thing only: the foundation. Your CV, your LinkedIn, your story. Once those are right, the applications go quickly.' },
+
+      { type: 'h2', text: 'Step 2 — Run your CV through 5 ATS parsers' },
+      { type: 'p', text: 'Workday, Greenhouse, Lever, Taleo, iCIMS — these power most enterprise hiring. Each parses PDFs differently. Most parse failures are silent. You only find out after sending 100 applications and getting 2 replies.' },
+      { type: 'p', text: 'Use a tool that shows you what each parser actually extracts. CV Mirror is free, runs in your browser, no signup, no upload. The whole engine is open-source on GitHub if you want to verify.' },
+
+      { type: 'h2', text: 'Step 3 — Update LinkedIn (carefully)' },
+      { type: 'p', text: 'Turn on the "Open to Work" frame. Update your headline to read like a target role, not your last title. Write one short post acknowledging the layoff — it sounds counterintuitive but layoff posts in 2026 routinely hit 15,000 likes and 700 comments because the algorithm rewards them and people genuinely want to help.' },
+      { type: 'p', text: 'What works in a layoff post:' },
+      { type: 'ul', items: [
+        'One sentence acknowledging it without bitterness',
+        'A specific mention of what kind of role you\'re targeting next',
+        'A specific ask (referrals to companies X, Y, Z; introductions in industry A)',
+        'No long career retrospective. Save it for week 3.',
+      ] },
+
+      { type: 'h2', text: 'Step 4 — Reach out to your strongest 10 contacts' },
+      { type: 'p', text: 'Not 100. Ten. The people who would absolutely take your call. Specific ask: "I\'m looking at [type of role]. Three companies on my list are X, Y, Z. Do you know anyone in any of those?"' },
+      { type: 'p', text: 'A specific ask gets a specific answer. "Looking for opportunities" gets nothing.' },
+
+      { type: 'h2', text: 'Step 5 — Compress prep time per application' },
+      { type: 'p', text: 'Once you start applying, the bottleneck is prep time per application. Manually, it\'s about an hour: company research, cover letter, interview Qs, fit check. At 30 applications a week, that\'s your whole weekend.' },
+      { type: 'callout', text: 'Vantage AI does this in ~90 seconds per application — paste a job link, get the full prep pack back. 3 free analyses on signup, no card. The economics make sense around application 5 onwards.' },
+
+      { type: 'h2', text: 'The honest part' },
+      { type: 'p', text: 'Median time to next role for laid-off tech workers in 2026 is 3–6 months. Faster if you compress prep time per application and tighter if you have a strong network. Slower if you spray-and-pray.' },
+      { type: 'p', text: 'The work above takes a week. After that, you\'re running an actual system. That beats 200 applications fired off in 48 hours every time.' },
+      { type: 'p', text: 'Genuinely sorry to anyone caught in the cuts this month. Hope this is useful.' },
+    ],
+  },
 ];
 
 export function getPostBySlug(slug: string): BlogPost | undefined {
