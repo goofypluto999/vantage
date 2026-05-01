@@ -227,7 +227,7 @@ function Navbar({ onStart, showLogin }: { onStart: () => void; showLogin?: () =>
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`fixed top-9 md:top-10 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
           ? 'bg-white/30 backdrop-blur-[28px] border-b border-white/40 shadow-[0_4px_24px_rgba(0,0,0,0.08)]'
           : 'bg-transparent'
@@ -563,12 +563,13 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
         )}
       </AnimatePresence>
 
-      {/* Cohort announcement bar — surfaces /laid-off to the April 2026 layoff wave */}
+      {/* Cohort announcement bar — fixed at top-0. Navbar is offset to top-9/top-10
+          to sit below it. */}
       <a
         href="/laid-off"
-        className="block w-full bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] text-white text-center py-2 text-xs md:text-sm font-semibold hover:opacity-95 transition-opacity"
+        className="fixed top-0 left-0 right-0 z-[60] flex items-center justify-center w-full h-9 md:h-10 bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] text-white text-center text-xs md:text-sm font-semibold hover:opacity-95 transition-opacity"
       >
-        Got laid off this month? <span className="underline">Read this first →</span>
+        Got laid off this month?&nbsp;<span className="underline">Read this first →</span>
       </a>
 
       <Navbar onStart={onStart} showLogin={showLogin} />
