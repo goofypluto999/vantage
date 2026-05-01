@@ -1,0 +1,29 @@
+name: IndexNow ping (manual / deploy hook)
+
+# Pings IndexNow endpoints (Bing, Yandex) for the Vantage URL set.
+# Trigger manually after a content drop, or wire to Vercel deploy webhook
+# in the future.
+
+on:
+  workflow_dispatch: {}
+  schedule:
+    # Weekly Monday 03:00 UTC — keep IndexNow aware of any updates
+    - cron: '0 3 * * 1'
+
+permissions:
+  contents: read
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm install --no-save tsx
+      - name: Ping IndexNow
+        env:
+          INDEXNOW_KEY: ${{ secrets.INDEXNOW_KEY }}
+        run: npx tsx scripts/indexnow-ping.ts
