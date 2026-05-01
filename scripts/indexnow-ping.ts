@@ -52,6 +52,24 @@ const URLS = [
   `https://${HOST}/docs/api`,
   `https://${HOST}/press`,
 
+  // Interview prep cluster (15 companies)
+  `https://${HOST}/interview-prep`,
+  `https://${HOST}/interview-prep/google`,
+  `https://${HOST}/interview-prep/meta`,
+  `https://${HOST}/interview-prep/amazon`,
+  `https://${HOST}/interview-prep/stripe`,
+  `https://${HOST}/interview-prep/shopify`,
+  `https://${HOST}/interview-prep/apple`,
+  `https://${HOST}/interview-prep/netflix`,
+  `https://${HOST}/interview-prep/airbnb`,
+  `https://${HOST}/interview-prep/mckinsey`,
+  `https://${HOST}/interview-prep/goldman-sachs`,
+  `https://${HOST}/interview-prep/microsoft`,
+  `https://${HOST}/interview-prep/openai`,
+  `https://${HOST}/interview-prep/anthropic`,
+  `https://${HOST}/interview-prep/tesla`,
+  `https://${HOST}/interview-prep/salesforce`,
+
   // Recently published blog posts
   `https://${HOST}/blog/just-laid-off-april-2026-cv-fix`,
   `https://${HOST}/blog/oracle-meta-asml-layoff-cv-checklist`,

@@ -56,6 +56,26 @@ Vendor-specific guides on how each major Applicant Tracking System parses CVs in
 - [The 30-second CV review test recruiters actually run](https://vantage-livid.vercel.app/blog/the-30-second-cv-review-recruiters-actually-run): The four checkpoints recruiters scan in 30 seconds, what kills you, and the 5-minute fix. Markdown: /blog/the-30-second-cv-review-recruiters-actually-run.md
 - [The 5-minute interview pitch that gets you remembered](https://vantage-livid.vercel.app/blog/the-5-minute-interview-pitch-that-gets-you-remembered): The 5-block pitch structure (origin, expertise, why-now, why-them, ask) plus the 90-second compression. Markdown: /blog/the-5-minute-interview-pitch-that-gets-you-remembered.md
 
+## Interview prep packs by company
+
+Company-specific interview prep packs. Each one has the company's signature interview pattern, 12 likely questions, 5 prep steps, common mistakes, and FAQ. Schema-tagged FAQPage + Article.
+
+- [Google](https://vantage-livid.vercel.app/interview-prep/google) — committee model, Googleyness rubric, Google-Docs-not-IDE coding
+- [Meta](https://vantage-livid.vercel.app/interview-prep/meta) — coding-heavy, fast-paced, impact-focused behavioural
+- [Amazon](https://vantage-livid.vercel.app/interview-prep/amazon) — Leadership Principles rubric, STAR-format expected
+- [Microsoft](https://vantage-livid.vercel.app/interview-prep/microsoft) — five-round loop, growth-mindset rubric, deep-dive technical
+- [OpenAI](https://vantage-livid.vercel.app/interview-prep/openai) — paid take-homes, mission-fit judgement, ML / systems depth
+- [Anthropic](https://vantage-livid.vercel.app/interview-prep/anthropic) — paid take-homes, RSP / safety judgement, alignment depth
+- [Apple](https://vantage-livid.vercel.app/interview-prep/apple) — design-quality bar, on-site multi-team panels
+- [Netflix](https://vantage-livid.vercel.app/interview-prep/netflix) — keeper test culture, senior-only hiring
+- [Tesla](https://vantage-livid.vercel.app/interview-prep/tesla) — first-principles, hardware-software, fast hiring-manager-decides
+- [Salesforce](https://vantage-livid.vercel.app/interview-prep/salesforce) — Ohana values, multi-tenant SaaS depth
+- [Stripe](https://vantage-livid.vercel.app/interview-prep/stripe) — long take-homes, code-quality bar, writing emphasis
+- [Shopify](https://vantage-livid.vercel.app/interview-prep/shopify) — Ruby ecosystem comfort, "trust the team" culture
+- [Airbnb](https://vantage-livid.vercel.app/interview-prep/airbnb) — design-systems thinking, host/guest empathy
+- [McKinsey](https://vantage-livid.vercel.app/interview-prep/mckinsey) — case interview format, structured problem-solving
+- [Goldman Sachs](https://vantage-livid.vercel.app/interview-prep/goldman-sachs) — Superday format, technical + behavioural depth
+
 ## Interview prep packs by role
 
 Role-specific question + prep packs. Each one has 12 most-asked questions, a 5-step prep routine, common mistakes, and FAQ.
