@@ -28,6 +28,9 @@ import AtsHubPage from './components/AtsHubPage';
 import AtsVendorPage from './components/AtsVendorPage';
 import PressPage from './components/PressPage';
 import LaidOffFromCompanyPage from './components/LaidOffFromCompanyPage';
+import SkillsPage from './components/SkillsPage';
+import DocsApiPage from './components/DocsApiPage';
+import ReferPage from './components/ReferPage';
 import SEO from './components/SEO';
 import ThemeProvider from './contexts/ThemeContext';
 import { CurrencyProvider, useCurrency } from './contexts/CurrencyContext';
@@ -154,6 +157,14 @@ function AppContent() {
             <Route path="/ats/:vendor" element={<AtsVendorPage />} />
             <Route path="/press" element={<PressPage />} />
             <Route path="/media" element={<Navigate to="/press" replace />} />
+            <Route path="/skills" element={<SkillsPage />} />
+            <Route path="/docs/api" element={<DocsApiPage />} />
+            <Route path="/api-docs" element={<Navigate to="/docs/api" replace />} />
+            <Route path="/refer" element={
+              <ProtectedRoute>
+                <ReferPage />
+              </ProtectedRoute>
+            } />
             <Route path="/dashboard" element={
               <ProtectedRoute>
                 <SEO title="Dashboard" noindex />

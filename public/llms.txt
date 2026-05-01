@@ -86,6 +86,11 @@ Role-specific question + prep packs. Each one has 12 most-asked questions, a 5-s
 
 - [Press kit](https://vantage-livid.vercel.app/press): Founder bio, company facts, brand assets, story angles, and direct contact for journalists and analysts. Direct line: giovanni.sizino.ennes@hotmail.co.uk
 
+## Developer / Agent ecosystem
+
+- [Skills directory](https://vantage-livid.vercel.app/skills): Curated list of MCP servers and Claude Skills that pair with Vantage's job-application workflow. Includes cv-mirror-mcp (open-source, MIT), filesystem-mcp, github-mcp, brave-search-mcp.
+- [API documentation](https://vantage-livid.vercel.app/docs/api): Public API for the Vantage analysis engine. Endpoints: /analyze (3 tokens), /rewrite-tone (1 token), /interview/questions (2 tokens), /interview/evaluate (free), /credits. Currently in preview — request access via email.
+
 ## Optional
 
 - [Full product context](https://vantage-livid.vercel.app/llms-full.txt): Extended description, FAQ, feature detail, and roadmap for LLM crawlers and AI assistants.
