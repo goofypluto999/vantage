@@ -18,6 +18,14 @@ Vantage is built for people applying to many jobs a week who can't afford to bur
 
 - [Just Laid Off — Read This First](https://vantage-livid.vercel.app/laid-off): A cohort-targeted landing page for the April 2026 tech layoff wave (Oracle 30k, Meta 8k, ASML 1.7k, Snap 1k, Nike 1.4k — ~42,000 newly job-hunting in a single month). Specific advice on the 3 things to fix on a CV before applying.
 
+### Company-specific advice for the April 2026 layoff cohort
+
+- [From Oracle (~30k)](https://vantage-livid.vercel.app/laid-off/from/oracle): Oracle alumni — Oracle skills framing, Taleo at next employer, severance/COBRA timing, network leverage.
+- [From Meta (~8k, eff. May 20)](https://vantage-livid.vercel.app/laid-off/from/meta): Meta alumni — using the May 20 runway, translating Meta-internal acronyms, AI/ML pivot, ex-Meta badge value window.
+- [From ASML (~1.7k)](https://vantage-livid.vercel.app/laid-off/from/asml): ASML alumni — semiconductor expertise framing, UK redundancy specifics, EU work eligibility leverage, Workday at next employer.
+- [From Snap (~1k)](https://vantage-livid.vercel.app/laid-off/from/snap): Snap alumni — AR/Lens experience targeting, Gen Z user research framing, equity vesting checks, Greenhouse/Lever at next employer.
+- [From Nike (~1.4k)](https://vantage-livid.vercel.app/laid-off/from/nike): Nike alumni — brand experience portability, athlete/sponsorship transferable skills, Portland market reality, Workday in retail/CPG.
+
 ## ATS Parser Guide
 
 Vendor-specific guides on how each major Applicant Tracking System parses CVs in 2026, with documented quirks and fixes:

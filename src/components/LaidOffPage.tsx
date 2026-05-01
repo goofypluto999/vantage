@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Check, ShieldCheck, FileText, Briefcase, Clock, Users, Lock } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import SEO from './SEO';
+import { laidOffCompanies } from '../data/laidOffCompanies';
 
 const SITE_URL = 'https://vantage-livid.vercel.app';
 
@@ -130,25 +131,31 @@ export default function LaidOffPage() {
           </h2>
           <p className={`${t.textSub} mb-6`}>
             April 2026 has been the worst month for tech layoffs since the 2023 correction. The
-            numbers are public:
+            numbers are public — click through for company-specific advice for each cohort:
           </p>
           <div className="grid md:grid-cols-2 gap-4">
-            {[
-              { c: 'Oracle', n: 'Up to 30,000', d: 'Mass email layoff, April 2026' },
-              { c: 'Meta', n: '8,000', d: '10% headcount, effective May 20' },
-              { c: 'ASML', n: '1,700', d: 'Europe-heavy chip giant' },
-              { c: 'Snap', n: '1,000', d: 'Activist-investor pressure' },
-              { c: 'Nike', n: '1,400', d: 'Latest round of cuts' },
-              { c: 'Many more', n: '~5,000+', d: 'Smaller tech companies, less press' },
-            ].map((item, i) => (
-              <div key={i} className={`${t.cardInner} rounded-lg p-4 flex items-center gap-4`}>
-                <div className="text-2xl font-bold text-[#4F46E5]">{item.n}</div>
-                <div>
-                  <div className={`font-semibold ${t.text}`}>{item.c}</div>
-                  <div className={`text-xs ${t.textMuted}`}>{item.d}</div>
+            {laidOffCompanies.map((c) => (
+              <Link
+                key={c.slug}
+                to={`/laid-off/from/${c.slug}`}
+                className={`${t.cardInner} rounded-lg p-4 flex items-center gap-4 hover:-translate-y-0.5 transition-all`}
+              >
+                <div className="text-2xl font-bold text-[#4F46E5]">{c.affectedCount}</div>
+                <div className="flex-1">
+                  <div className={`font-semibold ${t.text} flex items-center gap-2`}>
+                    {c.name} <ArrowRight className="w-3 h-3" />
+                  </div>
+                  <div className={`text-xs ${t.textMuted}`}>{c.context.split('.')[0]}</div>
                 </div>
-              </div>
+              </Link>
             ))}
+            <div className={`${t.cardInner} rounded-lg p-4 flex items-center gap-4`}>
+              <div className="text-2xl font-bold text-[#4F46E5]">~5,000+</div>
+              <div>
+                <div className={`font-semibold ${t.text}`}>Many more</div>
+                <div className={`text-xs ${t.textMuted}`}>Smaller tech companies, less press</div>
+              </div>
+            </div>
           </div>
           <p className={`mt-6 text-sm ${t.textMuted}`}>
             That's roughly 42,000 people newly searching at the same time. The recruiters know.
