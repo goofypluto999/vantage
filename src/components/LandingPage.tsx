@@ -993,10 +993,10 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
                 </div>
                 <span className="font-display font-[800] text-xl text-[#2D2B4E] tracking-tight uppercase">Vantage</span>
               </div>
-              <p className="text-[#6B6B8D] font-medium text-sm">Clarity in the Chaos.</p>
+              <p className="text-[#6B6B8D] font-medium text-sm">90 seconds from CV to interview-ready.</p>
             </div>
 
-            <div className="flex-1 flex gap-12 text-sm font-bold text-[#3B3A5C]">
+            <div className="flex-1 flex gap-8 text-sm font-bold text-[#3B3A5C] flex-wrap">
               <div className="flex flex-col gap-3">
                 <a href="#features" className="hover:text-[#4F46E5] transition-colors">Product</a>
                 <a href="#pricing" className="hover:text-[#4F46E5] transition-colors">Pricing</a>
@@ -1005,6 +1005,13 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
                 <a href="https://cv-mirror-web.vercel.app/" target="_blank" rel="noopener noreferrer" className="hover:text-[#4F46E5] transition-colors">
                   CV Mirror →
                 </a>
+              </div>
+              <div className="flex flex-col gap-3">
+                <Link to="/laid-off" className="hover:text-[#4F46E5] transition-colors">Just laid off?</Link>
+                <Link to="/ats" className="hover:text-[#4F46E5] transition-colors">ATS Guide</Link>
+                <Link to="/skills" className="hover:text-[#4F46E5] transition-colors">Skills</Link>
+                <Link to="/docs/api" className="hover:text-[#4F46E5] transition-colors">API</Link>
+                <Link to="/press" className="hover:text-[#4F46E5] transition-colors">Press</Link>
               </div>
               <div className="flex flex-col gap-3">
                 <Link to="/privacy" className="hover:text-[#4F46E5] transition-colors">Privacy Policy</Link>
