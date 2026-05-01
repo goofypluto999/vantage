@@ -31,6 +31,7 @@ import LaidOffFromCompanyPage from './components/LaidOffFromCompanyPage';
 import SkillsPage from './components/SkillsPage';
 import DocsApiPage from './components/DocsApiPage';
 import ReferPage from './components/ReferPage';
+import PlaybookPage from './components/PlaybookPage';
 import SEO from './components/SEO';
 import ThemeProvider from './contexts/ThemeContext';
 import { CurrencyProvider, useCurrency } from './contexts/CurrencyContext';
@@ -158,6 +159,8 @@ function AppContent() {
             <Route path="/press" element={<PressPage />} />
             <Route path="/media" element={<Navigate to="/press" replace />} />
             <Route path="/skills" element={<SkillsPage />} />
+            <Route path="/playbook" element={<PlaybookPage />} />
+            <Route path="/layoff-playbook" element={<Navigate to="/playbook" replace />} />
             <Route path="/docs/api" element={<DocsApiPage />} />
             <Route path="/api-docs" element={<Navigate to="/docs/api" replace />} />
             <Route path="/refer" element={
