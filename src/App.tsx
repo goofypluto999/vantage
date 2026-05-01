@@ -26,6 +26,7 @@ import InterviewPrepCompanyPage from './components/InterviewPrepCompanyPage';
 import LaidOffPage from './components/LaidOffPage';
 import AtsHubPage from './components/AtsHubPage';
 import AtsVendorPage from './components/AtsVendorPage';
+import PressPage from './components/PressPage';
 import SEO from './components/SEO';
 import ThemeProvider from './contexts/ThemeContext';
 import { CurrencyProvider, useCurrency } from './contexts/CurrencyContext';
@@ -149,6 +150,8 @@ function AppContent() {
             <Route path="/laid-off-2026" element={<Navigate to="/laid-off" replace />} />
             <Route path="/ats" element={<AtsHubPage />} />
             <Route path="/ats/:vendor" element={<AtsVendorPage />} />
+            <Route path="/press" element={<PressPage />} />
+            <Route path="/media" element={<Navigate to="/press" replace />} />
             <Route path="/dashboard" element={
               <ProtectedRoute>
                 <SEO title="Dashboard" noindex />

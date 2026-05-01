@@ -74,6 +74,10 @@ Role-specific question + prep packs. Each one has 12 most-asked questions, a 5-s
 - [Terms of Service](https://vantage-livid.vercel.app/terms)
 - [Cookie Policy](https://vantage-livid.vercel.app/cookies)
 
+## Press
+
+- [Press kit](https://vantage-livid.vercel.app/press): Founder bio, company facts, brand assets, story angles, and direct contact for journalists and analysts. Direct line: giovanni.sizino.ennes@hotmail.co.uk
+
 ## Optional
 
 - [Full product context](https://vantage-livid.vercel.app/llms-full.txt): Extended description, FAQ, feature detail, and roadmap for LLM crawlers and AI assistants.
