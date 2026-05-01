@@ -1,6 +1,6 @@
-# robots.txt for Vantage
+# robots.txt for Vantage AI
 # https://vantage-livid.vercel.app
-# Last updated: 2026-04-25
+# Last updated: 2026-05-01
 
 # ---------- Default: allow all search + AI crawlers ----------
 User-agent: *
@@ -8,57 +8,35 @@ Allow: /
 Disallow: /dashboard
 Disallow: /account
 Disallow: /admin
+Disallow: /refer
 Disallow: /reset-password
 Disallow: /api/
 
-# ---------- Explicit allow for AI / LLM crawlers ----------
-# We want Vantage surfacing in ChatGPT, Perplexity, Claude, Gemini answers.
-
-User-agent: GPTBot
-Allow: /
-Disallow: /dashboard
-Disallow: /account
-Disallow: /admin
-Disallow: /reset-password
-Disallow: /api/
-
-User-agent: OAI-SearchBot
-Allow: /
-Disallow: /dashboard
-Disallow: /account
-Disallow: /admin
-Disallow: /reset-password
-Disallow: /api/
-
-User-agent: ChatGPT-User
-Allow: /
-Disallow: /dashboard
-Disallow: /account
-Disallow: /admin
-Disallow: /reset-password
-Disallow: /api/
-
-User-agent: PerplexityBot
-Allow: /
-Disallow: /dashboard
-Disallow: /account
-Disallow: /admin
-Disallow: /reset-password
-Disallow: /api/
-
-User-agent: Perplexity-User
-Allow: /
-Disallow: /dashboard
-Disallow: /account
-Disallow: /admin
-Disallow: /reset-password
-Disallow: /api/
-
+# ---------- Anthropic (Claude family) ----------
 User-agent: ClaudeBot
 Allow: /
 Disallow: /dashboard
 Disallow: /account
 Disallow: /admin
+Disallow: /refer
+Disallow: /reset-password
+Disallow: /api/
+
+User-agent: Claude-SearchBot
+Allow: /
+Disallow: /dashboard
+Disallow: /account
+Disallow: /admin
+Disallow: /refer
+Disallow: /reset-password
+Disallow: /api/
+
+User-agent: Claude-User
+Allow: /
+Disallow: /dashboard
+Disallow: /account
+Disallow: /admin
+Disallow: /refer
 Disallow: /reset-password
 Disallow: /api/
 
@@ -67,6 +45,7 @@ Allow: /
 Disallow: /dashboard
 Disallow: /account
 Disallow: /admin
+Disallow: /refer
 Disallow: /reset-password
 Disallow: /api/
 
@@ -75,43 +54,144 @@ Allow: /
 Disallow: /dashboard
 Disallow: /account
 Disallow: /admin
+Disallow: /refer
 Disallow: /reset-password
 Disallow: /api/
 
+# ---------- OpenAI (ChatGPT family) ----------
+User-agent: GPTBot
+Allow: /
+Disallow: /dashboard
+Disallow: /account
+Disallow: /admin
+Disallow: /refer
+Disallow: /reset-password
+Disallow: /api/
+
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /dashboard
+Disallow: /account
+Disallow: /admin
+Disallow: /refer
+Disallow: /reset-password
+Disallow: /api/
+
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /dashboard
+Disallow: /account
+Disallow: /admin
+Disallow: /refer
+Disallow: /reset-password
+Disallow: /api/
+
+# ---------- Perplexity ----------
+User-agent: PerplexityBot
+Allow: /
+Disallow: /dashboard
+Disallow: /account
+Disallow: /admin
+Disallow: /refer
+Disallow: /reset-password
+Disallow: /api/
+
+User-agent: Perplexity-User
+Allow: /
+Disallow: /dashboard
+Disallow: /account
+Disallow: /admin
+Disallow: /refer
+Disallow: /reset-password
+Disallow: /api/
+
+# ---------- Google ----------
 User-agent: Google-Extended
 Allow: /
 Disallow: /dashboard
 Disallow: /account
 Disallow: /admin
+Disallow: /refer
 Disallow: /reset-password
 Disallow: /api/
 
+# ---------- Apple ----------
 User-agent: Applebot-Extended
 Allow: /
 Disallow: /dashboard
 Disallow: /account
 Disallow: /admin
+Disallow: /refer
 Disallow: /reset-password
 Disallow: /api/
 
-User-agent: cohere-ai
+# ---------- Meta ----------
+User-agent: meta-externalagent
 Allow: /
 Disallow: /dashboard
 Disallow: /account
 Disallow: /admin
+Disallow: /refer
 Disallow: /reset-password
 Disallow: /api/
 
+# ---------- Amazon ----------
+User-agent: Amazonbot
+Allow: /
+Disallow: /dashboard
+Disallow: /account
+Disallow: /admin
+Disallow: /refer
+Disallow: /reset-password
+Disallow: /api/
+
+# ---------- ByteDance ----------
 User-agent: Bytespider
 Allow: /
 Disallow: /dashboard
 Disallow: /account
 Disallow: /admin
+Disallow: /refer
 Disallow: /reset-password
 Disallow: /api/
 
-# ---------- Sitemaps (index + sub-sitemaps) ----------
+# ---------- Cohere ----------
+User-agent: cohere-ai
+Allow: /
+Disallow: /dashboard
+Disallow: /account
+Disallow: /admin
+Disallow: /refer
+Disallow: /reset-password
+Disallow: /api/
+
+# ---------- Common Crawl (training data) ----------
+User-agent: CCBot
+Allow: /
+Disallow: /dashboard
+Disallow: /account
+Disallow: /admin
+Disallow: /refer
+Disallow: /reset-password
+Disallow: /api/
+
+# ---------- Diffbot ----------
+User-agent: Diffbot
+Allow: /
+Disallow: /dashboard
+Disallow: /account
+Disallow: /admin
+Disallow: /refer
+Disallow: /reset-password
+Disallow: /api/
+
+# ---------- You.com ----------
+User-agent: YouBot
+Allow: /
+
+# ---------- Sitemaps ----------
 Sitemap: https://vantage-livid.vercel.app/sitemap.xml
 Sitemap: https://vantage-livid.vercel.app/sitemap-pages.xml
 Sitemap: https://vantage-livid.vercel.app/sitemap-blog.xml
 Sitemap: https://vantage-livid.vercel.app/sitemap-roles.xml
+Sitemap: https://vantage-livid.vercel.app/sitemap-companies.xml
