@@ -563,6 +563,14 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
         )}
       </AnimatePresence>
 
+      {/* Cohort announcement bar — surfaces /laid-off to the April 2026 layoff wave */}
+      <a
+        href="/laid-off"
+        className="block w-full bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] text-white text-center py-2 text-xs md:text-sm font-semibold hover:opacity-95 transition-opacity"
+      >
+        Got laid off this month? <span className="underline">Read this first →</span>
+      </a>
+
       <Navbar onStart={onStart} showLogin={showLogin} />
 
       {/* ================================================================

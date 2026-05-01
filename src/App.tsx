@@ -24,6 +24,8 @@ import ComparePage from './components/ComparePage';
 import InterviewPrepCompanyHub from './components/InterviewPrepCompanyHub';
 import InterviewPrepCompanyPage from './components/InterviewPrepCompanyPage';
 import LaidOffPage from './components/LaidOffPage';
+import AtsHubPage from './components/AtsHubPage';
+import AtsVendorPage from './components/AtsVendorPage';
 import SEO from './components/SEO';
 import ThemeProvider from './contexts/ThemeContext';
 import { CurrencyProvider, useCurrency } from './contexts/CurrencyContext';
@@ -145,6 +147,8 @@ function AppContent() {
             <Route path="/laid-off" element={<LaidOffPage />} />
             <Route path="/just-laid-off" element={<Navigate to="/laid-off" replace />} />
             <Route path="/laid-off-2026" element={<Navigate to="/laid-off" replace />} />
+            <Route path="/ats" element={<AtsHubPage />} />
+            <Route path="/ats/:vendor" element={<AtsVendorPage />} />
             <Route path="/dashboard" element={
               <ProtectedRoute>
                 <SEO title="Dashboard" noindex />

@@ -14,6 +14,21 @@ Vantage is built for people applying to many jobs a week who can't afford to bur
 
 - [CV Mirror](https://cv-mirror-web.vercel.app/): Free, fully client-side ATS scanner. Same team. Simulates how 5 real ATS systems (Workday, Greenhouse, Lever, Taleo, iCIMS) parse your CV — side by side. No signup, nothing uploads. Use it to fix CV parse issues before running a Vantage analysis.
 
+## Just laid off?
+
+- [Just Laid Off — Read This First](https://vantage-livid.vercel.app/laid-off): A cohort-targeted landing page for the April 2026 tech layoff wave (Oracle 30k, Meta 8k, ASML 1.7k, Snap 1k, Nike 1.4k — ~42,000 newly job-hunting in a single month). Specific advice on the 3 things to fix on a CV before applying.
+
+## ATS Parser Guide
+
+Vendor-specific guides on how each major Applicant Tracking System parses CVs in 2026, with documented quirks and fixes:
+
+- [ATS Guide Hub](https://vantage-livid.vercel.app/ats): Overview of how 5 major ATSes read CVs.
+- [Workday](https://vantage-livid.vercel.app/ats/workday): Reads PDFs in document-stream order. Multi-column CVs get interleaved. Used by ~50% of Fortune 500 enterprises.
+- [Greenhouse](https://vantage-livid.vercel.app/ats/greenhouse): Strips emoji codepoints. Section detection by exact wording. Used by ~40% of Series B+ tech startups.
+- [Lever](https://vantage-livid.vercel.app/ats/lever): Historically drops PDF header/footer text. Modern parser. Used by Netflix, Shopify, Quora.
+- [Taleo](https://vantage-livid.vercel.app/ats/taleo): Oracle-owned legacy parser. Strict on standard section names. Common in financial services and public sector.
+- [iCIMS](https://vantage-livid.vercel.app/ats/icims): Configuration varies significantly by tenant. Skills extraction is weaker than newer ATSes.
+
 ## What you get in one analysis
 
 - **Company Intel:** Deep company research — what they do, their tech stack, recent news, culture signals.
@@ -24,6 +39,8 @@ Vantage is built for people applying to many jobs a week who can't afford to bur
 
 ## Blog (long-form guides)
 
+- [Just laid off in April 2026? The 3 things to fix in your CV before you apply](https://vantage-livid.vercel.app/blog/just-laid-off-april-2026-cv-fix): Specific advice for tech employees laid off in the April 2026 wave. ATS parser checks, formatting strip-down, exact-match keyword tuning.
+- [Oracle, Meta, ASML, Snap, Nike: a layoff-week CV checklist](https://vantage-livid.vercel.app/blog/oracle-meta-asml-layoff-cv-checklist): A 5-step week-one checklist for tech employees laid off in April/May 2026. CV format, ATS parse, recruiter outreach, interview prep, LinkedIn moves.
 - [How to prep for any job interview in 20 minutes](https://vantage-livid.vercel.app/blog/how-to-prep-for-any-interview-in-20-minutes): A concrete 20-minute manual routine used by people applying to 50+ jobs a week. Markdown: /blog/how-to-prep-for-any-interview-in-20-minutes.md
 - [What ATS screening software actually checks in 2026](https://vantage-livid.vercel.app/blog/what-ats-actually-checks-in-2026): Plain-English breakdown of how modern applicant tracking systems parse CVs. Markdown: /blog/what-ats-actually-checks-in-2026.md
 - [The 4 cover letter tones, and when each one wins](https://vantage-livid.vercel.app/blog/the-4-cover-letter-tones-and-when-to-use-each): When to use Professional vs Warm vs Direct vs Creative, with the rule for picking. Markdown: /blog/the-4-cover-letter-tones-and-when-to-use-each.md

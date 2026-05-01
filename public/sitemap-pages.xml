@@ -3,13 +3,55 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/0.9">
   <url>
     <loc>https://vantage-livid.vercel.app/</loc>
-    <lastmod>2026-04-25</lastmod>
+    <lastmod>2026-04-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
       <image:loc>https://vantage-livid.vercel.app/og-image.png</image:loc>
       <image:title>Vantage — AI Job Preparation Tool</image:title>
     </image:image>
+  </url>
+  <url>
+    <loc>https://vantage-livid.vercel.app/laid-off</loc>
+    <lastmod>2026-04-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://vantage-livid.vercel.app/ats</loc>
+    <lastmod>2026-04-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://vantage-livid.vercel.app/ats/workday</loc>
+    <lastmod>2026-04-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://vantage-livid.vercel.app/ats/greenhouse</loc>
+    <lastmod>2026-04-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://vantage-livid.vercel.app/ats/lever</loc>
+    <lastmod>2026-04-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://vantage-livid.vercel.app/ats/taleo</loc>
+    <lastmod>2026-04-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://vantage-livid.vercel.app/ats/icims</loc>
+    <lastmod>2026-04-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
   </url>
   <url>
     <loc>https://vantage-livid.vercel.app/pricing</loc>
