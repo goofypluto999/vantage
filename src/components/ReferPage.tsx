@@ -58,10 +58,19 @@ export default function ReferPage() {
 
       <section className="max-w-3xl mx-auto px-6 pt-16 pb-10 text-center">
         <Gift className="w-12 h-12 text-[#4F46E5] mx-auto mb-4" />
-        <h1 className={`text-4xl font-bold tracking-tight ${t.text} mb-4`}>Refer a friend</h1>
-        <p className={`text-lg ${t.textSub} max-w-2xl mx-auto`}>
-          If Vantage helped you, send a tagged link to someone job-hunting. We track signups attributed to your link
-          and credit your account. Honest, no spam, no scaring people about virality.
+        <h1 className={`text-4xl font-bold tracking-tight ${t.text} mb-4`}>Share with a friend</h1>
+        <p className={`text-lg ${t.textSub} max-w-2xl mx-auto mb-3`}>
+          If Vantage helped you, send the link to someone job-hunting. The links below
+          carry a tag so we can see traffic from your share — useful for us, no profile
+          tracking on the recipient.
+        </p>
+        <p className={`text-sm ${t.textMuted} max-w-2xl mx-auto`}>
+          Manual rewards for now: if a friend signs up via your link, email{' '}
+          <a href="mailto:giovanni.sizino.ennes@hotmail.co.uk" className="text-[#4F46E5] hover:underline">
+            giovanni.sizino.ennes@hotmail.co.uk
+          </a>{' '}
+          with their email and we'll add 5 free tokens to your account. Automated rewards
+          coming once we have steady traffic.
         </p>
       </section>
 
@@ -89,11 +98,13 @@ export default function ReferPage() {
       <section className="max-w-3xl mx-auto px-6 py-8">
         <div className={`${t.glass} rounded-2xl p-6`}>
           <Share2 className="w-6 h-6 text-[#4F46E5] mb-3" />
-          <h2 className={`font-bold ${t.text} mb-2`}>How attribution works</h2>
+          <h2 className={`font-bold ${t.text} mb-2`}>How tracking works today</h2>
           <p className={`text-sm ${t.textSub} leading-relaxed`}>
-            Each link includes a <code className={`${t.cardInner} px-1 rounded`}>?ref={userTag}</code> parameter.
-            When someone visits via your link and signs up, the ref tag is captured against their account. You can
-            see referrals on your <Link to="/account" className="text-[#4F46E5] hover:underline">account page</Link>.
+            Each link includes a <code className={`${t.cardInner} px-1 rounded`}>?ref={userTag}</code> parameter
+            that lets us see clicks and visits from your share via standard web traffic logs. We do not
+            currently auto-attribute signups to your account in the database — that's the next iteration
+            once we have steady volume. Until then, email us when a friend signs up and we'll credit you
+            manually.
           </p>
         </div>
       </section>

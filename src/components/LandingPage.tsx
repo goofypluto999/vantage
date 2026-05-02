@@ -11,6 +11,7 @@ import {
 import * as THREE from 'three';
 import Waitlist from './Waitlist';
 import DemoWalkthrough from './DemoWalkthrough';
+import LiveDemoReel from './LiveDemoReel';
 import { useCurrency } from '../contexts/CurrencyContext';
 
 // Directories that require a reciprocal backlink before approving submission.
@@ -648,10 +649,15 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
                 Get 3 free analyses <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </button>
               <button
-                onClick={() => setShowDemo(true)}
+                onClick={() =>
+                  document.getElementById('watch-it-work')?.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center',
+                  })
+                }
                 className="inline-flex items-center gap-2 px-8 py-4 bg-white/35 backdrop-blur-[20px] border border-white/55 text-[#2D2B4E] rounded-full font-semibold text-base hover:bg-white/55 hover:-translate-y-1 active:scale-95 transition-all"
               >
-                <Play className="w-4 h-4" /> See it work (60s)
+                <Play className="w-4 h-4" /> See it work (22s)
               </button>
             </div>
             <p className="text-xs text-[#3B3A5C] uppercase tracking-widest flex items-center gap-2 font-bold">
@@ -685,6 +691,42 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
           <div className="flex items-center gap-3"><Lock className="w-5 h-5 text-[#4F46E5]" /><span className="text-sm font-bold text-[#3B3A5C]">No Hidden Scraping</span></div>
           <div className="flex items-center gap-3"><Eye className="w-5 h-5 text-[#4F46E5]" /><span className="text-sm font-bold text-[#3B3A5C]">Human Review Always</span></div>
         </GlassCard>
+      </section>
+
+      {/* ================================================================
+          WATCH IT WORK — animated product reel
+      ================================================================ */}
+      <section
+        id="watch-it-work"
+        className="relative z-10 w-full px-4 max-w-6xl mx-auto pt-20 pb-12"
+      >
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-100px' }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="text-center mb-10"
+        >
+          <p className="text-xs font-bold text-[#4F46E5] uppercase tracking-widest mb-3">
+            Watch it work
+          </p>
+          <h2 className="text-4xl lg:text-5xl font-display font-bold text-[#2D2B4E] mb-3">
+            Your full prep pack — in 90 seconds.
+          </h2>
+          <p className="text-base text-[#6B6B8D] max-w-xl mx-auto">
+            A real walkthrough of the actual dashboard. Drop a CV, paste a job
+            link, get company intel, fit score, tailored cover letter, mock
+            interview, and a 5-minute pitch.
+          </p>
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, y: 30, scale: 0.97 }}
+          whileInView={{ opacity: 1, y: 0, scale: 1 }}
+          viewport={{ once: true, margin: '-50px' }}
+          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <LiveDemoReel autoplay aspectRatio="16/10" />
+        </motion.div>
       </section>
 
       {/* ================================================================
