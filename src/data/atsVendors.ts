@@ -267,6 +267,111 @@ export const atsVendors: ATSVendor[] = [
       { name: 'iCIMS Talent Cloud Documentation', url: 'https://www.icims.com/customer-resources/' },
     ],
   },
+  {
+    slug: 'smartrecruiters',
+    name: 'SmartRecruiters',
+    marketShare: 'Mid-market and enterprise hiring across 4,000+ customers globally',
+    parentCompany: 'SmartRecruiters Inc.',
+    primaryUse: 'Mid-market and enterprise recruiting (e.g. Bosch, IKEA, LinkedIn, Visa)',
+    parserBehavior: 'Modern parser with strong keyword extraction. Configuration-aware, varies by tenant.',
+    quirks: [
+      {
+        title: 'Aggressive keyword extraction biases toward dense skills lists',
+        description: 'SmartRecruiters\' parser leans on keyword density for the candidate-search index. Skills only mentioned once inside a paragraph may rank lower than the same skill listed in a dedicated Skills section.',
+      },
+      {
+        title: 'Section detection requires standard wording',
+        description: 'Custom section names ("Background", "What I Do") are sometimes lumped into the previous section. Use "Summary", "Experience", "Education", "Skills".',
+      },
+      {
+        title: 'PDF-first, but DOCX preferred for older tenant configs',
+        description: 'Modern SmartRecruiters tenants parse PDF cleanly. Some older configurations still extract more data from DOCX, especially for table-based layouts.',
+      },
+      {
+        title: 'Multilingual CVs need explicit language declaration',
+        description: 'Mixed-language CVs (e.g. English summary + German experience entries) can confuse the language detector. Pick one language for the whole document.',
+      },
+    ],
+    fixes: [
+      { title: 'Dedicated Skills section', description: 'Comma-separated or bulleted list. Repeat the most important skills in your job descriptions too — that\'s the canonical place to demonstrate them.' },
+      { title: 'Standard section names', description: '"Summary", "Experience", "Education", "Skills" — exact wording. SmartRecruiters\' section detector is keyword-driven.' },
+      { title: 'One language per document', description: 'If you need multilingual versions, upload separate files in separate applications.' },
+      { title: 'Single-column PDF', description: 'Avoid sidebar layouts. SmartRecruiters reads in document-stream order like most modern parsers.' },
+    ],
+    faqs: [
+      {
+        question: 'Does SmartRecruiters parse multi-column resumes?',
+        answer: 'Like most modern ATSes, SmartRecruiters is more reliable on single-column layouts. Multi-column PDFs are read in document stream order which can interleave content from sidebar and main column.',
+      },
+      {
+        question: 'Should I list skills both in a Skills section and in job descriptions?',
+        answer: 'Yes. SmartRecruiters\' keyword-density bias rewards repetition. Skills only mentioned in passing inside a paragraph rank lower than skills called out explicitly in a Skills section and demonstrated again inside Experience bullets.',
+      },
+      {
+        question: 'Is SmartRecruiters used by big companies?',
+        answer: 'Yes. SmartRecruiters is used by enterprises like Bosch, IKEA, LinkedIn, Visa, and McDonald\'s, alongside a large mid-market base across Europe and North America.',
+      },
+    ],
+    sources: [
+      { name: 'SmartRecruiters Help Center', url: 'https://help.smartrecruiters.com/' },
+      { name: 'SmartRecruiters Developer Documentation', url: 'https://developers.smartrecruiters.com/' },
+    ],
+  },
+  {
+    slug: 'sap-successfactors',
+    name: 'SAP SuccessFactors',
+    marketShare: 'Large-enterprise HCM, common in DACH, Fortune 500, and global manufacturing',
+    parentCompany: 'SAP SE',
+    primaryUse: 'Enterprise recruiting tied to SAP HCM (e.g. Siemens, BMW, Allianz, Unilever)',
+    parserBehavior: 'Strict on formatting and section names. Tightly integrated with the SAP HR data model.',
+    quirks: [
+      {
+        title: 'Strict on section names and order',
+        description: 'SuccessFactors expects a fairly traditional order — Personal Details, Summary, Experience, Education, Skills. Reordering or renaming sections can drop them from the parsed candidate record.',
+      },
+      {
+        title: 'Date formatting consistency required',
+        description: 'The timeline parser is sensitive to inconsistent dates. Mixing "Jan 2024" with "01/2024" with "January 2024" may cause job entries to be skipped or misordered.',
+      },
+      {
+        title: 'Tables and graphics break parsing',
+        description: 'Like most enterprise ATSes, SuccessFactors fails on table-based CV layouts and decorative icons. Single-column plain text is the safe default.',
+      },
+      {
+        title: 'EU-region tenants may force GDPR consent flows',
+        description: 'Some SAP SuccessFactors tenants in the EU require explicit data-processing consent before the CV is uploaded. Don\'t skip these — your application can fail silently if you do.',
+      },
+      {
+        title: 'Common in DACH, Iberia, and Asia-Pacific enterprises',
+        description: 'If you\'re applying to large European or Asian manufacturers and global Fortune 500s, SuccessFactors is one of the most likely ATSes you\'ll meet.',
+      },
+    ],
+    fixes: [
+      { title: 'Traditional CV order', description: 'Personal Details → Summary → Experience → Education → Skills. No creative reordering.' },
+      { title: 'Consistent date formatting', description: 'Pick one format ("Jan 2024 – Mar 2025") and use it throughout the entire CV.' },
+      { title: 'Plain single-column layout', description: 'No tables, no graphic elements, no sidebars. Standard fonts only.' },
+      { title: 'PDF or DOCX both fine', description: 'Modern SuccessFactors tenants handle both well. Pick whichever exports cleaner from your editor.' },
+      { title: 'Don\'t skip GDPR consent', description: 'EU tenants gate the upload behind a consent flow. Read it, accept what you\'re comfortable with, and proceed.' },
+    ],
+    faqs: [
+      {
+        question: 'Is SAP SuccessFactors strict on resume formatting?',
+        answer: 'Yes. SuccessFactors is one of the stricter modern enterprise ATSes. It expects standard section names ("Summary", "Experience", "Education", "Skills") in a traditional order, consistent date formatting, and a single-column plain-text layout.',
+      },
+      {
+        question: 'Should I use PDF or DOCX for SuccessFactors?',
+        answer: 'Both formats are supported by modern SuccessFactors tenants. PDF is generally preferred for visual fidelity, but DOCX may extract slightly cleaner from older tenants. If the application form allows both, submit a PDF as the primary file.',
+      },
+      {
+        question: 'Why does my CV upload fail silently in SAP SuccessFactors?',
+        answer: 'The most common cause is an unhandled GDPR consent step in EU-region tenants. Other causes include image-based PDFs (CVs scanned from paper), table-based layouts that confuse the parser, and exotic Unicode characters. Test your CV in a multi-vendor scanner before applying.',
+      },
+    ],
+    sources: [
+      { name: 'SAP SuccessFactors Documentation', url: 'https://help.sap.com/docs/SAP_SUCCESSFACTORS_RECRUITING' },
+      { name: 'SAP Community — SuccessFactors Recruiting', url: 'https://community.sap.com/topics/successfactors' },
+    ],
+  },
 ];
 
 export function getVendorBySlug(slug: string): ATSVendor | undefined {

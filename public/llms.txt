@@ -10,8 +10,9 @@ Vantage is built for people applying to many jobs a week who can't afford to bur
 - [Pricing](https://vantage-livid.vercel.app/pricing): Starter £5/$5 = 20 tokens (one-time, never expire). Pro £12/$15 = 60 tokens/month. Premium £20/$25 = 120 tokens/month. One full analysis costs 3 tokens.
 - [Register](https://vantage-livid.vercel.app/register): Create a free account to start using Vantage.
 
-## Sister product (free)
+## Free tools (no signup)
 
+- [Cover Letter Roast](https://vantage-livid.vercel.app/roast): Free AI tool that roasts your cover letter — savage but constructive feedback in 10 seconds. Quotes your actual worst lines, names the cliché, and gives the better swap. Severity score 1-5. Nothing stored.
 - [CV Mirror](https://cv-mirror-web.vercel.app/): Free, fully client-side ATS scanner. Same team. Simulates how 5 real ATS systems (Workday, Greenhouse, Lever, Taleo, iCIMS) parse your CV — side by side. No signup, nothing uploads. Use it to fix CV parse issues before running a Vantage analysis.
 
 ## Just laid off?
@@ -36,6 +37,8 @@ Vendor-specific guides on how each major Applicant Tracking System parses CVs in
 - [Lever](https://vantage-livid.vercel.app/ats/lever): Historically drops PDF header/footer text. Modern parser. Used by Netflix, Shopify, Quora.
 - [Taleo](https://vantage-livid.vercel.app/ats/taleo): Oracle-owned legacy parser. Strict on standard section names. Common in financial services and public sector.
 - [iCIMS](https://vantage-livid.vercel.app/ats/icims): Configuration varies significantly by tenant. Skills extraction is weaker than newer ATSes.
+- [SmartRecruiters](https://vantage-livid.vercel.app/ats/smartrecruiters): Modern parser with aggressive keyword extraction. Used by Bosch, IKEA, LinkedIn, Visa, McDonald's.
+- [SAP SuccessFactors](https://vantage-livid.vercel.app/ats/sap-successfactors): Enterprise HCM, strict on section names and date formatting. Common in DACH, Fortune 500, global manufacturing.
 
 ## What you get in one analysis
 
@@ -95,7 +98,14 @@ Role-specific question + prep packs. Each one has 12 most-asked questions, a 5-s
 - [Frontend Developer](https://vantage-livid.vercel.app/interview-questions/frontend-developer)
 - [Backend Developer](https://vantage-livid.vercel.app/interview-questions/backend-developer)
 - [UX Researcher](https://vantage-livid.vercel.app/interview-questions/ux-researcher)
+- [DevOps Engineer](https://vantage-livid.vercel.app/interview-questions/devops-engineer)
+- [Engineering Manager](https://vantage-livid.vercel.app/interview-questions/engineering-manager)
+- [Account Executive](https://vantage-livid.vercel.app/interview-questions/account-executive)
 - [All role packs (hub page)](https://vantage-livid.vercel.app/interview-questions)
+
+## Changelog
+
+- [Changelog](https://vantage-livid.vercel.app/changelog): What's shipped on Vantage. Public release log updated as we ship — new features, fixes, security updates, and content additions.
 
 ## Feeds
 

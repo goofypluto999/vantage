@@ -11,6 +11,9 @@
     },
     "api/rewrite-tone/index.ts": {
       "maxDuration": 30
+    },
+    "api/roast/index.ts": {
+      "maxDuration": 20
     }
   },
   "framework": "vite",

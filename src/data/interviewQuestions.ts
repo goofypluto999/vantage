@@ -530,6 +530,156 @@ export const rolePacks: RolePack[] = [
       },
     ],
   },
+  {
+    slug: 'devops-engineer',
+    role: 'DevOps Engineer',
+    updated: '2026-05-01',
+    intro:
+      'DevOps engineer interviews in 2026 stress-test infrastructure judgment, incident response, and how you reason about reliability and cost trade-offs. Here is the prep pack candidates wish they had.',
+    tldr:
+      'DevOps interviews focus on three things: infrastructure-as-code fluency, an incident you owned end-to-end, and observability maturity. Prep one production incident with a clean root cause, one cost optimisation with real numbers, and a system design that survives a region failure.',
+    questions: [
+      'Walk me through a production incident you owned end to end. What was the root cause?',
+      'How would you design CI/CD for a service deployed to three regions?',
+      'Explain blue/green vs canary vs rolling deploys. When does each win?',
+      'A service is throwing 500s intermittently. What is the first thing you check?',
+      'How do you handle secrets in your infrastructure?',
+      'Walk me through the difference between Kubernetes deployments, statefulsets, and daemonsets.',
+      'How would you cut your cloud bill by 30 percent without dropping reliability?',
+      'Describe your observability stack. What do you log, what do you trace, what do you alert on?',
+      'How do you decide between Terraform and Pulumi (or CDK) for a new project?',
+      'Walk me through how you would migrate a workload from EC2 to Kubernetes.',
+      'How do you think about disaster recovery and RTO/RPO?',
+      'Why DevOps over backend engineering, and why this team?',
+    ],
+    prepSteps: [
+      'Pick one production incident you owned. Be ready to draw the timeline, root cause, fix, and postmortem follow-ups from memory.',
+      'Refresh on Kubernetes core objects (deployment, service, ingress, statefulset) and one cluster autoscaler.',
+      'Prepare a concrete cost-optimisation story with before/after numbers. Reserved instances, right-sizing, spot, autoscaling — pick the lever you actually pulled.',
+      'Have an opinion on Terraform vs Pulumi vs CDK that is more nuanced than "it depends".',
+      'Run one warm-up: deploy a hello-world to a cluster the morning of the interview. Keep the muscle memory live.',
+    ],
+    mistakes: [
+      'Talking about tools without trade-offs. "I would use ArgoCD" is junior. "I picked ArgoCD over Flux because the multi-cluster fan-out matched our org structure" is senior.',
+      'No specific incident story. Every senior DevOps engineer has one. If you say "we just have good monitoring", they\'ll downgrade you.',
+      'Generic observability. "We use Datadog" is a 2/10. "We trace request paths with OpenTelemetry into Datadog APM, alert on p99 latency at the service boundary, and route logs through Vector" is the bar.',
+      'Skipping cost. Senior DevOps roles in 2026 expect you to know cloud bill mechanics. Reserved instances, spot, savings plans, multi-cloud egress — pick at least one.',
+    ],
+    faq: [
+      {
+        q: 'Do I need Kubernetes for every DevOps role in 2026?',
+        a: 'No. Plenty of strong roles run on serverless (Lambda, Cloud Run) or managed PaaS (Fly, Railway, Vercel). Know the trade-offs against Kubernetes — that\'s the real signal.',
+      },
+      {
+        q: 'How much coding should a DevOps engineer be doing?',
+        a: 'Enough to write production-quality scripts in Python, Go, or Bash, and to read service code in whatever language your team ships. Senior roles increasingly write production code, not just glue.',
+      },
+      {
+        q: 'What is the difference between SRE and DevOps in 2026?',
+        a: 'Practically very fuzzy. SRE roles tend to lean more on production reliability and error budgets, DevOps roles more on developer experience and the deployment pipeline. Same skill stack, different framing.',
+      },
+    ],
+  },
+  {
+    slug: 'engineering-manager',
+    role: 'Engineering Manager',
+    updated: '2026-05-01',
+    intro:
+      'Engineering manager interviews test how you balance people, project delivery, and technical judgment. Here is the prep pack used by candidates who actually land the offer.',
+    tldr:
+      'EM interviews split into people leadership, technical depth, and execution. Prep one underperformer story you turned around, one technical decision you made under pressure, and a 90-day plan for joining a struggling team.',
+    questions: [
+      'Walk me through your team. How many people, what shape, what stage?',
+      'Tell me about an underperformer you managed. How did it end?',
+      'Tell me about someone you promoted. What was the signal?',
+      'How do you decide between hiring senior versus growing a junior into the role?',
+      'A senior engineer on your team disagrees publicly with your tech direction. What do you do?',
+      'How do you measure your team\'s impact?',
+      'Describe a time you had to deliver a project late. How did you communicate it?',
+      'How do you balance tech debt against feature delivery?',
+      'Walk me through a technical decision you made that turned out wrong. What did you do?',
+      'How do you partner with product and design when priorities clash?',
+      'How do you handle a high-performer who is toxic to the team?',
+      'Why management over senior IC, and why us specifically?',
+    ],
+    prepSteps: [
+      'Memorise your team shape — headcount, levels, stage of product, current top initiative.',
+      'Prepare three people stories: an underperformer turned around (or exited), a promotion you championed, and a hiring loop you ran.',
+      'Have a coaching framework you actually use. Even a simple one ("weekly 1:1s, 30/60/90 plans, monthly career check-ins") beats none.',
+      'Be ready to defend a recent technical decision. EMs who can\'t talk depth get filtered out.',
+      'Prepare a 90-day plan for joining a struggling team. Diagnostic week 1-2, alignment week 3-4, ship something week 5-12.',
+    ],
+    mistakes: [
+      'Avoiding the underperformer question. Every senior EM has one. "I haven\'t had any" reads as you\'re not actually managing.',
+      'Talking only about delivery dates. Senior EMs also speak in retention, growth, and team health metrics.',
+      'No technical opinion. Engineering managers who can\'t reason about a system design or a recent tech trade-off lose against player-coach EMs.',
+      'Generic 1:1 talk. "I do weekly 1:1s" is table stakes. "I run growth-focused 1:1s with a quarterly career conversation and a monthly skip-level" shows craft.',
+    ],
+    faq: [
+      {
+        q: 'Should I still code as an engineering manager in 2026?',
+        a: 'Up to roughly two reports, yes — code regularly. Three to six reports, probably reviews and prototypes. Seven plus, strategic only. AI-assisted coding has lowered the cost of staying in the code, so more EMs are doing some of it again.',
+      },
+      {
+        q: 'How do I prep for a system design round as an EM?',
+        a: 'Same prep as a senior IC, but lead with trade-offs and team-shape implications. EMs who design systems with no thought to staffing or operability rank below ICs in technical rounds.',
+      },
+      {
+        q: 'What is the most common reason EMs fail interviews?',
+        a: 'Vague stories. "We had a great team, we shipped a lot" is a 2/10. "We were missing two senior engineers, I rebalanced the org from 3 squads to 2, prioritised the latency work over the feature work, shipped six weeks late but cut p99 by 60 percent" is the bar.',
+      },
+    ],
+  },
+  {
+    slug: 'account-executive',
+    role: 'Account Executive',
+    updated: '2026-05-01',
+    intro:
+      'Account executive interviews test pipeline discipline, deal craft, and how you handle losses. Here is the prep pack candidates use to land six-figure SaaS sales jobs.',
+    tldr:
+      'AE interviews focus on three things: a closed-won deal you can narrate end to end, a closed-lost deal you can dissect, and how you build pipeline when SDRs aren\'t feeding you enough. Memorise your numbers — quota, attainment, ASP, sales cycle — to two decimal places.',
+    questions: [
+      'Walk me through your last fiscal year. Quota, attainment, ASP, sales cycle.',
+      'Tell me about your most complex deal. Who was involved, how long did it take?',
+      'Walk me through a deal you lost. Why did it lose?',
+      'How do you build pipeline when your SDRs aren\'t feeding you enough?',
+      'Describe your discovery process. What questions do you always ask?',
+      'How do you handle a procurement team that keeps pushing for a 30 percent discount?',
+      'Tell me about a time you ran a multi-threaded deal. How did you map the buying committee?',
+      'How do you forecast? How accurate are you typically?',
+      'Walk me through how you would qualify a deal using MEDDIC (or your framework of choice).',
+      'How do you handle the "send me a proposal and I\'ll get back to you" stall?',
+      'Tell me about an executive sponsor who left mid-deal. What did you do?',
+      'Why this product, why this company, why now?',
+    ],
+    prepSteps: [
+      'Memorise your numbers cold. Quota, attainment, ASP, sales cycle, win rate, ramp time. They will ask.',
+      'Pick one closed-won deal you can narrate from prospect to signature in 4 minutes — including who you sold to and how you mapped the buying committee.',
+      'Pick one closed-lost deal. Be honest about why it lost. The interviewer is testing your self-awareness, not your win rate.',
+      'Prepare a 30-second pitch for the company\'s product to their ICP. They may ask you to deliver it live.',
+      'Research the company\'s recent customer wins, competitive losses, and any earnings call language about their sales motion.',
+    ],
+    mistakes: [
+      'Vague numbers. "I exceeded quota" is a 2/10. "I closed 142 percent of my $1.2M annual quota at a 26 percent win rate, $48K ASP, 71-day average sales cycle" is the bar.',
+      'Blaming losses on the product or pricing only. Every interviewer is listening for self-awareness — was the loss avoidable, what would you do differently.',
+      'No buying-committee mapping in your deal stories. Senior AE roles want multi-threaded sellers.',
+      'Generic discovery. "I ask about pain points" is junior. "I run a value-driven discovery anchored to a measurable business outcome and tie every demo back to that outcome" is senior.',
+    ],
+    faq: [
+      {
+        q: 'Should I bring my W-2 or pay slips to a sales interview?',
+        a: 'Many top-tier SaaS hiring managers ask for them at offer stage to verify quota attainment claims. Bring them ready. If your numbers are honest, this is the easiest part of the loop.',
+      },
+      {
+        q: 'What sales methodology do I need to know in 2026?',
+        a: 'MEDDIC and MEDDPICC are still the most-asked. Command of the Message, Sandler, and Challenger come up too. Pick one you actually use, defend it, don\'t pretend to use them all.',
+      },
+      {
+        q: 'How honest should I be about a quarter I missed?',
+        a: 'Fully honest. Senior sales leaders know everyone misses a quarter. They are listening for self-awareness, the diagnostic you ran, and what you changed for the next quarter. A polished excuse is worse than a missed quarter.',
+      },
+    ],
+  },
 ];
 
 export function getRolePack(slug: string): RolePack | undefined {

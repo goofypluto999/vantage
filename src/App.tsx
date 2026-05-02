@@ -33,6 +33,8 @@ import DocsApiPage from './components/DocsApiPage';
 import ReferPage from './components/ReferPage';
 import PlaybookPage from './components/PlaybookPage';
 import VendorSourcesPage from './components/VendorSourcesPage';
+import ChangelogPage from './components/ChangelogPage';
+import RoastPage from './components/RoastPage';
 import SEO from './components/SEO';
 import ThemeProvider from './contexts/ThemeContext';
 import { CurrencyProvider, useCurrency } from './contexts/CurrencyContext';
@@ -212,6 +214,12 @@ function AppContent() {
             <Route path="/layoff-playbook" element={<Navigate to="/playbook" replace />} />
             <Route path="/vendor-sources" element={<VendorSourcesPage />} />
             <Route path="/sources" element={<Navigate to="/vendor-sources" replace />} />
+            <Route path="/changelog" element={<ChangelogPage />} />
+            <Route path="/whats-new" element={<Navigate to="/changelog" replace />} />
+            <Route path="/release-notes" element={<Navigate to="/changelog" replace />} />
+            <Route path="/roast" element={<RoastPage />} />
+            <Route path="/cover-letter-roast" element={<Navigate to="/roast" replace />} />
+            <Route path="/roast-my-cover-letter" element={<Navigate to="/roast" replace />} />
             <Route path="/docs/api" element={<DocsApiPage />} />
             <Route path="/api-docs" element={<Navigate to="/docs/api" replace />} />
             <Route path="/refer" element={

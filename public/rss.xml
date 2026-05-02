@@ -7,7 +7,7 @@
     <description>Practical, current guides on AI job preparation, CV optimisation, ATS-friendly resumes, cover letters, and interview strategy.</description>
     <language>en-gb</language>
     <copyright>Vantage 2026</copyright>
-    <lastBuildDate>Tue, 28 Apr 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 30 Apr 2026 00:00:00 +0000</lastBuildDate>
     <generator>Vantage scripts/generate-feeds.mjs</generator>
     <image>
       <url>https://vantage-livid.vercel.app/og-image.png</url>
@@ -15,6 +15,20 @@
       <link>https://vantage-livid.vercel.app/blog</link>
     </image>
 
+    <item>
+      <title>Just laid off in April 2026? The 3 things to fix in your CV before you apply to a single job.</title>
+      <link>https://vantage-livid.vercel.app/blog/just-laid-off-april-2026-cv-fix</link>
+      <guid isPermaLink="true">https://vantage-livid.vercel.app/blog/just-laid-off-april-2026-cv-fix</guid>
+      <pubDate>Thu, 30 Apr 2026 00:00:00 +0000</pubDate>
+      <description>~42,000 tech employees were laid off in April 2026 alone — Oracle, Meta, ASML, Snap, Nike. If you&apos;re one of them, this is the foundation work to do before you start applying. ATS parser checks, formatting strip-down, exact-match keyword tuning.</description>
+    </item>
+    <item>
+      <title>Oracle, Meta, ASML, Snap, Nike: a layoff-week CV checklist</title>
+      <link>https://vantage-livid.vercel.app/blog/oracle-meta-asml-layoff-cv-checklist</link>
+      <guid isPermaLink="true">https://vantage-livid.vercel.app/blog/oracle-meta-asml-layoff-cv-checklist</guid>
+      <pubDate>Thu, 30 Apr 2026 00:00:00 +0000</pubDate>
+      <description>A specific 5-step checklist for tech employees laid off in April/May 2026. CV format, ATS parse, recruiter outreach, interview prep, and the LinkedIn moves to make in week one.</description>
+    </item>
     <item>
       <title>Why tailoring every resume might be costing you interviews (and the smarter alternative)</title>
       <link>https://vantage-livid.vercel.app/blog/tailoring-every-resume-vs-the-smarter-alternative</link>
