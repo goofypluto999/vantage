@@ -95,7 +95,25 @@ export default function RoastPage() {
       });
       const json: RoastResponse = await res.json();
       if (!res.ok) {
-        setError(json.error || 'Roast generation failed.');
+        // 429s ship a retryAfterMs payload (per /api/roast). Combine it with
+        // the user-facing error so people know exactly when they can retry,
+        // and a Retry-After header is also set on the response.
+        const headerRetry = res.headers.get('Retry-After');
+        const headerRetryMs = headerRetry ? parseInt(headerRetry, 10) * 1000 : 0;
+        const retryMs = json.retryAfterMs || headerRetryMs;
+        const baseMsg = json.error || 'Roast generation failed.';
+        if (res.status === 429 && retryMs > 0) {
+          const seconds = Math.ceil(retryMs / 1000);
+          const human =
+            seconds < 60
+              ? `${seconds}s`
+              : seconds < 3600
+              ? `${Math.ceil(seconds / 60)}m`
+              : `${Math.ceil(seconds / 3600)}h`;
+          setError(`${baseMsg} Try again in ${human}.`);
+        } else {
+          setError(baseMsg);
+        }
       } else {
         setRoast(json);
       }

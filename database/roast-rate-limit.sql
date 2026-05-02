@@ -9,9 +9,10 @@
 -- /api/roast a real, durable rate-limit counter that survives restarts.
 --
 -- Setup: paste this entire file into Supabase SQL Editor and run once.
--- After running, set the env var SUPABASE_ROAST_RATELIMIT_ENABLED=true on
--- Vercel and the API will start using the persistent limit. Until then it
--- falls back to the in-memory limit transparently.
+-- After running, set the env var ROAST_RATELIMIT_ENABLED=true on Vercel
+-- (the API in api/roast/index.ts reads this exact name) and the API will
+-- start using the persistent limit. Until then it falls back to the
+-- in-memory limit transparently.
 --
 -- IPs are hashed with SHA-256 before storage so we never store raw IPs.
 -- Old rows are auto-pruned after 48 hours via the cleanup function below.
@@ -182,3 +183,25 @@ GRANT EXECUTE ON FUNCTION roast_rate_check(TEXT, INTEGER, INTEGER) TO service_ro
 REVOKE EXECUTE ON FUNCTION roast_rate_limit_cleanup() FROM PUBLIC;
 REVOKE EXECUTE ON FUNCTION roast_rate_limit_cleanup() FROM anon;
 GRANT EXECUTE ON FUNCTION roast_rate_limit_cleanup() TO service_role;
+
+-- ─── Schedule daily auto-cleanup via pg_cron ──────────────────────────────
+-- Runs every day at 03:00 UTC. Without this, rate-limit rows accumulate
+-- indefinitely and the abuse-log table grows unbounded. pg_cron is enabled
+-- by default on Supabase; if it isn't on your project, enable it from the
+-- Database > Extensions page in the Supabase dashboard before running this.
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM pg_extension WHERE extname = 'pg_cron') THEN
+    -- Unschedule any prior job with the same name so re-running this file is idempotent.
+    PERFORM cron.unschedule('roast-rate-limit-cleanup')
+      WHERE EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'roast-rate-limit-cleanup');
+    PERFORM cron.schedule(
+      'roast-rate-limit-cleanup',
+      '0 3 * * *',
+      $cron$SELECT public.roast_rate_limit_cleanup();$cron$
+    );
+    RAISE NOTICE 'Scheduled daily cleanup of roast_rate_limit at 03:00 UTC.';
+  ELSE
+    RAISE NOTICE 'pg_cron extension is not enabled. Skipping auto-cleanup. Enable pg_cron in Database > Extensions and re-run this file to schedule it.';
+  END IF;
+END $$;

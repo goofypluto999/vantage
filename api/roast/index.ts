@@ -275,6 +275,11 @@ function parseRoast(raw: string): RoastResult {
 // ─── Output sanitization ──────────────────────────────────────────────────
 // If the model echoes our system prompt or outputs something obviously off,
 // reject. Defense in depth.
+//
+// Each marker is chosen to be specific enough that a legitimate roast won't
+// trigger it. Notably, we check for the FULL "[BEGIN COVER LETTER" delimiter
+// — not a generic "begin cover letter" — so a roast that says "let's begin,
+// your cover letter starts strong" doesn't false-positive.
 function looksLikeSystemPromptLeak(text: string): boolean {
   const lower = text.toLowerCase();
   return (
@@ -282,7 +287,7 @@ function looksLikeSystemPromptLeak(text: string): boolean {
     lower.includes('output format (plain text') ||
     lower.includes('system prompt') ||
     lower.includes('you must not follow') ||
-    lower.includes('begin cover letter')
+    lower.includes('[begin cover letter')
   );
 }
 
@@ -328,8 +333,11 @@ export default async function handler(request: any, response: any) {
   const uaHash = userAgent ? sha256(userAgent).slice(0, 16) : null;
 
   // ─── Bot UA hard-throttle ──────────────────────────────────────────────
+  // Uses ipHash (not raw ip) as the map key so memory dumps / error logs
+  // can never leak raw client IPs. Same hash space as the persistent
+  // rate limit and abuse log.
   if (looksLikeBot(userAgent)) {
-    const botRl = checkSlidingWindow(botHits, ip, BOT_RATE_LIMIT_WINDOW_MS, BOT_RATE_LIMIT_MAX);
+    const botRl = checkSlidingWindow(botHits, ipHash, BOT_RATE_LIMIT_WINDOW_MS, BOT_RATE_LIMIT_MAX);
     if (!botRl.ok) {
       response.setHeader('Retry-After', Math.ceil((botRl.resetMs || BOT_RATE_LIMIT_WINDOW_MS) / 1000).toString());
       void logAbuseEvent(ipHash, uaHash, 'bot_throttle', null, null);
@@ -355,8 +363,9 @@ export default async function handler(request: any, response: any) {
 
   // Always also run the in-memory check as a parallel layer. If the
   // persistent limit was unreachable this is the only ceiling; otherwise it
-  // adds a smaller per-instance window on top.
-  const minRl = checkSlidingWindow(ipHits, `min:${ip}`, RATE_LIMIT_MIN_WINDOW_MS, RATE_LIMIT_MIN_MAX);
+  // adds a smaller per-instance window on top. Keyed by ipHash (not raw ip)
+  // for the same privacy-by-default reason as the bot throttle above.
+  const minRl = checkSlidingWindow(ipHits, `min:${ipHash}`, RATE_LIMIT_MIN_WINDOW_MS, RATE_LIMIT_MIN_MAX);
   if (!minRl.ok) {
     response.setHeader('Retry-After', Math.ceil((minRl.resetMs || 60_000) / 1000).toString());
     void logAbuseEvent(ipHash, uaHash, 'rate_limited_min', null, null);
@@ -366,7 +375,7 @@ export default async function handler(request: any, response: any) {
     });
   }
 
-  const dayRl = checkSlidingWindow(ipHits, `day:${ip}`, RATE_LIMIT_DAY_WINDOW_MS, RATE_LIMIT_DAY_MAX);
+  const dayRl = checkSlidingWindow(ipHits, `day:${ipHash}`, RATE_LIMIT_DAY_WINDOW_MS, RATE_LIMIT_DAY_MAX);
   if (!dayRl.ok) {
     response.setHeader('Retry-After', Math.ceil((dayRl.resetMs || 60_000) / 1000).toString());
     void logAbuseEvent(ipHash, uaHash, 'rate_limited_day', null, null);

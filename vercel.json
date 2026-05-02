@@ -37,7 +37,6 @@
   "rewrites": [
     { "source": "/api/credits", "destination": "/api/user?endpoint=credits" },
     { "source": "/api/analyses", "destination": "/api/user?endpoint=analyses" },
-    { "source": "/api/analyses/:path*", "destination": "/api/user?endpoint=analyses" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ]
 }
