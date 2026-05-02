@@ -159,8 +159,10 @@ export default async function handler(request: any, response: any) {
         { parts: [{ text: ROAST_SYSTEM_PROMPT }, { text: userBlock }] },
       ],
       // Modest creativity — roasts should feel a bit varied call-to-call.
-      // Keep tokens tight to control cost and prevent runaway output.
-      config: { temperature: 0.7, maxOutputTokens: 700 },
+      // 1500 tokens caps output around 6 KB, which is enough headroom for a
+      // verdict line + 3 numbered roasts + closer + SEVERITY tag without
+      // truncation. Cost per call is still negligible (~$0.0003).
+      config: { temperature: 0.7, maxOutputTokens: 1500 },
     });
 
     if (!aiResponse.text) {
