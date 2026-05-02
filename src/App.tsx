@@ -35,6 +35,7 @@ import PlaybookPage from './components/PlaybookPage';
 import VendorSourcesPage from './components/VendorSourcesPage';
 import ChangelogPage from './components/ChangelogPage';
 import RoastPage from './components/RoastPage';
+import DemoPreviewPage from './components/DemoPreviewPage';
 import SEO from './components/SEO';
 import ThemeProvider from './contexts/ThemeContext';
 import { CurrencyProvider, useCurrency } from './contexts/CurrencyContext';
@@ -220,6 +221,7 @@ function AppContent() {
             <Route path="/roast" element={<RoastPage />} />
             <Route path="/cover-letter-roast" element={<Navigate to="/roast" replace />} />
             <Route path="/roast-my-cover-letter" element={<Navigate to="/roast" replace />} />
+            <Route path="/demo-preview" element={<DemoPreviewPage />} />
             <Route path="/docs/api" element={<DocsApiPage />} />
             <Route path="/api-docs" element={<Navigate to="/docs/api" replace />} />
             <Route path="/refer" element={
