@@ -616,9 +616,9 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, delay: 0.45 }}
-            className="text-6xl md:text-7xl lg:text-[88px] font-display font-[800] tracking-[-0.04em] leading-[1.05] drop-shadow-sm"
+            className="text-[40px] leading-[1.05] sm:text-5xl md:text-7xl lg:text-[88px] font-display font-[800] tracking-[-0.04em] drop-shadow-sm"
           >
-            90 seconds from CV <br />
+            90 seconds from CV <br className="hidden sm:block" />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#4F46E5] to-[#7C3AED]">
               to interview-ready.
             </span>
@@ -628,7 +628,7 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.65 }}
-            className="mt-6 text-xl text-[#3B3A5C] max-w-2xl mx-auto font-medium leading-relaxed"
+            className="mt-5 sm:mt-6 text-base sm:text-lg md:text-xl text-[#3B3A5C] max-w-2xl mx-auto font-medium leading-relaxed"
           >
             Upload your CV, paste a job link. Get a tailored cover letter, mock interview
             questions, fit score, and a 5-minute pitch outline — in the time it takes to

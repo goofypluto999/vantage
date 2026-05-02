@@ -171,7 +171,11 @@ function TonePills({ activeTone, animateActive }: { activeTone: string; animateA
 interface Props {
   /** When true, plays automatically and loops. */
   autoplay?: boolean;
-  /** Aspect ratio width:height. Defaults to 16:10 for a hero feel. */
+  /**
+   * Desktop aspect ratio width:height. Defaults to 16:10 for a hero feel.
+   * On screens narrower than 768px we override to a taller 4:5 ratio so
+   * card content has room to breathe on phones.
+   */
   aspectRatio?: string;
 }
 
@@ -194,15 +198,24 @@ export default function LiveDemoReel({ autoplay = true, aspectRatio = '16/10' }:
   const totalElapsedMs = BEATS_MS.slice(0, beat).reduce((a, b) => a + b, 0);
   const progressPct = (totalElapsedMs / TOTAL_MS) * 100;
 
+  // Mobile gets a taller aspect so the card content has room. We use a CSS
+  // variable + media query approach via a style block since Tailwind doesn't
+  // do dynamic aspect-ratio breakpoints inline.
   return (
     <div
-      className="relative w-full max-w-[640px] mx-auto rounded-3xl overflow-hidden border border-white/10 shadow-2xl"
+      className="reel-shell relative w-full max-w-[640px] mx-auto rounded-3xl overflow-hidden border border-white/10 shadow-2xl"
       style={{
-        aspectRatio,
         background:
           'radial-gradient(circle at 20% 0%, rgba(124,58,237,0.18) 0%, transparent 50%), radial-gradient(circle at 100% 100%, rgba(79,70,229,0.18) 0%, transparent 50%), #0a0817',
+        ['--reel-ar' as any]: aspectRatio,
+        aspectRatio: 'var(--reel-ar)',
       }}
     >
+      <style>{`
+        @media (max-width: 767px) {
+          .reel-shell { aspect-ratio: 4 / 5 !important; }
+        }
+      `}</style>
       {/* Top chrome — fake browser bar to anchor product context */}
       <div className="absolute top-0 left-0 right-0 h-9 px-4 flex items-center gap-2 bg-black/40 border-b border-white/5 z-10">
         <span className="w-2.5 h-2.5 rounded-full bg-rose-400/80" />
