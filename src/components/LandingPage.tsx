@@ -694,36 +694,36 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
       </section>
 
       {/* ================================================================
-          WATCH IT WORK — animated product reel
+          WATCH IT WORK — animated product reel (hero centerpiece)
       ================================================================ */}
       <section
         id="watch-it-work"
-        className="relative z-10 w-full px-4 max-w-6xl mx-auto pt-20 pb-12"
+        className="relative z-10 w-full px-4 sm:px-6 max-w-[1280px] mx-auto pt-24 md:pt-32 pb-16 md:pb-24"
       >
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-100px' }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="text-center mb-10"
+          className="text-center mb-12 md:mb-16"
         >
-          <p className="text-xs font-bold text-[#4F46E5] uppercase tracking-widest mb-3">
+          <p className="text-xs md:text-sm font-bold text-[#4F46E5] uppercase tracking-widest mb-3 md:mb-4">
             Watch it work
           </p>
-          <h2 className="text-4xl lg:text-5xl font-display font-bold text-[#2D2B4E] mb-3">
+          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-display font-bold text-[#2D2B4E] mb-4 md:mb-5 tracking-tight">
             Your full prep pack — in 90 seconds.
           </h2>
-          <p className="text-base text-[#6B6B8D] max-w-xl mx-auto">
+          <p className="text-base md:text-lg text-[#6B6B8D] max-w-2xl mx-auto leading-relaxed">
             A real walkthrough of the actual dashboard. Drop a CV, paste a job
             link, get company intel, fit score, tailored cover letter, mock
             interview, and a 5-minute pitch.
           </p>
         </motion.div>
         <motion.div
-          initial={{ opacity: 0, y: 30, scale: 0.97 }}
+          initial={{ opacity: 0, y: 40, scale: 0.96 }}
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true, margin: '-50px' }}
-          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
         >
           <LiveDemoReel autoplay aspectRatio="16/10" />
         </motion.div>

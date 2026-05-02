@@ -109,7 +109,7 @@ function CountUp({ to, durationMs = 1500 }: { to: number; durationMs?: number })
 // ─── Card primitive — matches Dashboard exactly ──────────────────────────
 function GlassCard({ children, className = '' }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className={`p-5 rounded-2xl bg-white/5 border border-white/10 ${className}`}>{children}</div>
+    <div className={`p-5 md:p-7 rounded-2xl bg-white/5 border border-white/10 ${className}`}>{children}</div>
   );
 }
 
@@ -202,26 +202,38 @@ export default function LiveDemoReel({ autoplay = true, aspectRatio = '16/10' }:
   // variable + media query approach via a style block since Tailwind doesn't
   // do dynamic aspect-ratio breakpoints inline.
   return (
-    <div
-      className="reel-shell relative w-full max-w-[640px] mx-auto rounded-3xl overflow-hidden border border-white/10 shadow-2xl"
-      style={{
-        background:
-          'radial-gradient(circle at 20% 0%, rgba(124,58,237,0.18) 0%, transparent 50%), radial-gradient(circle at 100% 100%, rgba(79,70,229,0.18) 0%, transparent 50%), #0a0817',
-        ['--reel-ar' as any]: aspectRatio,
-        aspectRatio: 'var(--reel-ar)',
-      }}
-    >
+    <div className="relative w-full max-w-[1180px] mx-auto">
+      {/* Outer violet glow so the panel pops off the lavender background */}
+      <div
+        aria-hidden="true"
+        className="absolute -inset-6 md:-inset-12 rounded-[48px] pointer-events-none"
+        style={{
+          background:
+            'radial-gradient(60% 50% at 50% 50%, rgba(124,58,237,0.35) 0%, rgba(79,70,229,0.18) 35%, transparent 70%)',
+          filter: 'blur(40px)',
+        }}
+      />
+
+      <div
+        className="reel-shell relative w-full rounded-[28px] md:rounded-[32px] overflow-hidden border border-white/15 shadow-[0_30px_80px_-20px_rgba(79,70,229,0.55),0_8px_30px_-10px_rgba(0,0,0,0.4)]"
+        style={{
+          background:
+            'radial-gradient(circle at 20% 0%, rgba(124,58,237,0.18) 0%, transparent 50%), radial-gradient(circle at 100% 100%, rgba(79,70,229,0.18) 0%, transparent 50%), #0a0817',
+          ['--reel-ar' as any]: aspectRatio,
+          aspectRatio: 'var(--reel-ar)',
+        }}
+      >
       <style>{`
         @media (max-width: 767px) {
           .reel-shell { aspect-ratio: 4 / 5 !important; }
         }
       `}</style>
       {/* Top chrome — fake browser bar to anchor product context */}
-      <div className="absolute top-0 left-0 right-0 h-9 px-4 flex items-center gap-2 bg-black/40 border-b border-white/5 z-10">
-        <span className="w-2.5 h-2.5 rounded-full bg-rose-400/80" />
-        <span className="w-2.5 h-2.5 rounded-full bg-amber-400/80" />
-        <span className="w-2.5 h-2.5 rounded-full bg-emerald-400/80" />
-        <div className="ml-3 flex-1 h-5 rounded-md bg-white/5 px-2.5 flex items-center text-[10px] text-white/40 font-mono">
+      <div className="absolute top-0 left-0 right-0 h-10 md:h-11 px-4 md:px-5 flex items-center gap-2 bg-black/40 border-b border-white/5 z-10">
+        <span className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-rose-400/80" />
+        <span className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-amber-400/80" />
+        <span className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-emerald-400/80" />
+        <div className="ml-3 flex-1 h-5 md:h-6 rounded-md bg-white/5 px-2.5 flex items-center text-[10px] md:text-xs text-white/40 font-mono">
           vantage-livid.vercel.app/dashboard
         </div>
         <button
@@ -229,12 +241,12 @@ export default function LiveDemoReel({ autoplay = true, aspectRatio = '16/10' }:
           className="text-white/40 hover:text-white/80 transition-colors"
           aria-label={paused ? 'Play' : 'Pause'}
         >
-          {paused ? <Play className="w-3.5 h-3.5" /> : <Pause className="w-3.5 h-3.5" />}
+          {paused ? <Play className="w-4 h-4 md:w-5 md:h-5" /> : <Pause className="w-4 h-4 md:w-5 md:h-5" />}
         </button>
       </div>
 
       {/* Stage */}
-      <div className="absolute inset-0 pt-9 pb-3 px-5 flex flex-col">
+      <div className="absolute inset-0 pt-10 md:pt-11 pb-4 md:pb-6 px-5 md:px-10 flex flex-col">
         <div className="flex-1 flex items-center justify-center">
           <AnimatePresence mode="wait">
             {/* BEAT 0 — HOOK */}
@@ -247,10 +259,10 @@ export default function LiveDemoReel({ autoplay = true, aspectRatio = '16/10' }:
                 transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
                 className="text-center"
               >
-                <p className="text-[11px] uppercase tracking-[0.2em] text-violet-300/80 mb-3">
+                <p className="text-[11px] md:text-sm uppercase tracking-[0.2em] text-violet-300/80 mb-3 md:mb-5">
                   Vantage AI
                 </p>
-                <h2 className="text-2xl md:text-3xl font-bold text-white leading-tight">
+                <h2 className="text-2xl md:text-5xl lg:text-6xl font-bold text-white leading-[1.05]">
                   From CV to interview-ready
                   <br />
                   <span className="bg-gradient-to-r from-[#A78BFA] to-[#6366F1] bg-clip-text text-transparent">
@@ -268,22 +280,22 @@ export default function LiveDemoReel({ autoplay = true, aspectRatio = '16/10' }:
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.98 }}
                 transition={{ duration: 0.4 }}
-                className="w-full max-w-[420px]"
+                className="w-full max-w-[480px] md:max-w-[640px]"
               >
-                <p className="text-xs text-white/50 mb-2 uppercase tracking-wider">Step 1</p>
+                <p className="text-xs md:text-sm text-white/50 mb-2 md:mb-3 uppercase tracking-wider">Step 1</p>
                 <GlassCard className="border-dashed">
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 md:gap-4">
                     <motion.div
                       initial={{ y: -8, opacity: 0 }}
                       animate={{ y: 0, opacity: 1 }}
                       transition={{ delay: 0.2, type: 'spring', stiffness: 280, damping: 20 }}
-                      className="w-10 h-10 rounded-xl bg-violet-500/15 flex items-center justify-center"
+                      className="w-10 h-10 md:w-14 md:h-14 rounded-xl bg-violet-500/15 flex items-center justify-center flex-shrink-0"
                     >
-                      <FileText className="w-5 h-5 text-violet-300" />
+                      <FileText className="w-5 h-5 md:w-7 md:h-7 text-violet-300" />
                     </motion.div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm text-white font-semibold truncate">{SAMPLE.filename}</p>
-                      <p className="text-[10px] text-white/40">
+                      <p className="text-sm md:text-lg text-white font-semibold truncate">{SAMPLE.filename}</p>
+                      <p className="text-[10px] md:text-sm text-white/40">
                         2 pages · parsed instantly
                       </p>
                     </div>
@@ -292,7 +304,7 @@ export default function LiveDemoReel({ autoplay = true, aspectRatio = '16/10' }:
                       animate={{ scale: 1 }}
                       transition={{ delay: 0.5, type: 'spring' }}
                     >
-                      <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                      <CheckCircle2 className="w-5 h-5 md:w-7 md:h-7 text-emerald-400" />
                     </motion.div>
                   </div>
                 </GlassCard>
@@ -307,17 +319,17 @@ export default function LiveDemoReel({ autoplay = true, aspectRatio = '16/10' }:
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.98 }}
                 transition={{ duration: 0.4 }}
-                className="w-full max-w-[460px]"
+                className="w-full max-w-[520px] md:max-w-[720px]"
               >
-                <p className="text-xs text-white/50 mb-2 uppercase tracking-wider">Step 2</p>
+                <p className="text-xs md:text-sm text-white/50 mb-2 md:mb-3 uppercase tracking-wider">Step 2</p>
                 <GlassCard>
-                  <div className="flex items-center gap-2 mb-1.5">
-                    <LinkIcon className="w-3.5 h-3.5 text-violet-300" />
-                    <span className="text-[10px] uppercase tracking-wider text-white/40">Job URL</span>
+                  <div className="flex items-center gap-2 mb-2 md:mb-3">
+                    <LinkIcon className="w-3.5 h-3.5 md:w-4 md:h-4 text-violet-300" />
+                    <span className="text-[10px] md:text-xs uppercase tracking-wider text-white/40">Job URL</span>
                   </div>
-                  <p className="font-mono text-sm text-white/90 break-all min-h-[20px]">
+                  <p className="font-mono text-sm md:text-lg text-white/90 break-all min-h-[20px] leading-relaxed">
                     <Typewriter text={SAMPLE.jobUrl} speedMs={32} />
-                    <span className="inline-block w-1.5 h-4 bg-violet-300 ml-0.5 animate-pulse align-middle" />
+                    <span className="inline-block w-1.5 h-4 md:h-5 bg-violet-300 ml-0.5 animate-pulse align-middle" />
                   </p>
                 </GlassCard>
               </motion.div>
@@ -331,22 +343,22 @@ export default function LiveDemoReel({ autoplay = true, aspectRatio = '16/10' }:
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.4 }}
-                className="w-full max-w-[420px] flex flex-col items-center"
+                className="w-full max-w-[480px] md:max-w-[640px] flex flex-col items-center"
               >
                 <motion.button
                   initial={{ scale: 1 }}
                   animate={{ scale: [1, 0.96, 1] }}
                   transition={{ duration: 0.5, times: [0, 0.4, 1] }}
-                  className="px-7 py-3 rounded-xl bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] text-white font-semibold text-sm flex items-center gap-2 shadow-lg shadow-violet-500/30 mb-5"
+                  className="px-7 md:px-10 py-3 md:py-4 rounded-xl bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] text-white font-semibold text-sm md:text-lg flex items-center gap-2 md:gap-3 shadow-lg shadow-violet-500/30 mb-5 md:mb-7"
                 >
-                  <Sparkles className="w-4 h-4" />
+                  <Sparkles className="w-4 h-4 md:w-5 md:h-5" />
                   Analyze
                 </motion.button>
-                <div className="flex items-center gap-2 text-xs text-white/60 mb-2">
-                  <Loader2 className="w-3.5 h-3.5 animate-spin text-violet-300" />
+                <div className="flex items-center gap-2 md:gap-3 text-xs md:text-base text-white/60 mb-2 md:mb-3">
+                  <Loader2 className="w-3.5 h-3.5 md:w-4 md:h-4 animate-spin text-violet-300" />
                   Reading job page · researching company · scoring fit
                 </div>
-                <div className="w-full h-1 rounded-full bg-white/10 overflow-hidden">
+                <div className="w-full h-1 md:h-1.5 rounded-full bg-white/10 overflow-hidden">
                   <motion.div
                     initial={{ width: '0%' }}
                     animate={{ width: '100%' }}
@@ -365,20 +377,20 @@ export default function LiveDemoReel({ autoplay = true, aspectRatio = '16/10' }:
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-                className="w-full max-w-[480px]"
+                className="w-full max-w-[540px] md:max-w-[760px]"
               >
                 <GlassCard>
-                  <h3 className="text-sm font-bold text-white mb-3">Company Intelligence</h3>
-                  <p className="text-[10px] text-white/40 uppercase mb-1">Mission</p>
+                  <h3 className="text-sm md:text-xl font-bold text-white mb-3 md:mb-5">Company Intelligence</h3>
+                  <p className="text-[10px] md:text-xs text-white/40 uppercase mb-1">Mission</p>
                   <motion.p
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.2, duration: 0.5 }}
-                    className="text-white text-sm mb-3"
+                    className="text-white text-sm md:text-lg mb-4 md:mb-6"
                   >
                     {SAMPLE.company.mission}
                   </motion.p>
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
                     {[
                       ['Company', SAMPLE.company.name, 0.4],
                       ['Industry', SAMPLE.company.industry, 0.55],
@@ -391,8 +403,8 @@ export default function LiveDemoReel({ autoplay = true, aspectRatio = '16/10' }:
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: delay as number, duration: 0.4 }}
                       >
-                        <p className="text-[10px] text-white/40 uppercase">{label}</p>
-                        <p className="text-white text-sm font-semibold">{value as string}</p>
+                        <p className="text-[10px] md:text-xs text-white/40 uppercase">{label}</p>
+                        <p className="text-white text-sm md:text-base font-semibold">{value as string}</p>
                       </motion.div>
                     ))}
                   </div>
@@ -408,17 +420,19 @@ export default function LiveDemoReel({ autoplay = true, aspectRatio = '16/10' }:
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.4 }}
-                className="w-full max-w-[440px]"
+                className="w-full max-w-[500px] md:max-w-[680px]"
               >
                 <GlassCard>
-                  <h3 className="text-sm font-bold text-white mb-3">CV Fit Score</h3>
-                  <div className="flex items-center gap-5">
-                    <FitScoreGauge score={SAMPLE.fitScore} />
+                  <h3 className="text-sm md:text-xl font-bold text-white mb-3 md:mb-5">CV Fit Score</h3>
+                  <div className="flex items-center gap-5 md:gap-7">
+                    <div className="md:scale-150 md:origin-left">
+                      <FitScoreGauge score={SAMPLE.fitScore} />
+                    </div>
                     <div className="flex-1">
-                      <p className="text-emerald-300 text-xs font-bold uppercase tracking-wide mb-1">
+                      <p className="text-emerald-300 text-xs md:text-sm font-bold uppercase tracking-wide mb-1 md:mb-2">
                         Strong fit
                       </p>
-                      <p className="text-white/70 text-xs leading-relaxed">
+                      <p className="text-white/70 text-xs md:text-sm leading-relaxed">
                         Direct billing-systems experience, exact stakeholder profile.
                         One gap: no multi-currency tax exposure.
                       </p>
@@ -436,13 +450,13 @@ export default function LiveDemoReel({ autoplay = true, aspectRatio = '16/10' }:
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.4 }}
-                className="w-full max-w-[500px]"
+                className="w-full max-w-[560px] md:max-w-[820px]"
               >
                 <GlassCard>
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="text-sm font-bold text-white">Cover Letter</h3>
+                  <div className="flex items-center justify-between mb-2 md:mb-3">
+                    <h3 className="text-sm md:text-xl font-bold text-white">Cover Letter</h3>
                   </div>
-                  <div className="mb-3">
+                  <div className="mb-3 md:mb-5">
                     <TonePills activeTone="Direct" animateActive={true} />
                   </div>
                   <motion.p
@@ -450,7 +464,7 @@ export default function LiveDemoReel({ autoplay = true, aspectRatio = '16/10' }:
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.4, duration: 0.5 }}
-                    className="text-white/70 text-xs font-serif leading-relaxed"
+                    className="text-white/75 text-xs md:text-base font-serif leading-relaxed"
                   >
                     <Typewriter text={SAMPLE.coverLetterDirect} speedMs={14} />
                   </motion.p>
@@ -466,28 +480,28 @@ export default function LiveDemoReel({ autoplay = true, aspectRatio = '16/10' }:
                 animate={{ opacity: 1, rotateX: 0, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                className="w-full max-w-[460px]"
+                className="w-full max-w-[520px] md:max-w-[760px]"
                 style={{ perspective: '1200px' }}
               >
                 <GlassCard>
-                  <div className="flex items-center gap-2 mb-2">
-                    <h3 className="text-sm font-bold text-white">AI Mock Interview</h3>
-                    <span className="px-2 py-0.5 rounded-full bg-violet-500/20 text-violet-300 text-[9px] uppercase tracking-wider">
+                  <div className="flex items-center gap-2 md:gap-3 mb-3 md:mb-4">
+                    <h3 className="text-sm md:text-xl font-bold text-white">AI Mock Interview</h3>
+                    <span className="px-2 py-0.5 md:px-2.5 md:py-1 rounded-full bg-violet-500/20 text-violet-300 text-[9px] md:text-[11px] uppercase tracking-wider">
                       Pro
                     </span>
                   </div>
-                  <p className="text-white/80 text-sm leading-relaxed mb-3">
+                  <p className="text-white/85 text-sm md:text-lg leading-relaxed mb-4 md:mb-6">
                     "{SAMPLE.interviewQuestion}"
                   </p>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-3 md:gap-4">
                     <motion.div
                       animate={{ scale: [1, 1.15, 1] }}
                       transition={{ duration: 1.2, repeat: Infinity }}
-                      className="w-9 h-9 rounded-full bg-rose-500/20 border border-rose-500/40 flex items-center justify-center"
+                      className="w-9 h-9 md:w-12 md:h-12 rounded-full bg-rose-500/20 border border-rose-500/40 flex items-center justify-center"
                     >
-                      <Mic className="w-4 h-4 text-rose-300" />
+                      <Mic className="w-4 h-4 md:w-5 md:h-5 text-rose-300" />
                     </motion.div>
-                    <span className="text-xs text-white/50">Recording your answer…</span>
+                    <span className="text-xs md:text-sm text-white/50">Recording your answer…</span>
                   </div>
                 </GlassCard>
               </motion.div>
@@ -501,23 +515,23 @@ export default function LiveDemoReel({ autoplay = true, aspectRatio = '16/10' }:
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.4 }}
-                className="w-full max-w-[500px]"
+                className="w-full max-w-[560px] md:max-w-[820px]"
               >
                 <GlassCard>
-                  <h3 className="text-sm font-bold text-white mb-3">5-Minute Pitch Outline</h3>
-                  <div className="grid grid-cols-5 gap-2">
+                  <h3 className="text-sm md:text-xl font-bold text-white mb-3 md:mb-5">5-Minute Pitch Outline</h3>
+                  <div className="grid grid-cols-5 gap-2 md:gap-3">
                     {SAMPLE.pitchSlides.map((title, i) => (
                       <motion.div
                         key={title}
                         initial={{ opacity: 0, y: 12, rotate: -2 }}
                         animate={{ opacity: 1, y: 0, rotate: 0 }}
                         transition={{ delay: 0.1 + i * 0.12, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                        className="aspect-[3/4] rounded-lg bg-gradient-to-br from-violet-500/15 to-indigo-500/10 border border-violet-500/20 p-2 flex flex-col justify-between"
+                        className="aspect-[3/4] rounded-lg md:rounded-xl bg-gradient-to-br from-violet-500/15 to-indigo-500/10 border border-violet-500/20 p-2 md:p-3 flex flex-col justify-between"
                       >
-                        <span className="text-[8px] text-violet-300/70 uppercase tracking-wider">
+                        <span className="text-[8px] md:text-[11px] text-violet-300/70 uppercase tracking-wider font-mono">
                           {String(i + 1).padStart(2, '0')}
                         </span>
-                        <span className="text-[10px] text-white/85 font-semibold leading-tight">
+                        <span className="text-[10px] md:text-sm text-white/85 font-semibold leading-tight">
                           {title}
                         </span>
                       </motion.div>
@@ -537,29 +551,29 @@ export default function LiveDemoReel({ autoplay = true, aspectRatio = '16/10' }:
                 transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
                 className="text-center"
               >
-                <p className="text-[10px] uppercase tracking-[0.2em] text-emerald-300/80 mb-2">
+                <p className="text-[10px] md:text-xs uppercase tracking-[0.2em] text-emerald-300/80 mb-2 md:mb-3">
                   Done
                 </p>
-                <p className="text-5xl md:text-6xl font-bold text-white tabular-nums leading-none mb-1">
+                <p className="text-6xl md:text-8xl lg:text-9xl font-bold text-white tabular-nums leading-none mb-2">
                   1<span className="text-white/40">:</span>32
                 </p>
-                <p className="text-xs text-white/50 mb-5">Average time per analysis</p>
+                <p className="text-xs md:text-base text-white/50 mb-6 md:mb-8">Average time per analysis</p>
                 <motion.button
                   initial={{ boxShadow: '0 0 0 0 rgba(124,58,237,0)' }}
                   animate={{
                     boxShadow: [
                       '0 0 0 0 rgba(124,58,237,0)',
-                      '0 0 0 12px rgba(124,58,237,0.15)',
+                      '0 0 0 16px rgba(124,58,237,0.15)',
                       '0 0 0 0 rgba(124,58,237,0)',
                     ],
                   }}
                   transition={{ duration: 1.4, repeat: Infinity }}
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] text-white font-semibold text-sm"
+                  className="inline-flex items-center gap-2 px-7 md:px-9 py-3 md:py-4 rounded-xl bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] text-white font-semibold text-sm md:text-base"
                 >
                   Try Vantage free
-                  <ArrowRight className="w-4 h-4" />
+                  <ArrowRight className="w-4 h-4 md:w-5 md:h-5" />
                 </motion.button>
-                <p className="text-[10px] text-white/40 mt-3">
+                <p className="text-[10px] md:text-xs text-white/40 mt-3 md:mt-4">
                   3 free analyses on signup · no card
                 </p>
               </motion.div>
@@ -581,6 +595,7 @@ export default function LiveDemoReel({ autoplay = true, aspectRatio = '16/10' }:
             {String(beat + 1).padStart(2, '0')} / {BEATS_MS.length}
           </span>
         </div>
+      </div>
       </div>
     </div>
   );
