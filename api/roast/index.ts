@@ -21,8 +21,17 @@
 // Returns: { roast: string, severityScore: number }
 
 import { GoogleGenAI } from '@google/genai';
+import { createHash } from 'crypto';
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
+
+const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || '';
+const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
+
+// Set ROAST_RATELIMIT_ENABLED=true on Vercel only AFTER running
+// database/roast-rate-limit.sql in Supabase. Until then we fall back to
+// the in-memory limit transparently.
+const RATE_LIMIT_PERSISTENT_ENABLED = process.env.ROAST_RATELIMIT_ENABLED === 'true';
 
 const MAX_LETTER_CHARS = 8000;
 const MIN_LETTER_CHARS = 80;
@@ -107,6 +116,92 @@ function checkSlidingWindow(
     }
   }
   return { ok: true };
+}
+
+// ─── Hashing helpers (for IP/UA, never store raw values) ─────────────────
+function sha256(input: string): string {
+  return createHash('sha256').update(input).digest('hex');
+}
+
+// ─── Persistent rate limit via Supabase ───────────────────────────────────
+// Survives Vercel cold starts, which is the single biggest gap in the
+// in-memory limit. Falls back gracefully if Supabase is unreachable or
+// the migration hasn't run yet.
+type RateCheckResult = {
+  allowed: boolean;
+  reason: string | null;
+  min_count?: number;
+  day_count?: number;
+  source: 'persistent' | 'memory' | 'memory-fallback';
+};
+
+async function checkPersistentRateLimit(ipHash: string): Promise<RateCheckResult | null> {
+  if (!RATE_LIMIT_PERSISTENT_ENABLED || !SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
+    return null;
+  }
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/roast_rate_check`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_SERVICE_KEY,
+        'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+      },
+      body: JSON.stringify({
+        p_ip_hash: ipHash,
+        p_min_max: RATE_LIMIT_MIN_MAX,
+        p_day_max: RATE_LIMIT_DAY_MAX,
+      }),
+      signal: AbortSignal.timeout(2500),
+    });
+    if (!res.ok) {
+      // RPC failure = fall back to memory limit; don't fail-open on errors,
+      // we still have in-memory limits + Gemini quota as the ceiling.
+      return null;
+    }
+    const data = await res.json();
+    return {
+      allowed: !!data.allowed,
+      reason: data.reason ?? null,
+      min_count: data.min_count,
+      day_count: data.day_count,
+      source: 'persistent',
+    };
+  } catch {
+    return null;
+  }
+}
+
+// ─── Async fire-and-forget abuse log ──────────────────────────────────────
+async function logAbuseEvent(
+  ipHash: string,
+  uaHash: string | null,
+  result: string,
+  letterChars: number | null,
+  severityScore: number | null
+): Promise<void> {
+  if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY) return;
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/roast_abuse_log`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_SERVICE_KEY,
+        'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+        'Prefer': 'return=minimal',
+      },
+      body: JSON.stringify({
+        ip_hash: ipHash,
+        ua_hash: uaHash,
+        result,
+        letter_chars: letterChars,
+        severity_score: severityScore,
+      }),
+      signal: AbortSignal.timeout(2500),
+    });
+  } catch {
+    // Logging failures must not affect the request path.
+  }
 }
 
 // ─── Pre-flight injection pattern check ───────────────────────────────────
@@ -213,6 +308,10 @@ export default async function handler(request: any, response: any) {
   const origin = typeof request.headers.origin === 'string' ? request.headers.origin : undefined;
   const referer = typeof request.headers.referer === 'string' ? request.headers.referer : undefined;
   if (!isOriginAllowed(origin, referer)) {
+    // Hash IP early so we can log without leaking raw IP if logging is enabled.
+    const earlyIpHash = sha256(getClientIp(request));
+    const earlyUaHash = sha256(String(request.headers['user-agent'] || '')).slice(0, 16);
+    void logAbuseEvent(earlyIpHash, earlyUaHash, 'origin_blocked', null, null);
     return response.status(403).json({ error: 'Origin not allowed' });
   }
 
@@ -222,21 +321,45 @@ export default async function handler(request: any, response: any) {
     return response.status(415).json({ error: 'Content-Type must be application/json' });
   }
 
-  // ─── Bot UA hard-throttle ───────────────────────────────────────────────
+  // ─── Hash IP + UA for downstream logging / persistent rate limit ───────
   const userAgent = String(request.headers['user-agent'] || '');
   const ip = getClientIp(request);
+  const ipHash = sha256(ip);
+  const uaHash = userAgent ? sha256(userAgent).slice(0, 16) : null;
+
+  // ─── Bot UA hard-throttle ──────────────────────────────────────────────
   if (looksLikeBot(userAgent)) {
     const botRl = checkSlidingWindow(botHits, ip, BOT_RATE_LIMIT_WINDOW_MS, BOT_RATE_LIMIT_MAX);
     if (!botRl.ok) {
       response.setHeader('Retry-After', Math.ceil((botRl.resetMs || BOT_RATE_LIMIT_WINDOW_MS) / 1000).toString());
+      void logAbuseEvent(ipHash, uaHash, 'bot_throttle', null, null);
       return response.status(429).json({ error: 'Too many requests.' });
     }
   }
 
-  // ─── Per-minute + per-day rate limits ───────────────────────────────────
+  // ─── Persistent (Supabase) rate limit, with in-memory fallback ─────────
+  // Supabase RPC is the durable check that survives cold starts. If the RPC
+  // is disabled, the migration hasn't run, or the network blips, we fall
+  // back to the in-memory check. The Gemini per-key quota is the floor.
+  const persistentRl = await checkPersistentRateLimit(ipHash);
+  if (persistentRl && !persistentRl.allowed) {
+    const reason = persistentRl.reason || 'rate_limited';
+    void logAbuseEvent(ipHash, uaHash, reason, null, null);
+    response.setHeader('Retry-After', '60');
+    return response.status(429).json({
+      error: reason === 'rate_limited_day'
+        ? 'Daily roast limit reached. Try again tomorrow.'
+        : 'Too many roasts. Try again in a minute.',
+    });
+  }
+
+  // Always also run the in-memory check as a parallel layer. If the
+  // persistent limit was unreachable this is the only ceiling; otherwise it
+  // adds a smaller per-instance window on top.
   const minRl = checkSlidingWindow(ipHits, `min:${ip}`, RATE_LIMIT_MIN_WINDOW_MS, RATE_LIMIT_MIN_MAX);
   if (!minRl.ok) {
     response.setHeader('Retry-After', Math.ceil((minRl.resetMs || 60_000) / 1000).toString());
+    void logAbuseEvent(ipHash, uaHash, 'rate_limited_min', null, null);
     return response.status(429).json({
       error: 'Too many roasts. Try again in a minute.',
       retryAfterMs: minRl.resetMs,
@@ -246,6 +369,7 @@ export default async function handler(request: any, response: any) {
   const dayRl = checkSlidingWindow(ipHits, `day:${ip}`, RATE_LIMIT_DAY_WINDOW_MS, RATE_LIMIT_DAY_MAX);
   if (!dayRl.ok) {
     response.setHeader('Retry-After', Math.ceil((dayRl.resetMs || 60_000) / 1000).toString());
+    void logAbuseEvent(ipHash, uaHash, 'rate_limited_day', null, null);
     return response.status(429).json({
       error: 'Daily roast limit reached. Try again tomorrow.',
       retryAfterMs: dayRl.resetMs,
@@ -261,14 +385,17 @@ export default async function handler(request: any, response: any) {
   }
 
   if (!coverLetter) {
+    void logAbuseEvent(ipHash, uaHash, 'invalid_input', null, null);
     return response.status(400).json({ error: 'coverLetter is required' });
   }
   if (coverLetter.length < MIN_LETTER_CHARS) {
+    void logAbuseEvent(ipHash, uaHash, 'too_short', coverLetter.length, null);
     return response.status(400).json({
       error: `Cover letter is too short (minimum ${MIN_LETTER_CHARS} characters).`,
     });
   }
   if (coverLetter.length > MAX_LETTER_CHARS) {
+    void logAbuseEvent(ipHash, uaHash, 'too_long', coverLetter.length, null);
     return response.status(400).json({
       error: `Cover letter is too long (maximum ${MAX_LETTER_CHARS} characters).`,
     });
@@ -278,6 +405,7 @@ export default async function handler(request: any, response: any) {
   // Catch the obvious "ignore previous instructions" payloads without
   // spending a Gemini call. Genuine cover letters never contain these.
   if (detectObviousInjection(coverLetter)) {
+    void logAbuseEvent(ipHash, uaHash, 'injection_blocked', coverLetter.length, 0);
     return response.status(200).json({
       roast: 'There\'s not enough cover letter here to roast. Paste at least 80 characters of an actual cover letter and try again.',
       severityScore: 0,
@@ -298,12 +426,14 @@ export default async function handler(request: any, response: any) {
 
     if (!aiResponse.text) {
       console.error('Roast: empty AI response');
+      void logAbuseEvent(ipHash, uaHash, 'gemini_empty', coverLetter.length, null);
       return response.status(502).json({ error: 'AI returned no roast. Try again.' });
     }
 
     const parsed = parseRoast(aiResponse.text);
 
     if (parsed.roast.length < 30) {
+      void logAbuseEvent(ipHash, uaHash, 'output_too_short', coverLetter.length, parsed.severityScore);
       return response.status(502).json({ error: 'Roast too short — try again.' });
     }
 
@@ -311,15 +441,18 @@ export default async function handler(request: any, response: any) {
     // forward it to the client.
     if (looksLikeSystemPromptLeak(parsed.roast)) {
       console.warn('Roast: detected system prompt leak in output, blocked');
+      void logAbuseEvent(ipHash, uaHash, 'output_blocked', coverLetter.length, parsed.severityScore);
       return response.status(502).json({ error: 'Roast generation failed — try again.' });
     }
 
+    void logAbuseEvent(ipHash, uaHash, 'ok', coverLetter.length, parsed.severityScore);
     return response.status(200).json({
       roast: parsed.roast,
       severityScore: parsed.severityScore,
     });
   } catch (err: any) {
     console.error('Roast error:', err?.message || 'unknown');
+    void logAbuseEvent(ipHash, uaHash, 'gemini_error', coverLetter.length, null);
     return response.status(500).json({ error: 'Roast generation failed.' });
   }
 }
