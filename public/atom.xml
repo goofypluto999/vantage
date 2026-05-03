@@ -2,17 +2,17 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
   <title>Vantage AI</title>
   <subtitle>AI job preparation. Upload your CV, paste a job link, get the full prep pack in ~90 seconds.</subtitle>
-  <link href="https://vantage-livid.vercel.app/atom.xml" rel="self" type="application/atom+xml"/>
-  <link href="https://vantage-livid.vercel.app/" rel="alternate" type="text/html"/>
-  <id>https://vantage-livid.vercel.app/</id>
+  <link href="https://aimvantage.uk/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="https://aimvantage.uk/" rel="alternate" type="text/html"/>
+  <id>https://aimvantage.uk/</id>
   <updated>2026-05-01T00:00:00.000Z</updated>
-  <generator uri="https://vantage-livid.vercel.app" version="1.0">Vantage custom Atom</generator>
+  <generator uri="https://aimvantage.uk" version="1.0">Vantage custom Atom</generator>
   <rights>© 2026 Vantage Labs</rights>
 
   <entry>
     <title type="text">Just laid off in April 2026? The 3 things to fix in your CV before you apply to a single job.</title>
-    <link href="https://vantage-livid.vercel.app/blog/just-laid-off-april-2026-cv-fix" rel="alternate" type="text/html"/>
-    <id>https://vantage-livid.vercel.app/blog/just-laid-off-april-2026-cv-fix</id>
+    <link href="https://aimvantage.uk/blog/just-laid-off-april-2026-cv-fix" rel="alternate" type="text/html"/>
+    <id>https://aimvantage.uk/blog/just-laid-off-april-2026-cv-fix</id>
     <updated>2026-04-30T00:00:00.000Z</updated>
     <published>2026-04-30T00:00:00.000Z</published>
     <author>
@@ -26,8 +26,8 @@
 
   <entry>
     <title type="text">Oracle, Meta, ASML, Snap, Nike: a layoff-week CV checklist</title>
-    <link href="https://vantage-livid.vercel.app/blog/oracle-meta-asml-layoff-cv-checklist" rel="alternate" type="text/html"/>
-    <id>https://vantage-livid.vercel.app/blog/oracle-meta-asml-layoff-cv-checklist</id>
+    <link href="https://aimvantage.uk/blog/oracle-meta-asml-layoff-cv-checklist" rel="alternate" type="text/html"/>
+    <id>https://aimvantage.uk/blog/oracle-meta-asml-layoff-cv-checklist</id>
     <updated>2026-04-30T00:00:00.000Z</updated>
     <published>2026-04-30T00:00:00.000Z</published>
     <author>
@@ -41,8 +41,8 @@
 
   <entry>
     <title type="text">Tailoring every resume vs the smarter alternative</title>
-    <link href="https://vantage-livid.vercel.app/blog/tailoring-every-resume-vs-the-smarter-alternative" rel="alternate" type="text/html"/>
-    <id>https://vantage-livid.vercel.app/blog/tailoring-every-resume-vs-the-smarter-alternative</id>
+    <link href="https://aimvantage.uk/blog/tailoring-every-resume-vs-the-smarter-alternative" rel="alternate" type="text/html"/>
+    <id>https://aimvantage.uk/blog/tailoring-every-resume-vs-the-smarter-alternative</id>
     <updated>2026-04-28T00:00:00.000Z</updated>
     <published>2026-04-28T00:00:00.000Z</published>
     <author>
@@ -55,8 +55,8 @@
 
   <entry>
     <title type="text">500 applications, zero interviews: the ATS parse problem nobody talks about</title>
-    <link href="https://vantage-livid.vercel.app/blog/500-applications-zero-interviews-the-ats-parse-problem" rel="alternate" type="text/html"/>
-    <id>https://vantage-livid.vercel.app/blog/500-applications-zero-interviews-the-ats-parse-problem</id>
+    <link href="https://aimvantage.uk/blog/500-applications-zero-interviews-the-ats-parse-problem" rel="alternate" type="text/html"/>
+    <id>https://aimvantage.uk/blog/500-applications-zero-interviews-the-ats-parse-problem</id>
     <updated>2026-04-28T00:00:00.000Z</updated>
     <published>2026-04-28T00:00:00.000Z</published>
     <author>
@@ -69,8 +69,8 @@
 
   <entry>
     <title type="text">How to spot a ghost job in 30 seconds</title>
-    <link href="https://vantage-livid.vercel.app/blog/how-to-spot-a-ghost-job-in-30-seconds" rel="alternate" type="text/html"/>
-    <id>https://vantage-livid.vercel.app/blog/how-to-spot-a-ghost-job-in-30-seconds</id>
+    <link href="https://aimvantage.uk/blog/how-to-spot-a-ghost-job-in-30-seconds" rel="alternate" type="text/html"/>
+    <id>https://aimvantage.uk/blog/how-to-spot-a-ghost-job-in-30-seconds</id>
     <updated>2026-04-28T00:00:00.000Z</updated>
     <published>2026-04-28T00:00:00.000Z</published>
     <author>

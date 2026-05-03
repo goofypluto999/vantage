@@ -8,12 +8,12 @@
  *
  * Setup:
  * 1. Generate a key: 8-128 char hex string
- * 2. Host the key at https://vantage-livid.vercel.app/<KEY>.txt with body = key
+ * 2. Host the key at https://aimvantage.uk/<KEY>.txt with body = key
  *    (drop a file at public/<KEY>.txt)
  * 3. Set INDEXNOW_KEY in env when running
  */
 
-const HOST = 'vantage-livid.vercel.app';
+const HOST = 'aimvantage.uk';
 const KEY = process.env.INDEXNOW_KEY ?? '';
 
 if (!KEY) {

@@ -4,7 +4,7 @@ import { useTheme } from '../contexts/ThemeContext';
 import { getRolePack, rolePacks } from '../data/interviewQuestions';
 import SEO from './SEO';
 
-const SITE_URL = 'https://vantage-livid.vercel.app';
+const SITE_URL = 'https://aimvantage.uk';
 
 /**
  * Programmatic SEO landing page: /interview-questions/<role>

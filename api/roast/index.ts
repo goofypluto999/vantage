@@ -55,8 +55,8 @@ const botHits = new Map<string, number[]>();
 
 // ─── Allowed origins ──────────────────────────────────────────────────────
 const ALLOWED_ORIGINS = [
-  'https://vantage-livid.vercel.app',
-  'https://www.vantage-livid.vercel.app',
+  'https://aimvantage.uk',
+  'https://www.aimvantage.uk',
 ];
 
 const ALLOWED_ORIGIN_PATTERN = /^https:\/\/vantage-[a-z0-9-]+-adlixirs-projects\.vercel\.app$/;

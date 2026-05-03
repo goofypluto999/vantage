@@ -3,7 +3,7 @@ import { ArrowRight, CheckCircle2, Clock, FileText, Users, Briefcase, Mail, Cale
 import { useTheme } from '../contexts/ThemeContext';
 import SEO from './SEO';
 
-const SITE_URL = 'https://vantage-livid.vercel.app';
+const SITE_URL = 'https://aimvantage.uk';
 
 interface Step {
   day: string;

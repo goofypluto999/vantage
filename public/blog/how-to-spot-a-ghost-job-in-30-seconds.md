@@ -5,7 +5,7 @@ author: "Gio"
 published: 2026-04-28
 reading_time: "5 min"
 tags: ["Job Search", "Ghost Jobs", "Indeed", "LinkedIn"]
-canonical: https://vantage-livid.vercel.app/blog/how-to-spot-a-ghost-job-in-30-seconds
+canonical: https://aimvantage.uk/blog/how-to-spot-a-ghost-job-in-30-seconds
 ---
 
 # How to spot a ghost job in 30 seconds (the Indeed problem in 2026)
@@ -53,7 +53,7 @@ Three reasons companies post jobs they are not actively hiring for:
 3. Build a list of 50–100 companies you would actually want to work at. Check their careers pages weekly. This beats spraying 200 applications across job boards.
 4. For job board postings, always cross-check on the company site before applying. 60 seconds saves you an hour of tailoring time.
 
-> **Once you know the role is real**, the next problem is making the application count. [Vantage](https://vantage-livid.vercel.app/) takes your CV and the job link, scrapes the company's actual careers page if available, generates a tailored cover letter, mock interview Qs, and fit score in 90 seconds. Genuinely free signup with 3 free analyses included.
+> **Once you know the role is real**, the next problem is making the application count. [Vantage](https://aimvantage.uk/) takes your CV and the job link, scrapes the company's actual careers page if available, generates a tailored cover letter, mock interview Qs, and fit score in 90 seconds. Genuinely free signup with 3 free analyses included.
 
 ## When ghost jobs are NOT a waste
 
@@ -82,5 +82,5 @@ Half the postings out there are not real jobs. Spending an hour each on them is 
 
 ---
 
-**Try Vantage:** https://vantage-livid.vercel.app
+**Try Vantage:** https://aimvantage.uk
 **Free ATS scanner:** https://cv-mirror-web.vercel.app

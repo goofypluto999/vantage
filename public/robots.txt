@@ -1,5 +1,5 @@
 # robots.txt for Vantage AI
-# https://vantage-livid.vercel.app
+# https://aimvantage.uk
 # Last updated: 2026-05-01
 
 # ---------- Default: allow all search + AI crawlers ----------
@@ -190,8 +190,8 @@ User-agent: YouBot
 Allow: /
 
 # ---------- Sitemaps ----------
-Sitemap: https://vantage-livid.vercel.app/sitemap.xml
-Sitemap: https://vantage-livid.vercel.app/sitemap-pages.xml
-Sitemap: https://vantage-livid.vercel.app/sitemap-blog.xml
-Sitemap: https://vantage-livid.vercel.app/sitemap-roles.xml
-Sitemap: https://vantage-livid.vercel.app/sitemap-companies.xml
+Sitemap: https://aimvantage.uk/sitemap.xml
+Sitemap: https://aimvantage.uk/sitemap-pages.xml
+Sitemap: https://aimvantage.uk/sitemap-blog.xml
+Sitemap: https://aimvantage.uk/sitemap-roles.xml
+Sitemap: https://aimvantage.uk/sitemap-companies.xml

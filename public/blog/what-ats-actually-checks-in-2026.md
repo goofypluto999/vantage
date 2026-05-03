@@ -5,7 +5,7 @@ author: "Gio"
 published: 2026-04-24
 reading_time: "7 min"
 tags: ["ATS", "CV", "Resume", "Job Search"]
-canonical: https://vantage-livid.vercel.app/blog/what-ats-actually-checks-in-2026
+canonical: https://aimvantage.uk/blog/what-ats-actually-checks-in-2026
 ---
 
 # What ATS screening software actually checks in 2026
@@ -91,5 +91,5 @@ Ship your application. But ship a version that survives the parse.
 
 ---
 
-**Try Vantage:** https://vantage-livid.vercel.app
-**Pricing:** https://vantage-livid.vercel.app/pricing
+**Try Vantage:** https://aimvantage.uk
+**Pricing:** https://aimvantage.uk/pricing

@@ -3,7 +3,7 @@ import { ArrowRight, ExternalLink, Star, Shield, Zap, FileSearch } from 'lucide-
 import { useTheme } from '../contexts/ThemeContext';
 import SEO from './SEO';
 
-const SITE_URL = 'https://vantage-livid.vercel.app';
+const SITE_URL = 'https://aimvantage.uk';
 
 /**
  * /tools — hub page that lists every free Vantage Labs tool.

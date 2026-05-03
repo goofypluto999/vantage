@@ -16,7 +16,7 @@ Vantage AI is a job preparation SaaS. Users upload their CV, paste/link a job li
 - AI mock interview (speech recognition, live evaluation)
 - Presentation deck (6 slides)
 
-**Live URL:** https://vantage-livid.vercel.app/
+**Live URL:** https://aimvantage.uk/
 **Owner:** Giova (adlixir on Vercel)
 
 ---

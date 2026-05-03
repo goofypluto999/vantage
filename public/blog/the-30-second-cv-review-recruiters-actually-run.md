@@ -5,7 +5,7 @@ author: "Gio"
 published: 2026-04-25
 reading_time: "5 min"
 tags: ["CV", "Resume", "Recruiting", "Job Search"]
-canonical: https://vantage-livid.vercel.app/blog/the-30-second-cv-review-recruiters-actually-run
+canonical: https://aimvantage.uk/blog/the-30-second-cv-review-recruiters-actually-run
 ---
 
 # The 30-second CV review test recruiters actually run
@@ -86,5 +86,5 @@ Win the 30 seconds. The next 90 seconds become available automatically.
 
 ---
 
-**Try Vantage:** https://vantage-livid.vercel.app
-**Pricing:** https://vantage-livid.vercel.app/pricing
+**Try Vantage:** https://aimvantage.uk
+**Pricing:** https://aimvantage.uk/pricing

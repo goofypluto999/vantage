@@ -3,7 +3,7 @@ import { Mail, Download, ExternalLink, Calendar, Briefcase, ShieldCheck } from '
 import { useTheme } from '../contexts/ThemeContext';
 import SEO from './SEO';
 
-const SITE_URL = 'https://vantage-livid.vercel.app';
+const SITE_URL = 'https://aimvantage.uk';
 
 /**
  * /press — press kit page for journalists.
@@ -156,7 +156,7 @@ export default function PressPage() {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1 text-sm text-[#4F46E5] hover:underline"
             >
-              vantage-livid.vercel.app <ExternalLink className="w-3 h-3" />
+              aimvantage.uk <ExternalLink className="w-3 h-3" />
             </a>
           </div>
 

@@ -3,7 +3,7 @@ import { ExternalLink, BookOpen, ShieldCheck } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import SEO from './SEO';
 
-const SITE_URL = 'https://vantage-livid.vercel.app';
+const SITE_URL = 'https://aimvantage.uk';
 
 interface SourceEntry {
   vendor: string;

@@ -2,93 +2,93 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Vantage Blog — AI Job Prep, CV Optimisation, Interview Strategy</title>
-    <link>https://vantage-livid.vercel.app/blog</link>
-    <atom:link href="https://vantage-livid.vercel.app/rss.xml" rel="self" type="application/rss+xml" />
+    <link>https://aimvantage.uk/blog</link>
+    <atom:link href="https://aimvantage.uk/rss.xml" rel="self" type="application/rss+xml" />
     <description>Practical, current guides on AI job preparation, CV optimisation, ATS-friendly resumes, cover letters, and interview strategy.</description>
     <language>en-gb</language>
     <copyright>Vantage 2026</copyright>
     <lastBuildDate>Thu, 30 Apr 2026 00:00:00 +0000</lastBuildDate>
     <generator>Vantage scripts/generate-feeds.mjs</generator>
     <image>
-      <url>https://vantage-livid.vercel.app/og-image.png</url>
+      <url>https://aimvantage.uk/og-image.png</url>
       <title>Vantage</title>
-      <link>https://vantage-livid.vercel.app/blog</link>
+      <link>https://aimvantage.uk/blog</link>
     </image>
 
     <item>
       <title>Just laid off in April 2026? The 3 things to fix in your CV before you apply to a single job.</title>
-      <link>https://vantage-livid.vercel.app/blog/just-laid-off-april-2026-cv-fix</link>
-      <guid isPermaLink="true">https://vantage-livid.vercel.app/blog/just-laid-off-april-2026-cv-fix</guid>
+      <link>https://aimvantage.uk/blog/just-laid-off-april-2026-cv-fix</link>
+      <guid isPermaLink="true">https://aimvantage.uk/blog/just-laid-off-april-2026-cv-fix</guid>
       <pubDate>Thu, 30 Apr 2026 00:00:00 +0000</pubDate>
       <description>~42,000 tech employees were laid off in April 2026 alone — Oracle, Meta, ASML, Snap, Nike. If you&apos;re one of them, this is the foundation work to do before you start applying. ATS parser checks, formatting strip-down, exact-match keyword tuning.</description>
     </item>
     <item>
       <title>Oracle, Meta, ASML, Snap, Nike: a layoff-week CV checklist</title>
-      <link>https://vantage-livid.vercel.app/blog/oracle-meta-asml-layoff-cv-checklist</link>
-      <guid isPermaLink="true">https://vantage-livid.vercel.app/blog/oracle-meta-asml-layoff-cv-checklist</guid>
+      <link>https://aimvantage.uk/blog/oracle-meta-asml-layoff-cv-checklist</link>
+      <guid isPermaLink="true">https://aimvantage.uk/blog/oracle-meta-asml-layoff-cv-checklist</guid>
       <pubDate>Thu, 30 Apr 2026 00:00:00 +0000</pubDate>
       <description>A specific 5-step checklist for tech employees laid off in April/May 2026. CV format, ATS parse, recruiter outreach, interview prep, and the LinkedIn moves to make in week one.</description>
     </item>
     <item>
       <title>Why tailoring every resume might be costing you interviews (and the smarter alternative)</title>
-      <link>https://vantage-livid.vercel.app/blog/tailoring-every-resume-vs-the-smarter-alternative</link>
-      <guid isPermaLink="true">https://vantage-livid.vercel.app/blog/tailoring-every-resume-vs-the-smarter-alternative</guid>
+      <link>https://aimvantage.uk/blog/tailoring-every-resume-vs-the-smarter-alternative</link>
+      <guid isPermaLink="true">https://aimvantage.uk/blog/tailoring-every-resume-vs-the-smarter-alternative</guid>
       <pubDate>Tue, 28 Apr 2026 00:00:00 +0000</pubDate>
       <description>The &quot;rewrite your resume for every job&quot; advice is exhausting and may be costing you interviews. Here is what actually works for high-volume applicants in 2026.</description>
     </item>
     <item>
       <title>500 applications, zero interviews: the ATS parse problem nobody talks about</title>
-      <link>https://vantage-livid.vercel.app/blog/500-applications-zero-interviews-the-ats-parse-problem</link>
-      <guid isPermaLink="true">https://vantage-livid.vercel.app/blog/500-applications-zero-interviews-the-ats-parse-problem</guid>
+      <link>https://aimvantage.uk/blog/500-applications-zero-interviews-the-ats-parse-problem</link>
+      <guid isPermaLink="true">https://aimvantage.uk/blog/500-applications-zero-interviews-the-ats-parse-problem</guid>
       <pubDate>Tue, 28 Apr 2026 00:00:00 +0000</pubDate>
       <description>If you have applied to hundreds of jobs and got nothing back, the problem might not be your CV content. It might be that the ATS literally cannot read your CV. Here is how to find out in 60 seconds.</description>
     </item>
     <item>
       <title>How to spot a ghost job in 30 seconds (the Indeed problem in 2026)</title>
-      <link>https://vantage-livid.vercel.app/blog/how-to-spot-a-ghost-job-in-30-seconds</link>
-      <guid isPermaLink="true">https://vantage-livid.vercel.app/blog/how-to-spot-a-ghost-job-in-30-seconds</guid>
+      <link>https://aimvantage.uk/blog/how-to-spot-a-ghost-job-in-30-seconds</link>
+      <guid isPermaLink="true">https://aimvantage.uk/blog/how-to-spot-a-ghost-job-in-30-seconds</guid>
       <pubDate>Tue, 28 Apr 2026 00:00:00 +0000</pubDate>
       <description>A viral Reddit post called Indeed &quot;the Tinder of job hunting&quot; — and a UK-focused thread reported 50% of postings were fake. Here is how to spot a ghost job in 30 seconds before you waste a tailored application on it.</description>
     </item>
     <item>
       <title>How to use ChatGPT to prep for an interview (without sounding like a bot)</title>
-      <link>https://vantage-livid.vercel.app/blog/how-to-use-chatgpt-to-prep-for-an-interview</link>
-      <guid isPermaLink="true">https://vantage-livid.vercel.app/blog/how-to-use-chatgpt-to-prep-for-an-interview</guid>
+      <link>https://aimvantage.uk/blog/how-to-use-chatgpt-to-prep-for-an-interview</link>
+      <guid isPermaLink="true">https://aimvantage.uk/blog/how-to-use-chatgpt-to-prep-for-an-interview</guid>
       <pubDate>Sat, 25 Apr 2026 00:00:00 +0000</pubDate>
       <description>A working ChatGPT interview prep workflow used by real candidates in 2026. Specific prompts, the exact order to run them, and how to keep your answers sounding human.</description>
     </item>
     <item>
       <title>The 30-second CV review test recruiters actually run</title>
-      <link>https://vantage-livid.vercel.app/blog/the-30-second-cv-review-recruiters-actually-run</link>
-      <guid isPermaLink="true">https://vantage-livid.vercel.app/blog/the-30-second-cv-review-recruiters-actually-run</guid>
+      <link>https://aimvantage.uk/blog/the-30-second-cv-review-recruiters-actually-run</link>
+      <guid isPermaLink="true">https://aimvantage.uk/blog/the-30-second-cv-review-recruiters-actually-run</guid>
       <pubDate>Sat, 25 Apr 2026 00:00:00 +0000</pubDate>
       <description>Recruiters spend less than a minute on your CV before deciding. Here is the exact 30-second scan they run, what they look for, and how to write a CV that wins it.</description>
     </item>
     <item>
       <title>The 5-minute interview pitch that gets you remembered</title>
-      <link>https://vantage-livid.vercel.app/blog/the-5-minute-interview-pitch-that-gets-you-remembered</link>
-      <guid isPermaLink="true">https://vantage-livid.vercel.app/blog/the-5-minute-interview-pitch-that-gets-you-remembered</guid>
+      <link>https://aimvantage.uk/blog/the-5-minute-interview-pitch-that-gets-you-remembered</link>
+      <guid isPermaLink="true">https://aimvantage.uk/blog/the-5-minute-interview-pitch-that-gets-you-remembered</guid>
       <pubDate>Sat, 25 Apr 2026 00:00:00 +0000</pubDate>
       <description>Most candidates wing the &quot;tell us about yourself&quot; question. The strongest candidates have a 5-minute pitch they can compress to 90 seconds. Here is exactly how to build it.</description>
     </item>
     <item>
       <title>How to prep for any job interview in 20 minutes</title>
-      <link>https://vantage-livid.vercel.app/blog/how-to-prep-for-any-interview-in-20-minutes</link>
-      <guid isPermaLink="true">https://vantage-livid.vercel.app/blog/how-to-prep-for-any-interview-in-20-minutes</guid>
+      <link>https://aimvantage.uk/blog/how-to-prep-for-any-interview-in-20-minutes</link>
+      <guid isPermaLink="true">https://aimvantage.uk/blog/how-to-prep-for-any-interview-in-20-minutes</guid>
       <pubDate>Fri, 24 Apr 2026 00:00:00 +0000</pubDate>
       <description>A concrete 20-minute interview prep routine used by people applying to 50+ jobs a week. Company research, fit check, likely questions, and a mock drill — no BS, no fluff.</description>
     </item>
     <item>
       <title>What ATS screening software actually checks in 2026</title>
-      <link>https://vantage-livid.vercel.app/blog/what-ats-actually-checks-in-2026</link>
-      <guid isPermaLink="true">https://vantage-livid.vercel.app/blog/what-ats-actually-checks-in-2026</guid>
+      <link>https://aimvantage.uk/blog/what-ats-actually-checks-in-2026</link>
+      <guid isPermaLink="true">https://aimvantage.uk/blog/what-ats-actually-checks-in-2026</guid>
       <pubDate>Fri, 24 Apr 2026 00:00:00 +0000</pubDate>
       <description>A plain-English breakdown of how modern applicant tracking systems parse CVs in 2026. What gets flagged, what gets filtered, and what to fix before you hit submit.</description>
     </item>
     <item>
       <title>The 4 cover letter tones, and when each one wins</title>
-      <link>https://vantage-livid.vercel.app/blog/the-4-cover-letter-tones-and-when-to-use-each</link>
-      <guid isPermaLink="true">https://vantage-livid.vercel.app/blog/the-4-cover-letter-tones-and-when-to-use-each</guid>
+      <link>https://aimvantage.uk/blog/the-4-cover-letter-tones-and-when-to-use-each</link>
+      <guid isPermaLink="true">https://aimvantage.uk/blog/the-4-cover-letter-tones-and-when-to-use-each</guid>
       <pubDate>Fri, 24 Apr 2026 00:00:00 +0000</pubDate>
       <description>Not every role wants the same cover letter. The right tone depends on the company culture. Here are the four tones that cover most cases, with examples and a rule for when each one wins.</description>
     </item>

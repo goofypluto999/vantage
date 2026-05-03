@@ -16,7 +16,7 @@ import { fileURLToPath } from 'node:url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '..');
 
-const HOST = 'https://vantage-livid.vercel.app';
+const HOST = 'https://aimvantage.uk';
 
 // ---------- Parsers (regex over .ts source — no TS compiler needed) ----------
 

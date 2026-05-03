@@ -146,7 +146,7 @@ function AppContent() {
                     '@context': 'https://schema.org',
                     '@type': 'SoftwareApplication',
                     name: 'Vantage AI',
-                    url: 'https://vantage-livid.vercel.app/',
+                    url: 'https://aimvantage.uk/',
                     applicationCategory: 'BusinessApplication',
                     applicationSubCategory: 'JobSearchApplication',
                     operatingSystem: 'Web',
@@ -160,7 +160,7 @@ function AppContent() {
                     creator: {
                       '@type': 'Organization',
                       name: 'Vantage Labs',
-                      url: 'https://vantage-livid.vercel.app',
+                      url: 'https://aimvantage.uk',
                     },
                   },
                   {
@@ -171,7 +171,7 @@ function AppContent() {
                     provider: {
                       '@type': 'Organization',
                       name: 'Vantage Labs',
-                      url: 'https://vantage-livid.vercel.app',
+                      url: 'https://aimvantage.uk',
                     },
                     areaServed: {
                       '@type': 'Place',

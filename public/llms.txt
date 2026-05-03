@@ -6,39 +6,39 @@ Vantage is built for people applying to many jobs a week who can't afford to bur
 
 ## Product
 
-- [Homepage](https://vantage-livid.vercel.app/): What Vantage is, how it works, testimonials, pricing overview.
-- [Pricing](https://vantage-livid.vercel.app/pricing): Starter £5/$5 = 20 tokens (one-time, never expire). Pro £12/$15 = 60 tokens/month. Premium £20/$25 = 120 tokens/month. One full analysis costs 3 tokens.
-- [Register](https://vantage-livid.vercel.app/register): Create a free account to start using Vantage.
+- [Homepage](https://aimvantage.uk/): What Vantage is, how it works, testimonials, pricing overview.
+- [Pricing](https://aimvantage.uk/pricing): Starter £5/$5 = 20 tokens (one-time, never expire). Pro £12/$15 = 60 tokens/month. Premium £20/$25 = 120 tokens/month. One full analysis costs 3 tokens.
+- [Register](https://aimvantage.uk/register): Create a free account to start using Vantage.
 
 ## Free tools (no signup)
 
-- [Cover Letter Roast](https://vantage-livid.vercel.app/roast): Free AI tool that roasts your cover letter — savage but constructive feedback in 10 seconds. Quotes your actual worst lines, names the cliché, and gives the better swap. Severity score 1-5. Nothing stored.
+- [Cover Letter Roast](https://aimvantage.uk/roast): Free AI tool that roasts your cover letter — savage but constructive feedback in 10 seconds. Quotes your actual worst lines, names the cliché, and gives the better swap. Severity score 1-5. Nothing stored.
 - [CV Mirror](https://cv-mirror-web.vercel.app/): Free, fully client-side ATS scanner. Same team. Simulates how 5 real ATS systems (Workday, Greenhouse, Lever, Taleo, iCIMS) parse your CV — side by side. No signup, nothing uploads. Use it to fix CV parse issues before running a Vantage analysis.
 
 ## Just laid off?
 
-- [Just Laid Off — Read This First](https://vantage-livid.vercel.app/laid-off): A cohort-targeted landing page for the April 2026 tech layoff wave (Oracle 30k, Meta 8k, ASML 1.7k, Snap 1k, Nike 1.4k — ~42,000 newly job-hunting in a single month). Specific advice on the 3 things to fix on a CV before applying.
+- [Just Laid Off — Read This First](https://aimvantage.uk/laid-off): A cohort-targeted landing page for the April 2026 tech layoff wave (Oracle 30k, Meta 8k, ASML 1.7k, Snap 1k, Nike 1.4k — ~42,000 newly job-hunting in a single month). Specific advice on the 3 things to fix on a CV before applying.
 
 ### Company-specific advice for the April 2026 layoff cohort
 
-- [From Oracle (~30k)](https://vantage-livid.vercel.app/laid-off/from/oracle): Oracle alumni — Oracle skills framing, Taleo at next employer, severance/COBRA timing, network leverage.
-- [From Meta (~8k, eff. May 20)](https://vantage-livid.vercel.app/laid-off/from/meta): Meta alumni — using the May 20 runway, translating Meta-internal acronyms, AI/ML pivot, ex-Meta badge value window.
-- [From ASML (~1.7k)](https://vantage-livid.vercel.app/laid-off/from/asml): ASML alumni — semiconductor expertise framing, UK redundancy specifics, EU work eligibility leverage, Workday at next employer.
-- [From Snap (~1k)](https://vantage-livid.vercel.app/laid-off/from/snap): Snap alumni — AR/Lens experience targeting, Gen Z user research framing, equity vesting checks, Greenhouse/Lever at next employer.
-- [From Nike (~1.4k)](https://vantage-livid.vercel.app/laid-off/from/nike): Nike alumni — brand experience portability, athlete/sponsorship transferable skills, Portland market reality, Workday in retail/CPG.
+- [From Oracle (~30k)](https://aimvantage.uk/laid-off/from/oracle): Oracle alumni — Oracle skills framing, Taleo at next employer, severance/COBRA timing, network leverage.
+- [From Meta (~8k, eff. May 20)](https://aimvantage.uk/laid-off/from/meta): Meta alumni — using the May 20 runway, translating Meta-internal acronyms, AI/ML pivot, ex-Meta badge value window.
+- [From ASML (~1.7k)](https://aimvantage.uk/laid-off/from/asml): ASML alumni — semiconductor expertise framing, UK redundancy specifics, EU work eligibility leverage, Workday at next employer.
+- [From Snap (~1k)](https://aimvantage.uk/laid-off/from/snap): Snap alumni — AR/Lens experience targeting, Gen Z user research framing, equity vesting checks, Greenhouse/Lever at next employer.
+- [From Nike (~1.4k)](https://aimvantage.uk/laid-off/from/nike): Nike alumni — brand experience portability, athlete/sponsorship transferable skills, Portland market reality, Workday in retail/CPG.
 
 ## ATS Parser Guide
 
 Vendor-specific guides on how each major Applicant Tracking System parses CVs in 2026, with documented quirks and fixes:
 
-- [ATS Guide Hub](https://vantage-livid.vercel.app/ats): Overview of how 5 major ATSes read CVs.
-- [Workday](https://vantage-livid.vercel.app/ats/workday): Reads PDFs in document-stream order. Multi-column CVs get interleaved. Used by ~50% of Fortune 500 enterprises.
-- [Greenhouse](https://vantage-livid.vercel.app/ats/greenhouse): Strips emoji codepoints. Section detection by exact wording. Used by ~40% of Series B+ tech startups.
-- [Lever](https://vantage-livid.vercel.app/ats/lever): Historically drops PDF header/footer text. Modern parser. Used by Netflix, Shopify, Quora.
-- [Taleo](https://vantage-livid.vercel.app/ats/taleo): Oracle-owned legacy parser. Strict on standard section names. Common in financial services and public sector.
-- [iCIMS](https://vantage-livid.vercel.app/ats/icims): Configuration varies significantly by tenant. Skills extraction is weaker than newer ATSes.
-- [SmartRecruiters](https://vantage-livid.vercel.app/ats/smartrecruiters): Modern parser with aggressive keyword extraction. Used by Bosch, IKEA, LinkedIn, Visa, McDonald's.
-- [SAP SuccessFactors](https://vantage-livid.vercel.app/ats/sap-successfactors): Enterprise HCM, strict on section names and date formatting. Common in DACH, Fortune 500, global manufacturing.
+- [ATS Guide Hub](https://aimvantage.uk/ats): Overview of how 5 major ATSes read CVs.
+- [Workday](https://aimvantage.uk/ats/workday): Reads PDFs in document-stream order. Multi-column CVs get interleaved. Used by ~50% of Fortune 500 enterprises.
+- [Greenhouse](https://aimvantage.uk/ats/greenhouse): Strips emoji codepoints. Section detection by exact wording. Used by ~40% of Series B+ tech startups.
+- [Lever](https://aimvantage.uk/ats/lever): Historically drops PDF header/footer text. Modern parser. Used by Netflix, Shopify, Quora.
+- [Taleo](https://aimvantage.uk/ats/taleo): Oracle-owned legacy parser. Strict on standard section names. Common in financial services and public sector.
+- [iCIMS](https://aimvantage.uk/ats/icims): Configuration varies significantly by tenant. Skills extraction is weaker than newer ATSes.
+- [SmartRecruiters](https://aimvantage.uk/ats/smartrecruiters): Modern parser with aggressive keyword extraction. Used by Bosch, IKEA, LinkedIn, Visa, McDonald's.
+- [SAP SuccessFactors](https://aimvantage.uk/ats/sap-successfactors): Enterprise HCM, strict on section names and date formatting. Common in DACH, Fortune 500, global manufacturing.
 
 ## What you get in one analysis
 
@@ -50,82 +50,82 @@ Vendor-specific guides on how each major Applicant Tracking System parses CVs in
 
 ## Blog (long-form guides)
 
-- [Just laid off in April 2026? The 3 things to fix in your CV before you apply](https://vantage-livid.vercel.app/blog/just-laid-off-april-2026-cv-fix): Specific advice for tech employees laid off in the April 2026 wave. ATS parser checks, formatting strip-down, exact-match keyword tuning.
-- [Oracle, Meta, ASML, Snap, Nike: a layoff-week CV checklist](https://vantage-livid.vercel.app/blog/oracle-meta-asml-layoff-cv-checklist): A 5-step week-one checklist for tech employees laid off in April/May 2026. CV format, ATS parse, recruiter outreach, interview prep, LinkedIn moves.
-- [How to prep for any job interview in 20 minutes](https://vantage-livid.vercel.app/blog/how-to-prep-for-any-interview-in-20-minutes): A concrete 20-minute manual routine used by people applying to 50+ jobs a week. Markdown: /blog/how-to-prep-for-any-interview-in-20-minutes.md
-- [What ATS screening software actually checks in 2026](https://vantage-livid.vercel.app/blog/what-ats-actually-checks-in-2026): Plain-English breakdown of how modern applicant tracking systems parse CVs. Markdown: /blog/what-ats-actually-checks-in-2026.md
-- [The 4 cover letter tones, and when each one wins](https://vantage-livid.vercel.app/blog/the-4-cover-letter-tones-and-when-to-use-each): When to use Professional vs Warm vs Direct vs Creative, with the rule for picking. Markdown: /blog/the-4-cover-letter-tones-and-when-to-use-each.md
-- [How to use ChatGPT to prep for an interview (without sounding like a bot)](https://vantage-livid.vercel.app/blog/how-to-use-chatgpt-to-prep-for-an-interview): Six-prompt workflow with exact prompts and the rules for keeping output human. Markdown: /blog/how-to-use-chatgpt-to-prep-for-an-interview.md
-- [The 30-second CV review test recruiters actually run](https://vantage-livid.vercel.app/blog/the-30-second-cv-review-recruiters-actually-run): The four checkpoints recruiters scan in 30 seconds, what kills you, and the 5-minute fix. Markdown: /blog/the-30-second-cv-review-recruiters-actually-run.md
-- [The 5-minute interview pitch that gets you remembered](https://vantage-livid.vercel.app/blog/the-5-minute-interview-pitch-that-gets-you-remembered): The 5-block pitch structure (origin, expertise, why-now, why-them, ask) plus the 90-second compression. Markdown: /blog/the-5-minute-interview-pitch-that-gets-you-remembered.md
+- [Just laid off in April 2026? The 3 things to fix in your CV before you apply](https://aimvantage.uk/blog/just-laid-off-april-2026-cv-fix): Specific advice for tech employees laid off in the April 2026 wave. ATS parser checks, formatting strip-down, exact-match keyword tuning.
+- [Oracle, Meta, ASML, Snap, Nike: a layoff-week CV checklist](https://aimvantage.uk/blog/oracle-meta-asml-layoff-cv-checklist): A 5-step week-one checklist for tech employees laid off in April/May 2026. CV format, ATS parse, recruiter outreach, interview prep, LinkedIn moves.
+- [How to prep for any job interview in 20 minutes](https://aimvantage.uk/blog/how-to-prep-for-any-interview-in-20-minutes): A concrete 20-minute manual routine used by people applying to 50+ jobs a week. Markdown: /blog/how-to-prep-for-any-interview-in-20-minutes.md
+- [What ATS screening software actually checks in 2026](https://aimvantage.uk/blog/what-ats-actually-checks-in-2026): Plain-English breakdown of how modern applicant tracking systems parse CVs. Markdown: /blog/what-ats-actually-checks-in-2026.md
+- [The 4 cover letter tones, and when each one wins](https://aimvantage.uk/blog/the-4-cover-letter-tones-and-when-to-use-each): When to use Professional vs Warm vs Direct vs Creative, with the rule for picking. Markdown: /blog/the-4-cover-letter-tones-and-when-to-use-each.md
+- [How to use ChatGPT to prep for an interview (without sounding like a bot)](https://aimvantage.uk/blog/how-to-use-chatgpt-to-prep-for-an-interview): Six-prompt workflow with exact prompts and the rules for keeping output human. Markdown: /blog/how-to-use-chatgpt-to-prep-for-an-interview.md
+- [The 30-second CV review test recruiters actually run](https://aimvantage.uk/blog/the-30-second-cv-review-recruiters-actually-run): The four checkpoints recruiters scan in 30 seconds, what kills you, and the 5-minute fix. Markdown: /blog/the-30-second-cv-review-recruiters-actually-run.md
+- [The 5-minute interview pitch that gets you remembered](https://aimvantage.uk/blog/the-5-minute-interview-pitch-that-gets-you-remembered): The 5-block pitch structure (origin, expertise, why-now, why-them, ask) plus the 90-second compression. Markdown: /blog/the-5-minute-interview-pitch-that-gets-you-remembered.md
 
 ## Interview prep packs by company
 
 Company-specific interview prep packs. Each one has the company's signature interview pattern, 12 likely questions, 5 prep steps, common mistakes, and FAQ. Schema-tagged FAQPage + Article.
 
-- [Google](https://vantage-livid.vercel.app/interview-prep/google) — committee model, Googleyness rubric, Google-Docs-not-IDE coding
-- [Meta](https://vantage-livid.vercel.app/interview-prep/meta) — coding-heavy, fast-paced, impact-focused behavioural
-- [Amazon](https://vantage-livid.vercel.app/interview-prep/amazon) — Leadership Principles rubric, STAR-format expected
-- [Microsoft](https://vantage-livid.vercel.app/interview-prep/microsoft) — five-round loop, growth-mindset rubric, deep-dive technical
-- [OpenAI](https://vantage-livid.vercel.app/interview-prep/openai) — paid take-homes, mission-fit judgement, ML / systems depth
-- [Anthropic](https://vantage-livid.vercel.app/interview-prep/anthropic) — paid take-homes, RSP / safety judgement, alignment depth
-- [Apple](https://vantage-livid.vercel.app/interview-prep/apple) — design-quality bar, on-site multi-team panels
-- [Netflix](https://vantage-livid.vercel.app/interview-prep/netflix) — keeper test culture, senior-only hiring
-- [Tesla](https://vantage-livid.vercel.app/interview-prep/tesla) — first-principles, hardware-software, fast hiring-manager-decides
-- [Salesforce](https://vantage-livid.vercel.app/interview-prep/salesforce) — Ohana values, multi-tenant SaaS depth
-- [Uber](https://vantage-livid.vercel.app/interview-prep/uber) — owner / doer rubric, marketplace system design, Operations case format
-- [DoorDash](https://vantage-livid.vercel.app/interview-prep/doordash) — SQL screen, three-user-group framework, marketplace dispatch
-- [Spotify](https://vantage-livid.vercel.app/interview-prep/spotify) — paid take-home, Squad model, cross-functional weighting
-- [Snowflake](https://vantage-livid.vercel.app/interview-prep/snowflake) — SQL fluency required, multi-tenant data-warehouse depth, "Put customers first" rubric
-- [Databricks](https://vantage-livid.vercel.app/interview-prep/databricks) — Spark / lakehouse depth, "Truth seeking" rubric, Mosaic AI org distinction
-- [Stripe](https://vantage-livid.vercel.app/interview-prep/stripe) — long take-homes, code-quality bar, writing emphasis
-- [Shopify](https://vantage-livid.vercel.app/interview-prep/shopify) — Ruby ecosystem comfort, "trust the team" culture
-- [Airbnb](https://vantage-livid.vercel.app/interview-prep/airbnb) — design-systems thinking, host/guest empathy
-- [McKinsey](https://vantage-livid.vercel.app/interview-prep/mckinsey) — case interview format, structured problem-solving
-- [Goldman Sachs](https://vantage-livid.vercel.app/interview-prep/goldman-sachs) — Superday format, technical + behavioural depth
+- [Google](https://aimvantage.uk/interview-prep/google) — committee model, Googleyness rubric, Google-Docs-not-IDE coding
+- [Meta](https://aimvantage.uk/interview-prep/meta) — coding-heavy, fast-paced, impact-focused behavioural
+- [Amazon](https://aimvantage.uk/interview-prep/amazon) — Leadership Principles rubric, STAR-format expected
+- [Microsoft](https://aimvantage.uk/interview-prep/microsoft) — five-round loop, growth-mindset rubric, deep-dive technical
+- [OpenAI](https://aimvantage.uk/interview-prep/openai) — paid take-homes, mission-fit judgement, ML / systems depth
+- [Anthropic](https://aimvantage.uk/interview-prep/anthropic) — paid take-homes, RSP / safety judgement, alignment depth
+- [Apple](https://aimvantage.uk/interview-prep/apple) — design-quality bar, on-site multi-team panels
+- [Netflix](https://aimvantage.uk/interview-prep/netflix) — keeper test culture, senior-only hiring
+- [Tesla](https://aimvantage.uk/interview-prep/tesla) — first-principles, hardware-software, fast hiring-manager-decides
+- [Salesforce](https://aimvantage.uk/interview-prep/salesforce) — Ohana values, multi-tenant SaaS depth
+- [Uber](https://aimvantage.uk/interview-prep/uber) — owner / doer rubric, marketplace system design, Operations case format
+- [DoorDash](https://aimvantage.uk/interview-prep/doordash) — SQL screen, three-user-group framework, marketplace dispatch
+- [Spotify](https://aimvantage.uk/interview-prep/spotify) — paid take-home, Squad model, cross-functional weighting
+- [Snowflake](https://aimvantage.uk/interview-prep/snowflake) — SQL fluency required, multi-tenant data-warehouse depth, "Put customers first" rubric
+- [Databricks](https://aimvantage.uk/interview-prep/databricks) — Spark / lakehouse depth, "Truth seeking" rubric, Mosaic AI org distinction
+- [Stripe](https://aimvantage.uk/interview-prep/stripe) — long take-homes, code-quality bar, writing emphasis
+- [Shopify](https://aimvantage.uk/interview-prep/shopify) — Ruby ecosystem comfort, "trust the team" culture
+- [Airbnb](https://aimvantage.uk/interview-prep/airbnb) — design-systems thinking, host/guest empathy
+- [McKinsey](https://aimvantage.uk/interview-prep/mckinsey) — case interview format, structured problem-solving
+- [Goldman Sachs](https://aimvantage.uk/interview-prep/goldman-sachs) — Superday format, technical + behavioural depth
 
 ## Interview prep packs by role
 
 Role-specific question + prep packs. Each one has 12 most-asked questions, a 5-step prep routine, common mistakes, and FAQ.
 
-- [Software Engineer](https://vantage-livid.vercel.app/interview-questions/software-engineer)
-- [Product Manager](https://vantage-livid.vercel.app/interview-questions/product-manager)
-- [Data Scientist](https://vantage-livid.vercel.app/interview-questions/data-scientist)
-- [Product Designer](https://vantage-livid.vercel.app/interview-questions/product-designer)
-- [Marketing Manager](https://vantage-livid.vercel.app/interview-questions/marketing-manager)
-- [Sales Development Rep](https://vantage-livid.vercel.app/interview-questions/sales-development-rep)
-- [Customer Success Manager](https://vantage-livid.vercel.app/interview-questions/customer-success-manager)
-- [Frontend Developer](https://vantage-livid.vercel.app/interview-questions/frontend-developer)
-- [Backend Developer](https://vantage-livid.vercel.app/interview-questions/backend-developer)
-- [UX Researcher](https://vantage-livid.vercel.app/interview-questions/ux-researcher)
-- [DevOps Engineer](https://vantage-livid.vercel.app/interview-questions/devops-engineer)
-- [Engineering Manager](https://vantage-livid.vercel.app/interview-questions/engineering-manager)
-- [Account Executive](https://vantage-livid.vercel.app/interview-questions/account-executive)
-- [All role packs (hub page)](https://vantage-livid.vercel.app/interview-questions)
+- [Software Engineer](https://aimvantage.uk/interview-questions/software-engineer)
+- [Product Manager](https://aimvantage.uk/interview-questions/product-manager)
+- [Data Scientist](https://aimvantage.uk/interview-questions/data-scientist)
+- [Product Designer](https://aimvantage.uk/interview-questions/product-designer)
+- [Marketing Manager](https://aimvantage.uk/interview-questions/marketing-manager)
+- [Sales Development Rep](https://aimvantage.uk/interview-questions/sales-development-rep)
+- [Customer Success Manager](https://aimvantage.uk/interview-questions/customer-success-manager)
+- [Frontend Developer](https://aimvantage.uk/interview-questions/frontend-developer)
+- [Backend Developer](https://aimvantage.uk/interview-questions/backend-developer)
+- [UX Researcher](https://aimvantage.uk/interview-questions/ux-researcher)
+- [DevOps Engineer](https://aimvantage.uk/interview-questions/devops-engineer)
+- [Engineering Manager](https://aimvantage.uk/interview-questions/engineering-manager)
+- [Account Executive](https://aimvantage.uk/interview-questions/account-executive)
+- [All role packs (hub page)](https://aimvantage.uk/interview-questions)
 
 ## Changelog
 
-- [Changelog](https://vantage-livid.vercel.app/changelog): What's shipped on Vantage. Public release log updated as we ship — new features, fixes, security updates, and content additions.
+- [Changelog](https://aimvantage.uk/changelog): What's shipped on Vantage. Public release log updated as we ship — new features, fixes, security updates, and content additions.
 
 ## Feeds
 
-- [RSS feed](https://vantage-livid.vercel.app/rss.xml): Latest blog posts in RSS 2.0 format.
+- [RSS feed](https://aimvantage.uk/rss.xml): Latest blog posts in RSS 2.0 format.
 
 ## Legal
 
-- [Privacy Policy](https://vantage-livid.vercel.app/privacy)
-- [Terms of Service](https://vantage-livid.vercel.app/terms)
-- [Cookie Policy](https://vantage-livid.vercel.app/cookies)
+- [Privacy Policy](https://aimvantage.uk/privacy)
+- [Terms of Service](https://aimvantage.uk/terms)
+- [Cookie Policy](https://aimvantage.uk/cookies)
 
 ## Press
 
-- [Press kit](https://vantage-livid.vercel.app/press): Founder bio, company facts, brand assets, story angles, and direct contact for journalists and analysts. Direct line: giovanni.sizino.ennes@hotmail.co.uk
+- [Press kit](https://aimvantage.uk/press): Founder bio, company facts, brand assets, story angles, and direct contact for journalists and analysts. Direct line: giovanni.sizino.ennes@hotmail.co.uk
 
 ## Developer / Agent ecosystem
 
-- [Skills directory](https://vantage-livid.vercel.app/skills): Curated list of MCP servers and Claude Skills that pair with Vantage's job-application workflow. Includes cv-mirror-mcp (open-source, MIT), filesystem-mcp, github-mcp, brave-search-mcp.
-- [API documentation](https://vantage-livid.vercel.app/docs/api): Public API for the Vantage analysis engine. Endpoints: /analyze (3 tokens), /rewrite-tone (1 token), /interview/questions (2 tokens), /interview/evaluate (free), /credits. Currently in preview — request access via email.
+- [Skills directory](https://aimvantage.uk/skills): Curated list of MCP servers and Claude Skills that pair with Vantage's job-application workflow. Includes cv-mirror-mcp (open-source, MIT), filesystem-mcp, github-mcp, brave-search-mcp.
+- [API documentation](https://aimvantage.uk/docs/api): Public API for the Vantage analysis engine. Endpoints: /analyze (3 tokens), /rewrite-tone (1 token), /interview/questions (2 tokens), /interview/evaluate (free), /credits. Currently in preview — request access via email.
 
 ## Optional
 
-- [Full product context](https://vantage-livid.vercel.app/llms-full.txt): Extended description, FAQ, feature detail, and roadmap for LLM crawlers and AI assistants.
+- [Full product context](https://aimvantage.uk/llms-full.txt): Extended description, FAQ, feature detail, and roadmap for LLM crawlers and AI assistants.

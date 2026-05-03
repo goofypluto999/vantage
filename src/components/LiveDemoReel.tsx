@@ -242,7 +242,7 @@ export default function LiveDemoReel({ autoplay = true, aspectRatio = '16/10' }:
         <span className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-amber-400/80" />
         <span className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-emerald-400/80" />
         <div className="ml-3 flex-1 h-5 md:h-6 rounded-md bg-white/5 px-2.5 flex items-center text-[10px] md:text-xs text-white/40 font-mono">
-          vantage-livid.vercel.app/dashboard
+          aimvantage.uk/dashboard
         </div>
         <button
           onClick={() => setPaused((p) => !p)}

@@ -5,7 +5,7 @@ import { useTheme } from '../contexts/ThemeContext';
 import SEO from './SEO';
 import { useAuth } from '../App';
 
-const SITE_URL = 'https://vantage-livid.vercel.app';
+const SITE_URL = 'https://aimvantage.uk';
 
 /**
  * /refer — UTM-tagged share mechanism for existing users.

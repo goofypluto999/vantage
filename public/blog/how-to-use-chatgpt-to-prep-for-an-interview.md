@@ -5,7 +5,7 @@ author: "Gio"
 published: 2026-04-25
 reading_time: "8 min"
 tags: ["ChatGPT", "AI", "Interview Prep", "Job Search"]
-canonical: https://vantage-livid.vercel.app/blog/how-to-use-chatgpt-to-prep-for-an-interview
+canonical: https://aimvantage.uk/blog/how-to-use-chatgpt-to-prep-for-an-interview
 ---
 
 # How to use ChatGPT to prep for an interview (without sounding like a bot)
@@ -99,5 +99,5 @@ Six prompts. Twenty-five minutes. Or ninety seconds with Vantage. Either way, pr
 
 ---
 
-**Try Vantage:** https://vantage-livid.vercel.app
-**Pricing:** https://vantage-livid.vercel.app/pricing
+**Try Vantage:** https://aimvantage.uk
+**Pricing:** https://aimvantage.uk/pricing

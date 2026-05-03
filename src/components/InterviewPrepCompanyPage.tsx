@@ -4,7 +4,7 @@ import { useTheme } from '../contexts/ThemeContext';
 import { getCompanyPack, companyPacks } from '../data/companyPacks';
 import SEO from './SEO';
 
-const SITE_URL = 'https://vantage-livid.vercel.app';
+const SITE_URL = 'https://aimvantage.uk';
 
 /**
  * Programmatic SEO: /interview-prep/<company>

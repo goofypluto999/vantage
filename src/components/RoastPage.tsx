@@ -4,7 +4,7 @@ import { Flame, Twitter, Linkedin, Copy, ArrowRight, Loader2, AlertTriangle } fr
 import { useTheme } from '../contexts/ThemeContext';
 import SEO from './SEO';
 
-const SITE_URL = 'https://vantage-livid.vercel.app';
+const SITE_URL = 'https://aimvantage.uk';
 const API_BASE = import.meta.env.VITE_API_URL || '/api';
 
 const MIN_CHARS = 80;

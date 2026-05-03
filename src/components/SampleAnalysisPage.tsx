@@ -5,7 +5,7 @@ import { useTheme } from '../contexts/ThemeContext';
 import SEO from './SEO';
 import { getSampleAnalysis, type SampleAnalysis } from '../data/sampleAnalyses';
 
-const SITE_URL = 'https://vantage-livid.vercel.app';
+const SITE_URL = 'https://aimvantage.uk';
 
 /**
  * /sample/:slug — full public read-only Vantage outputs.

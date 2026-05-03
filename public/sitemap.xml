@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <sitemap>
-    <loc>https://vantage-livid.vercel.app/sitemap-pages.xml</loc>
+    <loc>https://aimvantage.uk/sitemap-pages.xml</loc>
     <lastmod>2026-05-01</lastmod>
   </sitemap>
   <sitemap>
-    <loc>https://vantage-livid.vercel.app/sitemap-blog.xml</loc>
+    <loc>https://aimvantage.uk/sitemap-blog.xml</loc>
     <lastmod>2026-05-01</lastmod>
   </sitemap>
   <sitemap>
-    <loc>https://vantage-livid.vercel.app/sitemap-roles.xml</loc>
+    <loc>https://aimvantage.uk/sitemap-roles.xml</loc>
     <lastmod>2026-05-01</lastmod>
   </sitemap>
   <sitemap>
-    <loc>https://vantage-livid.vercel.app/sitemap-companies.xml</loc>
+    <loc>https://aimvantage.uk/sitemap-companies.xml</loc>
     <lastmod>2026-05-01</lastmod>
   </sitemap>
 </sitemapindex>

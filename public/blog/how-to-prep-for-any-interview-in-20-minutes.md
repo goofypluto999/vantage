@@ -5,7 +5,7 @@ author: "Gio"
 published: 2026-04-24
 reading_time: "8 min"
 tags: ["Interview Prep", "Job Search", "AI Tools", "Career"]
-canonical: https://vantage-livid.vercel.app/blog/how-to-prep-for-any-interview-in-20-minutes
+canonical: https://aimvantage.uk/blog/how-to-prep-for-any-interview-in-20-minutes
 ---
 
 # How to prep for any job interview in 20 minutes
@@ -102,5 +102,5 @@ Ship it. Walk in prepared. Good luck.
 
 ---
 
-**Try Vantage:** https://vantage-livid.vercel.app
-**Pricing:** https://vantage-livid.vercel.app/pricing
+**Try Vantage:** https://aimvantage.uk
+**Pricing:** https://aimvantage.uk/pricing

@@ -5,7 +5,7 @@ author: "Gio"
 published: 2026-04-28
 reading_time: "6 min"
 tags: ["CV", "Resume", "Job Search", "Tailoring"]
-canonical: https://vantage-livid.vercel.app/blog/tailoring-every-resume-vs-the-smarter-alternative
+canonical: https://aimvantage.uk/blog/tailoring-every-resume-vs-the-smarter-alternative
 ---
 
 # Why tailoring every resume might be costing you interviews (and the smarter alternative)
@@ -75,5 +75,5 @@ Stop trying to perfect every application. Build one strong CV, three swappable a
 
 ---
 
-**Try Vantage:** https://vantage-livid.vercel.app
+**Try Vantage:** https://aimvantage.uk
 **Free ATS scanner:** https://cv-mirror-web.vercel.app

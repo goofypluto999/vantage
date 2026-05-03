@@ -3,7 +3,7 @@ import { ArrowRight, Check, X, Star, ExternalLink } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import SEO from './SEO';
 
-const SITE_URL = 'https://vantage-livid.vercel.app';
+const SITE_URL = 'https://aimvantage.uk';
 
 /**
  * /compare — comparison page targeting "vs" queries.

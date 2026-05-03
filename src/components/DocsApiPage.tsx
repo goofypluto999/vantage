@@ -3,7 +3,7 @@ import { Code, Lock, ArrowRight } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import SEO from './SEO';
 
-const SITE_URL = 'https://vantage-livid.vercel.app';
+const SITE_URL = 'https://aimvantage.uk';
 
 /**
  * /docs/api — public API documentation page.
@@ -121,7 +121,7 @@ export default function DocsApiPage() {
             Keys are scoped to your Vantage account and inherit your token balance.
           </p>
           <pre className={`${t.cardInner} rounded-md p-3 text-xs ${t.text} overflow-x-auto`}>
-{`curl -X POST https://vantage-livid.vercel.app/api/v1/analyze \\
+{`curl -X POST https://aimvantage.uk/api/v1/analyze \\
   -H "Authorization: Bearer vntg_..." \\
   -F "cv=@cv.pdf" \\
   -F "jobUrl=https://example.com/jobs/123"`}

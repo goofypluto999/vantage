@@ -4,7 +4,7 @@ import { useTheme } from '../contexts/ThemeContext';
 import SEO from './SEO';
 import { getVendorBySlug, atsVendors } from '../data/atsVendors';
 
-const SITE_URL = 'https://vantage-livid.vercel.app';
+const SITE_URL = 'https://aimvantage.uk';
 
 /**
  * /ats/:vendor — programmatic SEO pages for each major ATS.

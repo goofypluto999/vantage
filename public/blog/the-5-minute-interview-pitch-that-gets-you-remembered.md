@@ -5,7 +5,7 @@ author: "Gio"
 published: 2026-04-25
 reading_time: "6 min"
 tags: ["Interview Prep", "Pitch", "Job Search", "Career"]
-canonical: https://vantage-livid.vercel.app/blog/the-5-minute-interview-pitch-that-gets-you-remembered
+canonical: https://aimvantage.uk/blog/the-5-minute-interview-pitch-that-gets-you-remembered
 ---
 
 # The 5-minute interview pitch that gets you remembered
@@ -96,5 +96,5 @@ Build the long version. Deliver the short version. Walk in remembered.
 
 ---
 
-**Try Vantage:** https://vantage-livid.vercel.app
-**Pricing:** https://vantage-livid.vercel.app/pricing
+**Try Vantage:** https://aimvantage.uk
+**Pricing:** https://aimvantage.uk/pricing

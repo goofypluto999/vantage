@@ -5,7 +5,7 @@ import SEO from './SEO';
 import { getCompanyBySlug, laidOffCompanies } from '../data/laidOffCompanies';
 import { atsVendors } from '../data/atsVendors';
 
-const SITE_URL = 'https://vantage-livid.vercel.app';
+const SITE_URL = 'https://aimvantage.uk';
 
 /**
  * /laid-off/from/:company — programmatic pages for each company in the

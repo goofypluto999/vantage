@@ -4,7 +4,7 @@ import { useTheme } from '../contexts/ThemeContext';
 import SEO from './SEO';
 import { laidOffCompanies } from '../data/laidOffCompanies';
 
-const SITE_URL = 'https://vantage-livid.vercel.app';
+const SITE_URL = 'https://aimvantage.uk';
 
 /**
  * /laid-off — cohort-targeted landing page for April 2026 layoff wave.

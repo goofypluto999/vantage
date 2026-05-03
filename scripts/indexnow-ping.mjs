@@ -18,7 +18,7 @@ import { fileURLToPath } from 'node:url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '..');
 
-const HOST = 'vantage-livid.vercel.app';
+const HOST = 'aimvantage.uk';
 const KEY = '745e7c1576ba55e88704a1df0306edf7d3d8036cfd2141c8';
 const KEY_LOCATION = `https://${HOST}/${KEY}.txt`;
 const ENDPOINT = 'https://api.indexnow.org/indexnow';

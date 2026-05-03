@@ -5,7 +5,7 @@ author: "Gio"
 published: 2026-04-28
 reading_time: "6 min"
 tags: ["ATS", "CV", "Job Search", "Resume Parser"]
-canonical: https://vantage-livid.vercel.app/blog/500-applications-zero-interviews-the-ats-parse-problem
+canonical: https://aimvantage.uk/blog/500-applications-zero-interviews-the-ats-parse-problem
 ---
 
 # 500 applications, zero interviews: the ATS parse problem nobody talks about
@@ -83,4 +83,4 @@ If you have applied to hundreds of jobs and got nothing, do the 60-second parse 
 ---
 
 **Free ATS scanner:** https://cv-mirror-web.vercel.app
-**Try Vantage:** https://vantage-livid.vercel.app
+**Try Vantage:** https://aimvantage.uk

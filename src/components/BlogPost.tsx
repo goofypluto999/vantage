@@ -4,7 +4,7 @@ import { useTheme } from '../contexts/ThemeContext';
 import { getPostBySlug, blogPosts, type BlogSection } from '../data/blogPosts';
 import SEO from './SEO';
 
-const SITE_URL = 'https://vantage-livid.vercel.app';
+const SITE_URL = 'https://aimvantage.uk';
 
 export default function BlogPost() {
   const { slug } = useParams<{ slug: string }>();

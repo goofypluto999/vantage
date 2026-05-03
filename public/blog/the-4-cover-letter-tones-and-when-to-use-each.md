@@ -5,7 +5,7 @@ author: "Gio"
 published: 2026-04-24
 reading_time: "6 min"
 tags: ["Cover Letter", "Writing", "Job Search"]
-canonical: https://vantage-livid.vercel.app/blog/the-4-cover-letter-tones-and-when-to-use-each
+canonical: https://aimvantage.uk/blog/the-4-cover-letter-tones-and-when-to-use-each
 ---
 
 # The 4 cover letter tones, and when each one wins
@@ -113,5 +113,5 @@ Pick a tone. Write the letter. Ship it.
 
 ---
 
-**Try Vantage:** https://vantage-livid.vercel.app
-**Pricing:** https://vantage-livid.vercel.app/pricing
+**Try Vantage:** https://aimvantage.uk
+**Pricing:** https://aimvantage.uk/pricing
