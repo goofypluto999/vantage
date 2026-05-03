@@ -202,15 +202,15 @@ export default function LiveDemoReel({ autoplay = true, aspectRatio = '16/10' }:
   // variable + media query approach via a style block since Tailwind doesn't
   // do dynamic aspect-ratio breakpoints inline.
   return (
-    <div className="relative w-full max-w-[1180px] mx-auto">
+    <div className="relative w-full max-w-[1500px] mx-auto">
       {/* Outer violet glow so the panel pops off the lavender background */}
       <div
         aria-hidden="true"
-        className="absolute -inset-6 md:-inset-12 rounded-[48px] pointer-events-none"
+        className="absolute -inset-6 md:-inset-16 rounded-[48px] pointer-events-none"
         style={{
           background:
-            'radial-gradient(60% 50% at 50% 50%, rgba(124,58,237,0.35) 0%, rgba(79,70,229,0.18) 35%, transparent 70%)',
-          filter: 'blur(40px)',
+            'radial-gradient(60% 50% at 50% 50%, rgba(124,58,237,0.40) 0%, rgba(79,70,229,0.20) 35%, transparent 70%)',
+          filter: 'blur(48px)',
         }}
       />
 
@@ -262,7 +262,7 @@ export default function LiveDemoReel({ autoplay = true, aspectRatio = '16/10' }:
                 <p className="text-[11px] md:text-sm uppercase tracking-[0.2em] text-violet-300/80 mb-3 md:mb-5">
                   Vantage AI
                 </p>
-                <h2 className="text-2xl md:text-5xl lg:text-6xl font-bold text-white leading-[1.05]">
+                <h2 className="text-2xl md:text-5xl lg:text-7xl font-bold text-white leading-[1.05] tracking-tight">
                   From CV to interview-ready
                   <br />
                   <span className="bg-gradient-to-r from-[#A78BFA] to-[#6366F1] bg-clip-text text-transparent">
@@ -424,15 +424,15 @@ export default function LiveDemoReel({ autoplay = true, aspectRatio = '16/10' }:
               >
                 <GlassCard>
                   <h3 className="text-sm md:text-xl font-bold text-white mb-3 md:mb-5">CV Fit Score</h3>
-                  <div className="flex items-center gap-5 md:gap-7">
-                    <div className="md:scale-150 md:origin-left">
+                  <div className="flex items-center gap-5 md:gap-10">
+                    <div className="md:scale-[1.75] md:origin-left">
                       <FitScoreGauge score={SAMPLE.fitScore} />
                     </div>
                     <div className="flex-1">
-                      <p className="text-emerald-300 text-xs md:text-sm font-bold uppercase tracking-wide mb-1 md:mb-2">
+                      <p className="text-emerald-300 text-xs md:text-base font-bold uppercase tracking-wide mb-1 md:mb-3">
                         Strong fit
                       </p>
-                      <p className="text-white/70 text-xs md:text-sm leading-relaxed">
+                      <p className="text-white/70 text-xs md:text-base leading-relaxed">
                         Direct billing-systems experience, exact stakeholder profile.
                         One gap: no multi-currency tax exposure.
                       </p>
@@ -554,10 +554,10 @@ export default function LiveDemoReel({ autoplay = true, aspectRatio = '16/10' }:
                 <p className="text-[10px] md:text-xs uppercase tracking-[0.2em] text-emerald-300/80 mb-2 md:mb-3">
                   Done
                 </p>
-                <p className="text-6xl md:text-8xl lg:text-9xl font-bold text-white tabular-nums leading-none mb-2">
+                <p className="text-6xl md:text-8xl lg:text-[10rem] font-bold text-white tabular-nums leading-none mb-2 tracking-tight">
                   1<span className="text-white/40">:</span>32
                 </p>
-                <p className="text-xs md:text-base text-white/50 mb-6 md:mb-8">Average time per analysis</p>
+                <p className="text-xs md:text-lg text-white/50 mb-6 md:mb-10">Average time per analysis</p>
                 <motion.button
                   initial={{ boxShadow: '0 0 0 0 rgba(124,58,237,0)' }}
                   animate={{

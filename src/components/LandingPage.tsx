@@ -698,7 +698,7 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
       ================================================================ */}
       <section
         id="watch-it-work"
-        className="relative z-10 w-full px-4 sm:px-6 max-w-[1280px] mx-auto pt-24 md:pt-32 pb-16 md:pb-24"
+        className="relative z-10 w-full px-4 sm:px-6 max-w-[1640px] mx-auto pt-24 md:pt-32 pb-16 md:pb-24"
       >
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -725,7 +725,7 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
           viewport={{ once: true, margin: '-50px' }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
         >
-          <LiveDemoReel autoplay aspectRatio="16/10" />
+          <LiveDemoReel autoplay aspectRatio="16/9" />
         </motion.div>
       </section>
 
