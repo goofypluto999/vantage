@@ -114,11 +114,19 @@ function GlassCard({ children, className = '' }: { children: React.ReactNode; cl
 }
 
 // ─── Fit Score gauge — exact replica of Dashboard.tsx:752 ────────────────
-function FitScoreGauge({ score }: { score: number }) {
+function FitScoreGauge({
+  score,
+  className = 'w-24 h-24',
+  numClassName = 'text-2xl',
+}: {
+  score: number;
+  className?: string;
+  numClassName?: string;
+}) {
   const dashFull = 264;
   const ringColor = score >= 70 ? '#34d399' : score >= 40 ? '#fbbf24' : '#f87171';
   return (
-    <div className="relative w-24 h-24">
+    <div className={`relative flex-shrink-0 ${className}`}>
       <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
         <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="8" />
         <motion.circle
@@ -135,7 +143,7 @@ function FitScoreGauge({ score }: { score: number }) {
           transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
         />
       </svg>
-      <span className="absolute inset-0 flex items-center justify-center text-2xl font-bold text-white">
+      <span className={`absolute inset-0 flex items-center justify-center font-bold text-white ${numClassName}`}>
         <CountUp to={score} durationMs={1400} />
       </span>
     </div>
@@ -425,10 +433,12 @@ export default function LiveDemoReel({ autoplay = true, aspectRatio = '16/10' }:
                 <GlassCard>
                   <h3 className="text-sm md:text-xl font-bold text-white mb-3 md:mb-5">CV Fit Score</h3>
                   <div className="flex items-center gap-5 md:gap-10">
-                    <div className="md:scale-[1.75] md:origin-left">
-                      <FitScoreGauge score={SAMPLE.fitScore} />
-                    </div>
-                    <div className="flex-1">
+                    <FitScoreGauge
+                      score={SAMPLE.fitScore}
+                      className="w-24 h-24 md:w-40 md:h-40 lg:w-48 lg:h-48"
+                      numClassName="text-2xl md:text-4xl lg:text-5xl"
+                    />
+                    <div className="flex-1 min-w-0">
                       <p className="text-emerald-300 text-xs md:text-base font-bold uppercase tracking-wide mb-1 md:mb-3">
                         Strong fit
                       </p>
