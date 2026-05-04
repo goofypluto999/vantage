@@ -1,7 +1,8 @@
 import { useParams, Link, Navigate } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, Calendar, Clock, Star } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Calendar, Clock, Star, ExternalLink } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { getPostBySlug, blogPosts, type BlogSection } from '../data/blogPosts';
+import { getCrossLinks } from '../data/blogCrossLinks';
 import SEO from './SEO';
 
 const SITE_URL = 'https://aimvantage.uk';
@@ -198,6 +199,51 @@ export default function BlogPost() {
             Try it free <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
+
+        {/* Contextual cross-links — surfaces commercial-intent pages
+            relevant to this post's tags. Tag-overlap-scored so different
+            posts surface different links. */}
+        <section className="mt-16">
+          <h3 className={`text-sm uppercase tracking-widest ${t.textMuted} mb-4`}>Related on Vantage</h3>
+          <div className="grid sm:grid-cols-2 gap-3">
+            {getCrossLinks(post.tags, 4).map((link) => {
+              const isExternal = link.href.startsWith('http');
+              const Inner = (
+                <>
+                  <div className="flex items-start justify-between gap-3">
+                    <h4 className={`font-semibold ${t.text} group-hover:text-violet-400 transition`}>
+                      {link.label}
+                      {isExternal && <ExternalLink className="inline w-3 h-3 ml-1 -mt-1" />}
+                    </h4>
+                  </div>
+                  <p className={`mt-1.5 text-sm ${t.textSub} leading-relaxed`}>{link.description}</p>
+                </>
+              );
+              if (isExternal) {
+                return (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`${t.cardInner} rounded-xl p-4 hover:border-violet-400/40 transition group block`}
+                  >
+                    {Inner}
+                  </a>
+                );
+              }
+              return (
+                <Link
+                  key={link.href}
+                  to={link.href}
+                  className={`${t.cardInner} rounded-xl p-4 hover:border-violet-400/40 transition group block`}
+                >
+                  {Inner}
+                </Link>
+              );
+            })}
+          </div>
+        </section>
 
         {/* Related posts */}
         {related.length > 0 && (
