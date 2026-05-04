@@ -35,6 +35,7 @@ import PlaybookPage from './components/PlaybookPage';
 import VendorSourcesPage from './components/VendorSourcesPage';
 import ChangelogPage from './components/ChangelogPage';
 import RoastPage from './components/RoastPage';
+import FaqPage from './components/FaqPage';
 import SampleAnalysisPage from './components/SampleAnalysisPage';
 import DemoPreviewPage from './components/DemoPreviewPage';
 import SEO from './components/SEO';
@@ -240,6 +241,9 @@ function AppContent() {
             <Route path="/roast" element={<RoastPage />} />
             <Route path="/cover-letter-roast" element={<Navigate to="/roast" replace />} />
             <Route path="/roast-my-cover-letter" element={<Navigate to="/roast" replace />} />
+            <Route path="/faq" element={<FaqPage />} />
+            <Route path="/help" element={<Navigate to="/faq" replace />} />
+            <Route path="/questions" element={<Navigate to="/faq" replace />} />
             <Route path="/sample/:slug" element={<SampleAnalysisPage />} />
             <Route path="/example" element={<Navigate to="/sample/anthropic-senior-pm" replace />} />
             <Route path="/example/anthropic" element={<Navigate to="/sample/anthropic-senior-pm" replace />} />
