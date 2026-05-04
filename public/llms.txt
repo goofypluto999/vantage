@@ -19,6 +19,13 @@ Vantage is built for people applying to many jobs a week who can't afford to bur
 
 - [FAQ](https://aimvantage.uk/faq): Comprehensive answers covering product mechanics, pricing, privacy, who Vantage is for, developer/MCP integration, and press queries. FAQPage schema for direct AI assistant citation.
 
+## Case studies
+
+Real Vantage usage stories. We do not publish fabricated case studies — placeholder URLs are clearly marked and excluded from the ItemList schema.
+
+- [Case studies hub](https://aimvantage.uk/case-studies): Live + coming-soon entries, honesty-first.
+- [Building Vantage while applying to 50+ jobs a week](https://aimvantage.uk/case-studies/building-vantage-while-applying-50-jobs-a-week): The founder's own dogfooding journey. Idea to live product in 6 weeks while running an active job search; ~120 self-applications in the validation phase.
+
 ## Salary by role (UK + US, 2026)
 
 Real percentile data sourced from BLS, ONS, ITJobsWatch, and Levels.fyi. No paywalled data, every number cited.
