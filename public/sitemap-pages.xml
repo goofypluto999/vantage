@@ -84,6 +84,18 @@
     <priority>0.9</priority>
   </url>
   <url>
+    <loc>https://aimvantage.uk/sample/stripe-staff-pm</loc>
+    <lastmod>2026-05-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://aimvantage.uk/sample/openai-ml-eng</loc>
+    <lastmod>2026-05-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
     <loc>https://aimvantage.uk/press</loc>
     <lastmod>2026-04-30</lastmod>
     <changefreq>monthly</changefreq>
