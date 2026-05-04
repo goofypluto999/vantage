@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/0.9">
+  <url>
+    <loc>https://aimvantage.uk/</loc>
+    <image:image>
+      <image:loc>https://aimvantage.uk/og-image.png</image:loc>
+      <image:title>Vantage — AI Job Preparation Tool</image:title>
+      <image:caption>Upload your CV, paste a job link, get the full prep pack in 90 seconds.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://aimvantage.uk/logo-512.png</image:loc>
+      <image:title>Vantage logo</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://aimvantage.uk/favicon.svg</image:loc>
+      <image:title>Vantage favicon</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://aimvantage.uk/laid-off</loc>
+    <image:image>
+      <image:loc>https://aimvantage.uk/og-image.png</image:loc>
+      <image:title>Just laid off — read this first</image:title>
+      <image:caption>Vantage guide for the April 2026 tech layoff cohort: Oracle, Meta, ASML, Snap, Nike.</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://aimvantage.uk/roast</loc>
+    <image:image>
+      <image:loc>https://aimvantage.uk/og-image.png</image:loc>
+      <image:title>Free Cover Letter Roast — Vantage</image:title>
+      <image:caption>Free AI cover letter roast: savage, useful, share-worthy.</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://aimvantage.uk/sample/anthropic-senior-pm</loc>
+    <image:image>
+      <image:loc>https://aimvantage.uk/og-image.png</image:loc>
+      <image:title>Sample Vantage analysis — Anthropic Senior PM</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://aimvantage.uk/sample/stripe-staff-pm</loc>
+    <image:image>
+      <image:loc>https://aimvantage.uk/og-image.png</image:loc>
+      <image:title>Sample Vantage analysis — Stripe Staff PM</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://aimvantage.uk/sample/openai-ml-eng</loc>
+    <image:image>
+      <image:loc>https://aimvantage.uk/og-image.png</image:loc>
+      <image:title>Sample Vantage analysis — OpenAI ML Engineer</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://aimvantage.uk/alternatives</loc>
+    <image:image>
+      <image:loc>https://aimvantage.uk/og-image.png</image:loc>
+      <image:title>Alternatives to Jobscan, Teal, Final Round AI &amp; Resume Worded</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://aimvantage.uk/compare</loc>
+    <image:image>
+      <image:loc>https://aimvantage.uk/og-image.png</image:loc>
+      <image:title>Vantage vs Teal vs Resume.io vs Jobscan</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://aimvantage.uk/faq</loc>
+    <image:image>
+      <image:loc>https://aimvantage.uk/og-image.png</image:loc>
+      <image:title>Vantage FAQ — common questions about AI job preparation</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://aimvantage.uk/pricing</loc>
+    <image:image>
+      <image:loc>https://aimvantage.uk/og-image.png</image:loc>
+      <image:title>Vantage pricing — £5 starter, £12/mo Pro, £20/mo Premium</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://aimvantage.uk/ats</loc>
+    <image:image>
+      <image:loc>https://aimvantage.uk/og-image.png</image:loc>
+      <image:title>ATS Parser Guide — how 7 ATSes read CVs in 2026</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://aimvantage.uk/blog</loc>
+    <image:image>
+      <image:loc>https://aimvantage.uk/og-image.png</image:loc>
+      <image:title>Vantage Blog — AI job prep, ATS, cover letters, interview strategy</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://aimvantage.uk/skills</loc>
+    <image:image>
+      <image:loc>https://aimvantage.uk/og-image.png</image:loc>
+      <image:title>Vantage Skills Directory — MCP servers and Claude Skills</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://aimvantage.uk/playbook</loc>
+    <image:image>
+      <image:loc>https://aimvantage.uk/og-image.png</image:loc>
+      <image:title>Vantage Layoff Playbook</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://aimvantage.uk/press</loc>
+    <image:image>
+      <image:loc>https://aimvantage.uk/og-image.png</image:loc>
+      <image:title>Vantage Press Kit</image:title>
+    </image:image>
+  </url>
+</urlset>

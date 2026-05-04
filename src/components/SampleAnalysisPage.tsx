@@ -336,6 +336,39 @@ function SampleAnalysisContent({ sample, t }: { sample: SampleAnalysis; t: any }
             <Lock className="w-3 h-3" /> No subscription · Cancel any time · EU-hosted
           </div>
         </div>
+
+        {/* Cross-links to other proof surfaces */}
+        <div className={`mt-10 ${t.cardInner} rounded-2xl p-6 md:p-8`}>
+          <p className={`text-xs uppercase tracking-widest font-semibold mb-3 ${t.textMuted}`}>
+            More from Vantage
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+            <Link to="/sample/anthropic-senior-pm" className={`${t.text} hover:text-violet-400 transition`}>
+              → Sample: Anthropic Senior PM
+            </Link>
+            <Link to="/sample/stripe-staff-pm" className={`${t.text} hover:text-violet-400 transition`}>
+              → Sample: Stripe Staff PM
+            </Link>
+            <Link to="/sample/openai-ml-eng" className={`${t.text} hover:text-violet-400 transition`}>
+              → Sample: OpenAI ML Engineer
+            </Link>
+            <Link to="/alternatives" className={`${t.text} hover:text-violet-400 transition`}>
+              → Vantage vs Jobscan / Teal / Final Round AI
+            </Link>
+            <Link to="/compare" className={`${t.text} hover:text-violet-400 transition`}>
+              → Side-by-side comparison
+            </Link>
+            <Link to="/faq" className={`${t.text} hover:text-violet-400 transition`}>
+              → Frequently asked questions
+            </Link>
+            <Link to="/roast" className={`${t.text} hover:text-violet-400 transition`}>
+              → Free Cover Letter Roast
+            </Link>
+            <Link to="/playbook" className={`${t.text} hover:text-violet-400 transition`}>
+              → Layoff Playbook
+            </Link>
+          </div>
+        </div>
       </div>
     </div>
   );

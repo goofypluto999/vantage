@@ -244,6 +244,29 @@ export default function ComparePage() {
             Try free <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
+
+        {/* Deep alternative pages — internal linking for SEO + curious browsers */}
+        <section className="mt-12">
+          <h2 className={`text-xl font-bold ${t.text} mb-4`}>Detailed alternative breakdowns</h2>
+          <div className="grid sm:grid-cols-2 gap-3">
+            <Link to="/alternatives/jobscan" className={`${t.cardInner} rounded-xl p-4 hover:border-violet-400/40 transition group`}>
+              <div className={`text-sm font-semibold ${t.text}`}>Jobscan alternative →</div>
+              <p className={`text-xs ${t.textMuted} mt-1`}>$49.95/mo keyword matcher vs £5 full prep pack</p>
+            </Link>
+            <Link to="/alternatives/teal" className={`${t.cardInner} rounded-xl p-4 hover:border-violet-400/40 transition group`}>
+              <div className={`text-sm font-semibold ${t.text}`}>Teal alternative →</div>
+              <p className={`text-xs ${t.textMuted} mt-1`}>Tracker vs prep tool — when to use each</p>
+            </Link>
+            <Link to="/alternatives/final-round-ai" className={`${t.cardInner} rounded-xl p-4 hover:border-violet-400/40 transition group`}>
+              <div className={`text-sm font-semibold ${t.text}`}>Final Round AI alternative →</div>
+              <p className={`text-xs ${t.textMuted} mt-1`}>The ethical alternative to in-call AI cheating</p>
+            </Link>
+            <Link to="/alternatives/resume-worded" className={`${t.cardInner} rounded-xl p-4 hover:border-violet-400/40 transition group`}>
+              <div className={`text-sm font-semibold ${t.text}`}>Resume Worded alternative →</div>
+              <p className={`text-xs ${t.textMuted} mt-1`}>Generic CV score vs role-specific fit + cover letter</p>
+            </Link>
+          </div>
+        </section>
       </main>
     </div>
   );

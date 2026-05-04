@@ -16,4 +16,8 @@
     <loc>https://aimvantage.uk/sitemap-companies.xml</loc>
     <lastmod>2026-05-01</lastmod>
   </sitemap>
+  <sitemap>
+    <loc>https://aimvantage.uk/sitemap-images.xml</loc>
+    <lastmod>2026-05-04</lastmod>
+  </sitemap>
 </sitemapindex>
