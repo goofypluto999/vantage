@@ -37,6 +37,7 @@ import ChangelogPage from './components/ChangelogPage';
 import RoastPage from './components/RoastPage';
 import FaqPage from './components/FaqPage';
 import AlternativesPage, { AlternativesHub } from './components/AlternativesPage';
+import LinkedinOptimizationPage from './components/LinkedinOptimizationPage';
 import SampleAnalysisPage from './components/SampleAnalysisPage';
 import DemoPreviewPage from './components/DemoPreviewPage';
 import SEO from './components/SEO';
@@ -257,6 +258,9 @@ function AppContent() {
             <Route path="/vs/resume-worded" element={<Navigate to="/alternatives/resume-worded" replace />} />
             <Route path="/vs/resume-io" element={<Navigate to="/compare" replace />} />
             <Route path="/vs" element={<Navigate to="/alternatives" replace />} />
+            <Route path="/linkedin-optimization" element={<LinkedinOptimizationPage />} />
+            <Route path="/linkedin" element={<Navigate to="/linkedin-optimization" replace />} />
+            <Route path="/linkedin-profile" element={<Navigate to="/linkedin-optimization" replace />} />
             <Route path="/sample/:slug" element={<SampleAnalysisPage />} />
             <Route path="/example" element={<Navigate to="/sample/anthropic-senior-pm" replace />} />
             <Route path="/example/anthropic" element={<Navigate to="/sample/anthropic-senior-pm" replace />} />

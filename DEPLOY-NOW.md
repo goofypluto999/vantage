@@ -8,6 +8,30 @@
 
 ---
 
+## ★ ONE-COMMAND PUBLISH (does sections 1, 4, 5, 10 in one go)
+
+After `git push origin master` and Vercel finishes deploying:
+
+```powershell
+cd "C:\Cloaude Logic\vantage"
+node --env-file=.env scripts/publish-everything.mjs
+```
+
+This single command:
+- Reads every blog post in `public/blog/*.md`
+- For each: ensures DEV.to has it published (publishes existing draft if one exists, creates+publishes if not, skips if already live)
+- Same for Hashnode (via GraphQL)
+- Re-pings IndexNow with the full URL list at the end
+- Prints a summary table of every URL
+
+Spam-safe: 3-second pause between every API call. Total runtime ~2 minutes for 12 posts × 2 platforms = 24 publishes.
+
+**This replaces sections 4, 5, and 10 below — you no longer need to click Publish on individual drafts or paste URLs into IndexNow.**
+
+The sections below remain accurate for the things that genuinely need your hands (Search Console domain verification, directory submissions with terms-of-service, Quora posting). Those are architectural — I cannot do them for you and would not be able to even with full credentials.
+
+---
+
 ## 0. Push the code
 
 ```

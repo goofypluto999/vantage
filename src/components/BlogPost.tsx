@@ -55,6 +55,47 @@ export default function BlogPost() {
     ],
   };
 
+  // HowTo schema for procedural posts. Extracts steps from the first
+  // ordered-list section. Google heavily devalued HowTo rich-results in
+  // 2024 but AI assistants (Claude/ChatGPT/Perplexity) still parse it as
+  // structured procedural signal when answering "how to X" queries.
+  const HOW_TO_SLUGS = new Set([
+    'how-to-prep-for-any-interview-in-20-minutes',
+    'how-to-spot-a-ghost-job-in-30-seconds',
+    'how-to-use-chatgpt-to-prep-for-an-interview',
+    'the-30-second-cv-review-recruiters-actually-run',
+    'the-5-minute-interview-pitch-that-gets-you-remembered',
+  ]);
+
+  let howToSchema: object | null = null;
+  if (HOW_TO_SLUGS.has(post.slug)) {
+    const firstOl = post.sections.find((s) => s.type === 'ol');
+    if (firstOl && firstOl.type === 'ol' && firstOl.items.length >= 3) {
+      howToSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'HowTo',
+        name: post.title,
+        description: post.description,
+        image: `${SITE_URL}/og-image.png`,
+        totalTime: post.slug.includes('20-minutes')
+          ? 'PT20M'
+          : post.slug.includes('30-second')
+          ? 'PT30S'
+          : post.slug.includes('5-minute')
+          ? 'PT5M'
+          : 'PT15M',
+        step: firstOl.items.map((text, i) => ({
+          '@type': 'HowToStep',
+          position: i + 1,
+          name: `Step ${i + 1}`,
+          text,
+        })),
+      };
+    }
+  }
+
+  const allSchemas = [articleSchema, breadcrumbSchema, ...(howToSchema ? [howToSchema] : [])];
+
   return (
     <div className="min-h-screen" style={{ background: t.pageBg }}>
       <SEO
@@ -68,7 +109,7 @@ export default function BlogPost() {
           author: post.author,
           tags: post.tags,
         }}
-        jsonLd={[articleSchema, breadcrumbSchema]}
+        jsonLd={allSchemas}
       />
 
       {/* Nav */}
