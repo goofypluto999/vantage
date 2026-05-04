@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, ExternalLink, Star, Shield, Zap, FileSearch } from 'lucide-react';
+import { ArrowRight, ExternalLink, Star, Shield, Zap, FileSearch, MessageSquare, Target, Users, Briefcase } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import SEO from './SEO';
 
@@ -17,13 +17,37 @@ export default function ToolsPage() {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
     name: 'Free job search tools by Vantage Labs',
-    numberOfItems: 1,
+    numberOfItems: 5,
     itemListElement: [
       {
         '@type': 'ListItem',
         position: 1,
         url: 'https://cv-mirror-web.vercel.app/',
-        name: 'CV Mirror — Free ATS Scanner',
+        name: 'CV Mirror — Free ATS Resume Checker',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        url: `${SITE_URL}/roast`,
+        name: 'Cover Letter Roast — Free AI Feedback',
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        url: `${SITE_URL}/interview-prep`,
+        name: 'Interview Prep Packs by Company',
+      },
+      {
+        '@type': 'ListItem',
+        position: 4,
+        url: `${SITE_URL}/interview-questions`,
+        name: 'Interview Questions by Role',
+      },
+      {
+        '@type': 'ListItem',
+        position: 5,
+        url: `${SITE_URL}/laid-off`,
+        name: 'Layoff Recovery Guide (April 2026 cohort)',
       },
     ],
   };
@@ -40,8 +64,8 @@ export default function ToolsPage() {
   return (
     <div className="min-h-screen" style={{ background: t.pageBg }}>
       <SEO
-        title="Free Tools by Vantage Labs"
-        description="Free job search and CV tools by Vantage Labs. CV Mirror — a free, fully client-side ATS scanner that simulates how 5 real applicant tracking systems parse your CV. No signup."
+        title="Free ATS Resume Checker, Cover Letter Feedback, and Interview Prep Tools"
+        description="Free job search tools by Vantage Labs: ATS resume checker (CV Mirror), AI cover letter feedback (Roast), interview prep packs by company and role, and LinkedIn-friendly CV optimisation. No signup, no upsell wall."
         path="/tools"
         jsonLd={[itemListSchema, breadcrumbSchema]}
       />
@@ -159,6 +183,137 @@ export default function ToolsPage() {
             </div>
           </div>
         </article>
+
+        {/* Keyword-mirror cards: capture searches like "ATS resume checker",
+            "free cover letter feedback", "interview prep tools" by exposing
+            the same navigation surface competitors do. Every card is real;
+            no thin content. */}
+        <section className="mt-16">
+          <h2 className={`text-2xl sm:text-3xl font-bold ${t.text} mb-2`}>
+            What are you trying to do?
+          </h2>
+          <p className={`${t.textSub} mb-6`}>
+            Pick the tool that matches your job-search task. All free, no signup.
+          </p>
+          <div className="grid sm:grid-cols-2 gap-4">
+            <a
+              href="https://cv-mirror-web.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`${t.glass} rounded-xl p-5 hover:border-violet-400/40 transition group block`}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <div className={`text-xs uppercase tracking-widest ${t.textMuted} font-bold`}>
+                    Free · No signup
+                  </div>
+                  <h3 className={`text-lg font-bold ${t.text} mt-1 group-hover:text-violet-500 transition`}>
+                    ATS Resume Checker
+                  </h3>
+                  <p className={`text-sm ${t.textSub} mt-2 leading-relaxed`}>
+                    Drop your CV. See how 5 real ATS systems (Workday, Greenhouse, Lever, Taleo, iCIMS) parse it side by side. Nothing uploads.
+                  </p>
+                </div>
+                <FileSearch className="w-5 h-5 text-violet-400 flex-shrink-0" />
+              </div>
+            </a>
+            <Link
+              to="/roast"
+              className={`${t.glass} rounded-xl p-5 hover:border-violet-400/40 transition group block`}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <div className={`text-xs uppercase tracking-widest ${t.textMuted} font-bold`}>
+                    Free · No signup
+                  </div>
+                  <h3 className={`text-lg font-bold ${t.text} mt-1 group-hover:text-violet-500 transition`}>
+                    Cover Letter Feedback (Roast)
+                  </h3>
+                  <p className={`text-sm ${t.textSub} mt-2 leading-relaxed`}>
+                    Savage but useful AI roast of your cover letter. Quotes your worst lines, names the cliché, gives the better swap. 10 seconds.
+                  </p>
+                </div>
+                <MessageSquare className="w-5 h-5 text-violet-400 flex-shrink-0" />
+              </div>
+            </Link>
+            <Link
+              to="/interview-prep"
+              className={`${t.glass} rounded-xl p-5 hover:border-violet-400/40 transition group block`}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <div className={`text-xs uppercase tracking-widest ${t.textMuted} font-bold`}>
+                    Free guides · 20 companies
+                  </div>
+                  <h3 className={`text-lg font-bold ${t.text} mt-1 group-hover:text-violet-500 transition`}>
+                    Interview Prep by Company
+                  </h3>
+                  <p className={`text-sm ${t.textSub} mt-2 leading-relaxed`}>
+                    Google, Meta, Amazon, Stripe, OpenAI, Anthropic and 14 more. Each pack: signature interview pattern, 12 likely questions, common mistakes.
+                  </p>
+                </div>
+                <Target className="w-5 h-5 text-violet-400 flex-shrink-0" />
+              </div>
+            </Link>
+            <Link
+              to="/interview-questions"
+              className={`${t.glass} rounded-xl p-5 hover:border-violet-400/40 transition group block`}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <div className={`text-xs uppercase tracking-widest ${t.textMuted} font-bold`}>
+                    Free guides · 13 roles
+                  </div>
+                  <h3 className={`text-lg font-bold ${t.text} mt-1 group-hover:text-violet-500 transition`}>
+                    Interview Questions by Role
+                  </h3>
+                  <p className={`text-sm ${t.textSub} mt-2 leading-relaxed`}>
+                    Software Engineer, PM, Data Scientist, Frontend, DevOps, Marketing Manager, and more. 12 most-asked questions per role.
+                  </p>
+                </div>
+                <Briefcase className="w-5 h-5 text-violet-400 flex-shrink-0" />
+              </div>
+            </Link>
+            <Link
+              to="/laid-off"
+              className={`${t.glass} rounded-xl p-5 hover:border-violet-400/40 transition group block`}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <div className={`text-xs uppercase tracking-widest ${t.textMuted} font-bold`}>
+                    Free guide · 5 companies
+                  </div>
+                  <h3 className={`text-lg font-bold ${t.text} mt-1 group-hover:text-violet-500 transition`}>
+                    Layoff Recovery Playbook
+                  </h3>
+                  <p className={`text-sm ${t.textSub} mt-2 leading-relaxed`}>
+                    Specifically for the April 2026 wave (Oracle, Meta, ASML, Snap, Nike). What to fix on your CV first, what to do in week 1, when to apply.
+                  </p>
+                </div>
+                <Users className="w-5 h-5 text-violet-400 flex-shrink-0" />
+              </div>
+            </Link>
+            <Link
+              to="/playbook"
+              className={`${t.glass} rounded-xl p-5 hover:border-violet-400/40 transition group block`}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <div className={`text-xs uppercase tracking-widest ${t.textMuted} font-bold`}>
+                    Free PDF playbook
+                  </div>
+                  <h3 className={`text-lg font-bold ${t.text} mt-1 group-hover:text-violet-500 transition`}>
+                    The Vantage Playbook
+                  </h3>
+                  <p className={`text-sm ${t.textSub} mt-2 leading-relaxed`}>
+                    The exact 6-step routine I used when applying to 50 jobs a week. CV format, parse-test, application prep, mock interview, follow-up.
+                  </p>
+                </div>
+                <Zap className="w-5 h-5 text-violet-400 flex-shrink-0" />
+              </div>
+            </Link>
+          </div>
+        </section>
 
         {/* Recommended workflow callout */}
         <section className={`mt-12 ${t.cardInner} rounded-2xl p-6 sm:p-8`}>

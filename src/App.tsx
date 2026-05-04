@@ -251,6 +251,12 @@ function AppContent() {
             <Route path="/teal-alternative" element={<Navigate to="/alternatives/teal" replace />} />
             <Route path="/final-round-ai-alternative" element={<Navigate to="/alternatives/final-round-ai" replace />} />
             <Route path="/resume-worded-alternative" element={<Navigate to="/alternatives/resume-worded" replace />} />
+            <Route path="/vs/jobscan" element={<Navigate to="/alternatives/jobscan" replace />} />
+            <Route path="/vs/teal" element={<Navigate to="/alternatives/teal" replace />} />
+            <Route path="/vs/final-round-ai" element={<Navigate to="/alternatives/final-round-ai" replace />} />
+            <Route path="/vs/resume-worded" element={<Navigate to="/alternatives/resume-worded" replace />} />
+            <Route path="/vs/resume-io" element={<Navigate to="/compare" replace />} />
+            <Route path="/vs" element={<Navigate to="/alternatives" replace />} />
             <Route path="/sample/:slug" element={<SampleAnalysisPage />} />
             <Route path="/example" element={<Navigate to="/sample/anthropic-senior-pm" replace />} />
             <Route path="/example/anthropic" element={<Navigate to="/sample/anthropic-senior-pm" replace />} />

@@ -80,26 +80,56 @@
     }
     </script>
 
-    <!-- Structured data: Organization -->
+    <!-- Structured data: Organization with strong disambiguation signals.
+         Google currently confuses "Vantage" with multiple unrelated entities:
+         AI-Vantage Training (UK training institute), Vantage AI (Netherlands
+         data-science consultancy), Vantagepoint AI (US trading software),
+         Advantage.ai (recruiter platform). The disambiguatingDescription,
+         knowsAbout, and audience fields are the strongest signals we can give
+         Google's entity resolver to claim our own knowledge-graph node. -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "Organization",
       "name": "Vantage",
-      "alternateName": "Vantage AI",
+      "legalName": "Vantage Labs",
+      "alternateName": ["Vantage AI", "Vantage by aimvantage.uk", "Vantage Job Prep"],
       "url": "https://aimvantage.uk/",
       "logo": "https://aimvantage.uk/favicon.svg",
-      "description": "AI job preparation tool. Upload your CV, paste a job link, get the full prep pack in ~90 seconds.",
+      "image": "https://aimvantage.uk/og-image.png",
+      "description": "Vantage is an AI job application preparation tool launched in 2026 at aimvantage.uk. Users upload a CV and paste a job URL; Vantage returns a complete prep pack in approximately 90 seconds: company intelligence, tailored cover letter, mock interview questions, CV fit score, and a 5-minute pitch outline.",
+      "disambiguatingDescription": "Distinct from AI-Vantage Training (UK AI/ML training institute), Vantage AI (Netherlands data-science consultancy), Vantagepoint AI (US trading-software firm), and Advantage.ai (recruiter platform). Vantage at aimvantage.uk is a self-serve AI tool for individual job seekers, not a training school, not a consultancy, not trading software, and not a recruiter-side product.",
       "slogan": "Clarity in the Chaos.",
       "foundingDate": "2026",
       "founder": {
         "@type": "Person",
-        "name": "Gio"
+        "name": "Giovanni Sizino-Ennes",
+        "alternateName": "Gio",
+        "url": "https://aimvantage.uk/press"
+      },
+      "knowsAbout": [
+        "AI job preparation",
+        "Cover letter generation",
+        "ATS resume parsing",
+        "Interview question prediction",
+        "CV-to-role fit scoring",
+        "Mock interview practice",
+        "Layoff recovery for tech workers",
+        "Career transition for product, engineering, and data roles"
+      ],
+      "areaServed": {
+        "@type": "Place",
+        "name": "Worldwide (English-language job applications)"
+      },
+      "audience": {
+        "@type": "Audience",
+        "audienceType": "Job seekers, recently laid-off tech workers, career changers, graduates with multiple applications per week"
       },
       "sameAs": [
         "https://cv-mirror-web.vercel.app/",
         "https://www.producthunt.com/products/vantage",
-        "https://theresanaiforthat.com/ai/vantage/"
+        "https://theresanaiforthat.com/ai/vantage/",
+        "https://github.com/goofypluto999/vantage"
       ],
       "subOrganization": {
         "@type": "WebApplication",

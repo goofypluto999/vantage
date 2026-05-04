@@ -196,3 +196,4 @@ Sitemap: https://aimvantage.uk/sitemap-blog.xml
 Sitemap: https://aimvantage.uk/sitemap-roles.xml
 Sitemap: https://aimvantage.uk/sitemap-companies.xml
 Sitemap: https://aimvantage.uk/sitemap-images.xml
+Sitemap: https://aimvantage.uk/sitemap.txt

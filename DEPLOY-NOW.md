@@ -17,9 +17,40 @@ git push origin master
 
 This deploys: FAQ, /alternatives x4, live stats counter, llms.txt refresh,
 canonical-URL fix in index.html, sitemap-images.xml, internal cross-links,
-DEV.to + Hashnode crosspost scripts.
+DEV.to + Hashnode crosspost scripts, expanded /tools page with keyword-mirror
+entries, brand disambiguation in Organization schema, /vs/* redirect routes.
 
 Wait for Vercel to finish deploying before continuing (≤ 90 seconds).
+
+## 0b. Redeploy CV Mirror (sister site backlink fix)
+
+CV Mirror at `C:\Cloaude Logic\cv-mirror-web` had 9 stale references to
+`vantage-livid.vercel.app` instead of `aimvantage.uk`. They've been fixed in
+the source tree. Deploy them:
+
+```
+cd "C:\Cloaude Logic\cv-mirror-web"
+npx vercel --prod
+```
+
+(Or whatever your existing deploy flow is.) **This is a real backlink leak fix** —
+CV Mirror is a DA-30+ sister site that should link to aimvantage.uk, not the
+old preview domain.
+
+## 0c. Token security — REVOKE FIRST
+
+If you pasted DEV.to or Hashnode tokens in chat (you did), revoke them at:
+- https://dev.to/settings/extensions
+- https://hashnode.com/settings/developer
+
+Then create new tokens and pass them to scripts via PowerShell environment
+variables — never type them in chat:
+
+```powershell
+$env:DEV_API_TOKEN = "new_token_here"
+$env:HASHNODE_TOKEN = "new_token_here"
+$env:HASHNODE_PUBLICATION_ID = "your_pub_id"
+```
 
 ---
 
