@@ -36,6 +36,7 @@ import VendorSourcesPage from './components/VendorSourcesPage';
 import ChangelogPage from './components/ChangelogPage';
 import RoastPage from './components/RoastPage';
 import FaqPage from './components/FaqPage';
+import AlternativesPage, { AlternativesHub } from './components/AlternativesPage';
 import SampleAnalysisPage from './components/SampleAnalysisPage';
 import DemoPreviewPage from './components/DemoPreviewPage';
 import SEO from './components/SEO';
@@ -244,6 +245,12 @@ function AppContent() {
             <Route path="/faq" element={<FaqPage />} />
             <Route path="/help" element={<Navigate to="/faq" replace />} />
             <Route path="/questions" element={<Navigate to="/faq" replace />} />
+            <Route path="/alternatives" element={<AlternativesHub />} />
+            <Route path="/alternatives/:competitor" element={<AlternativesPage />} />
+            <Route path="/jobscan-alternative" element={<Navigate to="/alternatives/jobscan" replace />} />
+            <Route path="/teal-alternative" element={<Navigate to="/alternatives/teal" replace />} />
+            <Route path="/final-round-ai-alternative" element={<Navigate to="/alternatives/final-round-ai" replace />} />
+            <Route path="/resume-worded-alternative" element={<Navigate to="/alternatives/resume-worded" replace />} />
             <Route path="/sample/:slug" element={<SampleAnalysisPage />} />
             <Route path="/example" element={<Navigate to="/sample/anthropic-senior-pm" replace />} />
             <Route path="/example/anthropic" element={<Navigate to="/sample/anthropic-senior-pm" replace />} />
