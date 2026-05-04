@@ -10,19 +10,42 @@ const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL |
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 const SUPABASE_ANON_KEY = process.env.VITE_SUPABASE_ANON_KEY || '';
 
+async function fetchCount(table: string): Promise<number> {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?select=count`, {
+      headers: {
+        'apikey': SUPABASE_SERVICE_KEY,
+        'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+        'Prefer': 'count=exact',
+      },
+    });
+    const header = res.headers.get('content-range');
+    return header ? parseInt(header.split('/')[1]) || 0 : 0;
+  } catch {
+    return 0;
+  }
+}
+
 export default async function handler(request: any, response: any) {
-  // GET: return waitlist count (public)
+  // GET: return waitlist count, or full transparency stats if ?type=stats
   if (request.method === 'GET') {
     try {
-      const countRes = await fetch(`${SUPABASE_URL}/rest/v1/waitlist?select=count`, {
-        headers: {
-          'apikey': SUPABASE_SERVICE_KEY,
-          'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
-          'Prefer': 'count=exact',
-        },
-      });
-      const countHeader = countRes.headers.get('content-range');
-      const total = countHeader ? parseInt(countHeader.split('/')[1]) : 0;
+      const url = new URL(request.url, `http://${request.headers.host}`);
+      const type = url.searchParams.get('type');
+
+      // Public transparency stats — signups, analyses run, waitlist size.
+      // Cached at the edge for 10 minutes so the homepage hit is cheap.
+      if (type === 'stats') {
+        const [signups, analyses, waitlist] = await Promise.all([
+          fetchCount('profiles'),
+          fetchCount('analyses'),
+          fetchCount('waitlist'),
+        ]);
+        response.setHeader('Cache-Control', 's-maxage=600, stale-while-revalidate=1800');
+        return response.status(200).json({ signups, analyses, waitlist });
+      }
+
+      const total = await fetchCount('waitlist');
       return response.status(200).json({ count: total });
     } catch {
       return response.status(200).json({ count: 0 });
@@ -70,15 +93,7 @@ export default async function handler(request: any, response: any) {
     }
 
     // Count uses service key to bypass RLS (no SELECT policy on waitlist)
-    const countRes = await fetch(`${SUPABASE_URL}/rest/v1/waitlist?select=count`, {
-      headers: {
-        'apikey': SUPABASE_SERVICE_KEY,
-        'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
-        'Prefer': 'count=exact',
-      },
-    });
-    const countHeader = countRes.headers.get('content-range');
-    const total = countHeader ? parseInt(countHeader.split('/')[1]) : 0;
+    const total = await fetchCount('waitlist');
 
     return response.status(201).json({ success: true, position: total });
   } catch (error: any) {

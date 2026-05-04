@@ -123,6 +123,34 @@ export async function getWaitlistCount(): Promise<number> {
   return 0;
 }
 
+export interface PublicStats {
+  signups: number;
+  analyses: number;
+  waitlist: number;
+}
+
+/**
+ * Public transparency stats for the homepage. We show real numbers,
+ * including 0, because honesty at launch builds more trust than fake
+ * social proof. Cached at the edge for 10 minutes.
+ */
+export async function getPublicStats(): Promise<PublicStats> {
+  try {
+    const response = await fetch(`${API_BASE}/waitlist?type=stats`);
+    if (response.ok) {
+      const data = await response.json();
+      return {
+        signups: data.signups ?? 0,
+        analyses: data.analyses ?? 0,
+        waitlist: data.waitlist ?? 0,
+      };
+    }
+  } catch {
+    // Fallback to zeros — better than fake numbers
+  }
+  return { signups: 0, analyses: 0, waitlist: 0 };
+}
+
 function validateStripeUrl(url: string): string {
   const TRUSTED_PREFIXES = [
     'https://checkout.stripe.com/',

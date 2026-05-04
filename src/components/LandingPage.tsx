@@ -13,6 +13,7 @@ import Waitlist from './Waitlist';
 import DemoWalkthrough from './DemoWalkthrough';
 import LiveDemoReel from './LiveDemoReel';
 import { useCurrency } from '../contexts/CurrencyContext';
+import { getPublicStats, type PublicStats } from '../services/api';
 
 // Directories that require a reciprocal backlink before approving submission.
 // To add: append a new entry, redeploy. Footer auto-renders.
@@ -548,6 +549,15 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
   const [activeTab, setActiveTab] = useState(0);
   const tabs = ['Strategic Brief', 'Cover Letter', 'Interview Pack', 'Presentation Deck'];
 
+  // Live transparency stats — we show the real number even when small.
+  // Honesty at launch builds trust faster than fake "10,000+ users".
+  const [stats, setStats] = useState<PublicStats | null>(null);
+  useEffect(() => {
+    let cancelled = false;
+    getPublicStats().then((s) => { if (!cancelled) setStats(s); });
+    return () => { cancelled = true; };
+  }, []);
+
   return (
     <div className="bg-gradient-to-br from-[#A8A5E6] via-[#C2C0F0] to-[#E6E5F8] text-[#2D2B4E] min-h-screen font-body selection:bg-white/50 overflow-x-hidden">
 
@@ -691,6 +701,50 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
           <div className="flex items-center gap-3"><Lock className="w-5 h-5 text-[#4F46E5]" /><span className="text-sm font-bold text-[#3B3A5C]">No Hidden Scraping</span></div>
           <div className="flex items-center gap-3"><Eye className="w-5 h-5 text-[#4F46E5]" /><span className="text-sm font-bold text-[#3B3A5C]">Human Review Always</span></div>
         </GlassCard>
+      </section>
+
+      {/* ================================================================
+          LIVE TRANSPARENCY STATS — real numbers, even small ones
+      ================================================================ */}
+      <section className="relative z-10 w-full px-4 max-w-5xl mx-auto pt-16 md:pt-20">
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-80px' }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <GlassCard className="!rounded-[24px] !p-6 md:!p-8 bg-white/45">
+            <div className="flex items-center justify-center gap-2 mb-5">
+              <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <p className="text-[10px] md:text-xs font-bold text-[#4F46E5] uppercase tracking-widest">
+                Live transparency · Updated every 10 minutes
+              </p>
+            </div>
+            <div className="grid grid-cols-3 gap-4 md:gap-8 text-center">
+              <div>
+                <div className="text-3xl md:text-4xl font-display font-bold text-[#2D2B4E] tabular-nums">
+                  {stats === null ? '—' : stats.signups.toLocaleString()}
+                </div>
+                <p className="text-xs md:text-sm text-[#6B6B8D] font-medium mt-1">Signups</p>
+              </div>
+              <div className="border-x border-[#4F46E5]/15">
+                <div className="text-3xl md:text-4xl font-display font-bold text-[#2D2B4E] tabular-nums">
+                  {stats === null ? '—' : stats.analyses.toLocaleString()}
+                </div>
+                <p className="text-xs md:text-sm text-[#6B6B8D] font-medium mt-1">Analyses run</p>
+              </div>
+              <div>
+                <div className="text-3xl md:text-4xl font-display font-bold text-[#2D2B4E] tabular-nums">
+                  {stats === null ? '—' : stats.waitlist.toLocaleString()}
+                </div>
+                <p className="text-xs md:text-sm text-[#6B6B8D] font-medium mt-1">On the list</p>
+              </div>
+            </div>
+            <p className="text-[11px] md:text-xs text-[#6B6B8D] text-center mt-5 max-w-xl mx-auto leading-relaxed">
+              Real numbers from a real database. No padding, no fake testimonials. Launched May 2026 — be early or be one of the first thousand.
+            </p>
+          </GlassCard>
+        </motion.div>
       </section>
 
       {/* ================================================================
