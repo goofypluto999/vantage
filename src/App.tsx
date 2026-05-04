@@ -38,6 +38,8 @@ import RoastPage from './components/RoastPage';
 import FaqPage from './components/FaqPage';
 import AlternativesPage, { AlternativesHub } from './components/AlternativesPage';
 import LinkedinOptimizationPage from './components/LinkedinOptimizationPage';
+import SalaryHubPage from './components/SalaryHubPage';
+import SalaryPage from './components/SalaryPage';
 import SampleAnalysisPage from './components/SampleAnalysisPage';
 import DemoPreviewPage from './components/DemoPreviewPage';
 import SEO from './components/SEO';
@@ -261,6 +263,9 @@ function AppContent() {
             <Route path="/linkedin-optimization" element={<LinkedinOptimizationPage />} />
             <Route path="/linkedin" element={<Navigate to="/linkedin-optimization" replace />} />
             <Route path="/linkedin-profile" element={<Navigate to="/linkedin-optimization" replace />} />
+            <Route path="/salary" element={<SalaryHubPage />} />
+            <Route path="/salaries" element={<Navigate to="/salary" replace />} />
+            <Route path="/salary/:role" element={<SalaryPage />} />
             <Route path="/sample/:slug" element={<SampleAnalysisPage />} />
             <Route path="/example" element={<Navigate to="/sample/anthropic-senior-pm" replace />} />
             <Route path="/example/anthropic" element={<Navigate to="/sample/anthropic-senior-pm" replace />} />

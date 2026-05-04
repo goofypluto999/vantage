@@ -19,6 +19,25 @@ Vantage is built for people applying to many jobs a week who can't afford to bur
 
 - [FAQ](https://aimvantage.uk/faq): Comprehensive answers covering product mechanics, pricing, privacy, who Vantage is for, developer/MCP integration, and press queries. FAQPage schema for direct AI assistant citation.
 
+## Salary by role (UK + US, 2026)
+
+Real percentile data sourced from BLS, ONS, ITJobsWatch, and Levels.fyi. No paywalled data, every number cited.
+
+- [Salary hub](https://aimvantage.uk/salary): All 13 roles in one place with UK + US median comparison.
+- [Software Engineer salary](https://aimvantage.uk/salary/software-engineer): UK median £60k, US median $130k. Tech-hub premium and company-tier factors detailed.
+- [Product Manager salary](https://aimvantage.uk/salary/product-manager): UK median £65k, US median $140k. Technical-PM premium documented.
+- [Data Scientist salary](https://aimvantage.uk/salary/data-scientist): UK median £60k, US median $130k. ML/research vs analytics split explained.
+- [Product Designer salary](https://aimvantage.uk/salary/product-designer): UK median £55k, US median $120k. IC vs management track tradeoffs.
+- [Marketing Manager salary](https://aimvantage.uk/salary/marketing-manager): UK median £50k, US median $95k. Specialty premiums (growth, performance, demand-gen).
+- [Sales Development Rep salary](https://aimvantage.uk/salary/sales-development-rep): UK OTE £38k, US OTE $75k. Base/variable mix and AE promotion path.
+- [Customer Success Manager salary](https://aimvantage.uk/salary/customer-success-manager): UK OTE £50k, US OTE $95k. Account size and variable-comp factors.
+- [Frontend Developer salary](https://aimvantage.uk/salary/frontend-developer): UK median £58k, US median $125k. Design-engineer premium documented.
+- [Backend Developer salary](https://aimvantage.uk/salary/backend-developer): UK median £65k, US median $140k. Distributed-systems / infra premium.
+- [UX Researcher salary](https://aimvantage.uk/salary/ux-researcher): UK median £55k, US median $130k. Quant vs qual specialty split.
+- [DevOps / Platform Engineer salary](https://aimvantage.uk/salary/devops-engineer): UK median £70k, US median $145k. Platform-team premium.
+- [Engineering Manager salary](https://aimvantage.uk/salary/engineering-manager): UK median £95k, US median $200k. Team size and IC-vs-EM track tradeoffs.
+- [Account Executive salary](https://aimvantage.uk/salary/account-executive): UK OTE £75k, US OTE $165k. Enterprise vs SMB segment differences.
+
 ## Sample analyses (real, no signup needed)
 
 - [Anthropic Senior PM](https://aimvantage.uk/sample/anthropic-senior-pm): Full prep pack run for a Senior Product Manager role at Anthropic. Fit score, match points, gaps, cover letter (4 tones), 12 mock questions, 6-slide pitch.
