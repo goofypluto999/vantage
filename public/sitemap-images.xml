@@ -97,6 +97,27 @@
     </image:image>
   </url>
   <url>
+    <loc>https://aimvantage.uk/blog/i-shipped-fake-review-schema-then-caught-myself</loc>
+    <image:image>
+      <image:loc>https://aimvantage.uk/og-image.png</image:loc>
+      <image:title>I shipped a fake AggregateRating to my own site. Then I caught myself.</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://aimvantage.uk/blog/the-bug-that-killed-every-signup-for-four-days</loc>
+    <image:image>
+      <image:loc>https://aimvantage.uk/og-image.png</image:loc>
+      <image:title>The bug that killed every signup for 4 days</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://aimvantage.uk/blog/hardening-a-free-ai-tool-against-prompt-injection-in-two-hours</loc>
+    <image:image>
+      <image:loc>https://aimvantage.uk/og-image.png</image:loc>
+      <image:title>Hardening a free public AI tool against prompt injection in 2 hours</image:title>
+    </image:image>
+  </url>
+  <url>
     <loc>https://aimvantage.uk/skills</loc>
     <image:image>
       <image:loc>https://aimvantage.uk/og-image.png</image:loc>

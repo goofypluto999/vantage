@@ -7,7 +7,7 @@
     <description>Practical, current guides on AI job preparation, CV optimisation, ATS-friendly resumes, cover letters, and interview strategy.</description>
     <language>en-gb</language>
     <copyright>Vantage 2026</copyright>
-    <lastBuildDate>Thu, 30 Apr 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 04 May 2026 00:00:00 +0000</lastBuildDate>
     <generator>Vantage scripts/generate-feeds.mjs</generator>
     <image>
       <url>https://aimvantage.uk/og-image.png</url>
@@ -15,6 +15,27 @@
       <link>https://aimvantage.uk/blog</link>
     </image>
 
+    <item>
+      <title>I shipped a fake AggregateRating to my own site. Then I caught myself.</title>
+      <link>https://aimvantage.uk/blog/i-shipped-fake-review-schema-then-caught-myself</link>
+      <guid isPermaLink="true">https://aimvantage.uk/blog/i-shipped-fake-review-schema-then-caught-myself</guid>
+      <pubDate>Mon, 04 May 2026 00:00:00 +0000</pubDate>
+      <description>A confession about SEO temptation, fabricated review schema, and the live transparency counter I built as the actual fix. Real story from launching Vantage in May 2026.</description>
+    </item>
+    <item>
+      <title>The bug that killed every signup for 4 days</title>
+      <link>https://aimvantage.uk/blog/the-bug-that-killed-every-signup-for-four-days</link>
+      <guid isPermaLink="true">https://aimvantage.uk/blog/the-bug-that-killed-every-signup-for-four-days</guid>
+      <pubDate>Mon, 04 May 2026 00:00:00 +0000</pubDate>
+      <description>A hidden plan-picker step in my signup flow was making users pick a paid plan before they had ever seen the product. Conversion was rounding to zero. Removing it tripled signups in 48 hours. Real founder journal.</description>
+    </item>
+    <item>
+      <title>Hardening a free public AI tool against prompt injection in 2 hours</title>
+      <link>https://aimvantage.uk/blog/hardening-a-free-ai-tool-against-prompt-injection-in-two-hours</link>
+      <guid isPermaLink="true">https://aimvantage.uk/blog/hardening-a-free-ai-tool-against-prompt-injection-in-two-hours</guid>
+      <pubDate>Mon, 04 May 2026 00:00:00 +0000</pubDate>
+      <description>I shipped a free public AI cover-letter roast tool. Within hours I realised it was a prompt-injection target. Here are the seven layers of defense I bolted on, what each one prevents, and which ones every public AI tool needs.</description>
+    </item>
     <item>
       <title>Just laid off in April 2026? The 3 things to fix in your CV before you apply to a single job.</title>
       <link>https://aimvantage.uk/blog/just-laid-off-april-2026-cv-fix</link>
