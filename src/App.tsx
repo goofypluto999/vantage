@@ -93,6 +93,24 @@ function AppContent() {
     }
   };
 
+  // Bookmarklet entry: when ?job=<URL> is present in the landing URL, persist
+  // it so the dashboard can pre-fill after signup. No PII; just the job URL the
+  // user explicitly requested. Cleared automatically when the dashboard reads.
+  useEffect(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const job = params.get('job');
+      if (job && /^https?:\/\//i.test(job)) {
+        sessionStorage.setItem('vantage:pendingJob', job);
+        // Clean the URL bar so the param doesn't leak into shares
+        const cleaned = window.location.pathname + window.location.hash;
+        window.history.replaceState({}, '', cleaned);
+      }
+    } catch {
+      // ignore — feature is opportunistic
+    }
+  }, []);
+
   // Auth state listener — only sets user, never awaits DB queries (deadlock risk)
   useEffect(() => {
     const timeout = setTimeout(() => setLoading(false), 5000);

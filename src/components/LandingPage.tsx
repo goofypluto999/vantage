@@ -694,6 +694,46 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
       </section>
 
       {/* ================================================================
+          BOOKMARKLET — drag-to-bookmark one-click prep on any job page
+      ================================================================ */}
+      <section className="relative z-10 w-full px-4 max-w-4xl mx-auto pt-16 md:pt-20">
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-80px' }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <GlassCard className="!rounded-[24px] !p-7 md:!p-9 text-center bg-white/45">
+            <p className="text-[10px] md:text-xs font-bold text-[#4F46E5] uppercase tracking-widest mb-3">
+              One-click prep on any job page
+            </p>
+            <h2 className="text-2xl md:text-3xl font-display font-bold text-[#2D2B4E] mb-3 tracking-tight">
+              Drag this button to your bookmarks bar.
+            </h2>
+            <p className="text-[#4A4870] max-w-xl mx-auto mb-7 leading-relaxed">
+              Click it on any job listing — LinkedIn, Greenhouse, Lever, the company careers page — and Vantage opens with the URL captured. Skip the copy-paste forever.
+            </p>
+            {/* eslint-disable-next-line react/no-unknown-property */}
+            <a
+              href="javascript:(function(){var u=location.href;window.open('https://aimvantage.uk/?job='+encodeURIComponent(u),'_blank')})();"
+              draggable
+              onClick={(e) => {
+                e.preventDefault();
+                alert('Drag this button up to your browser\'s bookmarks bar instead of clicking. Once it\'s there, click it on any job listing to instantly open Vantage with that URL.');
+              }}
+              className="inline-flex items-center gap-2 px-7 py-3.5 bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] text-white rounded-full font-bold text-base hover:-translate-y-0.5 hover:shadow-[0_12px_32px_rgba(79,70,229,0.4)] transition-all cursor-grab active:cursor-grabbing select-none"
+            >
+              📌 Prep with Vantage
+            </a>
+            <p className="text-[11px] text-[#6B6B8D] mt-4 font-medium">
+              Drag the button (don't click it) up onto your browser's bookmarks bar.
+              On Safari mobile, tap-and-hold &rarr; Add to Bookmarks.
+            </p>
+          </GlassCard>
+        </motion.div>
+      </section>
+
+      {/* ================================================================
           WATCH IT WORK — animated product reel (hero centerpiece)
       ================================================================ */}
       <section

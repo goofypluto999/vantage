@@ -38,3 +38,4 @@ gitleaks-report.*
 
 # Local SQL operational files (may contain user emails / test data)
 database/cleanup-*.sql
+.env*.local

@@ -115,7 +115,19 @@ export default function Dashboard() {
   const [step, setStep] = useState<'input' | 'processing' | 'results'>('input');
   const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
   const [cvFile, setCvFile] = useState<File | null>(null);
-  const [jobUrl, setJobUrl] = useState('');
+  // Bookmarklet handoff: if the user installed the bookmark and clicked it on
+  // a job page, App.tsx stored the URL in sessionStorage. Pre-fill it once,
+  // then clear so we don't keep re-using stale state on revisit.
+  const [jobUrl, setJobUrl] = useState(() => {
+    try {
+      const pending = sessionStorage.getItem('vantage:pendingJob');
+      if (pending && /^https?:\/\//i.test(pending)) {
+        sessionStorage.removeItem('vantage:pendingJob');
+        return pending;
+      }
+    } catch { /* ignore */ }
+    return '';
+  });
   const [jobDescFile, setJobDescFile] = useState<File | null>(null);
   const [jobDescText, setJobDescText] = useState('');
   const [jdMode, setJdMode] = useState<'file' | 'text'>('file');
