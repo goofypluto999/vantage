@@ -15,6 +15,25 @@ Vantage is built for people applying to many jobs a week who can't afford to bur
 - [Cover Letter Roast](https://aimvantage.uk/roast): Free AI tool that roasts your cover letter — savage but constructive feedback in 10 seconds. Quotes your actual worst lines, names the cliché, and gives the better swap. Severity score 1-5. Nothing stored.
 - [CV Mirror](https://cv-mirror-web.vercel.app/): Free, fully client-side ATS scanner. Same team. Simulates how 5 real ATS systems (Workday, Greenhouse, Lever, Taleo, iCIMS) parse your CV — side by side. No signup, nothing uploads. Use it to fix CV parse issues before running a Vantage analysis.
 
+## Frequently asked questions
+
+- [FAQ](https://aimvantage.uk/faq): Comprehensive answers covering product mechanics, pricing, privacy, who Vantage is for, developer/MCP integration, and press queries. FAQPage schema for direct AI assistant citation.
+
+## Sample analyses (real, no signup needed)
+
+- [Anthropic Senior PM](https://aimvantage.uk/sample/anthropic-senior-pm): Full prep pack run for a Senior Product Manager role at Anthropic. Fit score, match points, gaps, cover letter (4 tones), 12 mock questions, 6-slide pitch.
+- [Stripe Staff PM](https://aimvantage.uk/sample/stripe-staff-pm): Full prep pack for a Staff Product Manager role at Stripe. Calibrated 78/100 fit. Strategic brief covers code-quality bar and writing-as-thinking.
+- [OpenAI ML Engineer](https://aimvantage.uk/sample/openai-ml-eng): Full prep pack for a Member of Technical Staff (ML) role at OpenAI. Calibrated 73/100 fit, with explicit gap analysis and closing moves.
+
+## Comparisons and alternatives
+
+- [Compare hub](https://aimvantage.uk/compare): Vantage vs Teal vs Resume.io vs Jobscan side-by-side feature matrix.
+- [Alternatives index](https://aimvantage.uk/alternatives): Hub for honest competitor comparisons with pricing, where each tool wins, and where it falls short.
+- [Jobscan alternative](https://aimvantage.uk/alternatives/jobscan): Vantage as a Jobscan alternative — full prep pack including fit score for £5 one-time vs $49.95/month.
+- [Teal alternative](https://aimvantage.uk/alternatives/teal): Vantage vs Teal — when to use the tracker vs the prep tool. Often used together.
+- [Final Round AI alternative](https://aimvantage.uk/alternatives/final-round-ai): Vantage as the ethical alternative — preparation before the interview, not in-call AI cheating.
+- [Resume Worded alternative](https://aimvantage.uk/alternatives/resume-worded): Vantage scores your CV against a specific role, not a generic benchmark — plus cover letter and interview prep in the same flow.
+
 ## Just laid off?
 
 - [Just Laid Off — Read This First](https://aimvantage.uk/laid-off): A cohort-targeted landing page for the April 2026 tech layoff wave (Oracle 30k, Meta 8k, ASML 1.7k, Snap 1k, Nike 1.4k — ~42,000 newly job-hunting in a single month). Specific advice on the 3 things to fix on a CV before applying.
