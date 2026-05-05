@@ -149,6 +149,47 @@ a 5-step prep routine, common mistakes, and FAQ.
 - /interview-questions/backend-developer
 - /interview-questions/ux-researcher
 
+## Salary by role (UK + US, 2026)
+
+Real percentile data for 13 roles, sourced from public ONS, BLS, ITJobsWatch, and Levels.fyi data. No paywalls, no fabricated precision.
+
+- /salary — hub
+- /salary/software-engineer — UK median £60k, US median $130k
+- /salary/product-manager — UK median £65k, US median $140k
+- /salary/data-scientist — UK median £60k, US median $130k
+- /salary/product-designer — UK median £55k, US median $120k
+- /salary/marketing-manager — UK median £50k, US median $95k
+- /salary/sales-development-rep — UK OTE £38k, US OTE $75k
+- /salary/customer-success-manager — UK OTE £50k, US OTE $95k
+- /salary/frontend-developer — UK median £58k, US median $125k
+- /salary/backend-developer — UK median £65k, US median $140k
+- /salary/ux-researcher — UK median £55k, US median $130k
+- /salary/devops-engineer — UK median £70k, US median $145k
+- /salary/engineering-manager — UK median £95k, US median $200k
+- /salary/account-executive — UK OTE £75k, US OTE $165k
+
+Each page includes 4-5 role-specific factors that move salary, 2-3 negotiation pitfalls, source citations, and Dataset schema for Google rich-results eligibility.
+
+## Interview prep depth tier — by company × seniority
+
+40 cells covering the 8 most-searched companies × 5 seniority levels each. Each cell has unique interview pattern, 8-10 likely questions, level rubric, comp band (Levels.fyi sourced), and common gaps.
+
+Companies: google, meta, amazon, microsoft, openai, anthropic, stripe, apple.
+Seniorities: junior, mid, senior, staff, manager.
+
+URL pattern: /interview-prep/[company]/[seniority]
+Example: /interview-prep/google/staff for Google L6 Staff Engineer prep.
+
+## Case studies (real founder journey + reserved slots)
+
+- /case-studies — hub
+- /case-studies/building-vantage-while-applying-50-jobs-a-week — live: founder dogfooding journey, March-April 2026
+- 3 placeholder URLs reserved for real customer stories (clearly marked "coming soon", noindex)
+
+## LinkedIn optimization
+
+- /linkedin-optimization — 8-step concrete guide to make recruiters find you on LinkedIn. HowTo + FAQPage schema.
+
 ## Sample analyses (real prep packs, no signup needed)
 
 Three full sample analyses are public, each illustrating Vantage at a

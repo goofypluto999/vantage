@@ -8,6 +8,28 @@
 
 ---
 
+## ★ MAY 4 SEVEN-MOVE EXPANSION — what just shipped
+
+The repo is ahead of `origin/master` by 8 commits implementing the 7-move
+SEO/discovery expansion from `docs/superpowers/plans/2026-05-04-seven-moves-seo-expansion.md`.
+Push and the whole expansion goes live:
+
+1. **/salary + 13 role pages** (Dataset schema, public-source citations) — 14 URLs
+2. **/case-studies + 1 live + 3 placeholder** (Article schema for live only) — 5 URLs
+3. **/linkedin-optimization** (HowTo + FAQ schema) — 1 URL
+4. **/interview-prep/[company]/[seniority]** depth tier — 40 cells across 8 companies
+5. **Blog cross-links** — every blog post now links to /alternatives, /sample, /faq
+6. **Feed enrichment** — RSS, Atom, JSON Feed all auto-regenerated with full content
+7. **cv-mirror-mcp schema + topics** — already pushed to its own repo
+8. **Three.js code-split + lazy-load** — main bundle -33%, LCP improvement
+
+Total new indexable URLs: ~60 (14 salary + 5 case-studies + 1 LinkedIn + 40 seniority).
+
+After the push: `node scripts/indexnow-ping.mjs` to re-ping Bing/Yandex/Seznam
+(146 URLs total now, up from 90).
+
+---
+
 ## ★ ONE-COMMAND PUBLISH (does sections 1, 4, 5, 10 in one go)
 
 After `git push origin master` and Vercel finishes deploying:
