@@ -1,0 +1,132 @@
+{
+  "title": "Vantage AI Walk-Through — How It Works in 90 Seconds",
+  "voice": "en-GB-RyanNeural",
+  "outputName": "01-vantage-walkthrough",
+  "scenes": [
+    {
+      "narration": "Vantage. The AI job preparation tool. Walk-through, 2026 edition.",
+      "visual": {
+        "type": "title-card",
+        "text": "Vantage",
+        "subtitle": "AI Job Preparation · Walk-through 2026",
+        "bg": "#4F46E5"
+      }
+    },
+    {
+      "narration": "Vantage takes one job posting URL and one CV. In about 90 seconds, it returns a complete prep pack. Here is what is inside.",
+      "visual": {
+        "type": "text-card",
+        "text": "Job URL + CV",
+        "subtitle": "= Full prep pack in 90 seconds",
+        "bg": "#0a0814"
+      }
+    },
+    {
+      "narration": "First. Company intelligence. Vantage scrapes the job posting and the company website to give you the industry context, the recent highlights, and the culture signals you need to reference in your interview.",
+      "visual": {
+        "type": "bullet-list",
+        "heading": "1. Company Intelligence",
+        "bullets": [
+          "Industry + size + founding context",
+          "Recent product or funding news",
+          "Culture signals from the job page",
+          "What they actually care about right now"
+        ],
+        "bg": "#181530"
+      }
+    },
+    {
+      "narration": "Second. A tailored cover letter. Four selectable tones — Professional, Warm, Direct, Creative. Pick the one that matches the company. Switch between them with one click.",
+      "visual": {
+        "type": "bullet-list",
+        "heading": "2. Cover Letter — 4 Tones",
+        "bullets": [
+          "Professional · safest for finance, legal, traditional industries",
+          "Warm · fits people-first roles and mission-driven companies",
+          "Direct · best for senior IC roles and infrastructure teams",
+          "Creative · matches startups and brand-led companies"
+        ],
+        "bg": "#181530"
+      }
+    },
+    {
+      "narration": "Third. Likely interview questions. Twelve questions generated from the actual job description, plus an AI-graded mock interview where you practice your answers and get real feedback.",
+      "visual": {
+        "type": "bullet-list",
+        "heading": "3. Mock Interview",
+        "bullets": [
+          "12 questions generated from the actual JD",
+          "AI-graded practice with structure feedback",
+          "Live speech-to-text — practice out loud",
+          "Behavioural and technical mix"
+        ],
+        "bg": "#181530"
+      }
+    },
+    {
+      "narration": "Fourth. The CV fit score. Not an invented number — a calibrated breakdown of where your CV matches the role and where it does not. With explicit gap-closing actions you can take before the interview.",
+      "visual": {
+        "type": "bullet-list",
+        "heading": "4. CV Fit Score",
+        "bullets": [
+          "Calibrated score, not an invented metric",
+          "Match points · explicit list of strengths",
+          "Gap analysis · what is missing for this role",
+          "Closing moves · concrete actions before applying"
+        ],
+        "bg": "#181530"
+      }
+    },
+    {
+      "narration": "Fifth. A five-minute interview pitch. Structured as a real spoken pitch — origin, expertise, why now, why them, ask. Compressed, memorable, and ready for the moment they say tell me about yourself.",
+      "visual": {
+        "type": "bullet-list",
+        "heading": "5. 5-Minute Pitch",
+        "bullets": [
+          "Origin · the one-line career summary",
+          "Expertise · two specific evidence points",
+          "Why now · why this role at this moment",
+          "Why them · what you noticed about the company"
+        ],
+        "bg": "#181530"
+      }
+    },
+    {
+      "narration": "Pricing. Three free analyses on signup, no credit card required. Five pounds for twenty tokens, never expire — that is six full applications. Twelve pounds a month for sixty tokens. Twenty pounds a month for the Premium tier including the fit score and presentation deck.",
+      "visual": {
+        "type": "bullet-list",
+        "heading": "Pricing",
+        "bullets": [
+          "Free · 3 analyses on signup, no card",
+          "Starter · £5 once, 20 tokens, never expire",
+          "Pro · £12/mo, 60 tokens, monthly renewal",
+          "Premium · £20/mo, 120 tokens + fit score + deck"
+        ],
+        "bg": "#181530"
+      }
+    },
+    {
+      "narration": "Three sample analyses are public. Anthropic Senior PM. Stripe Staff PM. OpenAI ML Engineer. Real job postings, full output, no signup required to view. See what the AI actually produces before you spend anything.",
+      "visual": {
+        "type": "bullet-list",
+        "heading": "See Real Output First",
+        "bullets": [
+          "aimvantage.uk/sample/anthropic-senior-pm",
+          "aimvantage.uk/sample/stripe-staff-pm",
+          "aimvantage.uk/sample/openai-ml-eng",
+          "Full output · no signup · no gating"
+        ],
+        "bg": "#181530"
+      }
+    },
+    {
+      "narration": "Vantage. Built solo, in public, in six weeks. Real signup numbers visible on the homepage. Open-source ATS scanner companion at github. Try Vantage free at aimvantage.uk.",
+      "visual": {
+        "type": "title-card",
+        "text": "aimvantage.uk",
+        "subtitle": "Try free · 3 analyses · no card required",
+        "bg": "#4F46E5"
+      }
+    }
+  ]
+}

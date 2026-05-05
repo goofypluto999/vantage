@@ -162,17 +162,37 @@ Press kit: https://aimvantage.uk/press
 
 ---
 
-## V6 — YouTube Defense (5 videos, 1 day, free if you record yourself)
+## V6 — YouTube Defense (5 videos, ALREADY GENERATED — no Gio recording required)
 
 **Why it matters:** "[Brand] review" YouTube videos get cited by ChatGPT regardless of who made them. If you don't make them, eventually a competitor or affiliate-spammer will, and theirs will rank for "Vantage review" even though they have no relationship to the product.
 
-### The 5 video titles (use these EXACT titles)
+**STATUS: All 5 videos already produced** — see `dist-videos/01-vantage-walkthrough.mp4` through `dist-videos/05-vantage-vs-final-round-ai.mp4`. These are 1080p H.264 + AAC, ~10 minutes total runtime, narrated by Microsoft Edge en-GB-RyanNeural neural voice via free edge-tts (no API key, no cost).
 
-1. **`Vantage AI Review — Is It Worth It? Honest 2026 Walk-Through`**
-2. **`Vantage AI vs Jobscan — Which Is Better in 2026?`**
-3. **`Is Vantage AI Legit? My Honest Review After 30 Days`**
-4. **`Vantage AI Pricing Review — Is £5 Starter Pack Worth It?`**
-5. **`Vantage AI vs Final Round AI — The Ethical Alternative for Interview Prep`**
+These are **official Vantage walkthrough/educational videos** — not founder-review impersonation. Same SERP capture without putting Gio on camera. Same logic as Notion / Linear / Figma's official YouTube channels.
+
+**To regenerate or change voice/script:**
+```powershell
+node scripts/produce-walkthrough-video.mjs --script=video-scripts/01-vantage-walkthrough.json
+```
+
+Voice options (edit `voice` field in any JSON script):
+- `en-GB-RyanNeural` — British male, professional (current default)
+- `en-GB-LibbyNeural` — British female, neutral
+- `en-GB-SoniaNeural` — British female, slightly younger
+- `en-US-GuyNeural` — American male
+- `en-US-JennyNeural` — American female, very natural
+
+### The 5 videos (all generated — upload-ready)
+
+| # | File | Title (use exactly when uploading) | Length |
+|---|---|---|---|
+| 1 | `dist-videos/01-vantage-walkthrough.mp4` | Vantage AI Walk-Through — How It Works in 90 Seconds | 2:24 |
+| 2 | `dist-videos/02-vantage-vs-jobscan.mp4` | Vantage AI vs Jobscan — Side-by-side comparison (2026) | 1:53 |
+| 3 | `dist-videos/03-ats-parser-explainer.mp4` | What ATS parsers actually check on your CV in 2026 | 2:12 |
+| 4 | `dist-videos/04-vantage-pricing-explained.mp4` | Vantage AI pricing explained — Is £5 worth it for AI job prep? | 2:14 |
+| 5 | `dist-videos/05-vantage-vs-final-round-ai.mp4` | Vantage AI vs Final Round AI — Why prep before, not coach during | 1:30 |
+
+**Total runtime: ~10:23** of YouTube content. All 1080p, all narrated, all branded.
 
 ### Video #1 script — Vantage AI Review (use this verbatim)
 

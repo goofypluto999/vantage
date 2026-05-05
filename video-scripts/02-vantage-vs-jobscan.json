@@ -1,0 +1,94 @@
+{
+  "title": "Vantage AI vs Jobscan — Side-by-side comparison (2026)",
+  "voice": "en-GB-RyanNeural",
+  "outputName": "02-vantage-vs-jobscan",
+  "scenes": [
+    {
+      "narration": "Vantage versus Jobscan. The honest side-by-side comparison. 2026 edition.",
+      "visual": {
+        "type": "title-card",
+        "text": "Vantage vs Jobscan",
+        "subtitle": "Side-by-side · 2026",
+        "bg": "#4F46E5"
+      }
+    },
+    {
+      "narration": "Three differences that actually matter when picking between these two.",
+      "visual": {
+        "type": "text-card",
+        "text": "3 differences",
+        "subtitle": "that actually matter",
+        "bg": "#0a0814"
+      }
+    },
+    {
+      "narration": "First. Scope. Jobscan does keyword matching against a job description and gives you an ATS score. Vantage does the keyword matching, plus a full prep pack — a tailored cover letter, mock interview questions, a five-minute pitch outline, and a CV fit score. Different category of tool.",
+      "visual": {
+        "type": "bullet-list",
+        "heading": "1. Scope",
+        "bullets": [
+          "Jobscan · keyword matching + ATS score",
+          "Vantage · keyword + cover letter + mock interview",
+          "Vantage · CV fit score + 5-min pitch outline",
+          "Different category of tool, not direct competition"
+        ],
+        "bg": "#181530"
+      }
+    },
+    {
+      "narration": "Second. Price. Jobscan is forty-nine ninety-five per month. Vantage is five pounds one-time for twenty tokens — that is six full applications — and the tokens never expire. Pro is twelve pounds a month for sixty tokens.",
+      "visual": {
+        "type": "bullet-list",
+        "heading": "2. Price",
+        "bullets": [
+          "Jobscan · $49.95/month",
+          "Vantage Starter · £5 once, 20 tokens, never expire",
+          "Vantage Pro · £12/month for 60 tokens",
+          "If you only need this for one job hunt, Vantage wins on price"
+        ],
+        "bg": "#181530"
+      }
+    },
+    {
+      "narration": "Third. ATS scanning. Jobscan's whole pitch is the ATS score — but the score is invented. There is no industry-standard ATS percentage. Vantage instead ships CV Mirror, a free open-source companion tool that shows you exactly how five real ATS systems parse your CV. No score, just the actual parser output.",
+      "visual": {
+        "type": "bullet-list",
+        "heading": "3. ATS scanning",
+        "bullets": [
+          "Jobscan · invented ATS score",
+          "Vantage · CV Mirror, MIT licensed",
+          "5 real ATSes side-by-side · Workday, Greenhouse, Lever, Taleo, iCIMS",
+          "Free, no signup, fully client-side"
+        ],
+        "bg": "#181530"
+      }
+    },
+    {
+      "narration": "When to use Jobscan. You only care about keyword matching, you have forty-nine ninety-five a month, and you trust their proprietary score.",
+      "visual": {
+        "type": "text-card",
+        "text": "Use Jobscan if",
+        "subtitle": "You want keyword score and only that",
+        "bg": "#181530"
+      }
+    },
+    {
+      "narration": "When to use Vantage. You want the whole application prep — research, cover letter, mock interview, pitch outline. You prefer paying once over a subscription. You want verifiable transparency, including a real signup count visible on the homepage.",
+      "visual": {
+        "type": "text-card",
+        "text": "Use Vantage if",
+        "subtitle": "You want the whole prep pack",
+        "bg": "#4F46E5"
+      }
+    },
+    {
+      "narration": "Both real tools. Different jobs. Vantage at aimvantage.uk. Three free analyses on signup, no credit card.",
+      "visual": {
+        "type": "title-card",
+        "text": "aimvantage.uk",
+        "subtitle": "Try free · 3 analyses · no card",
+        "bg": "#4F46E5"
+      }
+    }
+  ]
+}

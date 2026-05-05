@@ -1,0 +1,95 @@
+{
+  "title": "Vantage AI pricing explained — Is £5 worth it for AI job prep?",
+  "voice": "en-GB-RyanNeural",
+  "outputName": "04-vantage-pricing-explained",
+  "scenes": [
+    {
+      "narration": "Vantage AI pricing, explained. Is the five-pound starter pack worth it for AI job preparation?",
+      "visual": {
+        "type": "title-card",
+        "text": "Vantage Pricing",
+        "subtitle": "Three tiers · 2026",
+        "bg": "#4F46E5"
+      }
+    },
+    {
+      "narration": "Quick recap. Free trial — three analyses on signup, no credit card. Starter — five pounds for twenty tokens, one-time, never expire. Pro — twelve pounds a month for sixty tokens. Premium — twenty pounds a month for one hundred and twenty tokens, including the fit score and presentation deck.",
+      "visual": {
+        "type": "bullet-list",
+        "heading": "The 4 tiers",
+        "bullets": [
+          "Free · 3 analyses on signup, no card",
+          "Starter · £5 once · 20 tokens · never expire",
+          "Pro · £12/month · 60 tokens",
+          "Premium · £20/month · 120 tokens + fit score + deck"
+        ],
+        "bg": "#181530"
+      }
+    },
+    {
+      "narration": "The token math. One full analysis costs three tokens. Tone rewrites cost one token each. So twenty tokens equals six full applications, or four applications plus a few tone variations. Sixty Pro tokens equals roughly twenty applications a month.",
+      "visual": {
+        "type": "bullet-list",
+        "heading": "Token math",
+        "bullets": [
+          "Full analysis · 3 tokens",
+          "Cover letter tone rewrite · 1 token",
+          "20 tokens · 6 full applications",
+          "60 tokens · ~20 applications/month",
+          "120 tokens · ~40 applications/month"
+        ],
+        "bg": "#181530"
+      }
+    },
+    {
+      "narration": "User type one. Casual job hunter. One application a quarter. Use the free trial. The three signup analyses cover you for the year.",
+      "visual": {
+        "type": "text-card",
+        "text": "Casual",
+        "subtitle": "1 app/quarter · Free trial wins",
+        "bg": "#181530"
+      }
+    },
+    {
+      "narration": "User type two. Active job hunter. Six to ten applications a week. Five pounds covers your first week. Worth it because the time saved per application — about two hours of manual prep compressed to ninety seconds — easily justifies the eighty-pence-per-application cost.",
+      "visual": {
+        "type": "text-card",
+        "text": "Active",
+        "subtitle": "6-10/week · Starter wins",
+        "bg": "#4F46E5"
+      }
+    },
+    {
+      "narration": "User type three. Heavy job hunter. Twenty-plus applications a week, looking for senior roles, doing this for two-plus months. Skip Starter. Pro at twelve pounds a month gives you sixty tokens — twenty applications. Premium at twenty pounds gives you forty applications and includes the fit score plus presentation deck.",
+      "visual": {
+        "type": "text-card",
+        "text": "Heavy",
+        "subtitle": "20+/week · Pro or Premium wins",
+        "bg": "#10B981"
+      }
+    },
+    {
+      "narration": "Comparing to alternatives. Jobscan is forty-nine ninety-five a month — five times the cost of Vantage Pro. Resume Worded is forty-nine a month. Final Round AI is fifty-eight to one hundred and forty-eight a month. Vantage at five pounds one-time is the cheapest paid entry point in the category.",
+      "visual": {
+        "type": "bullet-list",
+        "heading": "vs alternatives",
+        "bullets": [
+          "Jobscan · $49.95/month",
+          "Resume Worded · $49/month",
+          "Final Round AI · $58-148/month",
+          "Vantage Starter · £5 once · cheapest entry in category"
+        ],
+        "bg": "#181530"
+      }
+    },
+    {
+      "narration": "Try Vantage free at aimvantage.uk. Three analyses on signup. No credit card required.",
+      "visual": {
+        "type": "title-card",
+        "text": "aimvantage.uk",
+        "subtitle": "Try free · 3 analyses · no card",
+        "bg": "#4F46E5"
+      }
+    }
+  ]
+}

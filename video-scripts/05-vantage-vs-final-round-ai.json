@@ -1,0 +1,76 @@
+{
+  "title": "Vantage AI vs Final Round AI — Why prep before, not coach during",
+  "voice": "en-GB-RyanNeural",
+  "outputName": "05-vantage-vs-final-round-ai",
+  "scenes": [
+    {
+      "narration": "Vantage versus Final Round AI. Different categories of tool. Worth understanding the difference before you pick one.",
+      "visual": {
+        "type": "title-card",
+        "text": "Vantage vs Final Round AI",
+        "subtitle": "Why prep before · not coach during",
+        "bg": "#4F46E5"
+      }
+    },
+    {
+      "narration": "Final Round AI is real-time interview coaching. It transcribes the interviewer in your browser during a live call and surfaces suggested answers as overlays. Pitched as interview copilot.",
+      "visual": {
+        "type": "bullet-list",
+        "heading": "Final Round AI",
+        "bullets": [
+          "Real-time transcription during the call",
+          "AI-generated answer suggestions as overlays",
+          "$58-148/month · top tier $148",
+          "Pitched as 'interview copilot'"
+        ],
+        "bg": "#181530"
+      }
+    },
+    {
+      "narration": "Here is what most reviewers miss. Many companies treat undisclosed AI assistance during interviews as a serious ethical violation. Multiple major employers have rescinded offers after detecting it. Bloomberg and the Wall Street Journal have covered the trend in 2025 and 2026. The risk is not theoretical.",
+      "visual": {
+        "type": "bullet-list",
+        "heading": "The hidden risk",
+        "bullets": [
+          "Many companies forbid undisclosed AI assistance",
+          "Multiple offers have been rescinded when detected",
+          "Bloomberg + WSJ have covered the trend (2025-2026)",
+          "Asymmetric risk · small upside, large career downside"
+        ],
+        "bg": "#181530"
+      }
+    },
+    {
+      "narration": "Vantage is the opposite category. Preparation before the interview, not coaching during. Mock interview questions generated from the actual job description. AI-graded practice. CV fit score so you know your gaps before you walk in. You arrive prepared the legitimate way.",
+      "visual": {
+        "type": "bullet-list",
+        "heading": "Vantage",
+        "bullets": [
+          "Mock interview questions from the actual JD",
+          "AI-graded practice · feedback on structure and evidence",
+          "CV fit score · know your gaps before the call",
+          "Prepare legitimately · no in-call cheating"
+        ],
+        "bg": "#181530"
+      }
+    },
+    {
+      "narration": "When would I recommend Final Round AI? Honestly, never. The ethical risk is too asymmetric. When would I recommend Vantage? When you want to actually be the right candidate for the role and walk in confident.",
+      "visual": {
+        "type": "text-card",
+        "text": "Recommendation",
+        "subtitle": "Prepare before · not cheat during",
+        "bg": "#4F46E5"
+      }
+    },
+    {
+      "narration": "Vantage is at aimvantage.uk. Three free analyses on signup, no credit card. Five pounds for twenty tokens if you want more.",
+      "visual": {
+        "type": "title-card",
+        "text": "aimvantage.uk",
+        "subtitle": "Try free · 3 analyses · no card",
+        "bg": "#4F46E5"
+      }
+    }
+  ]
+}

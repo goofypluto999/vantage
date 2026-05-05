@@ -1,0 +1,102 @@
+{
+  "title": "What ATS parsers actually check on your CV in 2026",
+  "voice": "en-GB-RyanNeural",
+  "outputName": "03-ats-parser-explainer",
+  "scenes": [
+    {
+      "narration": "What an ATS parser actually checks on your CV in 2026. The plain English version.",
+      "visual": {
+        "type": "title-card",
+        "text": "ATS Parsers in 2026",
+        "subtitle": "What they actually check",
+        "bg": "#4F46E5"
+      }
+    },
+    {
+      "narration": "The honest answer first. An ATS does not give your CV a score. The score is a myth. What it actually does is parse your CV into structured fields and store you in a database the recruiter searches.",
+      "visual": {
+        "type": "bullet-list",
+        "heading": "What an ATS does",
+        "bullets": [
+          "Parses your CV into structured fields",
+          "Stores you in a searchable database",
+          "Returns matches when the recruiter searches",
+          "Does not auto-reject based on a score"
+        ],
+        "bg": "#181530"
+      }
+    },
+    {
+      "narration": "What it parses. Name. Email. Phone. Each work experience entry — title, company, dates, bullets. Education entries. Skills section. Some ATSes also extract years of experience and certifications.",
+      "visual": {
+        "type": "bullet-list",
+        "heading": "Fields ATSes extract",
+        "bullets": [
+          "Name + email + phone",
+          "Each role · title, company, dates, bullets",
+          "Education entries",
+          "Skills section",
+          "Certifications and years of experience"
+        ],
+        "bg": "#181530"
+      }
+    },
+    {
+      "narration": "What goes wrong. Multi-column CVs get interleaved into nonsense — Workday is the worst offender for this. Headers and footers get dropped — Lever has historically dropped them. Section titles the parser does not recognise as section titles get treated as plain text. Skills hidden inside images cannot be extracted at all.",
+      "visual": {
+        "type": "bullet-list",
+        "heading": "What breaks parsing",
+        "bullets": [
+          "Multi-column layouts · Workday interleaves them",
+          "Header / footer text · Lever historically drops",
+          "Non-standard section titles · 'My Voyage' instead of 'Experience'",
+          "Skills inside images · zero extraction",
+          "Fancy PDF encoding from Mac Pages · garbled output"
+        ],
+        "bg": "#181530"
+      }
+    },
+    {
+      "narration": "The five major ATSes have specific quirks. Workday reads PDFs in document-stream order. Greenhouse strips emoji codepoints. Lever historically drops header and footer text. Taleo, the Oracle-owned legacy parser, is strict on standard section names. iCIMS configuration varies tenant to tenant.",
+      "visual": {
+        "type": "bullet-list",
+        "heading": "5 ATSes · 5 quirks",
+        "bullets": [
+          "Workday · stream-order parsing, multi-column nightmare",
+          "Greenhouse · strips emoji, wants exact section names",
+          "Lever · drops header/footer text historically",
+          "Taleo · strict on section vocabulary",
+          "iCIMS · tenant-specific configuration"
+        ],
+        "bg": "#181530"
+      }
+    },
+    {
+      "narration": "How to test. CV Mirror — a free, open-source, client-side tool — simulates how all five parse your CV side by side. No signup. Nothing uploads. The actual parsed output, not an invented score.",
+      "visual": {
+        "type": "title-card",
+        "text": "CV Mirror",
+        "subtitle": "Free · 5 ATSes · client-side · cv-mirror-web.vercel.app",
+        "bg": "#10B981"
+      }
+    },
+    {
+      "narration": "The fix. If all five parsers extract your fields cleanly, no ATS is stopping you. Real rejection happens at human review — by the recruiter who searched the database. Fix the parse first, then focus on what the human reads.",
+      "visual": {
+        "type": "text-card",
+        "text": "Fix the parse first",
+        "subtitle": "Then focus on what the human reads",
+        "bg": "#4F46E5"
+      }
+    },
+    {
+      "narration": "More guidance at aimvantage.uk slash blog. The Vantage AI tool runs CV Mirror automatically as part of the application prep flow.",
+      "visual": {
+        "type": "title-card",
+        "text": "aimvantage.uk",
+        "subtitle": "Free CV-vs-role analysis · Cover letter · Mock interview",
+        "bg": "#4F46E5"
+      }
+    }
+  ]
+}
