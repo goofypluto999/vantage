@@ -23,6 +23,7 @@ import ToolsPage from './components/ToolsPage';
 import ComparePage from './components/ComparePage';
 import InterviewPrepCompanyHub from './components/InterviewPrepCompanyHub';
 import InterviewPrepCompanyPage from './components/InterviewPrepCompanyPage';
+import InterviewPrepCompanySeniorityPage from './components/InterviewPrepCompanySeniorityPage';
 import LaidOffPage from './components/LaidOffPage';
 import AtsHubPage from './components/AtsHubPage';
 import AtsVendorPage from './components/AtsVendorPage';
@@ -228,6 +229,7 @@ function AppContent() {
             <Route path="/compare" element={<ComparePage />} />
             <Route path="/interview-prep" element={<InterviewPrepCompanyHub />} />
             <Route path="/interview-prep/:company" element={<InterviewPrepCompanyPage />} />
+            <Route path="/interview-prep/:company/:seniority" element={<InterviewPrepCompanySeniorityPage />} />
             <Route path="/laid-off" element={<LaidOffPage />} />
             <Route path="/just-laid-off" element={<Navigate to="/laid-off" replace />} />
             <Route path="/laid-off-2026" element={<Navigate to="/laid-off" replace />} />

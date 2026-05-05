@@ -105,6 +105,34 @@ function parseCompanyPacks() {
   return packs;
 }
 
+/**
+ * Parse the 40-cell seniority tier from companySeniorityPacks.ts.
+ *
+ * Approach: walk the file line-by-line tracking the most recent
+ * companySlug seen, and emit a cell every time we hit a senioritySlug
+ * line. The lazy [\s\S]*? approach fails because nested arrays inside
+ * each variant object have closing brackets that the lazy match grabs
+ * too early.
+ */
+function parseCompanySeniorityCells() {
+  const src = readFileSync(resolve(ROOT, 'src/data/companySeniorityPacks.ts'), 'utf-8');
+  const cells = [];
+  const lines = src.split('\n');
+  let currentCompany = null;
+  for (const line of lines) {
+    const companyMatch = line.match(/companySlug:\s*'([^']+)'/);
+    if (companyMatch) {
+      currentCompany = companyMatch[1];
+      continue;
+    }
+    const senMatch = line.match(/^\s*slug:\s*'(junior|mid|senior|staff|manager)'/);
+    if (senMatch && currentCompany) {
+      cells.push({ companySlug: currentCompany, senioritySlug: senMatch[1] });
+    }
+  }
+  return cells;
+}
+
 // ---------- Markdown → HTML (minimal, no deps) ----------
 // Handles: headers (h1-h3), paragraphs, ordered + unordered lists,
 // blockquotes, code blocks (triple-backtick), inline code, bold,
@@ -296,11 +324,15 @@ ${entries.join('\n')}
   return entries.length;
 }
 
-function writeCompaniesSitemap(packs) {
+function writeCompaniesSitemap(packs, seniorityCells) {
   const latest = packs.map((p) => p.updated).sort().reverse()[0] ?? '2026-04-25';
+  const seniorityLastmod = '2026-05-04';
   const entries = [
     urlEntry(`${HOST}/interview-prep`, latest, '0.9', 'weekly'),
     ...packs.map((p) => urlEntry(`${HOST}/interview-prep/${p.slug}`, p.updated, '0.85', 'monthly')),
+    ...seniorityCells.map((c) =>
+      urlEntry(`${HOST}/interview-prep/${c.companySlug}/${c.senioritySlug}`, seniorityLastmod, '0.8', 'monthly')
+    ),
   ];
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -495,17 +527,18 @@ function writeJsonFeed(posts) {
 const posts = parseBlogPostsFromTs();
 const rolePacks = parseRolePacks();
 const companyPacksData = parseCompanyPacks();
+const seniorityCells = parseCompanySeniorityCells();
 
 const blogCount = writeBlogSitemap(posts);
 const rolesCount = writeRolesSitemap(rolePacks);
-const companiesCount = writeCompaniesSitemap(companyPacksData);
+const companiesCount = writeCompaniesSitemap(companyPacksData, seniorityCells);
 const rssCount = writeRss(posts);
 const atomCount = writeAtom(posts);
 const jsonCount = writeJsonFeed(posts);
 
 console.log(`[generate-feeds] blog sitemap: ${blogCount} entries (${posts.length} posts + index)`);
 console.log(`[generate-feeds] roles sitemap: ${rolesCount} entries (${rolePacks.length} packs + hub)`);
-console.log(`[generate-feeds] companies sitemap: ${companiesCount} entries (${companyPacksData.length} packs + hub)`);
+console.log(`[generate-feeds] companies sitemap: ${companiesCount} entries (${companyPacksData.length} packs + ${seniorityCells.length} seniority cells + hub)`);
 console.log(`[generate-feeds] RSS:  ${rssCount} items (with full content + dc:creator + categories)`);
 console.log(`[generate-feeds] Atom: ${atomCount} entries (with full content + author URI + categories)`);
 console.log(`[generate-feeds] JSON Feed: ${jsonCount} items (with content_html + content_text + tags)`);
