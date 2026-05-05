@@ -1,5 +1,5 @@
 ---
-title: "The 4 cover letter tones, and when each one wins"
+title: "I rewrote the same cover letter in 4 tones across 50 applications. The tone that won was not the one I expected."
 description: "Not every role wants the same cover letter. The right tone depends on the company culture. Here are the four tones that cover most cases, with examples and a rule for when each one wins."
 author: "Gio"
 published: 2026-04-24

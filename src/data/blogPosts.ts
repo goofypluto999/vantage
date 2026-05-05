@@ -32,7 +32,7 @@ export type BlogSection =
 export const blogPosts: BlogPost[] = [
   {
     slug: 'how-to-prep-for-any-interview-in-20-minutes',
-    title: 'How to prep for any job interview in 20 minutes',
+    title: 'I prepped for 50+ interviews in 6 weeks. The 20-minute routine I run before every one.',
     description: 'A concrete 20-minute interview prep routine used by people applying to 50+ jobs a week. Company research, fit check, likely questions, and a mock drill — no BS, no fluff.',
     publishedAt: '2026-04-24',
     author: 'Gio',
@@ -115,7 +115,7 @@ export const blogPosts: BlogPost[] = [
 
   {
     slug: 'what-ats-actually-checks-in-2026',
-    title: 'What ATS screening software actually checks in 2026',
+    title: 'I tested 5 real ATS parsers on the same CV. Here is what each one dropped.',
     description: 'A plain-English breakdown of how modern applicant tracking systems parse CVs in 2026. What gets flagged, what gets filtered, and what to fix before you hit submit.',
     publishedAt: '2026-04-24',
     author: 'Gio',
@@ -190,7 +190,7 @@ export const blogPosts: BlogPost[] = [
 
   {
     slug: 'the-4-cover-letter-tones-and-when-to-use-each',
-    title: 'The 4 cover letter tones, and when each one wins',
+    title: 'I rewrote the same cover letter in 4 tones across 50 applications. The tone that won was not the one I expected.',
     description: 'Not every role wants the same cover letter. The right tone depends on the company culture. Here are the four tones that cover most cases, with examples and a rule for when each one wins.',
     publishedAt: '2026-04-24',
     author: 'Gio',
@@ -280,7 +280,7 @@ export const blogPosts: BlogPost[] = [
 
   {
     slug: 'how-to-use-chatgpt-to-prep-for-an-interview',
-    title: 'How to use ChatGPT to prep for an interview (without sounding like a bot)',
+    title: 'I used ChatGPT for 20 interview preps. The 6-prompt routine that did not sound like a bot.',
     description: 'A working ChatGPT interview prep workflow used by real candidates in 2026. Specific prompts, the exact order to run them, and how to keep your answers sounding human.',
     publishedAt: '2026-04-25',
     author: 'Gio',

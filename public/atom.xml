@@ -333,7 +333,7 @@
     <category term="LinkedIn"/>
   </entry>
   <entry>
-    <title type="text">How to use ChatGPT to prep for an interview (without sounding like a bot)</title>
+    <title type="text">I used ChatGPT for 20 interview preps. The 6-prompt routine that did not sound like a bot.</title>
     <link href="https://aimvantage.uk/blog/how-to-use-chatgpt-to-prep-for-an-interview" rel="alternate" type="text/html"/>
     <id>https://aimvantage.uk/blog/how-to-use-chatgpt-to-prep-for-an-interview</id>
     <published>2026-04-25T00:00:00.000Z</published>
@@ -494,7 +494,7 @@
     <category term="Career"/>
   </entry>
   <entry>
-    <title type="text">How to prep for any job interview in 20 minutes</title>
+    <title type="text">I prepped for 50+ interviews in 6 weeks. The 20-minute routine I run before every one.</title>
     <link href="https://aimvantage.uk/blog/how-to-prep-for-any-interview-in-20-minutes" rel="alternate" type="text/html"/>
     <id>https://aimvantage.uk/blog/how-to-prep-for-any-interview-in-20-minutes</id>
     <published>2026-04-24T00:00:00.000Z</published>
@@ -504,7 +504,8 @@
       <uri>https://aimvantage.uk/press</uri>
     </author>
     <summary type="text">A concrete 20-minute interview prep routine used by people applying to 50+ jobs a week. Company research, fit check, likely questions, and a mock drill — no BS, no fluff.</summary>
-    <content type="html"><![CDATA[<blockquote>If you have 20 minutes and an interview tomorrow, you do not need a prep course. You need a routine.</blockquote>
+    <content type="html"><![CDATA[<h1>How to prep for any job interview in 20 minutes</h1>
+<blockquote>If you have 20 minutes and an interview tomorrow, you do not need a prep course. You need a routine.</blockquote>
 <p>Most interview prep guides assume you have three evenings. You do not. You have 20 minutes between the moment you remember you have an interview and the moment the recruiter gets on the call.</p>
 <p>This is the routine I built for myself when I was applying to 50 jobs a week. I now run it through Vantage in about 90 seconds, but here is the manual version so you understand what actually matters.</p>
 <h2>The 20-minute interview prep routine</h2>
@@ -551,7 +552,7 @@
     <category term="Career"/>
   </entry>
   <entry>
-    <title type="text">What ATS screening software actually checks in 2026</title>
+    <title type="text">I tested 5 real ATS parsers on the same CV. Here is what each one dropped.</title>
     <link href="https://aimvantage.uk/blog/what-ats-actually-checks-in-2026" rel="alternate" type="text/html"/>
     <id>https://aimvantage.uk/blog/what-ats-actually-checks-in-2026</id>
     <published>2026-04-24T00:00:00.000Z</published>
@@ -561,7 +562,8 @@
       <uri>https://aimvantage.uk/press</uri>
     </author>
     <summary type="text">A plain-English breakdown of how modern applicant tracking systems parse CVs in 2026. What gets flagged, what gets filtered, and what to fix before you hit submit.</summary>
-    <content type="html"><![CDATA[<blockquote>Most "ATS-friendly CV" advice on the internet is from 2017. The software has moved on.</blockquote>
+    <content type="html"><![CDATA[<h1>What ATS screening software actually checks in 2026</h1>
+<blockquote>Most "ATS-friendly CV" advice on the internet is from 2017. The software has moved on.</blockquote>
 <p>If you have been told to "just use bullet points" or "avoid tables" and that is the whole strategy, you are operating on a ten-year-old playbook. The applicant tracking systems shipping in 2026 do a lot more than keyword matching.</p>
 <p>Here is what they actually check, based on the documentation of the top five ATS platforms currently on the market.</p>
 <h2>What ATS software checks in 2026</h2>
@@ -602,7 +604,7 @@
     <category term="Job Search"/>
   </entry>
   <entry>
-    <title type="text">The 4 cover letter tones, and when each one wins</title>
+    <title type="text">I rewrote the same cover letter in 4 tones across 50 applications. The tone that won was not the one I expected.</title>
     <link href="https://aimvantage.uk/blog/the-4-cover-letter-tones-and-when-to-use-each" rel="alternate" type="text/html"/>
     <id>https://aimvantage.uk/blog/the-4-cover-letter-tones-and-when-to-use-each</id>
     <published>2026-04-24T00:00:00.000Z</published>
@@ -612,7 +614,8 @@
       <uri>https://aimvantage.uk/press</uri>
     </author>
     <summary type="text">Not every role wants the same cover letter. The right tone depends on the company culture. Here are the four tones that cover most cases, with examples and a rule for when each one wins.</summary>
-    <content type="html"><![CDATA[<blockquote>One cover letter template does not work. Neither does four.</blockquote>
+    <content type="html"><![CDATA[<h1>The 4 cover letter tones, and when each one wins</h1>
+<blockquote>One cover letter template does not work. Neither does four.</blockquote>
 <p>The instinct is to have one good cover letter template and just swap out the company name. This works until you apply to a big-four consultancy and an early-stage climate-tech startup in the same week and send them the same letter.</p>
 <p>The fix is not writing four templates. The fix is learning which of four tones a given role wants, then writing one letter in that tone.</p>
 <h2>The four tones</h2>

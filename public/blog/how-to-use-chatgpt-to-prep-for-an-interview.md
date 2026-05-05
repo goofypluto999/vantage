@@ -1,5 +1,5 @@
 ---
-title: "How to use ChatGPT to prep for an interview (without sounding like a bot)"
+title: "I used ChatGPT for 20 interview preps. The 6-prompt routine that did not sound like a bot."
 description: "A working ChatGPT interview prep workflow used by real candidates in 2026. Specific prompts, the exact order to run them, and how to keep your answers sounding human."
 author: "Gio"
 published: 2026-04-25

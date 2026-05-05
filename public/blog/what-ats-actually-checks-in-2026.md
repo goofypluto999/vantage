@@ -1,5 +1,5 @@
 ---
-title: "What ATS screening software actually checks in 2026"
+title: "I tested 5 real ATS parsers on the same CV. Here is what each one dropped."
 description: "A plain-English breakdown of how modern applicant tracking systems parse CVs in 2026. What gets flagged, what gets filtered, and what to fix before you hit submit."
 author: "Gio"
 published: 2026-04-24

@@ -1,5 +1,5 @@
 ---
-title: "How to prep for any job interview in 20 minutes"
+title: "I prepped for 50+ interviews in 6 weeks. The 20-minute routine I run before every one."
 description: "A concrete 20-minute interview prep routine used by people applying to 50+ jobs a week. Company research, fit check, likely questions, and a mock drill — no BS, no fluff."
 author: "Gio"
 published: 2026-04-24
