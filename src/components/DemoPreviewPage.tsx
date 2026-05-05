@@ -9,10 +9,15 @@
  * reel can be embedded directly in the landing hero.
  */
 
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
-import LiveDemoReel from './LiveDemoReel';
 import SEO from './SEO';
+
+// Lazy-load LiveDemoReel so it stays on its own code-split chunk
+// (matches the lazy import on LandingPage — without this both eager
+// and lazy paths ship the chunk into the main bundle).
+const LiveDemoReel = React.lazy(() => import('./LiveDemoReel'));
 
 export default function DemoPreviewPage() {
   return (
@@ -53,7 +58,9 @@ export default function DemoPreviewPage() {
           </p>
         </div>
 
-        <LiveDemoReel autoplay aspectRatio="16/10" />
+        <React.Suspense fallback={<div className="aspect-video w-full bg-white/30 rounded-3xl" />}>
+          <LiveDemoReel autoplay aspectRatio="16/10" />
+        </React.Suspense>
 
         <div className="max-w-2xl mx-auto mt-12 text-sm text-white/60 space-y-3">
           <p className="text-white/40 text-xs uppercase tracking-wider">What's in here</p>

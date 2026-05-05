@@ -1,19 +1,21 @@
-import React, { useRef, useState, useMemo, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { Sparkles } from '@react-three/drei';
 import { motion, useScroll, useTransform, AnimatePresence } from 'motion/react';
 import {
   ChevronRight, ShieldAlert, ShieldCheck, FileText, Lock,
   Upload, Link as LinkIcon, Download, CheckCircle, Eye, Menu, X,
   BrainCircuit, Trophy, Clock3, BarChart2, User, Play
 } from 'lucide-react';
-import * as THREE from 'three';
 import Waitlist from './Waitlist';
 import DemoWalkthrough from './DemoWalkthrough';
-import LiveDemoReel from './LiveDemoReel';
 import { useCurrency } from '../contexts/CurrencyContext';
 import { getPublicStats, type PublicStats } from '../services/api';
+
+// Lazy-loaded heavy components — kept off the initial bundle to improve LCP.
+// Three.js + @react-three/fiber + @react-three/drei are ~720 kB gzipped on
+// their own; the LiveDemoReel pulls in additional motion/animation deps.
+const Hero3DScene = React.lazy(() => import('./Hero3DScene'));
+const LiveDemoReel = React.lazy(() => import('./LiveDemoReel'));
 
 // Directories that require a reciprocal backlink before approving submission.
 // To add: append a new entry, redeploy. Footer auto-renders.
@@ -31,90 +33,8 @@ const FEATURED_ON: { name: string; url: string; badgeUrl?: string }[] = [
 ];
 
 // ============================================================================
-// 3D: DOT-MATRIX GLOBE  (fibonacci sphere of points + orbital rings)
+// 3D hero scene moved to ./Hero3DScene.tsx for code-splitting.
 // ============================================================================
-function DotGlobe() {
-  const groupRef = useRef<THREE.Group>(null);
-  const [hovered, setHovered] = useState(false);
-
-  // Fibonacci sphere — evenly-distributed points on a sphere surface
-  const positions = useMemo(() => {
-    const count = 1800;
-    const arr = new Float32Array(count * 3);
-    const golden = Math.PI * (3 - Math.sqrt(5));
-    for (let i = 0; i < count; i++) {
-      const y = 1 - (i / (count - 1)) * 2;
-      const r = Math.sqrt(Math.max(0, 1 - y * y));
-      const theta = golden * i;
-      arr[i * 3]     = Math.cos(theta) * r * 4.8;
-      arr[i * 3 + 1] = y * 4.8;
-      arr[i * 3 + 2] = Math.sin(theta) * r * 4.8;
-    }
-    return arr;
-  }, []);
-
-  useFrame((state, delta) => {
-    if (groupRef.current) {
-      groupRef.current.rotation.y += delta * (hovered ? 0.7 : 0.14);
-      groupRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.4) * 0.12;
-    }
-  });
-
-  return (
-    <group
-      ref={groupRef}
-      onPointerOver={() => setHovered(true)}
-      onPointerOut={() => setHovered(false)}
-    >
-      {/* Dot cloud */}
-      <points>
-        <bufferGeometry>
-          <bufferAttribute
-            attach="attributes-position"
-            args={[positions, 3]}
-          />
-        </bufferGeometry>
-        <pointsMaterial
-          size={0.035}
-          color="#ffffff"
-          transparent
-          opacity={0.75}
-          sizeAttenuation
-        />
-      </points>
-
-      {/* Equator ring */}
-      <mesh rotation={[Math.PI / 2, 0, 0]}>
-        <torusGeometry args={[4.8, 0.012, 8, 200]} />
-        <meshBasicMaterial color="#A8E6CF" transparent opacity={0.55} />
-      </mesh>
-
-      {/* Tilted ring 1 */}
-      <mesh rotation={[Math.PI / 3, 0, Math.PI / 5]}>
-        <torusGeometry args={[5.4, 0.009, 8, 200]} />
-        <meshBasicMaterial color="#A1C9F1" transparent opacity={0.35} />
-      </mesh>
-
-      {/* Tilted ring 2 */}
-      <mesh rotation={[Math.PI / 6, Math.PI / 4, 0]}>
-        <torusGeometry args={[5.9, 0.007, 8, 200]} />
-        <meshBasicMaterial color="#FFB7B2" transparent opacity={0.25} />
-      </mesh>
-
-      {/* Soft inner glow */}
-      <mesh>
-        <sphereGeometry args={[4.7, 32, 32]} />
-        <meshBasicMaterial color="#4F46E5" transparent opacity={0.06} />
-      </mesh>
-
-      {/* Bright core */}
-      <mesh>
-        <sphereGeometry args={[1.1, 24, 24]} />
-        <meshBasicMaterial color="#ffffff" transparent opacity={0.12} />
-      </mesh>
-    </group>
-  );
-}
 
 // ============================================================================
 // STORY SECTION — four scroll-in cards
@@ -592,18 +512,7 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
         {/* 3D canvas */}
         <div className="absolute inset-0 z-0 pointer-events-auto bg-[#A8A5E6]">
           <React.Suspense fallback={null}>
-            <Canvas camera={{ position: [0, 0, 7] }}>
-              <ambientLight intensity={1.6} />
-              <directionalLight position={[8, 10, 5]} intensity={2} color="#ffffff" />
-              <pointLight position={[-5, -5, 5]} intensity={0.8} color="#A1C9F1" />
-              <pointLight position={[5, 5, -5]} intensity={0.6} color="#FFB7B2" />
-
-              <DotGlobe />
-
-              <Sparkles count={120} scale={18} size={1.8} speed={0.15} opacity={0.5} color="#ffffff" />
-              <Sparkles count={60}  scale={14} size={2.5} speed={0.3}  opacity={0.4} color="#A8E6CF" />
-              <Sparkles count={60}  scale={14} size={2.5} speed={0.25} opacity={0.4} color="#A1C9F1" />
-            </Canvas>
+            <Hero3DScene />
           </React.Suspense>
         </div>
 
@@ -819,7 +728,9 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
           viewport={{ once: true, margin: '-50px' }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
         >
-          <LiveDemoReel autoplay aspectRatio="16/9" />
+          <React.Suspense fallback={<div className="aspect-video w-full bg-white/30 rounded-3xl" />}>
+            <LiveDemoReel autoplay aspectRatio="16/9" />
+          </React.Suspense>
         </motion.div>
       </section>
 
