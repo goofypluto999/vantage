@@ -285,7 +285,9 @@ export function analyzeText(text: string, fileSize: number): VendorReport[] {
   });
 }
 
-/** Aggregate pass count: a vendor "passes" if it has zero errors. */
+/** Aggregate clean count: a vendor is "clean" if it has zero errors AND zero warnings.
+ *  This matches the visual definition of a green pill in the UI so the headline
+ *  number stays consistent with what the user sees in the grid. */
 export function passCount(reports: VendorReport[]): number {
-  return reports.filter((r) => r.errors === 0).length;
+  return reports.filter((r) => r.errors === 0 && r.warns === 0).length;
 }

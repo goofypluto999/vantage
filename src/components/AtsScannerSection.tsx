@@ -181,17 +181,19 @@ function ReadyView({
     <>
       <div className="flex items-baseline gap-2 mb-3">
         <span className="text-2xl font-bold text-white">{passes}<span className="text-white/40 text-base">/5</span></span>
-        <span className="text-xs text-white/50">parsing checks pass · {wordCount} words read</span>
+        <span className="text-xs text-white/50">systems clean · {wordCount} words read</span>
       </div>
 
       <div className="grid grid-cols-5 gap-2 mb-3">
         {reports.map((r) => {
+          const isClean = r.errors === 0 && r.warns === 0;
           const tone =
             r.errors > 0 ? SEVERITY_TONES.error :
             r.warns > 0 ? SEVERITY_TONES.warn :
             SEVERITY_TONES.info;
-          const Icon = r.errors === 0 && r.warns === 0 ? CheckCircle2 : tone.icon;
-          const iconClass = r.errors === 0 && r.warns === 0 ? 'text-emerald-400' : tone.text;
+          const Icon = isClean ? CheckCircle2 : tone.icon;
+          const iconClass = isClean ? 'text-emerald-400' : tone.text;
+          const labelClass = isClean ? 'text-emerald-400' : tone.text;
           const isOpen = expanded === r.vendor;
           return (
             <button
@@ -199,7 +201,7 @@ function ReadyView({
               type="button"
               onClick={() => setExpanded(isOpen ? null : r.vendor)}
               className={`group flex flex-col items-center gap-1 p-2 rounded-lg border transition-all text-left
-                ${r.errors === 0 && r.warns === 0
+                ${isClean
                   ? 'bg-emerald-500/10 border-emerald-500/30 hover:bg-emerald-500/15'
                   : `${tone.bg} ${tone.border} hover:brightness-110`}
                 ${isOpen ? 'ring-2 ring-violet-500/40' : ''}`}
@@ -207,8 +209,8 @@ function ReadyView({
             >
               <Icon className={`w-4 h-4 ${iconClass}`} />
               <span className="text-[11px] font-semibold text-white/80 truncate w-full text-center">{r.name}</span>
-              <span className={`text-[10px] ${tone.text}`}>
-                {r.errors === 0 && r.warns === 0 ? 'Clean' : `${r.errors + r.warns} issue${(r.errors + r.warns) === 1 ? '' : 's'}`}
+              <span className={`text-[10px] ${labelClass}`}>
+                {isClean ? 'Clean' : `${r.errors + r.warns} issue${(r.errors + r.warns) === 1 ? '' : 's'}`}
               </span>
             </button>
           );
