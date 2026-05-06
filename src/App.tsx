@@ -262,6 +262,16 @@ function AppContent() {
             <Route path="/vs/teal" element={<Navigate to="/alternatives/teal" replace />} />
             <Route path="/vs/final-round-ai" element={<Navigate to="/alternatives/final-round-ai" replace />} />
             <Route path="/vs/resume-worded" element={<Navigate to="/alternatives/resume-worded" replace />} />
+            <Route path="/kickresume-alternative" element={<Navigate to="/alternatives/kickresume" replace />} />
+            <Route path="/enhancv-alternative" element={<Navigate to="/alternatives/enhancv" replace />} />
+            <Route path="/yoodli-alternative" element={<Navigate to="/alternatives/yoodli" replace />} />
+            <Route path="/huntr-alternative" element={<Navigate to="/alternatives/huntr" replace />} />
+            <Route path="/big-interview-alternative" element={<Navigate to="/alternatives/big-interview" replace />} />
+            <Route path="/vs/kickresume" element={<Navigate to="/alternatives/kickresume" replace />} />
+            <Route path="/vs/enhancv" element={<Navigate to="/alternatives/enhancv" replace />} />
+            <Route path="/vs/yoodli" element={<Navigate to="/alternatives/yoodli" replace />} />
+            <Route path="/vs/huntr" element={<Navigate to="/alternatives/huntr" replace />} />
+            <Route path="/vs/big-interview" element={<Navigate to="/alternatives/big-interview" replace />} />
             <Route path="/vs/resume-io" element={<Navigate to="/compare" replace />} />
             <Route path="/vs" element={<Navigate to="/alternatives" replace />} />
             <Route path="/linkedin-optimization" element={<LinkedinOptimizationPage />} />

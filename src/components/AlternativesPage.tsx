@@ -21,7 +21,16 @@ const SITE_URL = 'https://aimvantage.uk';
  * Each page ships breadcrumb + FAQPage schema for AI citation.
  */
 
-type CompetitorSlug = 'jobscan' | 'teal' | 'final-round-ai' | 'resume-worded';
+type CompetitorSlug =
+  | 'jobscan'
+  | 'teal'
+  | 'final-round-ai'
+  | 'resume-worded'
+  | 'kickresume'
+  | 'enhancv'
+  | 'yoodli'
+  | 'huntr'
+  | 'big-interview';
 
 interface CompetitorProfile {
   slug: CompetitorSlug;
@@ -178,9 +187,194 @@ const PROFILES: Record<CompetitorSlug, CompetitorProfile> = {
       },
     ],
   },
+  kickresume: {
+    slug: 'kickresume',
+    name: 'Kickresume',
+    oneLiner: 'Resume + cover letter builder with templates and an AI writer that works from job title and company name.',
+    founded: '2014',
+    pricing: 'Free tier with watermarked exports. Premium starts at $8/month annual or $19/month rolling.',
+    whatItDoes:
+      'You pick a CV or cover letter template, fill in your details, and the AI writer produces tailored copy from a job title, company name, and short description. Output is polished and visually consistent across resume + cover letter + portfolio.',
+    whereItShines:
+      'Visual polish. The templates are genuinely well-designed — Kickresume is one of the few resume builders where the export does not look like a Word doc from 2009. Useful when you need a presentable CV in 20 minutes from nothing.',
+    whereItFalls:
+      'The AI cover letter is template-shaped. It reads like a generated cover letter — not because the model is weak, but because Kickresume optimises for "fits the template", not "sounds like the candidate". You will spend 10 minutes editing the voice afterwards. No mock interview, no fit score, no company intel.',
+    vantageEdge: [
+      'Vantage cover letter has 4 tone variants (Direct, Formal, Warm, Creative) — pick the one that matches the company\'s voice instead of editing template-shaped output.',
+      'Output is grounded in the actual job description and your CV evidence, not just a job title and company name. Less generic, less to rewrite.',
+      'Includes mock interview, fit score, company intel, and pitch outline — Kickresume only writes documents.',
+      '£5 one-time pack vs $8–19/month subscription. Stop paying when you stop applying.',
+    ],
+    whyChoose:
+      'If you need a visually polished CV + cover letter pair from scratch and you have time to edit the voice, Kickresume is solid. If you already have a CV and want a tailored, role-specific application package — cover letter, mock interview, fit analysis — in one go, use Vantage.',
+    faq: [
+      {
+        q: 'Is Vantage cheaper than Kickresume?',
+        a: 'On a per-application basis, yes. Vantage is £5 for ~6 full prep packs (CV fit + cover letter + mock interview + pitch). Kickresume is $8/month minimum on the annual plan, $19/month rolling. If you apply to a few roles per quarter, Vantage is significantly cheaper. Heavy users on Pro ($12/month) land roughly even.',
+      },
+      {
+        q: 'Does Vantage produce designed CV templates like Kickresume?',
+        a: 'No — Vantage is not a CV builder. We assume you already have a CV in DOCX or PDF and we work with the content, not the layout. If you need a designed CV from scratch, Kickresume or Canva are the right tools. After that, bring the CV to Vantage for the role-specific tailoring.',
+      },
+      {
+        q: 'Can I use Kickresume and Vantage together?',
+        a: 'Yes — the workflow we recommend: build the CV in Kickresume, run the parsed PDF through CV Mirror to confirm the ATS reads it cleanly, then upload to Vantage to generate the cover letter, fit score, and interview pack for each specific role.',
+      },
+    ],
+  },
+  enhancv: {
+    slug: 'enhancv',
+    name: 'Enhancv',
+    oneLiner: 'CV builder + AI cover letter generator that produces a tailored first draft from a JD paste.',
+    founded: '2014',
+    pricing: 'Free tier with limited features. Pro is $24.99/month or $9.99/month annual.',
+    whatItDoes:
+      'You upload a CV, paste a job ad, and Enhancv produces a tailored cover letter draft in seconds. The CV builder side has templates and a content checker that flags weak bullets.',
+    whereItShines:
+      'Genuinely fast first drafts. If you need a starting point at 11pm before a morning deadline, Enhancv gets you to a usable draft quickly. The content checker is useful for spotting passive language and missing metrics.',
+    whereItFalls:
+      'The first draft reads like a first draft — Enhancv\'s cover letters tend toward the same enthusiastic-applicant register regardless of role or industry. You will rewrite the opening and one or two proof points. No interview prep, no fit score, no company intel.',
+    vantageEdge: [
+      '4-tone switcher means you can flip between Formal, Warm, Direct, and Creative without re-running the analysis. Same evidence, different register — closer to how a senior writer actually edits.',
+      'Cover letter is grounded in retrieved company intel (mission, recent moves, culture signals) — not just the JD text.',
+      'You also get fit score, mock interview questions, and a 5-minute pitch outline in the same flow. Enhancv only writes documents.',
+      'Pay-per-use £5 starter never expires. Enhancv\'s monthly subscription burns whether you applied or not.',
+    ],
+    whyChoose:
+      'Use Enhancv if you need a polished CV builder and an emergency cover letter draft. Use Vantage when you have a specific role and want a full prep package with multiple voice options, plus the interview practice that Enhancv does not cover.',
+    faq: [
+      {
+        q: 'How is Vantage\'s cover letter different from Enhancv\'s?',
+        a: 'Enhancv generates one draft and you edit it. Vantage generates the same evidence in 4 tones (Formal, Warm, Direct, Creative) so you pick the register that matches the company instead of rewriting voice from scratch. Both pull from your CV; Vantage also pulls from retrieved company intel.',
+      },
+      {
+        q: 'Is Vantage a CV builder like Enhancv?',
+        a: 'No. Vantage works on a CV you already have. If you need to build a CV from scratch, Enhancv or Kickresume are good. Once your CV is built, bring it to Vantage for role-specific tailoring.',
+      },
+      {
+        q: 'Can I cancel Enhancv and still get cover letters from Vantage?',
+        a: 'Yes — the £5 Vantage starter pack gives you ~6 full prep packs that never expire, no subscription. If your hunt is intermittent, this is a meaningfully cheaper way to get cover letters than $9.99–24.99/month.',
+      },
+    ],
+  },
+  yoodli: {
+    slug: 'yoodli',
+    name: 'Yoodli',
+    oneLiner: 'AI speech coach that records you answering interview questions and grades pace, filler words, and clarity.',
+    founded: '2020',
+    pricing: 'Free tier with limited sessions. Pro is $20/month, Premium $40/month.',
+    whatItDoes:
+      'You speak into your laptop mic, Yoodli transcribes, and the AI scores delivery — pace, filler words ("um", "like"), pauses, repetitiveness, and a "concise" rating. Useful for noticing speech habits you cannot hear yourself.',
+    whereItShines:
+      'Delivery feedback. If your problem is "I say um every other sentence" or "I trail off at the end of answers", Yoodli will surface it. The repetitiveness flag in particular is genuinely hard to spot without a transcript.',
+    whereItFalls:
+      'Yoodli grades how you say things, not whether your answer was right. It will rate a confidently-delivered wrong answer above a hesitant correct one. No CV-fit context, no role-specific question generation grounded in a real JD, no scoring of answer structure or evidence quality.',
+    vantageEdge: [
+      'Mock interview questions are generated from the actual job description — not generic behavioural prompts. Each question is likely to come up in your real interview.',
+      'Answers are graded on substance — structure (STAR / SCQA), evidence quality, gaps, and role-fit — not just delivery. You learn whether your answer was actually good, not just smoothly delivered.',
+      'Live AI feedback after every question, with concrete next-step suggestions ("add a metric here", "name the stakeholders").',
+      '£5 one-time vs Yoodli\'s $20–40/month. Affordable to use on a single interview.',
+    ],
+    whyChoose:
+      'Use Yoodli when you know your delivery is the problem — pace, fillers, confidence — and you want a speech coach. Use Vantage when you want to be sure your answer is right for this specific role, with structure and evidence grading. Many users do both: Yoodli for delivery, Vantage for content.',
+    faq: [
+      {
+        q: 'Does Vantage give speech feedback like Yoodli?',
+        a: 'No, Vantage does not grade delivery (pace, filler words). It grades the substance of the answer — structure, evidence, gaps, role-fit. If delivery is your weakness, Yoodli is the better tool. If you want to know whether your answer is the right answer, use Vantage.',
+      },
+      {
+        q: 'Is Vantage\'s mock interview live like Yoodli\'s?',
+        a: 'Yes — questions are presented one at a time, you answer either by typing or by speaking (Web Speech API), and grading happens immediately. The difference is the question source: Vantage generates questions from the actual JD; Yoodli uses a generic question library.',
+      },
+      {
+        q: 'Can I use both Yoodli and Vantage?',
+        a: 'Yes, and many users do. Run Vantage first to learn the right answers for the role, then run those same answers through Yoodli to fix delivery. Belt-and-braces approach for a high-stakes interview.',
+      },
+    ],
+  },
+  huntr: {
+    slug: 'huntr',
+    name: 'Huntr',
+    oneLiner: 'Job tracker with a Chrome extension, Kanban board, and AI tools for resume tailoring.',
+    founded: '2017',
+    pricing: 'Free tier with caps. Pro is $20/month or $48/quarter, Teams from $30/seat/month.',
+    whatItDoes:
+      'You save jobs from a Chrome extension, organise them on a Kanban (Wishlist → Applied → Interview → Offer), tailor your CV per-role with the AI tools, and track follow-up dates. Built for someone running an active multi-role search.',
+    whereItShines:
+      'Job tracking and pipeline visibility. If you are actively applying to 30+ roles and need to see at a glance who you spoke with last week and what your follow-up cadence looks like, Huntr is the strongest tool in the category alongside Teal.',
+    whereItFalls:
+      'Huntr is a tracker first, application-prep tool second. The CV-tailoring AI is solid but transactional — there is no mock interview, no full company intel pull, no pitch outline, no tone-switched cover letter. The tracker overhead is wasted on someone applying to one specific role.',
+    vantageEdge: [
+      'Vantage is built for the moment-of-application — paste one job link, get the full prep pack in ~90 seconds. No Kanban setup, no extension install, no per-role CV variant management.',
+      '4-tone cover letter switcher. Mock interview generated from the actual JD, graded live. 5-minute pitch outline. Huntr does not cover any of these.',
+      'CV Mirror (free, no signup) shows multi-vendor ATS parse for the CV before you tailor it — nothing in Huntr is equivalent.',
+      '£5 one-time starter never expires. Huntr Pro is $20/month, billed monthly.',
+    ],
+    whyChoose:
+      'Use Huntr if your bottleneck is organising the search — many open applications, follow-ups slipping, no clear pipeline. Use Vantage when your bottleneck is the application itself — making each one count. The tools are complementary: Huntr for tracking, Vantage for execution.',
+    faq: [
+      {
+        q: 'Should I use Huntr or Vantage?',
+        a: 'They are not direct substitutes. Huntr is a tracker — best for high-volume searches. Vantage is an application prep tool — best when you have one specific role to nail. Many users keep Huntr open for tracking and switch to Vantage when they actually sit down to write the application.',
+      },
+      {
+        q: 'Does Vantage tailor my CV like Huntr?',
+        a: 'Vantage does not modify your CV file. It generates a fit score (CV vs role), highlights match points and gaps, and uses your CV evidence to write the cover letter. If you want a per-role CV file variant saved alongside the application, Huntr or Teal is the better tool. If you want a fast role-specific score and tailored cover letter, Vantage.',
+      },
+      {
+        q: 'Is Vantage cheaper than Huntr Pro?',
+        a: 'Substantially. Huntr Pro is $20/month rolling. Vantage is £5 one-time for 20 tokens that never expire (~6 full prep packs), or £12/month for Vantage Pro. If you apply heavily, Pro lands in the same ballpark; if you apply intermittently, the £5 pack is significantly cheaper.',
+      },
+    ],
+  },
+  'big-interview': {
+    slug: 'big-interview',
+    name: 'Big Interview',
+    oneLiner: 'Long-running interview training platform with curriculum, recorded mocks, and answer-builder frameworks.',
+    founded: '2010',
+    pricing: '$39/month, $99/quarter, or $299/year. Single-purchase $79 lifetime tier available.',
+    whatItDoes:
+      'Big Interview offers a structured curriculum — modules on behavioural questions, STAR storytelling, salary negotiation — alongside a video answer recorder. You answer prompts on camera, watch yourself back, and use a built-in framework to refine answer structure.',
+    whereItShines:
+      'Curriculum depth. If you are new to interviewing or coming back after years out, Big Interview is the most comprehensive training platform in the category. The frameworks (especially STAR and the "answer builder") are solid pedagogy.',
+    whereItFalls:
+      'It is a training platform, not an application tool. Big Interview teaches you to interview in general. It does not generate questions from a specific job description, does not write your cover letter, does not analyse your CV against a role. Useful for pre-search prep, less useful when you actually have a Tuesday interview.',
+    vantageEdge: [
+      'Mock questions generated from the actual JD — not generic behavioural prompts. The questions you practise are the questions likely to come up.',
+      'Live AI grading on substance (structure, evidence, gaps, role-fit), not just self-review.',
+      'Full prep pack covers the application before the interview — cover letter, fit score, company intel, pitch — Big Interview only covers the interview itself.',
+      '£5 starter pack vs $39/month minimum. Affordable to use on one specific interview rather than committing to a curriculum.',
+    ],
+    whyChoose:
+      'Use Big Interview if you want a structured curriculum to lift your overall interviewing baseline over a few weeks. Use Vantage when you have a specific role next Tuesday and need targeted prep — questions from this JD, graded answers, plus everything else on the application side.',
+    faq: [
+      {
+        q: 'Is Vantage a substitute for Big Interview\'s curriculum?',
+        a: 'Not really — they solve different problems. Big Interview is a learning platform; Vantage is an application tool. If your goal is "become a better interviewer over 6 weeks", Big Interview\'s curriculum is the right shape. If your goal is "ace the interview I have next Tuesday", Vantage is more useful.',
+      },
+      {
+        q: 'Does Vantage have video / recorded answers like Big Interview?',
+        a: 'No, Vantage does not record video. Mock interviews are typed or spoken (browser speech-to-text) with live AI grading on the answer text. If you need to see yourself on camera, Big Interview or Yoodli is the better tool.',
+      },
+      {
+        q: 'Can I use Big Interview and Vantage together?',
+        a: 'Yes — Big Interview to build the underlying interviewing skill set, Vantage to apply those skills to specific roles. Many users do exactly this: curriculum once, then targeted prep per interview.',
+      },
+    ],
+  },
 };
 
-const SLUG_LIST: CompetitorSlug[] = ['jobscan', 'teal', 'final-round-ai', 'resume-worded'];
+const SLUG_LIST: CompetitorSlug[] = [
+  'jobscan',
+  'teal',
+  'final-round-ai',
+  'resume-worded',
+  'kickresume',
+  'enhancv',
+  'yoodli',
+  'huntr',
+  'big-interview',
+];
 
 // ----- Hub page -----
 export function AlternativesHub() {
@@ -210,8 +404,8 @@ export function AlternativesHub() {
   return (
     <div className="min-h-screen" style={{ background: t.pageBg }}>
       <SEO
-        title="Alternatives to Jobscan, Teal, Final Round AI & Resume Worded"
-        description="Honest, side-by-side comparisons of Vantage with the most-searched job application AI tools. Pick the right tool for your stage of the hunt."
+        title="Alternatives to Jobscan, Teal, Kickresume, Enhancv, Yoodli & more"
+        description="Honest, side-by-side comparisons of Vantage with the most-searched job application AI tools — Jobscan, Teal, Kickresume, Enhancv, Yoodli, Huntr, Big Interview, Final Round AI, Resume Worded. Pick the right tool for your stage of the hunt."
         path="/alternatives"
         jsonLd={[breadcrumbSchema, itemListSchema]}
       />
