@@ -1102,37 +1102,33 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
             </div>
           </div>
 
-          {/* UK legal-transparency block. Required identification for UK companies
-              providing software services (Companies Act 2006 s.82, e-Commerce
-              Regulations 2002 r.6). Public disclosure also counters automated
-              "lacks company information" flags from search assistants. */}
+          {/* Operator identification — UK e-Commerce Regulations 2002 r.6 for a
+              sole trader. Provides legal name, contact, sole-trader status, and
+              brand disambiguation. Counters automated "lacks company information"
+              flags raised by search assistants without claiming any company
+              registration that does not exist. */}
           <div className="border-t border-[#6B6B8D]/20 mt-8 pt-6 text-[11px] text-[#6B6B8D] leading-relaxed">
-            <p className="font-semibold text-[#3B3A5C] mb-1">Vantage AI Consulting Limited</p>
+            <p className="font-semibold text-[#3B3A5C] mb-1">Vantage AI</p>
             <p>
-              Registered in England and Wales · Company No. 16888728 ·{' '}
-              <a
-                href="https://find-and-update.company-information.service.gov.uk/company/16888728"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline hover:text-[#4F46E5]"
-              >
-                Companies House record
+              An AI-powered job-preparation SaaS operated by Giovanni Sizino Ennes,
+              a UK-based independent founder (sole trader) building in public.
+              Contact:{' '}
+              <a href="mailto:giovanni.sizino.ennes@hotmail.co.uk" className="underline hover:text-[#4F46E5]">
+                giovanni.sizino.ennes@hotmail.co.uk
               </a>
-            </p>
-            <p>
-              Trading as <strong>Vantage AI</strong> · Contact:{' '}
-              <a href="mailto:hello@aimvantage.uk" className="underline hover:text-[#4F46E5]">hello@aimvantage.uk</a>{' '}
-              · Operating domain: aimvantage.uk
+              {' '}· Operating domain: aimvantage.uk
             </p>
             <p className="mt-2 italic">
-              We are not affiliated with Vantage Consulting, Vantage Recruitment, Vantagepoint AI, or any other organisation
-              using a similar name. Vantage AI is an AI-powered job-preparation SaaS — we do not recruit, contact candidates
-              over WhatsApp/Telegram, or charge applicants for "processing" or "DBS check" fees.
+              Not affiliated with Vantage Consulting, Vantage Recruitment, Vantagepoint AI, or any other
+              organisation using a similar name. Vantage AI is a software product only — we do not recruit,
+              do not contact candidates over WhatsApp or Telegram, do not collect financial information from
+              applicants, and never charge users for "processing", "admin", or "DBS check" fees. All payments
+              are billed transparently through Stripe for AI usage tokens.
             </p>
           </div>
 
           <div className="flex flex-col md:flex-row justify-between items-center text-[11px] text-[#6B6B8D] mt-6 font-bold tracking-wider gap-3">
-            <span>© 2026 VANTAGE AI CONSULTING LIMITED. ALL RIGHTS RESERVED.</span>
+            <span>© 2026 VANTAGE AI · GIOVANNI SIZINO ENNES. ALL RIGHTS RESERVED.</span>
             <span className="text-center">ALL OUTPUTS ARE AI-GENERATED | <Link to="/terms" className="underline hover:text-[#4F46E5]">TERMS APPLY</Link></span>
           </div>
         </div>
