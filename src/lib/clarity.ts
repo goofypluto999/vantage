@@ -33,7 +33,10 @@ let injected = false;
 
 export function initClarity(projectId: string | undefined): void {
   if (typeof window === 'undefined') return;
-  if (!projectId || injected) return;
+  // Trim whitespace and newlines — env vars added via `echo` or copy-paste
+  // can carry trailing \n which corrupts the CDN URL.
+  const id = (projectId ?? '').trim();
+  if (!id || injected) return;
   if (window.clarity) {
     injected = true;
     return;
@@ -61,7 +64,7 @@ export function initClarity(projectId: string | undefined): void {
 
   const script = document.createElement('script');
   script.async = true;
-  script.src = `https://www.clarity.ms/tag/${encodeURIComponent(projectId)}`;
+  script.src = `https://www.clarity.ms/tag/${encodeURIComponent(id)}`;
   const first = document.getElementsByTagName('script')[0];
   if (first?.parentNode) {
     first.parentNode.insertBefore(script, first);
