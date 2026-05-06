@@ -1055,6 +1055,7 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
                 </a>
               </div>
               <div className="flex flex-col gap-3">
+                <Link to="/about" className="hover:text-[#4F46E5] transition-colors">About / operator</Link>
                 <Link to="/laid-off" className="hover:text-[#4F46E5] transition-colors">Just laid off?</Link>
                 <Link to="/ats" className="hover:text-[#4F46E5] transition-colors">ATS Guide</Link>
                 <Link to="/skills" className="hover:text-[#4F46E5] transition-colors">Skills</Link>
@@ -1111,7 +1112,8 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
             <p className="font-semibold text-[#3B3A5C] mb-1">Vantage AI</p>
             <p>
               An AI-powered job-preparation SaaS operated by Giovanni Sizino Ennes,
-              a UK-based independent founder (sole trader) building in public.
+              a UK-based independent founder (sole trader) building in public. Full operator
+              transparency at <Link to="/about" className="underline hover:text-[#4F46E5]">/about</Link>.
               Contact:{' '}
               <a href="mailto:giovanni.sizino.ennes@hotmail.co.uk" className="underline hover:text-[#4F46E5]">
                 giovanni.sizino.ennes@hotmail.co.uk

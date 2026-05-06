@@ -304,7 +304,7 @@ export default function LaidOffPage() {
           that's fine. If they do, it took 60 days of evenings to ship and we'd love your
           honest feedback.
         </p>
-        <p className={`mt-4 text-sm ${t.textMuted}`}>— Gio, Vantage Labs (solo, building in public)</p>
+        <p className={`mt-4 text-sm ${t.textMuted}`}>— Gio (Giovanni Sizino Ennes), Vantage AI · UK independent founder, building in public</p>
       </section>
     </div>
   );

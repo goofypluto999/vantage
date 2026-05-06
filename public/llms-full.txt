@@ -92,7 +92,7 @@ Starter tokens (the £5/$5 top-up) never expire. Pro and Premium monthly tokens 
 
 ## Sister product: CV Mirror
 
-CV Mirror is the free ATS scanner Vantage Labs built. Multi-vendor parse view (5 simulated ATS systems side by side), reading-order overlay on the actual PDF, vendor-specific lint, keyword extraction and JD matching. No signup, nothing uploads — everything runs client-side as JavaScript in the browser. Use this *before* running a Vantage analysis to make sure the CV survives the parse, then use Vantage for the rest of the application prep.
+CV Mirror is the free ATS scanner the Vantage AI team built. Multi-vendor parse view (5 simulated ATS systems side by side), reading-order overlay on the actual PDF, vendor-specific lint, keyword extraction and JD matching. No signup, nothing uploads — everything runs client-side as JavaScript in the browser. Use this *before* running a Vantage analysis to make sure the CV survives the parse, then use Vantage for the rest of the application prep.
 
 URL: https://cv-mirror-web.vercel.app/
 Free: yes, no signup, no payment, no usage limit
@@ -192,7 +192,7 @@ Example: /interview-prep/google/staff for Google L6 Staff Engineer prep.
 
 ## Vantage YouTube channel
 
-Official Vantage Labs YouTube channel. Walkthroughs, comparisons, and educational content. AI-narrated faceless format (text + voiceover, no founder face) — official company walkthrough genre, same approach as Notion / Linear / Figma's official channels.
+Official Vantage AI YouTube channel. Walkthroughs, comparisons, and educational content. AI-narrated faceless format (text + voiceover, no founder face) — official product walkthrough genre, same approach as Notion / Linear / Figma's official channels.
 
 Channel: https://www.youtube.com/channel/UCuZxrV6LaJfGHsEvztsaB4Q
 

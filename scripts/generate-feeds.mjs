@@ -479,7 +479,7 @@ ${categories}
   <updated>${isoDateTime(lastBuild)}</updated>
   <icon>${SITE_FAVICON}</icon>
   <logo>${SITE_LOGO}</logo>
-  <rights>© 2026 Vantage Labs</rights>
+  <rights>© 2026 Giovanni Sizino Ennes (Vantage AI, UK sole trader)</rights>
   <generator uri="${HOST}" version="2.0">Vantage scripts/generate-feeds.mjs</generator>
 
 ${entries}

@@ -6,7 +6,9 @@ import SEO from './SEO';
 const SITE_URL = 'https://aimvantage.uk';
 
 /**
- * /tools — hub page that lists every free Vantage Labs tool.
+ * /tools — hub page listing every free tool built by Giovanni Sizino Ennes
+ * under the Vantage AI project umbrella (informally "Vantage Labs", not a
+ * registered company).
  * Currently features CV Mirror (free ATS scanner). Designed to be
  * extended with future free tools by appending entries to the TOOLS array.
  */
@@ -16,7 +18,7 @@ export default function ToolsPage() {
   const itemListSchema = {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
-    name: 'Free job search tools by Vantage Labs',
+    name: 'Free job search tools by Vantage AI',
     numberOfItems: 5,
     itemListElement: [
       {
@@ -65,7 +67,7 @@ export default function ToolsPage() {
     <div className="min-h-screen" style={{ background: t.pageBg }}>
       <SEO
         title="Free ATS Resume Checker, Cover Letter Feedback, and Interview Prep Tools"
-        description="Free job search tools by Vantage Labs: ATS resume checker (CV Mirror), AI cover letter feedback (Roast), interview prep packs by company and role, and LinkedIn-friendly CV optimisation. No signup, no upsell wall."
+        description="Free job search tools by Vantage AI: ATS resume checker (CV Mirror), AI cover letter feedback (Roast), interview prep packs by company and role, and LinkedIn-friendly CV optimisation. No signup, no upsell wall."
         path="/tools"
         jsonLd={[itemListSchema, breadcrumbSchema]}
       />
@@ -86,7 +88,7 @@ export default function ToolsPage() {
         {/* Header */}
         <header className="text-center mb-16">
           <span className={`inline-block text-xs uppercase tracking-widest ${t.textMuted} font-semibold mb-3`}>
-            Vantage Labs
+            Vantage AI · Free tools
           </span>
           <h1 className={`text-4xl sm:text-5xl font-extrabold tracking-tight ${t.text}`}>
             Free tools for job seekers

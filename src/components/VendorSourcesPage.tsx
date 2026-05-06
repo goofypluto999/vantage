@@ -94,9 +94,10 @@ export default function VendorSourcesPage() {
     keywords: 'ATS, Workday, Greenhouse, Lever, Taleo, iCIMS, resume parsing, recruiting',
     license: 'https://creativecommons.org/licenses/by/4.0/',
     creator: {
-      '@type': 'Organization',
-      name: 'Vantage Labs',
-      url: SITE_URL,
+      '@type': 'Person',
+      name: 'Giovanni Sizino Ennes',
+      url: `${SITE_URL}/press`,
+      jobTitle: 'Independent founder',
     },
   };
 

@@ -17,7 +17,7 @@ Vantage is built for people applying to many jobs a week who can't afford to bur
 
 ## Vantage YouTube channel
 
-Official Vantage Labs YouTube channel — walkthroughs, comparisons, educational content. Faceless, AI-narrated, branded format.
+Official Vantage AI YouTube channel — walkthroughs, comparisons, educational content. Faceless, AI-narrated, branded format.
 
 - [Vantage YouTube channel](https://www.youtube.com/channel/UCuZxrV6LaJfGHsEvztsaB4Q): all walkthroughs and comparisons
 - [Vantage AI Walk-Through — How It Works in 90 Seconds](https://www.youtube.com/channel/UCuZxrV6LaJfGHsEvztsaB4Q): full product walkthrough

@@ -28,6 +28,7 @@ import LaidOffPage from './components/LaidOffPage';
 import AtsHubPage from './components/AtsHubPage';
 import AtsVendorPage from './components/AtsVendorPage';
 import PressPage from './components/PressPage';
+import AboutPage from './components/AboutPage';
 import LaidOffFromCompanyPage from './components/LaidOffFromCompanyPage';
 import SkillsPage from './components/SkillsPage';
 import DocsApiPage from './components/DocsApiPage';
@@ -184,9 +185,10 @@ function AppContent() {
                       { '@type': 'Offer', name: 'Premium', price: '20', priceCurrency: 'GBP', description: '120 tokens per month, includes fit score and presentation deck' },
                     ],
                     creator: {
-                      '@type': 'Organization',
-                      name: 'Vantage Labs',
-                      url: 'https://aimvantage.uk',
+                      '@type': 'Person',
+                      name: 'Giovanni Sizino Ennes',
+                      url: 'https://aimvantage.uk/press',
+                      jobTitle: 'Independent founder',
                     },
                   },
                   {
@@ -195,9 +197,10 @@ function AppContent() {
                     name: 'AI Job Application Preparation',
                     serviceType: 'Career Services',
                     provider: {
-                      '@type': 'Organization',
-                      name: 'Vantage Labs',
-                      url: 'https://aimvantage.uk',
+                      '@type': 'Person',
+                      name: 'Giovanni Sizino Ennes',
+                      url: 'https://aimvantage.uk/press',
+                      jobTitle: 'Independent founder',
                     },
                     areaServed: {
                       '@type': 'Place',
@@ -237,6 +240,10 @@ function AppContent() {
             <Route path="/ats" element={<AtsHubPage />} />
             <Route path="/ats/:vendor" element={<AtsVendorPage />} />
             <Route path="/press" element={<PressPage />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/who-we-are" element={<Navigate to="/about" replace />} />
+            <Route path="/founder" element={<Navigate to="/about" replace />} />
+            <Route path="/operator" element={<Navigate to="/about" replace />} />
             <Route path="/media" element={<Navigate to="/press" replace />} />
             <Route path="/skills" element={<SkillsPage />} />
             <Route path="/playbook" element={<PlaybookPage />} />

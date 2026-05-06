@@ -24,19 +24,22 @@ export default function PressPage() {
     ],
   };
 
-  const orgSchema = {
+  const personSchema = {
     '@context': 'https://schema.org',
-    '@type': 'Organization',
-    name: 'Vantage Labs',
+    '@type': 'Person',
+    name: 'Giovanni Sizino Ennes',
+    alternateName: 'Gio',
     url: SITE_URL,
-    logo: `${SITE_URL}/logo-512.png`,
-    foundingDate: '2026-02',
-    founder: {
-      '@type': 'Person',
-      name: 'Giovanni Sizino-Ennes',
-      jobTitle: 'Founder',
-    },
-    description: 'AI job preparation tool. Compresses 2 hours of application prep into 90 seconds. Built solo in 60 days.',
+    image: `${SITE_URL}/logo-512.png`,
+    jobTitle: 'Independent founder · Vantage AI',
+    description:
+      'UK-based independent founder (sole trader) building AI tools for job seekers. Operates Vantage AI (paid job-prep SaaS) and the free open-source CV Mirror.',
+    sameAs: [
+      'https://dev.to/goofypluto999',
+      'https://github.com/goofypluto999',
+      'https://aimvantage.uk',
+      'https://cv-mirror-web.vercel.app/',
+    ],
     contactPoint: {
       '@type': 'ContactPoint',
       contactType: 'press',
@@ -47,12 +50,12 @@ export default function PressPage() {
   return (
     <div className="min-h-screen" style={{ background: t.pageBg }}>
       <SEO
-        title="Press kit — Vantage Labs"
-        description="Press kit for journalists covering Vantage AI and CV Mirror. Founder bio, key facts, brand assets, story angles, and direct contact."
+        title="Press kit — Vantage AI"
+        description="Press kit for journalists covering Vantage AI and CV Mirror. Independent founder Giovanni Sizino Ennes (UK sole trader). Bio, key facts, brand assets, story angles, and direct contact."
         path="/press"
       />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }} />
 
       {/* Nav */}
       <nav className={`${t.nav} border-b border-white/10 sticky top-0 z-50 backdrop-blur-xl`}>
@@ -73,9 +76,11 @@ export default function PressPage() {
           Press kit
         </h1>
         <p className={`text-lg ${t.textSub} max-w-3xl leading-relaxed`}>
-          Vantage Labs is a UK solo-founder AI tools company. We make Vantage AI (paid job
-          application prep tool) and CV Mirror (free open-source ATS scanner). Below is
-          everything a journalist or analyst needs in one page.
+          Vantage AI is operated by Giovanni Sizino Ennes, a UK-based independent founder
+          (sole trader) building AI tools for job seekers. The two live products are
+          Vantage AI (paid job-prep SaaS) and CV Mirror (free, open-source ATS scanner).
+          Vantage Labs is the umbrella name used informally for the project portfolio,
+          not a registered company. Below is everything a journalist or analyst needs in one page.
         </p>
       </section>
 
@@ -85,12 +90,12 @@ export default function PressPage() {
           <h2 className={`text-xl font-bold ${t.text} mb-4`}>Quick facts</h2>
           <dl className="grid md:grid-cols-2 gap-x-8 gap-y-3">
             <div>
-              <dt className={`text-xs font-semibold uppercase tracking-widest ${t.textMuted}`}>Company</dt>
-              <dd className={`text-sm ${t.text}`}>Vantage Labs</dd>
+              <dt className={`text-xs font-semibold uppercase tracking-widest ${t.textMuted}`}>Operator</dt>
+              <dd className={`text-sm ${t.text}`}>Giovanni Sizino Ennes — UK independent founder (sole trader)</dd>
             </div>
             <div>
-              <dt className={`text-xs font-semibold uppercase tracking-widest ${t.textMuted}`}>Founder</dt>
-              <dd className={`text-sm ${t.text}`}>Giovanni Sizino-Ennes (solo)</dd>
+              <dt className={`text-xs font-semibold uppercase tracking-widest ${t.textMuted}`}>Project umbrella</dt>
+              <dd className={`text-sm ${t.text}`}>Vantage AI (paid SaaS) + CV Mirror (free OSS)</dd>
             </div>
             <div>
               <dt className={`text-xs font-semibold uppercase tracking-widest ${t.textMuted}`}>HQ</dt>
@@ -223,10 +228,11 @@ export default function PressPage() {
       <section className="max-w-4xl mx-auto px-6 py-10">
         <h2 className={`text-2xl font-bold ${t.text} mb-5`}>Founder bio</h2>
         <div className={`${t.glass} rounded-2xl p-6`}>
-          <h3 className={`text-lg font-bold ${t.text} mb-2`}>Giovanni Sizino-Ennes</h3>
+          <h3 className={`text-lg font-bold ${t.text} mb-2`}>Giovanni Sizino Ennes</h3>
           <p className={`text-sm ${t.textSub} mb-3`}>
-            Solo founder of Vantage Labs. Built Vantage AI and CV Mirror in 60 days of evenings
-            after burning out twice from manually applying to 30+ jobs a week. Based in the UK.
+            UK-based independent founder (sole trader). Built Vantage AI and CV Mirror solo over 60 days
+            of evenings after burning out twice from manually applying to 30+ jobs a week. Operates as a
+            sole trader, not a registered company — building in public on a tight personal budget.
           </p>
           <p className={`text-sm ${t.textSub}`}>
             Background: technical builder, with prior experience in AI tooling, web development,
