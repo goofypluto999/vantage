@@ -11,6 +11,7 @@ import { useCurrency } from '../contexts/CurrencyContext';
 import { supabase, getCreditsRemaining, hasCredits } from '../lib/supabase';
 import { analyzeJob, createStripeCheckout, syncSubscription, rewriteTone, fetchAnalysisHistory } from '../services/api';
 import AIInterviewSession from './AIInterviewSession';
+import AtsScannerSection from './AtsScannerSection';
 
 function AnalysisHistory({ onLoad }: { onLoad: (data: any) => void }) {
   const [history, setHistory] = useState<any[]>([]);
@@ -677,6 +678,11 @@ export default function Dashboard() {
                     : 'Add a job posting URL above to enable.'}
                 </p>
               )}
+
+              {/* === ATS scanner (additive, free, client-side). Removing this and the
+                   import line restores the previous behaviour entirely. === */}
+              {cvFile && <AtsScannerSection cvFile={cvFile} />}
+              {/* === END ATS scanner === */}
 
               {/* Analysis History */}
               <AnalysisHistory onLoad={(data: any) => { setResults(data); setStep('results'); }} />

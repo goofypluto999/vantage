@@ -1102,8 +1102,37 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
             </div>
           </div>
 
-          <div className="flex flex-col md:flex-row justify-between items-center text-[11px] text-[#6B6B8D] mt-8 font-bold tracking-wider gap-3">
-            <span>© 2026 VANTAGE. ALL RIGHTS RESERVED.</span>
+          {/* UK legal-transparency block. Required identification for UK companies
+              providing software services (Companies Act 2006 s.82, e-Commerce
+              Regulations 2002 r.6). Public disclosure also counters automated
+              "lacks company information" flags from search assistants. */}
+          <div className="border-t border-[#6B6B8D]/20 mt-8 pt-6 text-[11px] text-[#6B6B8D] leading-relaxed">
+            <p className="font-semibold text-[#3B3A5C] mb-1">Vantage AI Consulting Limited</p>
+            <p>
+              Registered in England and Wales · Company No. 16888728 ·{' '}
+              <a
+                href="https://find-and-update.company-information.service.gov.uk/company/16888728"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:text-[#4F46E5]"
+              >
+                Companies House record
+              </a>
+            </p>
+            <p>
+              Trading as <strong>Vantage AI</strong> · Contact:{' '}
+              <a href="mailto:hello@aimvantage.uk" className="underline hover:text-[#4F46E5]">hello@aimvantage.uk</a>{' '}
+              · Operating domain: aimvantage.uk
+            </p>
+            <p className="mt-2 italic">
+              We are not affiliated with Vantage Consulting, Vantage Recruitment, Vantagepoint AI, or any other organisation
+              using a similar name. Vantage AI is an AI-powered job-preparation SaaS — we do not recruit, contact candidates
+              over WhatsApp/Telegram, or charge applicants for "processing" or "DBS check" fees.
+            </p>
+          </div>
+
+          <div className="flex flex-col md:flex-row justify-between items-center text-[11px] text-[#6B6B8D] mt-6 font-bold tracking-wider gap-3">
+            <span>© 2026 VANTAGE AI CONSULTING LIMITED. ALL RIGHTS RESERVED.</span>
             <span className="text-center">ALL OUTPUTS ARE AI-GENERATED | <Link to="/terms" className="underline hover:text-[#4F46E5]">TERMS APPLY</Link></span>
           </div>
         </div>
