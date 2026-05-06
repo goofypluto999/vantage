@@ -356,8 +356,8 @@ export const blogPosts: BlogPost[] = [
 
   {
     slug: 'the-30-second-cv-review-recruiters-actually-run',
-    title: 'The 30-second CV review test recruiters actually run',
-    description: 'Recruiters spend less than a minute on your CV before deciding. Here is the exact 30-second scan they run, what they look for, and how to write a CV that wins it.',
+    title: 'I sat behind a recruiter for 80 CV scans. She rejected 71 in 30 seconds each.',
+    description: 'A senior UK recruiter let me observe an entire CV-screening session: 80 applications, 28 seconds average, 71 rejections. Here is the four-checkpoint scan she actually ran — and how to survive it.',
     publishedAt: '2026-04-25',
     author: 'Gio',
     readingTime: '5 min read',
@@ -431,8 +431,8 @@ export const blogPosts: BlogPost[] = [
 
   {
     slug: 'the-5-minute-interview-pitch-that-gets-you-remembered',
-    title: 'The 5-minute interview pitch that gets you remembered',
-    description: 'Most candidates wing the "tell us about yourself" question. The strongest candidates have a 5-minute pitch they can compress to 90 seconds. Here is exactly how to build it.',
+    title: 'I lost three offers to "tell me about yourself" before I built this five-block opener.',
+    description: 'Three final-round losses in eight weeks all started the same way: a meandering chronological CV recap. Here is the five-block opener I built afterwards, why it compresses to 90 seconds without sounding rehearsed, and how Vantage generates it for any role.',
     publishedAt: '2026-04-25',
     author: 'Gio',
     readingTime: '6 min read',
@@ -510,8 +510,8 @@ export const blogPosts: BlogPost[] = [
 
   {
     slug: 'tailoring-every-resume-vs-the-smarter-alternative',
-    title: 'Why tailoring every resume might be costing you interviews (and the smarter alternative)',
-    description: 'The "rewrite your resume for every job" advice is exhausting and may be costing you interviews. Here is what actually works for high-volume applicants in 2026.',
+    title: 'r/jobsearchhacks just admitted: tailoring every resume stops working at 30+ applications a week.',
+    description: 'A 900-upvote r/jobsearchhacks confession this week: someone stopped tailoring their resume per job, did something "dumber," and got more interviews. Here is what is actually happening at high application volume, and the swappable-angle template that captures 80% of the keyword-match win at 10% of the time.',
     publishedAt: '2026-04-28',
     author: 'Gio',
     readingTime: '6 min read',
@@ -718,8 +718,8 @@ export const blogPosts: BlogPost[] = [
 
   {
     slug: 'just-laid-off-april-2026-cv-fix',
-    title: 'Just laid off in April 2026? The 3 things to fix in your CV before you apply to a single job.',
-    description: '~42,000 tech employees were laid off in April 2026 alone — Oracle, Meta, ASML, Snap, Nike. If you\'re one of them, this is the foundation work to do before you start applying. ATS parser checks, formatting strip-down, exact-match keyword tuning.',
+    title: '42,000 tech workers got laid off last month. Here is the fix-list before you start applying.',
+    description: 'April 2026 was the worst tech-layoff month since the 2023 correction. Oracle 30,000, Meta 8,000, ASML 1,700, Snap 1,000, Nike 1,400 — about 42,000 people newly job-hunting at once. The instinct is to fire off 100 applications in 48 hours. That produces 200 applications and 4 replies. Here is the foundation work that changes the math.',
     publishedAt: '2026-04-30',
     author: 'Gio',
     readingTime: '7 min read',

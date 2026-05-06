@@ -1063,6 +1063,7 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
               </div>
               <div className="flex flex-col gap-3">
                 <Link to="/about" className="hover:text-[#4F46E5] transition-colors">About / operator</Link>
+                <Link to="/press-releases" className="hover:text-[#4F46E5] transition-colors">Press releases</Link>
                 <Link to="/laid-off" className="hover:text-[#4F46E5] transition-colors">Just laid off?</Link>
                 <Link to="/ats" className="hover:text-[#4F46E5] transition-colors">ATS Guide</Link>
                 <Link to="/skills" className="hover:text-[#4F46E5] transition-colors">Skills</Link>

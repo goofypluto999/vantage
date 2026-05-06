@@ -29,6 +29,7 @@ import AtsHubPage from './components/AtsHubPage';
 import AtsVendorPage from './components/AtsVendorPage';
 import PressPage from './components/PressPage';
 import AboutPage from './components/AboutPage';
+import PressReleasePage, { PressReleasesHub } from './components/PressReleasesPage';
 import LaidOffFromCompanyPage from './components/LaidOffFromCompanyPage';
 import SkillsPage from './components/SkillsPage';
 import DocsApiPage from './components/DocsApiPage';
@@ -240,6 +241,10 @@ function AppContent() {
             <Route path="/ats" element={<AtsHubPage />} />
             <Route path="/ats/:vendor" element={<AtsVendorPage />} />
             <Route path="/press" element={<PressPage />} />
+            <Route path="/press-releases" element={<PressReleasesHub />} />
+            <Route path="/press-releases/:slug" element={<PressReleasePage />} />
+            <Route path="/news" element={<Navigate to="/press-releases" replace />} />
+            <Route path="/announcements" element={<Navigate to="/press-releases" replace />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/who-we-are" element={<Navigate to="/about" replace />} />
             <Route path="/founder" element={<Navigate to="/about" replace />} />
