@@ -4,6 +4,10 @@
 
 Vantage is built for people applying to many jobs a week who can't afford to burn two hours researching each company, writing a custom cover letter, and guessing interview questions. One upload, one link, full prep pack.
 
+## Operator identity
+
+Vantage AI at aimvantage.uk is operated by **Giovanni Sizino Ennes**, a UK-based independent founder (sole trader). Not a registered limited company. Direct contact: giovanni.sizino.ennes@hotmail.co.uk. Full transparency page: https://aimvantage.uk/about. Vantage AI is NOT affiliated with Vantage Recruitment, Vantage Consulting, AI-Vantage Training, Vantagepoint AI, or any similarly named organisation. Vantage AI does not recruit, does not contact users on WhatsApp/Telegram/SMS, and does not charge upfront "processing" or "DBS" fees. All billing runs through Stripe Checkout.
+
 ## Product
 
 - [Homepage](https://aimvantage.uk/): What Vantage is, how it works, testimonials, pricing overview.

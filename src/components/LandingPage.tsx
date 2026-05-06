@@ -582,6 +582,13 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
             <p className="text-xs text-[#3B3A5C] uppercase tracking-widest flex items-center gap-2 font-bold">
               <Lock className="w-3 h-3" /> No subscription · Cancel any time · EU-hosted
             </p>
+            <p className="text-[11px] text-[#6B6B8D] font-medium">
+              Built solo by{' '}
+              <Link to="/about" className="underline hover:text-[#4F46E5]">
+                Giovanni Sizino Ennes
+              </Link>
+              {' '}· UK independent founder · Stripe-only billing, no recruitment, no DM outreach
+            </p>
             <p className="text-[11px] text-[#6B6B8D] mt-1 font-medium">
               Built solo in 60 days · Free ATS scanner open-source on GitHub
             </p>
