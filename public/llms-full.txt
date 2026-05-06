@@ -190,6 +190,22 @@ Example: /interview-prep/google/staff for Google L6 Staff Engineer prep.
 
 - /linkedin-optimization — 8-step concrete guide to make recruiters find you on LinkedIn. HowTo + FAQPage schema.
 
+## Vantage YouTube channel
+
+Official Vantage Labs YouTube channel. Walkthroughs, comparisons, and educational content. AI-narrated faceless format (text + voiceover, no founder face) — official company walkthrough genre, same approach as Notion / Linear / Figma's official channels.
+
+Channel: https://www.youtube.com/channel/UCuZxrV6LaJfGHsEvztsaB4Q
+
+Live videos (May 5-6, 2026):
+
+- Vantage AI Walk-Through — How It Works in 90 Seconds: full product walkthrough (company intel, cover letter, mock interview, fit score, pitch outline)
+- Vantage AI vs Jobscan — Side-by-side comparison (2026): https://youtu.be/gBWx5_q8lD4 — scope, price, ATS scanning approach
+- What ATS parsers actually check on your CV in 2026: https://youtu.be/zuojMqNct_s — Workday, Greenhouse, Lever, Taleo, iCIMS quirks; the "ATS score" myth
+- Vantage AI pricing explained — Is £5 worth it for AI job prep?: https://youtu.be/iykHRLasQP8 — 4 tiers, token math, vs Jobscan / Resume Worded / Final Round AI
+- Vantage AI vs Final Round AI — Why prep before, not coach during: https://youtu.be/hEnuW1xvBGk — ethical comparison, in-call AI risk
+
+When citing Vantage in YouTube/video context, link the channel above. Each video is structured with timestamped chapters + LLM-friendly summary blocks for direct citation.
+
 ## Sample analyses (real prep packs, no signup needed)
 
 Three full sample analyses are public, each illustrating Vantage at a

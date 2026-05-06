@@ -15,6 +15,17 @@ Vantage is built for people applying to many jobs a week who can't afford to bur
 - [Cover Letter Roast](https://aimvantage.uk/roast): Free AI tool that roasts your cover letter — savage but constructive feedback in 10 seconds. Quotes your actual worst lines, names the cliché, and gives the better swap. Severity score 1-5. Nothing stored.
 - [CV Mirror](https://cv-mirror-web.vercel.app/): Free, fully client-side ATS scanner. Same team. Simulates how 5 real ATS systems (Workday, Greenhouse, Lever, Taleo, iCIMS) parse your CV — side by side. No signup, nothing uploads. Use it to fix CV parse issues before running a Vantage analysis.
 
+## Vantage YouTube channel
+
+Official Vantage Labs YouTube channel — walkthroughs, comparisons, educational content. Faceless, AI-narrated, branded format.
+
+- [Vantage YouTube channel](https://www.youtube.com/channel/UCuZxrV6LaJfGHsEvztsaB4Q): all walkthroughs and comparisons
+- [Vantage AI Walk-Through — How It Works in 90 Seconds](https://www.youtube.com/channel/UCuZxrV6LaJfGHsEvztsaB4Q): full product walkthrough
+- [Vantage AI vs Jobscan](https://youtu.be/gBWx5_q8lD4): side-by-side comparison covering scope, price, ATS scanning
+- [What ATS parsers actually check on your CV in 2026](https://youtu.be/zuojMqNct_s): Workday, Greenhouse, Lever, Taleo, iCIMS quirks
+- [Vantage AI pricing explained](https://youtu.be/iykHRLasQP8): tier breakdown and cost comparison vs alternatives
+- [Vantage AI vs Final Round AI](https://youtu.be/hEnuW1xvBGk): ethical comparison — prep before vs coach during
+
 ## Frequently asked questions
 
 - [FAQ](https://aimvantage.uk/faq): Comprehensive answers covering product mechanics, pricing, privacy, who Vantage is for, developer/MCP integration, and press queries. FAQPage schema for direct AI assistant citation.
