@@ -935,14 +935,69 @@ export default function Dashboard() {
               animate={{ opacity: 1, y: 0 }}
               className="space-y-6"
             >
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between flex-wrap gap-3">
                 <h1 className="text-2xl font-display font-bold text-white">Results</h1>
-                <button
-                  onClick={() => { setStep('input'); setCvFile(null); setJobUrl(''); setResults(null); }}
-                  className="px-4 py-2 rounded-lg bg-white/5 text-white/70 font-semibold text-sm hover:bg-white/10"
-                >
-                  New Analysis
-                </button>
+                <div className="flex flex-wrap items-center gap-2">
+                  {/* Download whole prep pack as text — added 2026-05-07. The
+                      analysis is the user's interview prep dossier; they
+                      should be able to take it offline (print it, paste into
+                      Notes, share with a coach) without losing structure. */}
+                  <button
+                    onClick={() => {
+                      const company = results.companySnapshot?.name || 'company';
+                      const lines: string[] = [];
+                      lines.push(`VANTAGE AI — PREP PACK`);
+                      lines.push(`Company: ${company}`);
+                      if (results.cvFitScore != null) lines.push(`Fit score: ${results.cvFitScore}/100`);
+                      lines.push(`\n--- COMPANY INTELLIGENCE ---`);
+                      if (results.companySnapshot?.mission) lines.push(`Mission: ${results.companySnapshot.mission}`);
+                      if (results.companySnapshot?.cultureSignals?.length) {
+                        lines.push(`Culture signals:`);
+                        results.companySnapshot.cultureSignals.forEach((s: string) => lines.push(`  - ${s}`));
+                      }
+                      if (results.companySnapshot?.recentHighlights?.length) {
+                        lines.push(`Recent highlights:`);
+                        results.companySnapshot.recentHighlights.forEach((s: string) => lines.push(`  - ${s}`));
+                      }
+                      if (results.cvFitSummary) {
+                        lines.push(`\n--- FIT SUMMARY ---`);
+                        lines.push(results.cvFitSummary);
+                      }
+                      if (results.strategicBrief) {
+                        lines.push(`\n--- STRATEGIC BRIEF ---`);
+                        lines.push(results.strategicBrief);
+                      }
+                      if (results.coverLetter) {
+                        lines.push(`\n--- COVER LETTER (${activeTone}) ---`);
+                        lines.push(displayLetter || results.coverLetter);
+                      }
+                      if (results.presentation?.length) {
+                        lines.push(`\n--- 5-MIN PITCH OUTLINE ---`);
+                        results.presentation.forEach((slide: { title: string; content: string }, i: number) => {
+                          lines.push(`\n${i + 1}. ${slide.title}`);
+                          lines.push(slide.content);
+                        });
+                      }
+                      const blob = new Blob([lines.join('\n')], { type: 'text/plain;charset=utf-8' });
+                      const url = URL.createObjectURL(blob);
+                      const a = document.createElement('a');
+                      a.href = url;
+                      a.download = `vantage-prep-${company.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.txt`;
+                      a.click();
+                      URL.revokeObjectURL(url);
+                    }}
+                    className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-white/5 text-white/70 font-semibold text-sm hover:bg-white/10"
+                    title="Download the whole prep pack as a .txt file"
+                  >
+                    <FileText className="w-4 h-4" /> Download .txt
+                  </button>
+                  <button
+                    onClick={() => { setStep('input'); setCvFile(null); setJobUrl(''); setResults(null); }}
+                    className="px-4 py-2 rounded-lg bg-white/5 text-white/70 font-semibold text-sm hover:bg-white/10"
+                  >
+                    New Analysis
+                  </button>
+                </div>
               </div>
 
               {/* Company Snapshot */}
