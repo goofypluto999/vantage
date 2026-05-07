@@ -95,9 +95,12 @@ export default function Waitlist({ launchDate, onSignUpClick }: WaitlistProps) {
     <div ref={containerRef} className="relative overflow-hidden">
       <AnimatePresence mode="wait">
         {!isSubmitted ? (
+          // initial={false} — defensive vs the motion-stuck-at-opacity-0
+          // pattern we hit on Pricing/Auth/Hero earlier today. The waitlist
+          // form is a lead-capture surface; missing it costs us emails.
           <motion.div
             key="form"
-            initial={{ opacity: 0 }}
+            initial={false}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0, y: -20 }}
             className="relative z-10"
@@ -209,7 +212,7 @@ export default function Waitlist({ launchDate, onSignUpClick }: WaitlistProps) {
         ) : (
           <motion.div
             key="success"
-            initial={{ opacity: 0, scale: 0.9 }}
+            initial={false}
             animate={{ opacity: 1, scale: 1 }}
             className="text-center py-8"
           >
