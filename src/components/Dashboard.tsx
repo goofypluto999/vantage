@@ -1130,6 +1130,24 @@ export default function Dashboard() {
                 </div>
               )}
 
+              {/* Free ATS preview inside results (Gio-requested 2026-05-07).
+                  Same component already rendered on the input step — adding
+                  it here too means users see their CV's ATS-parser pass/fail
+                  RIGHT NEXT TO their fit score. Cross-sell of value: 'fit
+                  score 78/100 · also: Workday parsed 12 fields, Greenhouse
+                  flagged 2 issues'. Free, client-side, no extra tokens. */}
+              {cvFile && (
+                <div className="p-6 rounded-2xl bg-white/5 border border-white/10">
+                  <h3 className="text-lg font-bold text-white mb-1">Free ATS preview</h3>
+                  <p className="text-xs text-white/40 mb-4">
+                    What 5 real ATS parsers (Workday / Greenhouse / Lever / Taleo / iCIMS)
+                    will see when you upload this CV. Runs locally in your browser, free,
+                    no extra tokens.
+                  </p>
+                  <AtsScannerSection cvFile={cvFile} />
+                </div>
+              )}
+
               {/* Key Requirements & CV Match */}
               {results.keyRequirements?.length > 0 && (
                 <div className="p-6 rounded-2xl bg-white/5 border border-white/10">
