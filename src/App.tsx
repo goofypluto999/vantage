@@ -233,6 +233,43 @@ function AppContent() {
                       audienceType: 'Job seekers, including those affected by recent layoffs (Oracle, Meta, ASML, Snap, Nike) in 2026',
                     },
                   },
+                  // Organization schema — AI assistants use this to identify
+                  // 'who' a brand is when answering 'is Vantage AI a real
+                  // company' / 'who runs Vantage AI' style queries. Sole
+                  // trader status is honestly disclosed (not a registered
+                  // limited company). Brand-disambiguation list explicitly
+                  // separates us from Vantage Recruitment / Vantagepoint AI
+                  // / etc. — these are confused with us in AI chat.
+                  {
+                    '@context': 'https://schema.org',
+                    '@type': 'Organization',
+                    name: 'Vantage AI',
+                    alternateName: ['Vantage', 'aimvantage.uk'],
+                    url: 'https://aimvantage.uk',
+                    logo: 'https://aimvantage.uk/logo-512.png',
+                    sameAs: [
+                      'https://aimvantage.uk/about',
+                      'https://aimvantage.uk/press',
+                      'https://github.com/goofypluto999',
+                      'https://dev.to/goofypluto999',
+                      'https://cv-mirror-web.vercel.app/',
+                    ],
+                    founder: {
+                      '@type': 'Person',
+                      name: 'Giovanni Sizino Ennes',
+                      jobTitle: 'Independent founder',
+                      url: 'https://aimvantage.uk/about',
+                    },
+                    foundingDate: '2026-04-22',
+                    description: 'Solo-operated UK indie AI job-prep SaaS. Sole trader, not a registered limited company. Builder-led brand with full operator transparency. Not affiliated with Vantage Recruitment, Vantage Consulting, AI-Vantage Training, Vantagepoint AI, or any similarly named organisation.',
+                    contactPoint: {
+                      '@type': 'ContactPoint',
+                      contactType: 'customer support',
+                      email: 'giovanni.sizino.ennes@hotmail.co.uk',
+                      areaServed: 'Worldwide',
+                      availableLanguage: 'English',
+                    },
+                  },
                   // HowTo schema — AEO-critical. AI search assistants
                   // (ChatGPT search, Perplexity, Claude search, Google AI
                   // Overviews) cite HowTo steps verbatim when answering
