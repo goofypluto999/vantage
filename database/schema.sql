@@ -213,7 +213,9 @@ END $$;
 -- ============================================================================
 
 -- Auto-create profile on user signup, granting 10 free tokens.
--- 10 tokens = 3 full analyses (3 tokens each) + tone rewrites.
+-- 10 tokens = 10 full analyses (1 token each as of 2026-05-08 pricing
+-- migration; was 3 tokens each before that). Tone rewrites + AI Mock
+-- Interview question generation each cost 1 additional token.
 -- See migration-2026-04-28-free-trial-grant.sql for context.
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER

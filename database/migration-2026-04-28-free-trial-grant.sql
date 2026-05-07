@@ -47,7 +47,7 @@ BEGIN
     NEW.email,
     NEW.raw_user_meta_data->>'full_name',
     NEW.raw_user_meta_data->>'avatar_url',
-    10  -- 10 free tokens = 3 full analyses (3 tokens each) + tone rewrites
+    10  -- 10 free tokens = 10 full analyses (1 token each as of 2026-05-08; was 3 tokens each before)
   );
   RETURN NEW;
 END;

@@ -511,11 +511,15 @@ export default function Dashboard() {
                 );
               }
 
-              if (tokens >= 3 && !everPaid) {
+              // Threshold updated 2026-05-08 from `>= 3` to `>= 1` to match
+              // the new 1-token-per-analysis pricing. Previously a user with
+              // 1-2 tokens fell through to the "buy more" copy, even though
+              // they still had 1-2 prep packs available.
+              if (tokens >= 1 && !everPaid) {
                 return (
                   <>
                     <h2 className="text-lg font-display font-bold text-white mb-1">
-                      You have {tokens} free tokens — that's {analyses} full {analysesWord} on us.
+                      You have {tokens} free {tokens === 1 ? 'token' : 'tokens'} — that's {analyses} full {analysesWord} on us.
                     </h2>
                     <p className="text-white/50 text-sm mb-5">
                       Upload your CV + paste a job link below to run one. Top up only if you want more after that.
@@ -524,7 +528,7 @@ export default function Dashboard() {
                 );
               }
 
-              if (tokens >= 3) {
+              if (tokens >= 1) {
                 return (
                   <>
                     <h2 className="text-lg font-display font-bold text-white mb-1">
@@ -1372,11 +1376,11 @@ export default function Dashboard() {
                   {isPro ? (
                     <button
                       onClick={() => setShowInterview(true)}
-                      disabled={!hasCredits(profile, 2)}
+                      disabled={!hasCredits(profile, 1)}
                       className="px-4 py-2 rounded-lg bg-gradient-to-r from-violet-600 to-purple-600 text-white font-semibold text-sm hover:from-violet-500 hover:to-purple-500 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
                     >
                       <Mic className="w-4 h-4" />
-                      Start Interview (2 tokens)
+                      Start Interview (1 token)
                     </button>
                   ) : (
                     <button

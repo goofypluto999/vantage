@@ -1,5 +1,6 @@
 // API endpoint for generating interview questions
-// Vercel serverless function — costs 2 credits, Pro/Premium only
+// Vercel serverless function — costs 1 token, Pro/Premium only
+// (was 2 credits before the 2026-05-08 pricing migration)
 import { GoogleGenAI } from '@google/genai';
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
