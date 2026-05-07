@@ -94,7 +94,7 @@ function StatCard({ icon: Icon, label, value, sub, color }: {
   );
 }
 
-type Tab = 'overview' | 'users' | 'analyses' | 'waitlist';
+type Tab = 'overview' | 'users' | 'analyses' | 'waitlist' | 'reply-drafter';
 
 export default function Admin() {
   const navigate = useNavigate();
@@ -167,7 +167,7 @@ export default function Admin() {
       {/* Tabs */}
       <div className="border-b border-white/10 px-6">
         <div className="max-w-7xl mx-auto flex gap-1">
-          {(['overview', 'users', 'analyses', 'waitlist'] as Tab[]).map((t) => (
+          {(['overview', 'users', 'analyses', 'waitlist', 'reply-drafter'] as Tab[]).map((t) => (
             <button
               key={t}
               onClick={() => setTab(t)}
@@ -362,8 +362,195 @@ export default function Admin() {
               )}
             </div>
           )}
+
+          {tab === 'reply-drafter' && <ReplyDrafter />}
         </motion.div>
       </main>
+    </div>
+  );
+}
+
+// =============================================================================
+// REPLY DRAFTER — Gio-only outreach assistant.
+//
+// Gio pastes a public tweet / LinkedIn post / Reddit thread that's asking
+// about job-prep / cover letter / interview tools. The endpoint generates
+// 3 humanized reply variants Gio can pick from + post manually. We never
+// auto-post on his behalf (that violates platform ToS + the user-privacy
+// rules in the system prompt).
+//
+// Backend: api/admin/draft-reply.ts (admin-gated, calls Gemini 2.5 Flash).
+// =============================================================================
+interface DraftReply {
+  tone: 'direct' | 'warm' | 'self-deprecating';
+  body: string;
+}
+
+function ReplyDrafter() {
+  const [tweetText, setTweetText] = useState('');
+  const [platform, setPlatform] = useState<'X' | 'LinkedIn' | 'Reddit'>('X');
+  const [extraContext, setExtraContext] = useState('');
+  const [replies, setReplies] = useState<DraftReply[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [copiedIdx, setCopiedIdx] = useState<number | null>(null);
+
+  const handleGenerate = async () => {
+    if (!tweetText.trim()) {
+      setError('Paste the post you want to reply to.');
+      return;
+    }
+    setError('');
+    setLoading(true);
+    setReplies([]);
+    try {
+      const { data: { session } } = await (await import('../lib/supabase')).supabase.auth.getSession();
+      const token = session?.access_token;
+      if (!token) {
+        setError('Not authenticated');
+        setLoading(false);
+        return;
+      }
+      const res = await fetch('/api/admin/draft-reply', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          tweetText: tweetText.trim(),
+          platform,
+          extraContext: extraContext.trim() || undefined,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || 'Failed to generate replies');
+      } else {
+        setReplies(data.replies || []);
+      }
+    } catch (err: any) {
+      setError(err.message || 'Network error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const copyReply = async (body: string, idx: number) => {
+    try {
+      await navigator.clipboard.writeText(body);
+      setCopiedIdx(idx);
+      setTimeout(() => setCopiedIdx(null), 2000);
+    } catch { /* clipboard unavailable */ }
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="p-6 rounded-2xl bg-white/5 border border-white/10">
+        <div className="flex items-center gap-2 mb-2">
+          <Mail className="w-5 h-5 text-violet-400" />
+          <h3 className="text-white font-bold">Reply drafter</h3>
+        </div>
+        <p className="text-white/50 text-sm mb-5">
+          Paste a public post asking about job-prep / cover letter / interview tools.
+          The endpoint generates 3 humanised reply variants — you pick + post manually.
+          Nothing auto-posts.
+        </p>
+
+        <div className="flex gap-2 mb-4">
+          {(['X', 'LinkedIn', 'Reddit'] as const).map((p) => (
+            <button
+              key={p}
+              type="button"
+              onClick={() => setPlatform(p)}
+              className={`px-3 py-1.5 rounded-lg text-sm font-semibold transition-colors ${
+                platform === p
+                  ? 'bg-violet-500/20 text-violet-300 border border-violet-500/40'
+                  : 'bg-white/5 text-white/50 border border-white/10 hover:bg-white/10'
+              }`}
+            >
+              {p}
+            </button>
+          ))}
+        </div>
+
+        <label className="block text-xs font-bold text-white/40 uppercase tracking-widest mb-2">
+          Original post (verbatim)
+        </label>
+        <textarea
+          value={tweetText}
+          onChange={(e) => setTweetText(e.target.value)}
+          rows={4}
+          maxLength={2000}
+          placeholder="anyone got a recommendation for an AI tool that writes cover letters but actually personalises them per company..."
+          className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm outline-none focus:border-violet-500/50 transition-colors mb-4"
+        />
+
+        <label className="block text-xs font-bold text-white/40 uppercase tracking-widest mb-2">
+          Extra context (optional — what angle to land)
+        </label>
+        <input
+          type="text"
+          value={extraContext}
+          onChange={(e) => setExtraContext(e.target.value)}
+          maxLength={1000}
+          placeholder="e.g. they sound junior — emphasise the free tier"
+          className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm outline-none focus:border-violet-500/50 transition-colors mb-4"
+        />
+
+        <button
+          type="button"
+          onClick={handleGenerate}
+          disabled={loading || !tweetText.trim()}
+          className="px-5 py-2.5 rounded-lg bg-gradient-to-r from-violet-600 to-purple-600 text-white font-semibold text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-95 transition-opacity"
+        >
+          {loading ? 'Drafting…' : 'Draft 3 reply options'}
+        </button>
+
+        {error && (
+          <div className="mt-4 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm flex items-start gap-2">
+            <AlertTriangle className="w-4 h-4 mt-0.5 flex-shrink-0" />
+            <span>{error}</span>
+          </div>
+        )}
+      </div>
+
+      {replies.length > 0 && (
+        <div className="space-y-3">
+          {replies.map((r, idx) => (
+            <div key={idx} className="p-5 rounded-2xl bg-white/5 border border-white/10">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-[11px] uppercase tracking-widest font-bold text-violet-400">
+                  Variant {idx + 1} — {r.tone}
+                </span>
+                <span className="text-xs text-white/30">{r.body.length} chars</span>
+              </div>
+              <p className="text-white text-sm leading-relaxed whitespace-pre-wrap mb-3">
+                {r.body}
+              </p>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => copyReply(r.body, idx)}
+                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-white/15 text-xs text-white/70 hover:bg-white/5 transition-colors"
+                >
+                  {copiedIdx === idx ? 'Copied' : 'Copy'}
+                </button>
+                {platform === 'X' && (
+                  <a
+                    href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(r.body)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-black/90 text-white text-xs font-medium hover:opacity-90 transition-opacity"
+                  >
+                    Open in X
+                  </a>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
