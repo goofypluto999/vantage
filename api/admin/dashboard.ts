@@ -104,6 +104,7 @@ export default async function handler(request: any, response: any) {
 
     // Compute metrics
     const users = usersResult.data || [];
+    const analyses = recentAnalysesResult.data || [];
     const totalUsers = usersResult.totalCount;
     const activeSubscriptions = activeSubsResult.totalCount;
     const cancellingSubscriptions = cancellingSubsResult.totalCount;
@@ -119,9 +120,23 @@ export default async function handler(request: any, response: any) {
     // Token metrics
     const totalTokensInCirculation = users.reduce((sum: number, u: any) => sum + (u.token_balance || 0), 0);
 
-    // Recent signups (last 7 days)
-    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+    // Recent signup counts at multiple granularities — today, last 24h,
+    // last 7 days. Helps Gio see if a recent push (outreach, blog post,
+    // tweet) is actually driving signups vs the 7d baseline.
+    const now = Date.now();
+    const sevenDaysAgo = new Date(now - 7 * 24 * 60 * 60 * 1000).toISOString();
+    const twentyFourHoursAgo = new Date(now - 24 * 60 * 60 * 1000).toISOString();
+    // 'Today' = since UTC midnight today (matches the date displayed
+    // in the admin UI which uses en-GB date formatting).
+    const startOfTodayUtc = new Date();
+    startOfTodayUtc.setUTCHours(0, 0, 0, 0);
+    const startOfTodayIso = startOfTodayUtc.toISOString();
+
     const recentSignups = users.filter((u: any) => u.created_at >= sevenDaysAgo).length;
+    const signupsLast24h = users.filter((u: any) => u.created_at >= twentyFourHoursAgo).length;
+    const signupsToday = users.filter((u: any) => u.created_at >= startOfTodayIso).length;
+    const analysesLast24h = analyses.filter((a: any) => a.created_at >= twentyFourHoursAgo).length;
+    const analysesToday = analyses.filter((a: any) => a.created_at >= startOfTodayIso).length;
 
     // Monthly recurring revenue estimate (based on active plan distribution)
     const PLAN_PRICES: Record<string, number> = { starter: 5, pro: 12, premium: 20 };
@@ -140,6 +155,10 @@ export default async function handler(request: any, response: any) {
         cancelledSubscriptions,
         totalWaitlist,
         recentSignups,
+        signupsLast24h,
+        signupsToday,
+        analysesLast24h,
+        analysesToday,
         estimatedMRR,
         totalTokensInCirculation,
         planDistribution,

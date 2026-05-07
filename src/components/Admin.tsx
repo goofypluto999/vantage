@@ -15,6 +15,10 @@ interface Metrics {
   cancelledSubscriptions: number;
   totalWaitlist: number;
   recentSignups: number;
+  signupsLast24h?: number;
+  signupsToday?: number;
+  analysesLast24h?: number;
+  analysesToday?: number;
   estimatedMRR: number;
   totalTokensInCirculation: number;
   planDistribution: Record<string, number>;
@@ -186,11 +190,45 @@ export default function Admin() {
           {tab === 'overview' && (
             <>
               {/* Metric Cards */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                 <StatCard icon={Users} label="Total Users" value={m.totalUsers} color="#8b5cf6" />
                 <StatCard icon={CreditCard} label="Active Subs" value={m.activeSubscriptions} sub={`${m.cancellingSubscriptions} cancelling`} color="#10b981" />
                 <StatCard icon={TrendingUp} label="Est. MRR" value={`\u00a3${m.estimatedMRR}`} color="#3b82f6" />
                 <StatCard icon={UserPlus} label="Last 7 Days" value={m.recentSignups} sub="new signups" color="#f59e0b" />
+              </div>
+
+              {/* Granular today / 24h cards \u2014 added 2026-05-08. Helps Gio see
+                  if a recent push (outreach, blog, tweet) is moving signups
+                  vs the 7-day baseline. */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                <StatCard
+                  icon={UserPlus}
+                  label="Signups Today"
+                  value={m.signupsToday ?? 0}
+                  sub="since 00:00 UTC"
+                  color="#34d399"
+                />
+                <StatCard
+                  icon={UserPlus}
+                  label="Signups 24h"
+                  value={m.signupsLast24h ?? 0}
+                  sub="rolling"
+                  color="#34d399"
+                />
+                <StatCard
+                  icon={BarChart3}
+                  label="Analyses Today"
+                  value={m.analysesToday ?? 0}
+                  sub="since 00:00 UTC"
+                  color="#a78bfa"
+                />
+                <StatCard
+                  icon={BarChart3}
+                  label="Analyses 24h"
+                  value={m.analysesLast24h ?? 0}
+                  sub="rolling"
+                  color="#a78bfa"
+                />
               </div>
 
               <div className="grid md:grid-cols-2 gap-4 mb-8">
