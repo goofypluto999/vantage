@@ -604,11 +604,29 @@ export default function Dashboard() {
                               const blob = await res.blob();
                               const file = new File([blob], 'sample-cv-sarah-mitchell.txt', { type: 'text/plain' });
                               setCvFile(file);
+                              // ONE-click full demo: also pre-fill a sample job URL
+                              // and JD text if those fields are empty. Real Stripe
+                              // job posting (public). User can replace with their
+                              // own role at any time. We do NOT overwrite if the
+                              // user has already typed something — respect their work.
+                              if (!jobUrl) {
+                                setJobUrl('https://stripe.com/jobs/listing/staff-product-manager-payments/7819059');
+                              }
+                              if (!jobDescText && !jobDescFile) {
+                                setJobDescText(
+                                  'Stripe — Staff Product Manager, Payments\n\n' +
+                                  'About the team: The Payments team owns the core money-movement primitives behind Stripe — Charges, Payment Intents, Setup Intents, and the merchant-of-record flows that thousands of businesses depend on. We are looking for a Staff PM to lead the next chapter of how merchants accept payments globally.\n\n' +
+                                  'You will: define the strategy for the Payments product line, partner with engineering leadership on infrastructure trade-offs, work with risk and compliance on regulatory rollouts, and translate ambiguous user pain into shipped product.\n\n' +
+                                  'We are looking for: 8+ years of PM experience including 3+ at Staff/Principal level, deep payments or fintech background, comfort with technical ambiguity, history of shipping at scale (>$10M revenue impact), and demonstrated cross-functional leadership across engineering, design, and GTM.\n\n' +
+                                  'Bonus: experience with global payment methods (SEPA, BACS, ACH), regulatory frameworks (PSD2, Reg E), or open-banking integrations.'
+                                );
+                                setJdMode('text');
+                              }
                             } catch { /* ignore — sample fetch is best-effort */ }
                           }}
                           className="mt-3 text-[11px] text-violet-400 hover:text-violet-300 underline-offset-2 hover:underline transition-colors"
                         >
-                          No CV ready? Try with our sample CV →
+                          No CV ready? Try the full demo (sample CV + job) →
                         </button>
                       </>
                     )}
