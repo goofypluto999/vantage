@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'motion/react';
 import type { LucideIcon } from 'lucide-react';
 import {
   ArrowLeft, Sparkles, User, Mail, CreditCard, Shield, LogOut,
@@ -141,11 +140,9 @@ export default function Account() {
 
       {/* Main */}
       <main className="max-w-2xl mx-auto p-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-        >
+        {/* No motion entrance — same defensive change as Pricing/Auth/Dashboard
+            (2026-05-07). Account page is post-login, must always paint. */}
+        <div>
           <h1 className="text-2xl font-display font-bold text-white mb-1">Account Settings</h1>
           <p className="text-white/50 mb-8">Manage your profile, subscription, and security</p>
 
@@ -380,7 +377,7 @@ export default function Account() {
               Sign Out
             </button>
           </section>
-        </motion.div>
+        </div>
       </main>
     </div>
   );
