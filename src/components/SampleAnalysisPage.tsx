@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useParams, Link, Navigate } from 'react-router-dom';
-import { ArrowRight, Building2, FileText, Lightbulb, Mic, Sparkles, Target, CheckCircle2, AlertTriangle, Lock } from 'lucide-react';
+import { ArrowRight, Building2, FileText, Lightbulb, Mic, Sparkles, Target, CheckCircle2, AlertTriangle, Lock, Twitter, Linkedin, Copy, Check } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import SEO from './SEO';
 import { getSampleAnalysis, type SampleAnalysis } from '../data/sampleAnalyses';
@@ -32,6 +32,30 @@ export default function SampleAnalysisPage() {
 
 function SampleAnalysisContent({ sample, t }: { sample: SampleAnalysis; t: any }) {
   const [tone, setTone] = useState<'direct' | 'formal' | 'warm' | 'creative'>('direct');
+  const [copied, setCopied] = useState(false);
+
+  const sampleUrl = `${SITE_URL}/sample/${sample.slug}`;
+  const shareText = `90 seconds of AI prep for ${sample.job.role} at ${sample.job.company} — full company intel, fit score, tailored cover letter, mock interview questions. Whole output is here:`;
+
+  const shareTwitter = () => {
+    const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(sampleUrl)}`;
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
+  const shareLinkedin = () => {
+    const url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(sampleUrl)}`;
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
+  const copyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(sampleUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      /* clipboard not available — silent fail, user can manually copy from URL bar */
+    }
+  };
 
   const breadcrumbSchema = {
     '@context': 'https://schema.org',
@@ -116,7 +140,7 @@ function SampleAnalysisContent({ sample, t }: { sample: SampleAnalysis; t: any }
             screens away; visitors who skim never saw it. This compact pill
             puts the action in the user's eye line on landing. Same /register
             link as the bottom CTA, just earlier in the funnel. */}
-        <div className="mb-12 flex flex-wrap items-center gap-3 text-sm">
+        <div className="mb-6 flex flex-wrap items-center gap-3 text-sm">
           <Link
             to="/register"
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] text-white font-semibold hover:opacity-95 transition-opacity"
@@ -126,6 +150,34 @@ function SampleAnalysisContent({ sample, t }: { sample: SampleAnalysis; t: any }
           <span className={`${t.textMuted}`}>
             3 free analyses · no card · 90 seconds per run
           </span>
+        </div>
+
+        {/* Share row — added 2026-05-07. Sample pages are the strongest
+            "this is what you get for free" surface; every share puts Vantage
+            in front of a power user's network. Free distribution. */}
+        <div className="mb-12 flex flex-wrap items-center gap-2">
+          <span className={`text-xs uppercase tracking-wider mr-2 ${t.textMuted}`}>Share this</span>
+          <button
+            onClick={shareTwitter}
+            type="button"
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-black/90 text-white text-xs font-medium hover:opacity-90 transition-opacity"
+          >
+            <Twitter className="w-3.5 h-3.5" /> X
+          </button>
+          <button
+            onClick={shareLinkedin}
+            type="button"
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#0A66C2] text-white text-xs font-medium hover:opacity-90 transition-opacity"
+          >
+            <Linkedin className="w-3.5 h-3.5" /> LinkedIn
+          </button>
+          <button
+            onClick={copyLink}
+            type="button"
+            className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-white/20 text-xs font-medium hover:bg-black/5 dark:hover:bg-white/5 transition-colors ${t.textSub}`}
+          >
+            {copied ? <><Check className="w-3.5 h-3.5" /> Copied</> : <><Copy className="w-3.5 h-3.5" /> Copy link</>}
+          </button>
         </div>
 
         {/* Input bar */}
