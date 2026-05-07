@@ -159,12 +159,18 @@ function Navbar({ onStart, showLogin }: { onStart: () => void; showLogin?: () =>
       }`}
     >
       <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-        {/* Logo */}
-        <motion.div
+        {/* Logo — clickable, scrolls to top. Previously a non-interactive div,
+            which Clarity flagged as a dead-click target (users instinctively
+            click logos to 'go home'). Now a button that smooth-scrolls to top
+            so the click does something visible instead of nothing. */}
+        <motion.button
+          type="button"
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          aria-label="Scroll to top of page"
           initial={{ opacity: 0, x: -16 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 cursor-pointer hover:opacity-90 active:scale-95 transition-all"
         >
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#4F46E5] to-[#7C3AED] flex items-center justify-center shadow-md">
             <BrainCircuit className="w-4 h-4 text-white" />
@@ -172,7 +178,7 @@ function Navbar({ onStart, showLogin }: { onStart: () => void; showLogin?: () =>
           <span className="font-display font-[800] text-[#2D2B4E] text-lg tracking-tight uppercase">
             Vantage
           </span>
-        </motion.div>
+        </motion.button>
 
         {/* Desktop nav */}
         <motion.nav
@@ -511,13 +517,14 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
       </AnimatePresence>
 
       {/* Cohort announcement bar — fixed at top-0. Navbar is offset to top-9/top-10
-          to sit below it. */}
-      <a
-        href="/laid-off"
+          to sit below it. Uses <Link> for SPA nav (instant) instead of <a> which
+          forced a full page reload to /laid-off. */}
+      <Link
+        to="/laid-off"
         className="fixed top-0 left-0 right-0 z-[60] flex items-center justify-center w-full h-9 md:h-10 bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] text-white text-center text-xs md:text-sm font-semibold hover:opacity-95 transition-opacity"
       >
         Got laid off this month?&nbsp;<span className="underline">Read this first →</span>
-      </a>
+      </Link>
 
       <Navbar onStart={onStart} showLogin={showLogin} />
 
