@@ -603,7 +603,7 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
               {' '}· UK independent founder · Stripe-only billing, no recruitment, no DM outreach
             </p>
             <p className="text-[11px] text-[#6B6B8D] mt-1 font-medium">
-              Built solo in 60 days · Free ATS scanner open-source on GitHub
+              Free ATS scanner open-source on GitHub · Sister product CV Mirror is fully client-side
             </p>
           </div>
         </motion.div>
