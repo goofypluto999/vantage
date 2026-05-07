@@ -413,6 +413,18 @@ export default function Dashboard() {
               </button>
             )}
 
+            {/* Refer link — surfaces a hidden conversion lever. Existing users
+                are the cheapest acquisition source; a one-click link in the
+                nav makes referring zero-friction. Manual rewards (5 free
+                tokens per signup) per /refer page. */}
+            <button
+              onClick={() => navigate('/refer')}
+              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 hover:bg-emerald-500/20 transition-colors"
+              title="Refer a friend — 5 free tokens"
+            >
+              Refer · +5 tokens
+            </button>
+
             <button
               onClick={() => navigate('/account')}
               className="p-2 rounded-lg hover:bg-white/5 text-white/50 hover:text-white transition-colors"
