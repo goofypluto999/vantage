@@ -34,7 +34,8 @@ function SampleAnalysisContent({ sample, t }: { sample: SampleAnalysis; t: any }
   const [tone, setTone] = useState<'direct' | 'formal' | 'warm' | 'creative'>('direct');
   const [copied, setCopied] = useState(false);
 
-  const sampleUrl = `${SITE_URL}/sample/${sample.slug}`;
+  const baseSampleUrl = `${SITE_URL}/sample/${sample.slug}`;
+  const sampleUrl = `${baseSampleUrl}?utm_source=share&utm_medium=sample&utm_content=${sample.slug}`;
   const shareText = `90 seconds of AI prep for ${sample.job.role} at ${sample.job.company} — full company intel, fit score, tailored cover letter, mock interview questions. Whole output is here:`;
 
   const shareTwitter = () => {
@@ -49,6 +50,9 @@ function SampleAnalysisContent({ sample, t }: { sample: SampleAnalysis; t: any }
 
   const copyLink = async () => {
     try {
+      // Copy the UTM-tagged URL so we can attribute clicks back to share
+      // events in analytics. The tracking params are short enough that
+      // they don't visibly degrade the URL when pasted into a DM.
       await navigator.clipboard.writeText(sampleUrl);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);

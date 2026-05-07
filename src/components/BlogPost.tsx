@@ -17,7 +17,7 @@ export default function BlogPost() {
   const post = getPostBySlug(slug);
   if (!post) return <Navigate to="/blog" replace />;
 
-  const postUrl = `${SITE_URL}/blog/${post.slug}`;
+  const postUrl = `${SITE_URL}/blog/${post.slug}?utm_source=share&utm_medium=blog&utm_content=${post.slug}`;
   const shareTwitter = () => {
     const text = `${post.title} — ${post.excerpt.slice(0, 140)}`;
     window.open(
