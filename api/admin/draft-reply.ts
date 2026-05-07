@@ -17,7 +17,7 @@ function getAdminEmails(): string[] {
   return raw.split(',').map(e => e.trim().toLowerCase()).filter(Boolean);
 }
 
-async function verifyAdmin(token: string): Promise<{ isAdmin: boolean }> {
+async function verifyAdmin(token: string): Promise<{ isAdmin: boolean; userId?: string }> {
   const userRes = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
     headers: {
       'Authorization': `Bearer ${token}`,
@@ -31,7 +31,29 @@ async function verifyAdmin(token: string): Promise<{ isAdmin: boolean }> {
   if (adminEmails.length === 0) return { isAdmin: false };
   if (!user.email_confirmed_at) return { isAdmin: false };
 
-  return { isAdmin: adminEmails.includes(user.email?.toLowerCase()) };
+  return {
+    isAdmin: adminEmails.includes(user.email?.toLowerCase()),
+    userId: user.id,
+  };
+}
+
+// In-memory rate limit on the AI endpoint. Even though it's admin-gated,
+// a leaked admin token could otherwise drive unbounded Gemini spend.
+// Defence-in-depth: cap at 30 calls per 5-minute window per admin user.
+// Survives only the warm function instance — fine for the threat model
+// (a leaked token used at scale would still be capped within seconds).
+const RATE_WINDOW_MS = 5 * 60 * 1000;
+const RATE_MAX = 30;
+const rateBuckets: Map<string, number[]> = new Map();
+function checkRateLimit(userId: string): { ok: boolean; retryAfterMs?: number } {
+  const now = Date.now();
+  const bucket = (rateBuckets.get(userId) || []).filter(t => now - t < RATE_WINDOW_MS);
+  if (bucket.length >= RATE_MAX) {
+    return { ok: false, retryAfterMs: RATE_WINDOW_MS - (now - bucket[0]) };
+  }
+  bucket.push(now);
+  rateBuckets.set(userId, bucket);
+  return { ok: true };
 }
 
 export default async function handler(request: any, response: any) {
@@ -45,9 +67,16 @@ export default async function handler(request: any, response: any) {
   }
 
   const token = authHeader.replace('Bearer ', '');
-  const { isAdmin } = await verifyAdmin(token);
-  if (!isAdmin) {
+  const { isAdmin, userId } = await verifyAdmin(token);
+  if (!isAdmin || !userId) {
     return response.status(403).json({ error: 'Admin access required' });
+  }
+
+  // Rate-limit even admin calls — defence-in-depth vs leaked tokens.
+  const rl = checkRateLimit(userId);
+  if (!rl.ok) {
+    response.setHeader('Retry-After', Math.ceil((rl.retryAfterMs || RATE_WINDOW_MS) / 1000).toString());
+    return response.status(429).json({ error: 'Too many requests. Try again in a few minutes.' });
   }
 
   try {
@@ -58,8 +87,16 @@ export default async function handler(request: any, response: any) {
     if (tweetText.length > 2000) {
       return response.status(400).json({ error: 'tweetText is too long' });
     }
-    if (extraContext && extraContext.length > 1000) {
-      return response.status(400).json({ error: 'extraContext is too long' });
+    // Type-check extraContext BEFORE reading .length — a client posting
+    // extraContext: { length: 9999 } would otherwise bypass the limit
+    // and cause a runtime crash inside the prompt template.
+    if (extraContext !== undefined && extraContext !== null) {
+      if (typeof extraContext !== 'string') {
+        return response.status(400).json({ error: 'extraContext must be a string' });
+      }
+      if (extraContext.length > 1000) {
+        return response.status(400).json({ error: 'extraContext is too long' });
+      }
     }
     const validPlatforms = ['X', 'LinkedIn', 'Reddit'];
     if (!validPlatforms.includes(platform)) {
