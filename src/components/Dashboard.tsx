@@ -232,7 +232,9 @@ export default function Dashboard() {
     if (!jobUrl) { setError('Please add a job URL'); return; }
     if (cvFile.size > 5 * 1024 * 1024) { setError('CV file is too large (max 5MB)'); return; }
     if (!canAnalyze) {
-      setError('Not enough tokens. Buy more to continue!');
+      // Concrete: 'You have X / need 3'. Better than 'Not enough'.
+      const tokens = profile?.token_balance ?? 0;
+      setError(`You have ${tokens} ${tokens === 1 ? 'token' : 'tokens'} but each analysis needs 3. Top up below — £5 for 6 more prep packs.`);
       return;
     }
 
@@ -345,7 +347,7 @@ export default function Dashboard() {
       return;
     }
     if (!hasCredits(profile, 1)) {
-      setError('Not enough tokens to rewrite tone (1 token)');
+      setError('Tone rewrites cost 1 token, and your balance is 0. Top up at £5 for 20 more.');
       return;
     }
     setToneLoading(true);
