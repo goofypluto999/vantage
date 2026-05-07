@@ -1158,6 +1158,31 @@ export default function Dashboard() {
                       {displayLetter || results.coverLetter}
                     </p>
                   </div>
+
+                  {/* Copy cover letter — added 2026-05-07. The cover letter
+                      is the most-actioned output (users paste it into the
+                      job application immediately). One-click copy beats
+                      'select all → cmd+c'. */}
+                  <div className="mt-4 pt-4 border-t border-white/10">
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        try {
+                          await navigator.clipboard.writeText(displayLetter || results.coverLetter);
+                          // visual confirmation via temporary text swap
+                          const btn = document.activeElement as HTMLButtonElement | null;
+                          if (btn) {
+                            const original = btn.innerText;
+                            btn.innerText = 'Copied to clipboard';
+                            setTimeout(() => { if (btn) btn.innerText = original; }, 2000);
+                          }
+                        } catch { /* clipboard unavailable */ }
+                      }}
+                      className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-white/15 text-xs font-medium text-white/70 hover:bg-white/5 transition-colors"
+                    >
+                      <Copy className="w-3.5 h-3.5" /> Copy cover letter
+                    </button>
+                  </div>
                 </div>
               )}
 
