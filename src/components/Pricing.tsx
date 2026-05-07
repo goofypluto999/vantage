@@ -117,11 +117,13 @@ export default function Pricing({ onLogin, onRegister, onCheckout, isAuthenticat
       {/* Pricing Content */}
       <main className="max-w-6xl mx-auto px-6 py-16">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-display font-bold text-white mb-4">
-            Simple, transparent pricing
+          <h1 className="text-4xl md:text-5xl font-display font-bold text-white mb-4">
+            Pay once for £5. Or skip even that and try free.
           </h1>
-          <p className="text-xl text-white/50">
-            Choose the plan that's right for your job search
+          <p className="text-base md:text-lg text-white/60 max-w-2xl mx-auto leading-relaxed">
+            Every account starts with 3 free analyses on signup — no card. After that, top up at £5
+            for 6 more (never expires) or subscribe for 18 / 36 prep packs every month. Cancel any
+            time. No hidden fees.
           </p>
         </div>
 
