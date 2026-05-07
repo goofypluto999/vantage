@@ -589,6 +589,27 @@ export default function Dashboard() {
                         <Upload className="w-8 h-8 text-white/30 mx-auto mb-2" />
                         <p className="text-white font-semibold text-sm">Upload your CV</p>
                         <p className="text-white/40 text-xs mt-1">Drop or click — PDF, DOCX, or TXT</p>
+                        {/* Sample CV escape hatch — clicking this fetches public/sample-cv.txt
+                            and creates a File object so the user can run a real analysis
+                            with our example. Removes the biggest blocker for first-time
+                            users who don't have a CV file ready on their machine. The
+                            sample is a public asset, content is fictional but realistic. */}
+                        <button
+                          type="button"
+                          onClick={async (e) => {
+                            e.stopPropagation();
+                            try {
+                              const res = await fetch('/sample-cv.txt');
+                              if (!res.ok) return;
+                              const blob = await res.blob();
+                              const file = new File([blob], 'sample-cv-sarah-mitchell.txt', { type: 'text/plain' });
+                              setCvFile(file);
+                            } catch { /* ignore — sample fetch is best-effort */ }
+                          }}
+                          className="mt-3 text-[11px] text-violet-400 hover:text-violet-300 underline-offset-2 hover:underline transition-colors"
+                        >
+                          No CV ready? Try with our sample CV →
+                        </button>
                       </>
                     )}
                   </div>

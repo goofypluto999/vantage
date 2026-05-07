@@ -1,0 +1,50 @@
+SAMPLE CV — Sarah Mitchell
+This is a public example CV used by Vantage AI to let new users try the analysis flow without their own CV file. The candidate, role history, and accomplishments below are realistic but fictional. Your real CV stays on YOUR device — this sample is just here so you can see how the analysis works.
+
+CONTACT
+Email: sarah.mitchell.example@aimvantage.uk
+Phone: +44 (0)7700 900 123
+LinkedIn: linkedin.com/in/sarah-mitchell-example
+Location: Manchester, UK
+
+PROFESSIONAL SUMMARY
+Senior Product Manager with eight years of experience shipping data-driven SaaS products to enterprise customers. Track record of taking ambiguous problems, breaking them down, and delivering measurable outcomes — most recently led a 14-person cross-functional team that grew a B2B analytics product from 8 to 24 paying customers and from £1.1M to £4.3M ARR over 18 months. Strong technical background (former software engineer); fluent moving between strategy, engineering trade-offs, and customer conversations.
+
+EXPERIENCE
+
+Senior Product Manager — Cresta Insights (Manchester)
+Sep 2023 – Present (2 years 8 months)
+- Owned the Enterprise Analytics product line: 14 engineers, 3 designers, 2 data scientists. Grew ARR from £1.1M to £4.3M.
+- Re-architected the onboarding flow with the engineering team, reducing time-to-first-insight from 11 days to 2 days. Free-trial-to-paid conversion lifted from 8% to 19%.
+- Shipped four major features through to GA, including a real-time alerting engine that became the reason 6 of our top 10 customers renewed at 2x seat count.
+- Ran the customer advisory board (12 enterprise customers, quarterly cadence). Translated themes into a 6-quarter roadmap that the leadership team adopted with no major changes.
+
+Product Manager — Talisman Health (Leeds)
+Jun 2020 – Aug 2023 (3 years 3 months)
+- Led the Patient Records team (8 engineers, 1 designer) inside a healthtech SaaS. Migrated 280,000 patient records to a new data model with zero downtime and zero data loss.
+- Drove the GDPR-compliance overhaul for the EU release. Personally wrote the consent-management UX spec; legal counsel signed it off without changes.
+- Shipped the first mobile app for the platform. Hit 78% adoption among target users in the first 90 days.
+
+Software Engineer — Birch & Lloyd (London)
+Sep 2017 – May 2020 (2 years 8 months)
+- Full-stack engineer on a fintech reconciliation product (Python / TypeScript / PostgreSQL).
+- Built the open-banking integration layer — connected 14 UK retail banks via PSD2 APIs.
+- Last year transitioned into product, shadowing the PM lead and running a discovery workstream.
+
+EDUCATION
+
+University of Manchester
+BSc Computer Science with Industrial Experience — First-class honours
+Sep 2013 – Jun 2017
+- Final project: built a distributed search index with B+tree storage and Raft consensus. Awarded best-in-year project.
+
+SKILLS
+Product strategy, customer discovery, JTBD framework, OKRs, data-led prioritisation, A/B testing, Mixpanel, Amplitude, SQL, Python, TypeScript, React, Postgres, AWS, Looker, Figma, technical writing, stakeholder management.
+
+NOTABLE
+- Speaker, ProductCon London 2024 — "From engineer to PM: the trade-offs nobody warns you about"
+- Mentor, Ada Lovelace Programme (women in tech, since 2022)
+- Open-source contributor to PostHog (~30 PRs merged)
+
+REFERENCES
+Available on request.
