@@ -998,7 +998,10 @@ export default function Dashboard() {
                         ? `the ${(results.companySnapshot?.industry || 'role').toLowerCase()} role`
                         : 'this role';
                       const company = results.companySnapshot?.name || 'the company';
-                      const shareText = `Just got a ${results.cvFitScore}/100 CV fit score for ${role} at ${company} using @aimvantage_uk's free AI analysis. 90 seconds, full company intel + tailored cover letter + interview pack. Try it:`;
+                      // No @-handle — Vantage AI doesn't have a verified Twitter account
+                      // yet; an @-tag pointing at a non-existent or squatted handle would
+                      // break the share. Plain brand name reads cleanly either way.
+                      const shareText = `Just got a ${results.cvFitScore}/100 CV fit score for ${role} at ${company} using Vantage AI's free 90-second analysis — full company intel + tailored cover letter + interview pack. Try it:`;
                       const shareUrl = 'https://aimvantage.uk/?utm_source=share&utm_medium=fitscore';
                       return (
                         <>
