@@ -786,6 +786,28 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
             </GlassCard>
           ))}
         </div>
+
+        {/* Mid-page CTA — after users learn how it works. Conversion data showed
+            5 homepage visits but only 1 hero-CTA click before this point. Users
+            scroll 79% deep without re-prompting; this captures the moment they
+            understand the flow and might be ready to commit. */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-80px' }}
+          transition={{ duration: 0.6 }}
+          className="mt-14 text-center"
+        >
+          <button
+            onClick={onStart}
+            className="inline-flex items-center gap-2 px-9 py-4 bg-[#4F46E5] text-white rounded-full font-bold text-base hover:-translate-y-1 hover:shadow-[0_12px_32px_rgba(79,70,229,0.45)] active:scale-95 transition-all"
+          >
+            Try it free — 3 analyses, no card <ChevronRight className="w-4 h-4" />
+          </button>
+          <p className="text-xs text-[#6B6B8D] font-medium mt-3">
+            ~90 seconds per analysis · CV stays in your browser until you click run
+          </p>
+        </motion.div>
       </section>
 
       {/* ================================================================
@@ -908,6 +930,27 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
             </AnimatePresence>
           </div>
         </GlassCard>
+
+        {/* Second mid-page CTA — placed right after the user has SEEN the
+            actual output preview. Strongest conversion moment: they just saw
+            what they'll get, prompt them now. */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-80px' }}
+          transition={{ duration: 0.6 }}
+          className="mt-14 text-center"
+        >
+          <button
+            onClick={onStart}
+            className="inline-flex items-center gap-2 px-9 py-4 bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] text-white rounded-full font-bold text-base hover:-translate-y-1 hover:shadow-[0_12px_32px_rgba(79,70,229,0.45)] active:scale-95 transition-all"
+          >
+            Get this for your next job — free <ChevronRight className="w-4 h-4" />
+          </button>
+          <p className="text-xs text-[#6B6B8D] font-medium mt-3">
+            3 free analyses on signup. No card. £5 starter pack only if you want more.
+          </p>
+        </motion.div>
       </section>
 
       {/* ================================================================
