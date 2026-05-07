@@ -64,7 +64,7 @@ export default function Register() {
           <div className="text-left rounded-xl bg-amber-500/10 border border-amber-500/30 p-4 mb-5">
             <p className="text-amber-300 text-sm font-semibold mb-1">Heads up — check your spam folder.</p>
             <p className="text-amber-100/80 text-xs leading-relaxed">
-              Gmail and Outlook aggressively filter mail from new domains. Vantage is six days old, so the confirmation email lands in spam about half the time. If you don't see it in your inbox in the next 60 seconds, look in <strong>Spam</strong> / <strong>Junk</strong> / <strong>Promotions</strong>.
+              Gmail and Outlook aggressively filter mail from new domains. The confirmation email lands in spam about half the time for our visitors. If you don't see it in your inbox in the next 60 seconds, look in <strong>Spam</strong> / <strong>Junk</strong> / <strong>Promotions</strong>.
             </p>
           </div>
           <p className="text-white/50 text-sm mb-1">No email after 5 minutes?</p>
