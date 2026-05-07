@@ -516,10 +516,16 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
           </React.Suspense>
         </div>
 
-        {/* Hero text */}
+        {/* Hero text. The `relative` is critical — without explicit positioning,
+            the `z-10` here has NO effect (CSS z-index only applies to positioned
+            elements). The 3D canvas above has `absolute inset-0 z-0 pointer-events-auto`
+            and was capturing clicks meant for the hero CTA — Clarity surfaced this
+            as a 'dead click' on "Get 3 free analyses". Adding `relative` here
+            establishes the stacking context, so the hero content reliably paints
+            and receives clicks above the canvas. */}
         <motion.div
           style={{ opacity: heroOpacity, scale: heroScale }}
-          className="z-10 text-center max-w-5xl px-6 pointer-events-none mt-16"
+          className="relative z-10 text-center max-w-5xl px-6 pointer-events-none mt-16"
         >
           <motion.div
             initial={{ opacity: 0, y: 20 }}
