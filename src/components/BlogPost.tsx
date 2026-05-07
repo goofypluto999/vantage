@@ -166,6 +166,23 @@ export default function BlogPost() {
           >
             View as markdown →
           </a>
+
+          {/* Above-the-fold CTA — added 2026-05-07. The bottom-of-post CTA
+              was the only path to /register on long-form posts (1500+
+              words). Casual readers who skimmed the title and hook never
+              saw it. This compact pill sits right under the metadata so
+              the action is in the eye line on landing. */}
+          <div className="mt-6 flex flex-wrap items-center gap-3 text-sm">
+            <Link
+              to="/register"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] text-white font-semibold hover:opacity-95 transition-opacity"
+            >
+              Run mine free <ArrowRight className="w-4 h-4" />
+            </Link>
+            <span className={`${t.textMuted}`}>
+              3 free analyses · no card · 90 seconds per run
+            </span>
+          </div>
         </header>
 
         {/* AEO TL;DR — direct answer block for AI crawlers */}
