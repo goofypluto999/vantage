@@ -108,9 +108,25 @@ function SampleAnalysisContent({ sample, t }: { sample: SampleAnalysis; t: any }
           A complete real-style Vantage output, generated for a real job listing. Free to read. No
           signup. Run your own at the bottom.
         </p>
-        <p className={`text-sm mb-12 ${t.textMuted}`}>
+        <p className={`text-sm mb-6 ${t.textMuted}`}>
           Generated {sample.generatedAt} · Candidate persona is fictional but realistic.
         </p>
+
+        {/* Above-the-fold CTA — added 2026-05-07. The bottom CTA was 5+
+            screens away; visitors who skim never saw it. This compact pill
+            puts the action in the user's eye line on landing. Same /register
+            link as the bottom CTA, just earlier in the funnel. */}
+        <div className="mb-12 flex flex-wrap items-center gap-3 text-sm">
+          <Link
+            to="/register"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] text-white font-semibold hover:opacity-95 transition-opacity"
+          >
+            Run mine free <ArrowRight className="w-4 h-4" />
+          </Link>
+          <span className={`${t.textMuted}`}>
+            3 free analyses · no card · 90 seconds per run
+          </span>
+        </div>
 
         {/* Input bar */}
         <section className={`${t.glass} rounded-2xl p-5 md:p-6 mb-8`}>
