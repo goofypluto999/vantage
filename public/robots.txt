@@ -1,6 +1,6 @@
 # robots.txt for Vantage AI
 # https://aimvantage.uk
-# Last updated: 2026-05-01
+# Last updated: 2026-05-07
 
 # ---------- Default: allow all search + AI crawlers ----------
 User-agent: *
@@ -188,6 +188,12 @@ Disallow: /api/
 # ---------- You.com ----------
 User-agent: YouBot
 Allow: /
+Disallow: /dashboard
+Disallow: /account
+Disallow: /admin
+Disallow: /refer
+Disallow: /reset-password
+Disallow: /api/
 
 # ---------- Sitemaps ----------
 Sitemap: https://aimvantage.uk/sitemap.xml
