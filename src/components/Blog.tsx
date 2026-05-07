@@ -30,19 +30,33 @@ export default function Blog() {
         </div>
       </nav>
 
-      {/* Header */}
+      {/* Header — no motion entrance (defensive vs tab-visibility throttling
+          stuck-at-opacity bug pattern, fixed elsewhere today). */}
       <header className="max-w-4xl mx-auto px-4 sm:px-6 pt-16 pb-8">
-        <motion.h1
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className={`text-4xl sm:text-5xl font-extrabold tracking-tight ${t.text}`}
-        >
+        <h1 className={`text-4xl sm:text-5xl font-extrabold tracking-tight ${t.text}`}>
           The Vantage Blog
-        </motion.h1>
+        </h1>
         <p className={`mt-3 text-lg ${t.textSub} max-w-2xl`}>
           Guides on AI job application prep, interview strategy, ATS-friendly CVs, cover letters,
           and job fit analysis. Written by the team building Vantage, for the people using it.
         </p>
+
+        {/* Above-the-fold CTA — added 2026-05-07 (same pattern as
+            /sample, /blog/:slug, /faq, /interview-prep/:company,
+            /interview-questions/:role). Blog index gets organic traffic
+            from broad queries; visitors who skim post titles need a
+            direct path to /register. */}
+        <div className="mt-6 flex flex-wrap items-center gap-3 text-sm">
+          <Link
+            to="/register"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] text-white font-semibold hover:opacity-95 transition-opacity"
+          >
+            Run mine free <ArrowRight className="w-4 h-4" />
+          </Link>
+          <span className={`${t.textMuted}`}>
+            3 free analyses · no card · 90 seconds per run
+          </span>
+        </div>
       </header>
 
       {/* Posts */}
