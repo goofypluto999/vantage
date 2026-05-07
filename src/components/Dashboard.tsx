@@ -4,7 +4,8 @@ import { motion, AnimatePresence } from 'motion/react';
 import {
   Upload, Link as LinkIcon, FileText, Loader2, Sparkles, ChevronRight,
   LogOut, CreditCard, Zap, Crown, Star, Settings, Check,
-  Mic, BookOpen, Lock, RefreshCw, ClipboardPaste, Type
+  Mic, BookOpen, Lock, RefreshCw, ClipboardPaste, Type,
+  Twitter, Linkedin, Copy
 } from 'lucide-react';
 import { useAuth } from '../App';
 import { useCurrency } from '../contexts/CurrencyContext';
@@ -983,6 +984,54 @@ export default function Dashboard() {
                     {results.cvFitSummary && (
                       <p className="text-white/70 flex-1">{results.cvFitSummary}</p>
                     )}
+                  </div>
+
+                  {/* Share my fit score — viral mechanic added 2026-05-07.
+                      Tweet text intentionally has NO PII (no user name, no
+                      CV detail) — only the score, role, company, and a
+                      Vantage shoutout. Every share = social proof + free
+                      traffic from the user's network. */}
+                  <div className="mt-5 pt-5 border-t border-white/10 flex flex-wrap items-center gap-2">
+                    <span className="text-[11px] uppercase tracking-wider text-white/40 mr-1">Share this score</span>
+                    {(() => {
+                      const role = results.keyRequirements?.[0]
+                        ? `the ${(results.companySnapshot?.industry || 'role').toLowerCase()} role`
+                        : 'this role';
+                      const company = results.companySnapshot?.name || 'the company';
+                      const shareText = `Just got a ${results.cvFitScore}/100 CV fit score for ${role} at ${company} using @aimvantage_uk's free AI analysis. 90 seconds, full company intel + tailored cover letter + interview pack. Try it:`;
+                      const shareUrl = 'https://aimvantage.uk/?utm_source=share&utm_medium=fitscore';
+                      return (
+                        <>
+                          <a
+                            href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-black/90 text-white text-xs font-medium hover:opacity-90 transition-opacity"
+                          >
+                            <Twitter className="w-3.5 h-3.5" /> Share on X
+                          </a>
+                          <a
+                            href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#0A66C2] text-white text-xs font-medium hover:opacity-90 transition-opacity"
+                          >
+                            <Linkedin className="w-3.5 h-3.5" /> LinkedIn
+                          </a>
+                          <button
+                            type="button"
+                            onClick={async () => {
+                              try {
+                                await navigator.clipboard.writeText(`${shareText} ${shareUrl}`);
+                              } catch { /* clipboard unavailable */ }
+                            }}
+                            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-white/20 text-xs font-medium text-white/70 hover:bg-white/5 transition-colors"
+                          >
+                            <Copy className="w-3.5 h-3.5" /> Copy
+                          </button>
+                        </>
+                      );
+                    })()}
                   </div>
                 </div>
               )}
