@@ -102,6 +102,20 @@ export const crossLinks: CrossLinkTarget[] = [
     tags: ['cover letter', 'ai tools', 'writing'],
   },
   {
+    label: 'Free Rejection Email Decoder',
+    href: '/decode-rejection',
+    type: 'tool',
+    description: 'Paste a job rejection email — AI tells you what the recruiter actually meant + your concrete next move.',
+    tags: ['rejection', 'ats', 'job search', 'recruiting', 'layoff', 'ai tools'],
+  },
+  {
+    label: 'Free Ghost Job Detector',
+    href: '/ghost-job-check',
+    type: 'tool',
+    description: 'Paste a job listing — AI scores how likely it is a ghost (0-100) with the specific tells.',
+    tags: ['ghost job', 'job search', 'ats', 'recruiting', 'ai tools'],
+  },
+  {
     label: 'CV Mirror — Free ATS scanner',
     href: 'https://cv-mirror-web.vercel.app/',
     type: 'tool',
