@@ -94,7 +94,7 @@ function StatCard({ icon: Icon, label, value, sub, color }: {
   );
 }
 
-type Tab = 'overview' | 'users' | 'analyses' | 'waitlist' | 'reply-drafter';
+type Tab = 'overview' | 'users' | 'analyses' | 'waitlist' | 'reply-drafter' | 'post-templates';
 
 export default function Admin() {
   const navigate = useNavigate();
@@ -167,7 +167,7 @@ export default function Admin() {
       {/* Tabs */}
       <div className="border-b border-white/10 px-6">
         <div className="max-w-7xl mx-auto flex gap-1">
-          {(['overview', 'users', 'analyses', 'waitlist', 'reply-drafter'] as Tab[]).map((t) => (
+          {(['overview', 'users', 'analyses', 'waitlist', 'reply-drafter', 'post-templates'] as Tab[]).map((t) => (
             <button
               key={t}
               onClick={() => setTab(t)}
@@ -364,8 +364,181 @@ export default function Admin() {
           )}
 
           {tab === 'reply-drafter' && <ReplyDrafter />}
+          {tab === 'post-templates' && <PostTemplates />}
         </motion.div>
       </main>
+    </div>
+  );
+}
+
+// =============================================================================
+// POST TEMPLATES — canned original posts Gio can fire off without finding a
+// thread to reply to. Complements the ReplyDrafter (reactive) with proactive
+// distribution.
+//
+// These are meta-templates with placeholders Gio fills in (e.g. {role},
+// {company}, {fitscore}). Each is platform-tailored (X / LinkedIn / Reddit
+// length + tone) and points to a specific live surface.
+// =============================================================================
+const POST_TEMPLATES: { id: string; platform: 'X' | 'LinkedIn' | 'Reddit'; angle: string; body: string; targetUrl: string }[] = [
+  {
+    id: 'sample-anthropic',
+    platform: 'X',
+    angle: 'Show, don\'t tell — full sample output',
+    body: `Anthropic Senior PM. Real listing.\n\n90-second AI prep pack: company intel, fit score, tailored cover letter (4 tones), 12 mock interview questions.\n\nWhole thing is public, no signup:\nhttps://aimvantage.uk/sample/anthropic-senior-pm`,
+    targetUrl: 'https://aimvantage.uk/sample/anthropic-senior-pm',
+  },
+  {
+    id: 'sample-stripe',
+    platform: 'X',
+    angle: 'Show, don\'t tell — Stripe',
+    body: `Stripe Staff PM. Real listing.\n\nFull AI prep pack — fit score, role-specific interview questions, tailored cover letter, pitch outline. 90 seconds.\n\nRead the entire output, no signup:\nhttps://aimvantage.uk/sample/stripe-staff-pm`,
+    targetUrl: 'https://aimvantage.uk/sample/stripe-staff-pm',
+  },
+  {
+    id: 'sample-openai',
+    platform: 'X',
+    angle: 'Show, don\'t tell — OpenAI',
+    body: `OpenAI ML Engineer. Real role.\n\nVantage's full output: company brief, CV fit, tailored cover letter, mock interview questions. 90 seconds end-to-end.\n\nWhole thing is public:\nhttps://aimvantage.uk/sample/openai-ml-eng`,
+    targetUrl: 'https://aimvantage.uk/sample/openai-ml-eng',
+  },
+  {
+    id: 'roast-tool',
+    platform: 'X',
+    angle: 'Free tool hook',
+    body: `built a free AI cover letter roast.\n\npaste your letter, get a brutal honest verdict + 3 specific cliché callouts + the better swap. no signup, no email, no upsell mid-roast.\n\n(yes there is a paid tool too, that's why this one is free)\n\nhttps://aimvantage.uk/roast`,
+    targetUrl: 'https://aimvantage.uk/roast',
+  },
+  {
+    id: 'cv-mirror-hook',
+    platform: 'X',
+    angle: 'Free open-source tool hook',
+    body: `if your job applications keep getting auto-rejected:\n\nbuilt a fully client-side ATS scanner. shows you exactly how Workday / Greenhouse / Lever / Taleo / iCIMS parse your CV, side by side. no upload, no signup, runs in your browser.\n\nopen source: https://cv-mirror-web.vercel.app/`,
+    targetUrl: 'https://cv-mirror-web.vercel.app/',
+  },
+  {
+    id: 'building-in-public',
+    platform: 'X',
+    angle: 'Build in public — operator transparency',
+    body: `60 days into Vantage AI. solo dev. UK indie founder.\n\nshipped today: full pricing copy rewrite + share buttons everywhere + admin reply-drafter.\n\n3 free analyses on signup, no card. £5 one-time top-up that never expires. zero recurring billing required.\n\nhttps://aimvantage.uk`,
+    targetUrl: 'https://aimvantage.uk',
+  },
+  {
+    id: 'laid-off-cohort',
+    platform: 'LinkedIn',
+    angle: 'Layoff cohort empathy',
+    body: `If you got laid off this year and you're staring at a half-written cover letter at 11pm, this is the post for you.\n\nBuilt a free 90-second AI prep tool: upload your CV, paste a job link, get back the company intel + tailored cover letter (4 tones) + 12 likely interview questions + a 5-minute pitch outline.\n\n3 free runs on signup. No card. EU-hosted. Solo built by a UK indie dev — not VC-backed, no DM outreach, no recruiter spam.\n\nApril 2026 layoff wave specifically: cohort guides for Oracle / Meta / ASML / Snap / Nike alumni at /laid-off.\n\nhttps://aimvantage.uk/laid-off`,
+    targetUrl: 'https://aimvantage.uk/laid-off',
+  },
+  {
+    id: 'reddit-honest-rec',
+    platform: 'Reddit',
+    angle: 'Reddit transparent self-rec',
+    body: `(disclaimer: I built it, posting transparently)\n\nSpent the last 60 days building Vantage AI — upload CV + paste a job link, get a full prep pack in ~90s: company intel, tailored cover letter in 4 tones, 12 likely interview questions, fit score, 5-minute pitch.\n\n3 free on signup, no card. £5 one-time top-up that never expires. monthly tiers if you're applying at scale.\n\nhonest tradeoffs:\n- LLM is gemini 2.5 flash. fast and cheap, occasionally generic. you can regenerate.\n- not perfect for super-niche industries (academic, regulated finance compliance).\n- I'm one person, support replies within a day not a minute.\n\nhttps://aimvantage.uk\n\nhappy to roast my own product if anyone asks specific questions.`,
+    targetUrl: 'https://aimvantage.uk',
+  },
+];
+
+function PostTemplates() {
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [filter, setFilter] = useState<'all' | 'X' | 'LinkedIn' | 'Reddit'>('all');
+
+  const copy = async (text: string, id: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedId(id);
+      setTimeout(() => setCopiedId(null), 2000);
+    } catch { /* clipboard unavailable */ }
+  };
+
+  const filtered = filter === 'all'
+    ? POST_TEMPLATES
+    : POST_TEMPLATES.filter(p => p.platform === filter);
+
+  return (
+    <div className="space-y-6">
+      <div className="p-6 rounded-2xl bg-white/5 border border-white/10">
+        <div className="flex items-center gap-2 mb-2">
+          <Star className="w-5 h-5 text-violet-400" />
+          <h3 className="text-white font-bold">Post templates</h3>
+        </div>
+        <p className="text-white/50 text-sm mb-4">
+          Canned ORIGINAL posts (not replies). Pick one, copy, post when you have 30 seconds.
+          Each links to a specific live Vantage surface that's good for converting that audience.
+        </p>
+
+        <div className="flex gap-2 mb-2 flex-wrap">
+          {(['all', 'X', 'LinkedIn', 'Reddit'] as const).map((p) => (
+            <button
+              key={p}
+              type="button"
+              onClick={() => setFilter(p)}
+              className={`px-3 py-1.5 rounded-lg text-sm font-semibold transition-colors ${
+                filter === p
+                  ? 'bg-violet-500/20 text-violet-300 border border-violet-500/40'
+                  : 'bg-white/5 text-white/50 border border-white/10 hover:bg-white/10'
+              }`}
+            >
+              {p === 'all' ? 'All' : p}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="space-y-3">
+        {filtered.map((p) => {
+          const charCount = p.body.length;
+          const tooLongForX = p.platform === 'X' && charCount > 280;
+          const xIntent = `https://twitter.com/intent/tweet?text=${encodeURIComponent(p.body)}`;
+          return (
+            <div key={p.id} className="p-5 rounded-2xl bg-white/5 border border-white/10">
+              <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
+                <div className="flex items-center gap-2">
+                  <span className={`text-[11px] uppercase tracking-widest font-bold px-2 py-0.5 rounded ${
+                    p.platform === 'X'        ? 'bg-black/30 text-white'
+                    : p.platform === 'LinkedIn' ? 'bg-[#0A66C2]/30 text-blue-300'
+                    : 'bg-orange-500/20 text-orange-300'
+                  }`}>{p.platform}</span>
+                  <span className="text-xs text-white/50">{p.angle}</span>
+                </div>
+                <span className={`text-xs ${tooLongForX ? 'text-red-400' : 'text-white/30'}`}>
+                  {charCount} chars{tooLongForX ? ' — over X limit!' : ''}
+                </span>
+              </div>
+              <p className="text-white text-sm leading-relaxed whitespace-pre-wrap mb-3">
+                {p.body}
+              </p>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => copy(p.body, p.id)}
+                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-white/15 text-xs text-white/70 hover:bg-white/5 transition-colors"
+                >
+                  {copiedId === p.id ? 'Copied' : 'Copy text'}
+                </button>
+                {p.platform === 'X' && !tooLongForX && (
+                  <a
+                    href={xIntent}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-black/90 text-white text-xs font-medium hover:opacity-90 transition-opacity"
+                  >
+                    Open in X
+                  </a>
+                )}
+                <a
+                  href={p.targetUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-white/15 text-xs text-white/70 hover:bg-white/5 transition-colors"
+                >
+                  <ExternalLink className="w-3.5 h-3.5" /> Preview link
+                </a>
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
