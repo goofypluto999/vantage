@@ -165,6 +165,31 @@ export default function Dashboard() {
       return;
     }
 
+    // Pre-flight check: warn if user is about to spend tokens on a URL that's
+    // likely to fail (known-blocked sites with no JD provided). Saves wasted
+    // tokens + the disappointment of a thin analysis. Mirrors the inline amber
+    // warning rendered below the Job URL field, but at the moment of submit
+    // it's a confirm dialog so the user can't accidentally ignore it. If the
+    // URL is fine OR the JD is provided, this is a no-op.
+    try {
+      const host = new URL(jobUrl).hostname.toLowerCase().replace(/^www\./, '');
+      const blocked = ['indeed.com', 'indeed.co.uk', 'linkedin.com', 'reed.co.uk', 'glassdoor.com', 'glassdoor.co.uk', 'totaljobs.com', 'cwjobs.co.uk', 'monster.com'];
+      const isBlockedHost = blocked.some((d) => host === d || host.endsWith('.' + d));
+      const hasJdProvided = (jdMode === 'file' && !!jobDescFile) ||
+                            (jdMode === 'text' && jobDescText.trim().length > 50);
+      if (isBlockedHost && !hasJdProvided) {
+        const proceed = window.confirm(
+          `${host} typically blocks automated readers, so the job page may come back empty.\n\n` +
+          `Without the job description pasted in Step 2, the AI will only have the URL to work from — your analysis will likely be thin and your 3 tokens will still be charged.\n\n` +
+          `Do you want to:\n` +
+          `  • Cancel this run and paste the JD into Step 2 first (recommended)\n` +
+          `  • Or continue anyway?\n\n` +
+          `OK = continue · Cancel = stop and add the JD first`
+        );
+        if (!proceed) return;
+      }
+    } catch { /* invalid URL — let the regular flow handle it */ }
+
     setError('');
     setStep('processing');
 
