@@ -91,6 +91,8 @@ export default function ResetPassword() {
                       className="w-full pl-12 pr-12 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 outline-none focus:border-violet-500/50 transition-colors"
                       placeholder="Min. 6 characters"
                       required
+                      autoComplete="new-password"
+                      autoFocus
                     />
                     <button
                       type="button"
@@ -113,6 +115,7 @@ export default function ResetPassword() {
                       className="w-full pl-12 pr-12 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 outline-none focus:border-violet-500/50 transition-colors"
                       placeholder="Repeat password"
                       required
+                      autoComplete="new-password"
                     />
                     <button
                       type="button"

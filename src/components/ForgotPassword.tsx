@@ -86,6 +86,9 @@ export default function ForgotPassword() {
                       className="w-full pl-12 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 outline-none focus:border-violet-500/50 transition-colors"
                       placeholder="you@example.com"
                       required
+                      autoComplete="email"
+                      inputMode="email"
+                      autoFocus
                     />
                   </div>
                 </div>
