@@ -1255,6 +1255,47 @@ export default function Dashboard() {
                   Practice with AI-generated questions, voice recording, timed responses, and detailed evaluation with scores.
                 </p>
               </div>
+
+              {/* Post-analysis upgrade nudge — added 2026-05-07. Shown to
+                  unpaid users after they've burned at least one analysis
+                  worth of tokens. Concrete: 'you have X left = N more
+                  analyses. Top up £5 for 6 more (never expires).'  Built
+                  right under the results so it's at the natural decision
+                  point ('did I get value? what next?'). */}
+              {(() => {
+                const tokens = profile?.token_balance ?? 0;
+                const everPaid = !!(profile?.stripe_customer_id && profile.stripe_customer_id.length > 0);
+                if (everPaid) return null;
+                if (tokens >= 10) return null; // hasn't burned anything yet
+                const analysesLeft = Math.floor(tokens / 3);
+                return (
+                  <div className="p-6 rounded-2xl bg-gradient-to-r from-violet-600/15 to-purple-600/15 border border-violet-500/30">
+                    <div className="flex items-start gap-4 flex-wrap">
+                      <div className="flex-1 min-w-[200px]">
+                        <h3 className="text-lg font-bold text-white mb-1">
+                          {analysesLeft > 0
+                            ? `${tokens} tokens left = ${analysesLeft} more ${analysesLeft === 1 ? 'analysis' : 'analyses'}`
+                            : 'You\'re out of free tokens'}
+                        </h3>
+                        <p className="text-white/70 text-sm">
+                          Top up at £5 for 6 more prep packs (20 tokens, never expires). Or
+                          {' '}<button onClick={() => navigate('/pricing')} className="text-violet-300 underline hover:text-violet-200">
+                            subscribe to Pro
+                          </button>{' '}
+                          for 18/month and AI Mock Interview.
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => handleCheckout('starter')}
+                        disabled={checkoutLoading !== null}
+                        className="px-5 py-2.5 rounded-lg bg-gradient-to-r from-violet-600 to-purple-600 text-white font-semibold text-sm hover:opacity-95 transition-opacity disabled:opacity-50 flex-shrink-0"
+                      >
+                        {checkoutLoading === 'starter' ? 'Redirecting…' : 'Top up £5'}
+                      </button>
+                    </div>
+                  </div>
+                );
+              })()}
             </motion.div>
           )}
         </AnimatePresence>
