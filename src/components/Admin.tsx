@@ -444,8 +444,51 @@ function ReplyDrafter() {
     } catch { /* clipboard unavailable */ }
   };
 
+  // Curated list of X advanced-search URLs that surface posts asking for tools
+  // Vantage solves. Each opens X.com with a pre-filled query — Gio scrolls,
+  // finds a real ask, copies it into the drafter below. Refreshed: 2026-05-07.
+  const X_SEARCH_QUERIES: { label: string; query: string }[] = [
+    { label: 'AI cover letter rec',         query: '"AI cover letter" (recommend OR recommendation OR "any tool" OR "what should I use") -is:retweet min_replies:1' },
+    { label: 'Interview prep tool',         query: '("interview prep" OR "mock interview") (tool OR app OR AI) (recommend OR "looking for") -is:retweet' },
+    { label: 'Cover letter help',           query: '"cover letter" (struggling OR "writers block" OR "hate writing" OR "any tips") -is:retweet min_replies:1' },
+    { label: 'Just laid off',               query: '("just got laid off" OR "just laid off" OR "lost my job") (resume OR cv OR interview) -is:retweet' },
+    { label: 'ATS rejected',                query: '("ATS rejected" OR "got rejected" OR "automated rejection") (resume OR cv OR application) -is:retweet' },
+    { label: 'Job application volume',      query: '("100 applications" OR "200 applications" OR "no callbacks" OR "no responses") (job OR jobs) -is:retweet' },
+    { label: 'Anthropic / OpenAI prep',     query: '("Anthropic interview" OR "OpenAI interview" OR "Stripe interview") (prep OR preparing OR tips) -is:retweet' },
+    { label: 'Career transition',           query: '("career change" OR "career pivot" OR "switching jobs") (resume OR cv OR "cover letter") -is:retweet min_replies:1' },
+  ];
+
   return (
     <div className="space-y-6">
+      {/* Where to find posts */}
+      <div className="p-6 rounded-2xl bg-white/5 border border-white/10">
+        <div className="flex items-center gap-2 mb-2">
+          <ExternalLink className="w-5 h-5 text-violet-400" />
+          <h3 className="text-white font-bold">Where to find posts</h3>
+        </div>
+        <p className="text-white/50 text-sm mb-4">
+          Curated X advanced-search queries for posts Vantage can plausibly help with.
+          Open one, scroll, copy a real tweet, paste it into the drafter below.
+        </p>
+        <div className="grid sm:grid-cols-2 gap-2">
+          {X_SEARCH_QUERIES.map((q) => (
+            <a
+              key={q.label}
+              href={`https://twitter.com/search?q=${encodeURIComponent(q.query)}&f=live`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-start gap-2 p-3 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-colors"
+            >
+              <ExternalLink className="w-4 h-4 text-violet-400 flex-shrink-0 mt-0.5" />
+              <div className="min-w-0">
+                <div className="text-white text-sm font-semibold">{q.label}</div>
+                <div className="text-white/40 text-xs font-mono truncate">{q.query.slice(0, 60)}…</div>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+
       <div className="p-6 rounded-2xl bg-white/5 border border-white/10">
         <div className="flex items-center gap-2 mb-2">
           <Mail className="w-5 h-5 text-violet-400" />
