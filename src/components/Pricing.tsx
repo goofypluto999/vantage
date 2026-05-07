@@ -1,5 +1,4 @@
 import React from 'react';
-import { motion } from 'motion/react';
 import { Check, Zap, Star, Crown, ArrowRight } from 'lucide-react';
 import { useCurrency } from '../contexts/CurrencyContext';
 
@@ -127,17 +126,22 @@ export default function Pricing({ onLogin, onRegister, onCheckout, isAuthenticat
         </div>
 
         <div className="grid md:grid-cols-3 gap-6">
-          {PLANS.map((plan, index) => {
+          {PLANS.map((plan) => {
             const Icon = plan.icon;
             return (
-              <motion.div
+              // Static card — previously used motion.div with initial:opacity-0 +
+              // animate:opacity-1 entrance. The animation got stuck at opacity
+              // ~0.18 in production (verified via Clarity / live DOM check on
+              // 2026-05-07), hiding the Pro and Premium cards entirely. Since
+              // pricing is the single most important conversion surface, we
+              // can't ship an entrance animation that risks invisible cards.
+              // Simple div, always visible, no entrance — cards paint with
+              // the page.
+              <div
                 key={plan.name}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
                 className={`relative p-8 rounded-3xl border ${
-                  plan.popular 
-                    ? 'bg-violet-500/10 border-violet-500/30' 
+                  plan.popular
+                    ? 'bg-violet-500/10 border-violet-500/30'
                     : 'bg-white/5 border-white/10'
                 }`}
               >
@@ -191,7 +195,7 @@ export default function Pricing({ onLogin, onRegister, onCheckout, isAuthenticat
                 >
                   {isAuthenticated ? (plan.isTopup ? 'Buy Tokens' : 'Subscribe') : 'Get Started'} <ArrowRight className="w-5 h-5" />
                 </button>
-              </motion.div>
+              </div>
             );
           })}
         </div>
