@@ -448,6 +448,20 @@ const POST_TEMPLATES: { id: string; platform: 'X' | 'LinkedIn' | 'Reddit'; angle
     targetUrl: 'https://aimvantage.uk/roast',
   },
   {
+    id: 'decode-rejection',
+    platform: 'X',
+    angle: 'Free tool hook — rejection decoder',
+    body: `paste your job rejection email, get the brutal-honesty translation.\n\n10 verdict categories (ghosted, ATS-filtered, salary misaligned, experience gap, etc) + the specific phrases that gave it away + your concrete next move.\n\nfree, no signup, no email\n\nhttps://aimvantage.uk/decode-rejection`,
+    targetUrl: 'https://aimvantage.uk/decode-rejection',
+  },
+  {
+    id: 'decode-rejection-li',
+    platform: 'LinkedIn',
+    angle: 'Decoder for the layoff cohort',
+    body: `If you got laid off this year and the rejection emails are starting to land, here's a free thing I built:\n\nPaste any rejection email → AI tells you what the recruiter actually meant. 10 categories: boilerplate ghosting, ATS-filtered (no human read it), salary misalignment, experience gap, internal hire, headcount frozen, etc. Plus the specific phrases that gave the verdict away, plus your concrete next move.\n\nFree. No signup. Nothing stored. Built by Vantage AI (UK indie SaaS, sole-trader operator, building in public).\n\nhttps://aimvantage.uk/decode-rejection`,
+    targetUrl: 'https://aimvantage.uk/decode-rejection',
+  },
+  {
     id: 'cv-mirror-hook',
     platform: 'X',
     angle: 'Free open-source tool hook',
@@ -674,6 +688,9 @@ function ReplyDrafter() {
     { label: '🇬🇧 UK job-search 2026',       query: '("UK job search" OR "UK job market" OR "UK job hunt") 2026 (advice OR tools OR tips) -is:retweet' },
     { label: '🇬🇧 UK CV / cover letter',     query: 'UK ("CV" OR "cover letter") (help OR advice OR "any tool") -is:retweet' },
     { label: '🇬🇧 UK ATS / Workday',          query: 'UK (ATS OR "Workday" OR "iCIMS" OR "Greenhouse") (rejected OR "no callbacks" OR struggling) -is:retweet' },
+    // Specifically for promoting the new /decode-rejection tool
+    { label: '✉️ Rejection-email rant',     query: '("rejection email" OR "got rejected" OR "after careful consideration") (recruiter OR application OR job) -is:retweet min_replies:1' },
+    { label: '✉️ "On file" boilerplate',    query: '("we\'ll keep your CV on file" OR "we\'ll keep your resume on file" OR "future opportunities") -is:retweet' },
   ];
 
   // Reddit subreddits where job-prep tool questions are common. Each opens
