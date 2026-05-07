@@ -991,8 +991,20 @@ export default function Dashboard() {
                   >
                     <FileText className="w-4 h-4" /> Download .txt
                   </button>
+                  {/* "Same CV, new job" — preserves the uploaded CV so users
+                      applying to multiple roles don't have to re-drop the
+                      file every time. Habit-forming: typical job-seeker
+                      runs 5-10 analyses against the same CV.
+                      "New Analysis" clears everything for a fresh start. */}
                   <button
-                    onClick={() => { setStep('input'); setCvFile(null); setJobUrl(''); setResults(null); }}
+                    onClick={() => { setStep('input'); setJobUrl(''); setJobDescText(''); setJobDescFile(null); setResults(null); }}
+                    className="px-4 py-2 rounded-lg bg-violet-600/20 text-violet-300 border border-violet-500/30 font-semibold text-sm hover:bg-violet-600/30"
+                    title="Keep your CV, swap the job URL for the next role"
+                  >
+                    Same CV, new job
+                  </button>
+                  <button
+                    onClick={() => { setStep('input'); setCvFile(null); setJobUrl(''); setJobDescText(''); setJobDescFile(null); setResults(null); }}
                     className="px-4 py-2 rounded-lg bg-white/5 text-white/70 font-semibold text-sm hover:bg-white/10"
                   >
                     New Analysis
