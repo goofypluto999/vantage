@@ -195,7 +195,9 @@ export default function Pricing({ onLogin, onRegister, onCheckout, isAuthenticat
                       : 'bg-white/10 text-white hover:bg-white/20'
                   }`}
                 >
-                  {isAuthenticated ? (plan.isTopup ? 'Buy Tokens' : 'Subscribe') : 'Get Started'} <ArrowRight className="w-5 h-5" />
+                  {isAuthenticated
+                    ? (plan.isTopup ? `Buy ${plan.packs} prep packs` : `Subscribe to ${plan.name}`)
+                    : 'Start free first'} <ArrowRight className="w-5 h-5" />
                 </button>
               </div>
             );
