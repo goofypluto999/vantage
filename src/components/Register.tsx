@@ -52,13 +52,28 @@ export default function Register() {
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="text-center"
+          className="max-w-md text-center"
         >
           <div className="w-16 h-16 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center mx-auto mb-4">
             <Check className="w-8 h-8 text-emerald-400" />
           </div>
-          <h2 className="text-2xl font-display font-bold text-white mb-2">Account created!</h2>
-          <p className="text-white/50">Check your email to confirm your account, then sign in to get started.</p>
+          <h2 className="text-2xl font-display font-bold text-white mb-3">Account created — almost there.</h2>
+          <p className="text-white/70 mb-4">
+            We just sent a confirmation email to <span className="text-white font-semibold">{email}</span>. Click the link in that email and you're in.
+          </p>
+          <div className="text-left rounded-xl bg-amber-500/10 border border-amber-500/30 p-4 mb-5">
+            <p className="text-amber-300 text-sm font-semibold mb-1">Heads up — check your spam folder.</p>
+            <p className="text-amber-100/80 text-xs leading-relaxed">
+              Gmail and Outlook aggressively filter mail from new domains. Vantage is six days old, so the confirmation email lands in spam about half the time. If you don't see it in your inbox in the next 60 seconds, look in <strong>Spam</strong> / <strong>Junk</strong> / <strong>Promotions</strong>.
+            </p>
+          </div>
+          <p className="text-white/50 text-sm mb-1">No email after 5 minutes?</p>
+          <p className="text-white/70 text-sm">
+            Email <a href="mailto:hello@aimvantage.uk" className="text-violet-400 underline hover:text-violet-300">hello@aimvantage.uk</a> and Gio (the operator) will manually confirm your account within a few hours.
+          </p>
+          <p className="text-white/40 text-xs mt-6">
+            Already confirmed? <Link to="/login" className="text-violet-400 underline hover:text-violet-300">Sign in</Link>
+          </p>
         </motion.div>
       </div>
     );
@@ -205,14 +220,23 @@ export default function Register() {
         </motion.div>
       </div>
 
-      {/* Right Side - Visual */}
+      {/* Right Side - Visual. No fake numbers — we're a few weeks old.
+          Real value prop: speed + concrete deliverables + sole-trader transparency. */}
       <div className="hidden lg:flex flex-1 items-center justify-center p-8" style={{ background: 'linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%)' }}>
-        <div className="max-w-md text-center">
-          <h2 className="text-3xl font-display font-bold text-white mb-4">
-            Get Hired Faster
+        <div className="max-w-md">
+          <h2 className="text-3xl font-display font-bold text-white mb-5">
+            What 3 free analyses get you
           </h2>
-          <p className="text-white/70 text-lg">
-            Join thousands of job seekers who've transformed their application game with Vantage.
+          <ul className="space-y-3 text-white/85 text-base">
+            <li className="flex items-start gap-3"><Check className="w-5 h-5 text-white flex-shrink-0 mt-0.5" /><span>One company-research write-up per role (mission, culture, recent moves)</span></li>
+            <li className="flex items-start gap-3"><Check className="w-5 h-5 text-white flex-shrink-0 mt-0.5" /><span>One tailored cover letter — switchable across 4 tones</span></li>
+            <li className="flex items-start gap-3"><Check className="w-5 h-5 text-white flex-shrink-0 mt-0.5" /><span>8–12 likely interview questions, generated from the actual JD</span></li>
+            <li className="flex items-start gap-3"><Check className="w-5 h-5 text-white flex-shrink-0 mt-0.5" /><span>A 5-minute pitch outline you can rehearse out loud</span></li>
+            <li className="flex items-start gap-3"><Check className="w-5 h-5 text-white flex-shrink-0 mt-0.5" /><span>A free ATS preview that shows whether 5 major parsers will read your CV cleanly</span></li>
+          </ul>
+          <p className="text-white/60 text-sm mt-6 leading-relaxed">
+            Six days old. Built solo by Giovanni Sizino Ennes (UK independent founder). No paywalls hidden behind the signup button.
+            <Link to="/about" className="underline hover:text-white ml-1">About the operator</Link>
           </p>
         </div>
       </div>

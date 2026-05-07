@@ -10,21 +10,29 @@ interface PricingProps {
   isAuthenticated?: boolean;
 }
 
+// One full job-prep pack (company intel + cover letter + interview Qs + pitch +
+// fit score) costs 3 tokens. Tone rewrites + interview question regen cost 1 token
+// each. So the human-friendly translation is:
+//   20 tokens ≈ 6 full prep packs (with a few tone rewrites left over)
+//   60 tokens ≈ 18 prep packs / month
+//   120 tokens ≈ 36 prep packs / month
 const PLANS = [
   {
     name: 'Starter',
     gbp: 5,
     usd: 5,
     tokens: 20,
+    packs: 6,
     color: '#6B6B8D',
     icon: Zap,
     isTopup: true,
     features: [
-      '20 tokens (one-time top-up)',
-      'Company intelligence',
-      'Strategic brief',
-      'Cover letter generation',
-      'Interview pack with flashcards',
+      '6 full prep packs (per upload + job link)',
+      'Tokens never expire — pay once, use any time',
+      'Company intelligence + strategic brief',
+      'Tailored cover letter (4 tone variants)',
+      'Mock interview questions with live AI grading',
+      'Free ATS preview included on every analysis',
     ],
     popular: false,
   },
@@ -33,13 +41,14 @@ const PLANS = [
     gbp: 12,
     usd: 15,
     tokens: 60,
+    packs: 18,
     color: '#4F46E5',
     icon: Star,
     isTopup: false,
     features: [
-      '60 tokens per month',
+      '18 prep packs every month (60 tokens)',
       'Everything in Starter',
-      'AI Mock Interview (voice)',
+      'AI Mock Interview (voice mode)',
       'STAR interview stories',
       'Timed practice sessions',
     ],
@@ -50,11 +59,12 @@ const PLANS = [
     gbp: 20,
     usd: 25,
     tokens: 120,
+    packs: 36,
     color: '#7C3AED',
     icon: Crown,
     isTopup: false,
     features: [
-      '120 tokens per month',
+      '36 prep packs every month (120 tokens)',
       'Everything in Pro',
       'CV Fit Score Analysis',
       'Presentation Deck Builder',
@@ -146,14 +156,21 @@ export default function Pricing({ onLogin, onRegister, onCheckout, isAuthenticat
                   </div>
                   <div>
                     <h3 className="text-xl font-bold text-white">{plan.name}</h3>
-                    <p className="text-white/50 text-sm">{plan.tokens} tokens</p>
+                    <p className="text-white/50 text-sm">
+                      {plan.packs} prep pack{plan.packs === 1 ? '' : 's'}
+                      <span className="text-white/30"> · {plan.tokens} tokens</span>
+                    </p>
                   </div>
                 </div>
 
-                <div className="mb-6">
+                <div className="mb-2">
                   <span className="text-4xl font-bold text-white">{symbol}{currency === 'usd' ? plan.usd : plan.gbp}</span>
                   <span className="text-white/50">{plan.isTopup ? ' one-time' : '/month'}</span>
                 </div>
+                <p className="text-xs text-white/40 mb-6">
+                  ~{symbol}{(((currency === 'usd' ? plan.usd : plan.gbp) / plan.packs)).toFixed(2)} per prep pack
+                  {plan.isTopup ? ' — never expires.' : ' (vs Jobscan $49.95/mo).'}
+                </p>
 
                 <ul className="space-y-3 mb-8">
                   {plan.features.map((feature, i) => (

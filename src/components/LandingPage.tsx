@@ -579,6 +579,12 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
                 <Play className="w-4 h-4" /> See it work (22s)
               </button>
             </div>
+            <Link
+              to="/sample/anthropic-senior-pm"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-[#3B3A5C] underline decoration-[#4F46E5]/40 underline-offset-4 hover:text-[#4F46E5] hover:decoration-[#4F46E5] transition-all pointer-events-auto"
+            >
+              Read a complete real example output (no signup) →
+            </Link>
             <p className="text-xs text-[#3B3A5C] uppercase tracking-widest flex items-center gap-2 font-bold">
               <Lock className="w-3 h-3" /> No subscription · Cancel any time · EU-hosted
             </p>

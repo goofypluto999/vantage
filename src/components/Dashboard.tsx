@@ -486,18 +486,30 @@ export default function Dashboard() {
               </div>
 
               {!canAnalyze && (
-                <div className="mb-6 p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center gap-3">
-                  <CreditCard className="w-5 h-5 text-amber-400" />
-                  <div className="flex-1">
-                    <p className="text-amber-400 font-semibold">Not enough tokens</p>
-                    <p className="text-amber-400/70 text-sm">Each analysis costs 3 tokens. Buy more tokens to continue.</p>
+                <div className="mb-6 p-5 rounded-xl bg-amber-500/10 border border-amber-500/30">
+                  <div className="flex items-start gap-3 mb-3">
+                    <CreditCard className="w-5 h-5 text-amber-400 mt-0.5" />
+                    <div className="flex-1">
+                      <p className="text-amber-300 font-semibold text-base">You're out of free analyses.</p>
+                      <p className="text-amber-100/80 text-sm mt-1 leading-relaxed">
+                        £5 unlocks <strong className="text-white">6 more prep packs</strong> (CV fit score, tailored cover letter, mock interview questions, pitch outline). One-time top-up. Tokens never expire — pay once, use any time you apply.
+                      </p>
+                    </div>
                   </div>
-                  <button 
-                    onClick={() => navigate('/pricing')}
-                    className="px-4 py-2 rounded-lg bg-amber-500 text-white font-bold text-sm"
-                  >
-                    Upgrade
-                  </button>
+                  <div className="flex flex-wrap gap-2 ml-8">
+                    <button
+                      onClick={() => navigate('/pricing')}
+                      className="px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-white font-bold text-sm transition-colors"
+                    >
+                      £5 — get 6 more prep packs
+                    </button>
+                    <button
+                      onClick={() => window.open('https://aimvantage.uk/sample/anthropic-senior-pm', '_blank')}
+                      className="px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-white/70 font-semibold text-sm transition-colors"
+                    >
+                      See what a prep pack looks like →
+                    </button>
+                  </div>
                 </div>
               )}
 
