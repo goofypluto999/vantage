@@ -13,6 +13,76 @@ import { analyzeJob, createStripeCheckout, syncSubscription, rewriteTone, fetchA
 import AIInterviewSession from './AIInterviewSession';
 import AtsScannerSection from './AtsScannerSection';
 
+/**
+ * ProcessingStages — animated pipeline indicator shown during the 60-90s
+ * analysis run. Stages cycle on a time-based schedule that approximates the
+ * real backend pipeline (we don't stream true progress events from the API,
+ * so this is a UX guide, not a precise progress bar — clearly labeled as such).
+ *
+ * Total cycle = 90s. The last stage stays "active" until the parent unmounts
+ * the processing screen (i.e. results land OR an error fires).
+ */
+function ProcessingStages() {
+  const STAGES = [
+    { label: 'Reading your CV', detail: 'Parsing achievements, scope, and proof points.' },
+    { label: 'Researching the company', detail: 'Mission, recent news, culture signals, hiring posture.' },
+    { label: 'Mapping CV ↔ role', detail: 'Where you match, where the gaps are, what to flag.' },
+    { label: 'Drafting your cover letter', detail: 'Three paragraphs, evidence-backed, peer-to-peer tone.' },
+    { label: 'Generating mock interview questions', detail: 'Behavioural, technical, situational, motivational mix.' },
+    { label: 'Composing your 5-minute pitch', detail: 'Speaker-ready slides for the opening of the interview.' },
+  ];
+  const [active, setActive] = React.useState(0);
+  React.useEffect(() => {
+    const intervals: number[] = [];
+    // Stages 1-5 fire on a rough 12s cadence; stage 5 (last) sticks.
+    for (let i = 1; i < STAGES.length; i++) {
+      const id = window.setTimeout(() => setActive(i), i * 12000);
+      intervals.push(id);
+    }
+    return () => intervals.forEach((id) => window.clearTimeout(id));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  return (
+    <ol className="space-y-3 text-left">
+      {STAGES.map((s, i) => {
+        const done = i < active;
+        const current = i === active;
+        const upcoming = i > active;
+        return (
+          <li
+            key={s.label}
+            className={`flex items-start gap-3 p-3 rounded-xl border transition-colors ${
+              current ? 'bg-violet-500/10 border-violet-500/30' :
+              done ? 'bg-emerald-500/5 border-emerald-500/20' :
+              'bg-white/[0.02] border-white/5'
+            }`}
+          >
+            <div
+              className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 transition-colors ${
+                current ? 'bg-violet-500' :
+                done ? 'bg-emerald-500' :
+                'bg-white/10'
+              }`}
+            >
+              {done && <Check className="w-3.5 h-3.5 text-white" />}
+              {current && <Loader2 className="w-3.5 h-3.5 text-white animate-spin" />}
+              {upcoming && <span className="w-1.5 h-1.5 rounded-full bg-white/30" />}
+            </div>
+            <div className="min-w-0">
+              <p className={`text-sm font-semibold ${current ? 'text-white' : done ? 'text-emerald-300' : 'text-white/50'}`}>
+                {s.label}
+              </p>
+              <p className={`text-xs leading-relaxed ${current ? 'text-white/70' : done ? 'text-emerald-300/60' : 'text-white/30'}`}>
+                {s.detail}
+              </p>
+            </div>
+          </li>
+        );
+      })}
+    </ol>
+  );
+}
+
 function AnalysisHistory({ onLoad }: { onLoad: (data: any) => void }) {
   const [history, setHistory] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -813,13 +883,20 @@ export default function Dashboard() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="text-center py-20"
+              className="text-center py-20 max-w-2xl mx-auto"
             >
               <div className="w-16 h-16 rounded-full bg-violet-500/20 border border-violet-500/30 flex items-center justify-center mx-auto mb-6">
                 <Loader2 className="w-8 h-8 text-violet-400 animate-spin" />
               </div>
-              <h2 className="text-2xl font-display font-bold text-white mb-2">Analyzing...</h2>
-              <p className="text-white/50">This usually takes 30-60 seconds</p>
+              <h2 className="text-2xl font-display font-bold text-white mb-2">Building your prep pack…</h2>
+              <p className="text-white/50 mb-8">Usually 60-90 seconds. Don't refresh or navigate away — your tokens are reserved during the run.</p>
+
+              {/* Animated stage indicator. Transitions are time-based (rough
+                  approximation of the real backend pipeline) since we don't
+                  stream progress from the API. Each stage stays visible until
+                  the next becomes "active" — gives the user a clear sense
+                  that work is happening even though the server is silent. */}
+              <ProcessingStages />
             </motion.div>
           )}
 
