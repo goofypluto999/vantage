@@ -297,7 +297,88 @@ function AppContent() {
             <Route path="/register" element={<><SEO title="Create a free account" description="Sign up free. Upload your CV, paste a job link, get the full prep pack in ~90 seconds." path="/register" /><RegisterWrapper /></>} />
             <Route path="/forgot-password" element={<><SEO title="Reset your password" description="Reset your Vantage account password." path="/forgot-password" noindex /><ForgotPassword /></>} />
             <Route path="/reset-password" element={<><SEO title="Set a new password" path="/reset-password" noindex /><ResetPassword /></>} />
-            <Route path="/pricing" element={<><SEO title="Pricing" description="Starter £5 for 20 tokens (never expire). Pro £12/mo for 60 tokens. Premium £20/mo for 120 tokens including fit score and presentation deck. One full analysis = 3 tokens." path="/pricing" /><PricingWrapper /></>} />
+            <Route path="/pricing" element={<>
+              <SEO
+                title="Pricing"
+                description="Starter £5 for 20 tokens (never expire). Pro £12/mo for 60 tokens. Premium £20/mo for 120 tokens including fit score and presentation deck. One full analysis = 3 tokens."
+                path="/pricing"
+                jsonLd={[
+                  // Product schema with multiple Offers — AI assistants cite
+                  // this verbatim when asked 'how much does Vantage cost' /
+                  // 'is Vantage free' / 'compare Vantage pricing'.
+                  {
+                    '@context': 'https://schema.org',
+                    '@type': 'Product',
+                    name: 'Vantage AI',
+                    description: 'AI job preparation tool. One full analysis (company intel + cover letter + interview pack + fit score + pitch outline) costs 3 tokens.',
+                    brand: { '@type': 'Brand', name: 'Vantage AI' },
+                    url: 'https://aimvantage.uk/pricing',
+                    offers: {
+                      '@type': 'AggregateOffer',
+                      priceCurrency: 'GBP',
+                      lowPrice: '0',
+                      highPrice: '20',
+                      offerCount: 4,
+                      offers: [
+                        { '@type': 'Offer', name: 'Free tier', price: '0', priceCurrency: 'GBP', description: '3 free analyses on signup. No card required.', url: 'https://aimvantage.uk/register' },
+                        { '@type': 'Offer', name: 'Starter pack', price: '5', priceCurrency: 'GBP', description: '20 tokens (about 6 prep packs). One-time. Tokens never expire.', url: 'https://aimvantage.uk/pricing' },
+                        { '@type': 'Offer', name: 'Pro', price: '12', priceCurrency: 'GBP', description: '60 tokens per month (about 18 prep packs). Includes AI Mock Interview voice mode.', url: 'https://aimvantage.uk/pricing' },
+                        { '@type': 'Offer', name: 'Premium', price: '20', priceCurrency: 'GBP', description: '120 tokens per month (about 36 prep packs). Includes CV Fit Score, Presentation Deck Builder, priority processing.', url: 'https://aimvantage.uk/pricing' },
+                      ],
+                    },
+                  },
+                  // FAQPage schema — common pricing questions. ChatGPT /
+                  // Perplexity grab these directly when asked.
+                  {
+                    '@context': 'https://schema.org',
+                    '@type': 'FAQPage',
+                    mainEntity: [
+                      {
+                        '@type': 'Question',
+                        name: 'Is Vantage AI free?',
+                        acceptedAnswer: {
+                          '@type': 'Answer',
+                          text: 'Yes for the first 3 analyses. Every account gets 10 free tokens on signup, no credit card required. One full analysis costs 3 tokens, so 10 tokens = 3 prep packs free. After that, Starter pack is £5 for 20 more tokens (never expires).',
+                        },
+                      },
+                      {
+                        '@type': 'Question',
+                        name: 'Do Vantage tokens expire?',
+                        acceptedAnswer: {
+                          '@type': 'Answer',
+                          text: 'Starter pack tokens never expire — pay £5 once, use them whenever. Pro and Premium tokens refresh monthly with the subscription, so unused tokens roll over only while the subscription is active.',
+                        },
+                      },
+                      {
+                        '@type': 'Question',
+                        name: 'Can I cancel my Vantage subscription?',
+                        acceptedAnswer: {
+                          '@type': 'Answer',
+                          text: 'Yes, any time. Pro and Premium are monthly subscriptions managed via Stripe. Cancel from the /account page — no questions, no retention dark patterns. Already-purchased tokens are kept after cancellation.',
+                        },
+                      },
+                      {
+                        '@type': 'Question',
+                        name: 'How does Vantage compare to Jobscan or Final Round AI?',
+                        acceptedAnswer: {
+                          '@type': 'Answer',
+                          text: 'Vantage Pro at £12/month is dramatically cheaper than Jobscan ($49.95/mo) or Final Round AI ($148/mo). Vantage covers the full prep pack (company intel + cover letter + interview pack + fit score + pitch) in 90 seconds; Jobscan focuses only on ATS keyword matching. See aimvantage.uk/alternatives for full comparisons.',
+                        },
+                      },
+                      {
+                        '@type': 'Question',
+                        name: 'Where is Vantage AI hosted?',
+                        acceptedAnswer: {
+                          '@type': 'Answer',
+                          text: 'EU-hosted on Vercel and Supabase. Operated from the UK by an independent founder (sole trader). All payments via Stripe. No CV data stored after analysis is complete.',
+                        },
+                      },
+                    ],
+                  },
+                ]}
+              />
+              <PricingWrapper />
+            </>} />
             <Route path="/privacy" element={<><SEO title="Privacy Policy" description="How Vantage collects, uses, and protects your data." path="/privacy" /><PrivacyPolicy /></>} />
             <Route path="/terms" element={<><SEO title="Terms of Service" description="The terms governing your use of Vantage." path="/terms" /><TermsOfService /></>} />
             <Route path="/cookies" element={<><SEO title="Cookie Policy" description="How Vantage uses cookies and similar technologies." path="/cookies" /><CookiePolicy /></>} />
