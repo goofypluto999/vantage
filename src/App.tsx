@@ -2,6 +2,9 @@ import React, { useState, useEffect, createContext, useContext } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { supabase, signOut, fetchProfile, Profile } from './lib/supabase';
 import { createStripeCheckout } from './services/api';
+// CRITICAL PATH — eagerly bundled. These render on the most-visited routes
+// (homepage, auth flow, dashboard) so we want them in the initial chunk to
+// avoid a Suspense flash on first interaction.
 import LandingPage from './components/LandingPage';
 import Login from './components/Login';
 import Register from './components/Register';
@@ -10,44 +13,51 @@ import ResetPassword from './components/ResetPassword';
 import Dashboard from './components/Dashboard';
 import Pricing from './components/Pricing';
 import CookieConsent from './components/CookieConsent';
-import PrivacyPolicy from './components/PrivacyPolicy';
-import TermsOfService from './components/TermsOfService';
-import CookiePolicy from './components/CookiePolicy';
 import Account from './components/Account';
-import Admin from './components/Admin';
-import Blog from './components/Blog';
-import BlogPost from './components/BlogPost';
-import InterviewQuestionsHub from './components/InterviewQuestionsHub';
-import InterviewQuestionsPage from './components/InterviewQuestionsPage';
-import ToolsPage from './components/ToolsPage';
-import ComparePage from './components/ComparePage';
-import InterviewPrepCompanyHub from './components/InterviewPrepCompanyHub';
-import InterviewPrepCompanyPage from './components/InterviewPrepCompanyPage';
-import InterviewPrepCompanySeniorityPage from './components/InterviewPrepCompanySeniorityPage';
-import LaidOffPage from './components/LaidOffPage';
-import AtsHubPage from './components/AtsHubPage';
-import AtsVendorPage from './components/AtsVendorPage';
-import PressPage from './components/PressPage';
-import AboutPage from './components/AboutPage';
-import PressReleasePage, { PressReleasesHub } from './components/PressReleasesPage';
-import LaidOffFromCompanyPage from './components/LaidOffFromCompanyPage';
-import SkillsPage from './components/SkillsPage';
-import DocsApiPage from './components/DocsApiPage';
-import ReferPage from './components/ReferPage';
-import PlaybookPage from './components/PlaybookPage';
-import VendorSourcesPage from './components/VendorSourcesPage';
-import ChangelogPage from './components/ChangelogPage';
-import RoastPage from './components/RoastPage';
-import FaqPage from './components/FaqPage';
-import AlternativesPage, { AlternativesHub } from './components/AlternativesPage';
-import LinkedinOptimizationPage from './components/LinkedinOptimizationPage';
-import SalaryHubPage from './components/SalaryHubPage';
-import SalaryPage from './components/SalaryPage';
-import CaseStudiesHub from './components/CaseStudiesHub';
-import CaseStudyPage from './components/CaseStudyPage';
-import SampleAnalysisPage from './components/SampleAnalysisPage';
-import DemoPreviewPage from './components/DemoPreviewPage';
 import SEO from './components/SEO';
+
+// SECONDARY PATH — lazy-loaded. SEO/marketing/blog/cohort pages aren't on
+// the conversion happy path, so paying their JS cost on the homepage hurts
+// LCP for nothing. Each becomes its own chunk and only loads when the
+// matching route is visited. Suspense fallback below in the route tree.
+const PrivacyPolicy = React.lazy(() => import('./components/PrivacyPolicy'));
+const TermsOfService = React.lazy(() => import('./components/TermsOfService'));
+const CookiePolicy = React.lazy(() => import('./components/CookiePolicy'));
+const Admin = React.lazy(() => import('./components/Admin'));
+const Blog = React.lazy(() => import('./components/Blog'));
+const BlogPost = React.lazy(() => import('./components/BlogPost'));
+const InterviewQuestionsHub = React.lazy(() => import('./components/InterviewQuestionsHub'));
+const InterviewQuestionsPage = React.lazy(() => import('./components/InterviewQuestionsPage'));
+const ToolsPage = React.lazy(() => import('./components/ToolsPage'));
+const ComparePage = React.lazy(() => import('./components/ComparePage'));
+const InterviewPrepCompanyHub = React.lazy(() => import('./components/InterviewPrepCompanyHub'));
+const InterviewPrepCompanyPage = React.lazy(() => import('./components/InterviewPrepCompanyPage'));
+const InterviewPrepCompanySeniorityPage = React.lazy(() => import('./components/InterviewPrepCompanySeniorityPage'));
+const LaidOffPage = React.lazy(() => import('./components/LaidOffPage'));
+const AtsHubPage = React.lazy(() => import('./components/AtsHubPage'));
+const AtsVendorPage = React.lazy(() => import('./components/AtsVendorPage'));
+const PressPage = React.lazy(() => import('./components/PressPage'));
+const AboutPage = React.lazy(() => import('./components/AboutPage'));
+const PressReleasePage = React.lazy(() => import('./components/PressReleasesPage'));
+const PressReleasesHub = React.lazy(() => import('./components/PressReleasesPage').then(m => ({ default: m.PressReleasesHub })));
+const LaidOffFromCompanyPage = React.lazy(() => import('./components/LaidOffFromCompanyPage'));
+const SkillsPage = React.lazy(() => import('./components/SkillsPage'));
+const DocsApiPage = React.lazy(() => import('./components/DocsApiPage'));
+const ReferPage = React.lazy(() => import('./components/ReferPage'));
+const PlaybookPage = React.lazy(() => import('./components/PlaybookPage'));
+const VendorSourcesPage = React.lazy(() => import('./components/VendorSourcesPage'));
+const ChangelogPage = React.lazy(() => import('./components/ChangelogPage'));
+const RoastPage = React.lazy(() => import('./components/RoastPage'));
+const FaqPage = React.lazy(() => import('./components/FaqPage'));
+const AlternativesPage = React.lazy(() => import('./components/AlternativesPage'));
+const AlternativesHub = React.lazy(() => import('./components/AlternativesPage').then(m => ({ default: m.AlternativesHub })));
+const LinkedinOptimizationPage = React.lazy(() => import('./components/LinkedinOptimizationPage'));
+const SalaryHubPage = React.lazy(() => import('./components/SalaryHubPage'));
+const SalaryPage = React.lazy(() => import('./components/SalaryPage'));
+const CaseStudiesHub = React.lazy(() => import('./components/CaseStudiesHub'));
+const CaseStudyPage = React.lazy(() => import('./components/CaseStudyPage'));
+const SampleAnalysisPage = React.lazy(() => import('./components/SampleAnalysisPage'));
+const DemoPreviewPage = React.lazy(() => import('./components/DemoPreviewPage'));
 import ThemeProvider from './contexts/ThemeContext';
 import { CurrencyProvider, useCurrency } from './contexts/CurrencyContext';
 
@@ -165,6 +175,16 @@ function AppContent() {
       <BrowserRouter>
         <CurrencyProvider>
         <ThemeProvider>
+          {/* Suspense boundary for the lazy-loaded marketing/blog/cohort routes
+              declared at the top of this file. Critical-path routes (landing,
+              auth, dashboard, account, pricing) are eagerly imported and don't
+              hit this fallback. The fallback matches the ProtectedRoute spinner
+              for visual consistency on slower connections. */}
+          <React.Suspense fallback={
+            <div className="min-h-screen flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #edeaff, #e8f4ff)' }}>
+              <div className="w-8 h-8 border-4 border-violet-500 border-t-transparent rounded-full animate-spin" />
+            </div>
+          }>
           <Routes>
             <Route path="/" element={<>
               <SEO
@@ -326,6 +346,7 @@ function AppContent() {
             } />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
+          </React.Suspense>
           <CookieConsent />
         </ThemeProvider>
         </CurrencyProvider>
