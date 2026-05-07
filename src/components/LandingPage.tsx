@@ -997,6 +997,7 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
               <span className="text-6xl font-mono font-bold text-[#2D2B4E]">{prices.starter}</span>
             </div>
             <span className="bg-white/50 text-[#4F46E5] font-mono text-xs px-3 py-1 rounded-full mt-3 font-bold border border-white">20 tokens &middot; one-time</span>
+            <p className="text-[11px] text-[#6B6B8D] font-medium mt-2 text-center">~{symbol}{(prices.starter / 6).toFixed(2)} per prep pack &middot; never expires</p>
             <ul className="mt-8 space-y-3 w-full flex-grow text-sm text-[#3B3A5C] font-medium">
               <li className="flex gap-3"><CheckCircle className="w-4 h-4 text-[#A8E6CF] flex-shrink-0 mt-0.5" /> Company Intelligence</li>
               <li className="flex gap-3"><CheckCircle className="w-4 h-4 text-[#A8E6CF] flex-shrink-0 mt-0.5" /> Strategic Brief + Cover Letter</li>
@@ -1018,6 +1019,7 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
               <span className="text-6xl font-mono font-bold text-[#2D2B4E]">{prices.pro}</span>
             </div>
             <span className="bg-white/50 text-[#4F46E5] font-mono text-xs px-3 py-1 rounded-full mt-3 font-bold border border-white">60 tokens / month</span>
+            <p className="text-[11px] text-[#6B6B8D] font-medium mt-2 text-center">~{symbol}{(prices.pro / 18).toFixed(2)} per prep pack &middot; vs Jobscan $49.95/mo</p>
             <ul className="mt-8 space-y-3 w-full flex-grow text-sm text-[#3B3A5C] font-medium">
               <li className="flex gap-3"><CheckCircle className="w-4 h-4 text-[#A8E6CF] flex-shrink-0 mt-0.5" /> Everything in Starter</li>
               <li className="flex gap-3"><CheckCircle className="w-4 h-4 text-[#A8E6CF] flex-shrink-0 mt-0.5" /> AI Mock Interview (voice)</li>
@@ -1036,6 +1038,7 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
               <span className="text-6xl font-mono font-bold text-[#2D2B4E]">{prices.premium}</span>
             </div>
             <span className="bg-white/50 text-[#4F46E5] font-mono text-xs px-3 py-1 rounded-full mt-3 font-bold border border-white">120 tokens / month</span>
+            <p className="text-[11px] text-[#6B6B8D] font-medium mt-2 text-center">~{symbol}{(prices.premium / 36).toFixed(2)} per prep pack &middot; vs Final Round AI $148/mo</p>
             <ul className="mt-8 space-y-3 w-full flex-grow text-sm text-[#3B3A5C] font-medium">
               <li className="flex gap-3"><CheckCircle className="w-4 h-4 text-[#A8E6CF] flex-shrink-0 mt-0.5" /> Everything in Pro</li>
               <li className="flex gap-3"><CheckCircle className="w-4 h-4 text-[#A8E6CF] flex-shrink-0 mt-0.5" /> CV Fit Score Analysis</li>
