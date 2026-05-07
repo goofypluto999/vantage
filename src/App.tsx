@@ -48,6 +48,7 @@ const PlaybookPage = React.lazy(() => import('./components/PlaybookPage'));
 const VendorSourcesPage = React.lazy(() => import('./components/VendorSourcesPage'));
 const ChangelogPage = React.lazy(() => import('./components/ChangelogPage'));
 const RoastPage = React.lazy(() => import('./components/RoastPage'));
+const DecodeRejectionPage = React.lazy(() => import('./components/DecodeRejectionPage'));
 const FaqPage = React.lazy(() => import('./components/FaqPage'));
 const AlternativesPage = React.lazy(() => import('./components/AlternativesPage'));
 const AlternativesHub = React.lazy(() => import('./components/AlternativesPage').then(m => ({ default: m.AlternativesHub })));
@@ -455,6 +456,10 @@ function AppContent() {
             <Route path="/roast" element={<RoastPage />} />
             <Route path="/cover-letter-roast" element={<Navigate to="/roast" replace />} />
             <Route path="/roast-my-cover-letter" element={<Navigate to="/roast" replace />} />
+            <Route path="/decode-rejection" element={<DecodeRejectionPage />} />
+            <Route path="/decode" element={<Navigate to="/decode-rejection" replace />} />
+            <Route path="/rejection-decoder" element={<Navigate to="/decode-rejection" replace />} />
+            <Route path="/decode-my-rejection" element={<Navigate to="/decode-rejection" replace />} />
             <Route path="/faq" element={<FaqPage />} />
             <Route path="/help" element={<Navigate to="/faq" replace />} />
             <Route path="/questions" element={<Navigate to="/faq" replace />} />

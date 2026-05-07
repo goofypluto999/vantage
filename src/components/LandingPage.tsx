@@ -1158,6 +1158,7 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
                 <Link to="/blog" className="hover:text-[#4F46E5] transition-colors">Blog</Link>
                 <Link to="/tools" className="hover:text-[#4F46E5] transition-colors">Free tools</Link>
                 <Link to="/roast" className="hover:text-[#4F46E5] transition-colors">Cover letter roast</Link>
+                <Link to="/decode-rejection" className="hover:text-[#4F46E5] transition-colors">Decode rejection email</Link>
                 <a href="https://cv-mirror-web.vercel.app/" target="_blank" rel="noopener noreferrer" className="hover:text-[#4F46E5] transition-colors">
                   CV Mirror →
                 </a>
