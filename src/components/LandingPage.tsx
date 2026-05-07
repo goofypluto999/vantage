@@ -777,6 +777,21 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
             <LiveDemoReel autoplay aspectRatio="16/9" />
           </React.Suspense>
         </motion.div>
+
+        {/* Post-demo CTA — added 2026-05-07. Users watching the 22s
+            walkthrough hit peak interest at the end. Without a CTA they
+            scroll past to story cards. This captures the moment. */}
+        <div className="mt-10 text-center">
+          <button
+            onClick={onStart}
+            className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#4F46E5] text-white rounded-full font-bold hover:-translate-y-1 hover:shadow-[0_12px_32px_rgba(79,70,229,0.45)] active:scale-95 transition-all"
+          >
+            Run yours free now <ChevronRight className="w-4 h-4" />
+          </button>
+          <p className="text-xs text-[#6B6B8D] font-medium mt-3">
+            3 free analyses · no card · ~90 seconds per run
+          </p>
+        </div>
       </section>
 
       {/* ================================================================
