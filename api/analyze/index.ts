@@ -539,7 +539,13 @@ Requirements:
 - keyRequirements: 4 specific skills/experiences the role demands (include hard requirements like certifications, clearances, years of experience)
 - cvMatchPoints: 4 CV evidence points. If the CV doesn't match a requirement, write "NO DIRECT MATCH — [closest transferable skill]" instead of fabricating a match
 - strategicBrief: all 4 brief sections combined as 4 paragraphs
-- coverLetter: 3 paragraphs, tailored to company brand voice. Even if fit is low, write the best possible letter${includeFitScore ? `
+- coverLetter: 3 paragraphs, tailored to company brand voice. Even if fit is low, write the best possible letter. STRICT RULES (this is what separates a Vantage cover letter from a generic ChatGPT one — follow them exactly):
+  • Para 1 must reference ONE specific thing about the company (recent news, mission line, product, stated value) drawn from companySnapshot — not a generic "I admire your mission" line. The reader must believe the writer actually researched.
+  • Para 2 must quote OR closely paraphrase TWO concrete achievements from the CV with real numbers, scope, or outcomes — no inflation, no fabrication. Frame each as "When I [did X], I [delivered Y]" or similar evidence-shape, not as adjectives.
+  • Para 3 must propose ONE specific, plausible thing the candidate would tackle in the first 30 days, grounded in the role requirements — not a generic "I would love the opportunity to contribute."
+  • DO NOT use any of these dead phrases: "I am passionate about", "I am excited to apply", "I am writing to express my interest", "your company", "great fit", "deeply impressed", "thrilled at the opportunity", "exciting role", "perfect candidate", "hit the ground running", "wear many hats", "team player", "results-oriented", "synergy", "leverage", "go-getter".
+  • Length target: 220-300 words across the 3 paragraphs combined. Tighter than that = hollow. Longer than that = waffle.
+  • Tone: confident peer-to-peer, not applicant-to-gatekeeper. The candidate is choosing to apply, not begging.${includeFitScore ? `
 - cvFitScore: integer 0-100 using this STRICT calibration:
   90-100 = Perfect match (meets ALL requirements, direct industry experience, exact skills)
   75-89 = Strong match (meets most requirements, relevant industry, minor gaps)
