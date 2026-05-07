@@ -1136,8 +1136,10 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
               <div className="flex flex-col gap-3">
                 <a href="#features" className="hover:text-[#4F46E5] transition-colors">Product</a>
                 <a href="#pricing" className="hover:text-[#4F46E5] transition-colors">Pricing</a>
+                <Link to="/sample/anthropic-senior-pm" className="hover:text-[#4F46E5] transition-colors">Sample output</Link>
                 <Link to="/blog" className="hover:text-[#4F46E5] transition-colors">Blog</Link>
                 <Link to="/tools" className="hover:text-[#4F46E5] transition-colors">Free tools</Link>
+                <Link to="/roast" className="hover:text-[#4F46E5] transition-colors">Cover letter roast</Link>
                 <a href="https://cv-mirror-web.vercel.app/" target="_blank" rel="noopener noreferrer" className="hover:text-[#4F46E5] transition-colors">
                   CV Mirror →
                 </a>
