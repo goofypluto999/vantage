@@ -9,7 +9,10 @@ import {
 import Waitlist from './Waitlist';
 import DemoWalkthrough from './DemoWalkthrough';
 import { useCurrency } from '../contexts/CurrencyContext';
-import { getPublicStats, type PublicStats } from '../services/api';
+// getPublicStats was used for the old "Live Transparency" counter section.
+// That section now shows static build-in-public credibility metrics instead,
+// so the live-DB hit is no longer needed and the import is removed.
+// import { getPublicStats, type PublicStats } from '../services/api';
 
 // Lazy-loaded heavy components — kept off the initial bundle to improve LCP.
 // Three.js + @react-three/fiber + @react-three/drei are ~720 kB gzipped on
@@ -469,14 +472,8 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
   const [activeTab, setActiveTab] = useState(0);
   const tabs = ['Strategic Brief', 'Cover Letter', 'Interview Pack', 'Presentation Deck'];
 
-  // Live transparency stats — we show the real number even when small.
-  // Honesty at launch builds trust faster than fake "10,000+ users".
-  const [stats, setStats] = useState<PublicStats | null>(null);
-  useEffect(() => {
-    let cancelled = false;
-    getPublicStats().then((s) => { if (!cancelled) setStats(s); });
-    return () => { cancelled = true; };
-  }, []);
+  // (Old live-stats fetch removed. The "What's been built" section above now
+  // uses static, verifiable counts that link to the actual shipped surfaces.)
 
   return (
     <div className="bg-gradient-to-br from-[#A8A5E6] via-[#C2C0F0] to-[#E6E5F8] text-[#2D2B4E] min-h-screen font-body selection:bg-white/50 overflow-x-hidden">
@@ -632,7 +629,13 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
       </section>
 
       {/* ================================================================
-          LIVE TRANSPARENCY STATS — real numbers, even small ones
+          WHAT'S BEEN BUILT — verifiable, accurate, no live-counter dwindling
+
+          Replaces the previous "Live Transparency" section that pulled signup
+          / analysis / waitlist counts from the DB. At early launch those
+          numbers read as "we have nothing yet" and undermined the brand. Each
+          stat below is a concrete asset shipped — reader can verify by
+          clicking through. Honest framing without thin-growth-metric anxiety.
       ================================================================ */}
       <section className="relative z-10 w-full px-4 max-w-5xl mx-auto pt-16 md:pt-20">
         <motion.div
@@ -645,31 +648,50 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
             <div className="flex items-center justify-center gap-2 mb-5">
               <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
               <p className="text-[10px] md:text-xs font-bold text-[#4F46E5] uppercase tracking-widest">
-                Live transparency · Updated every 10 minutes
+                What's been built · Click any number to verify
               </p>
             </div>
-            <div className="grid grid-cols-3 gap-4 md:gap-8 text-center">
-              <div>
-                <div className="text-3xl md:text-4xl font-display font-bold text-[#2D2B4E] tabular-nums">
-                  {stats === null ? '—' : stats.signups.toLocaleString()}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-5 md:gap-4 text-center">
+              <Link to="/ats" className="group">
+                <div className="text-3xl md:text-4xl font-display font-bold text-[#2D2B4E] tabular-nums group-hover:text-[#4F46E5] transition-colors">
+                  5
                 </div>
-                <p className="text-xs md:text-sm text-[#6B6B8D] font-medium mt-1">Signups</p>
-              </div>
-              <div className="border-x border-[#4F46E5]/15">
-                <div className="text-3xl md:text-4xl font-display font-bold text-[#2D2B4E] tabular-nums">
-                  {stats === null ? '—' : stats.analyses.toLocaleString()}
+                <p className="text-xs md:text-sm text-[#6B6B8D] font-medium mt-1 group-hover:text-[#3B3A5C] transition-colors">
+                  ATS parsers simulated
+                </p>
+              </Link>
+              <Link to="/interview-prep" className="group md:border-x md:border-[#4F46E5]/15">
+                <div className="text-3xl md:text-4xl font-display font-bold text-[#2D2B4E] tabular-nums group-hover:text-[#4F46E5] transition-colors">
+                  40+
                 </div>
-                <p className="text-xs md:text-sm text-[#6B6B8D] font-medium mt-1">Analyses run</p>
-              </div>
-              <div>
-                <div className="text-3xl md:text-4xl font-display font-bold text-[#2D2B4E] tabular-nums">
-                  {stats === null ? '—' : stats.waitlist.toLocaleString()}
+                <p className="text-xs md:text-sm text-[#6B6B8D] font-medium mt-1 group-hover:text-[#3B3A5C] transition-colors">
+                  Interview prep packs
+                </p>
+              </Link>
+              <Link to="/alternatives" className="group md:border-r md:border-[#4F46E5]/15">
+                <div className="text-3xl md:text-4xl font-display font-bold text-[#2D2B4E] tabular-nums group-hover:text-[#4F46E5] transition-colors">
+                  9
                 </div>
-                <p className="text-xs md:text-sm text-[#6B6B8D] font-medium mt-1">On the list</p>
-              </div>
+                <p className="text-xs md:text-sm text-[#6B6B8D] font-medium mt-1 group-hover:text-[#3B3A5C] transition-colors">
+                  Honest comparisons
+                </p>
+              </Link>
+              <a
+                href="https://github.com/goofypluto999/cv-mirror-mcp"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group"
+              >
+                <div className="text-3xl md:text-4xl font-display font-bold text-[#2D2B4E] tabular-nums group-hover:text-[#4F46E5] transition-colors">
+                  OSS
+                </div>
+                <p className="text-xs md:text-sm text-[#6B6B8D] font-medium mt-1 group-hover:text-[#3B3A5C] transition-colors">
+                  Free open-source tool
+                </p>
+              </a>
             </div>
             <p className="text-[11px] md:text-xs text-[#6B6B8D] text-center mt-5 max-w-xl mx-auto leading-relaxed">
-              Real numbers from a real database. No padding, no fake testimonials. Launched May 2026 — be early or be one of the first thousand.
+              Built solo, in public, since February 2026. Every number above links to a real, shipped surface — feel free to click through and verify.
             </p>
           </GlassCard>
         </motion.div>

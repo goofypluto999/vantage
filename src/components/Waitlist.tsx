@@ -179,11 +179,23 @@ export default function Waitlist({ launchDate, onSignUpClick }: WaitlistProps) {
             </form>
 
             <div className="flex flex-col md:flex-row items-center justify-center gap-6 mt-8">
-              <div className="flex items-center gap-2 text-[#6B6B8D] text-sm">
-                <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                <Clock className="w-4 h-4" />
-                <span>{waitlistCount} people signed up</span>
-              </div>
+              {/* Waitlist count is intentionally hidden until it crosses 50 — small
+                  early numbers ("2 people signed up") read as failure, not as "be
+                  early". Once there's social-proof volume, we show it. Until then
+                  we replace with a credibility-neutral "Drop your email" prompt. */}
+              {waitlistCount >= 50 ? (
+                <div className="flex items-center gap-2 text-[#6B6B8D] text-sm">
+                  <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                  <Clock className="w-4 h-4" />
+                  <span>{waitlistCount.toLocaleString()} people signed up</span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2 text-[#6B6B8D] text-sm">
+                  <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                  <Clock className="w-4 h-4" />
+                  <span>Voice mock interview is in active build — drop your email to be the first told when it ships.</span>
+                </div>
+              )}
               <div className="h-4 w-px bg-[#6B6B8D]/20 hidden md:block" />
               <button
                 onClick={onSignUpClick}
