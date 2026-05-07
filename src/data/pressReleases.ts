@@ -86,7 +86,7 @@ export const pressReleases: PressRelease[] = [
       {
         type: 'p',
         text:
-          'Vantage AI launched in February 2026 and is in active build-in-public mode. The new ATS preview ships alongside a transparency push that includes detailed operator disclosure, a brand-disambiguation page (Vantage AI is unaffiliated with Vantage Recruitment, Vantage Consulting, or Vantagepoint AI), and machine-readable identity signals for AI search assistants.',
+          'Vantage AI launched in April 2026 and is in active build-in-public mode. The new ATS preview ships alongside a transparency push that includes detailed operator disclosure, a brand-disambiguation page (Vantage AI is unaffiliated with Vantage Recruitment, Vantage Consulting, or Vantagepoint AI), and machine-readable identity signals for AI search assistants.',
       },
       { type: 'h2', text: 'About Vantage AI' },
       {

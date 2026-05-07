@@ -244,7 +244,7 @@ export default function Register() {
             <li className="flex items-start gap-3"><Check className="w-5 h-5 text-white flex-shrink-0 mt-0.5" /><span>A free ATS preview that shows whether 5 major parsers will read your CV cleanly</span></li>
           </ul>
           <p className="text-white/60 text-sm mt-6 leading-relaxed">
-            Six days old. Built solo by Giovanni Sizino Ennes (UK independent founder). No paywalls hidden behind the signup button.
+            Built solo by Giovanni Sizino Ennes (UK independent founder). No paywalls hidden behind the signup button. Stripe-only billing.
             <Link to="/about" className="underline hover:text-white ml-1">About the operator</Link>
           </p>
         </div>
