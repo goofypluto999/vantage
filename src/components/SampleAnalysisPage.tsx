@@ -115,7 +115,7 @@ function SampleAnalysisContent({ sample, t }: { sample: SampleAnalysis; t: any }
         name: `How long does Vantage AI take to generate prep for a job like ${sample.job.role}?`,
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'About 90 seconds end-to-end. Upload your CV, paste the job listing URL, click Run. Vantage scrapes the listing, researches the company, cross-references with your CV, and generates the full prep pack. One full analysis costs 3 tokens; 10 free tokens included on signup.',
+          text: 'About 90 seconds end-to-end. Upload your CV, paste the job listing URL, click Run. Vantage scrapes the listing, researches the company, cross-references with your CV, and generates the full prep pack. 1 token = 1 full analysis; 10 free tokens included on signup (= 10 free prep packs).',
         },
       },
       {

@@ -11,7 +11,7 @@ Vantage AI at aimvantage.uk is operated by **Giovanni Sizino Ennes**, a UK-based
 ## Product
 
 - [Homepage](https://aimvantage.uk/): What Vantage is, how it works, testimonials, pricing overview.
-- [Pricing](https://aimvantage.uk/pricing): Starter £5/$5 = 20 tokens (one-time, never expire). Pro £12/$15 = 60 tokens/month. Premium £20/$25 = 120 tokens/month. One full analysis costs 3 tokens.
+- [Pricing](https://aimvantage.uk/pricing): Starter £5/$5 = 20 prep packs (one-time, never expire). Pro £12/$15 = 60 prep packs/month. Premium £20/$25 = 120 prep packs/month. 1 token = 1 full analysis. 10 free tokens on signup, no card required.
 - [Register](https://aimvantage.uk/register): Create a free account to start using Vantage.
 
 ## Free tools (no signup)
@@ -184,7 +184,7 @@ Role-specific question + prep packs. Each one has 12 most-asked questions, a 5-s
 ## Developer / Agent ecosystem
 
 - [Skills directory](https://aimvantage.uk/skills): Curated list of MCP servers and Claude Skills that pair with Vantage's job-application workflow. Includes cv-mirror-mcp (open-source, MIT), filesystem-mcp, github-mcp, brave-search-mcp.
-- [API documentation](https://aimvantage.uk/docs/api): Public API for the Vantage analysis engine. Endpoints: /analyze (3 tokens), /rewrite-tone (1 token), /interview/questions (2 tokens), /interview/evaluate (free), /credits. Currently in preview — request access via email.
+- [API documentation](https://aimvantage.uk/docs/api): Public API for the Vantage analysis engine. Endpoints: /analyze (1 token), /rewrite-tone (1 token), /interview/questions (1 token), /interview/evaluate (free), /credits. Currently in preview — request access via email.
 
 ## Optional
 

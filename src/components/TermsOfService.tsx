@@ -140,7 +140,7 @@ export default function TermsOfService() {
             <section className={sectionClass}>
               <h2 className={headingClass}>6. Token System</h2>
               <p className={bodyClass}>
-                The Service operates on an additive token balance model. Tokens are awarded when you pay for the Starter top-up, when you subscribe to Pro or Premium, and each time a subscription renews. Tokens are consumed when you use AI features (for example, a full analysis currently costs 3 tokens).
+                The Service operates on an additive token balance model. Tokens are awarded when you pay for the Starter top-up, when you subscribe to Pro or Premium, and each time a subscription renews. Tokens are consumed when you use AI features (currently a full analysis costs 1 token; cover letter tone rewrites and AI Mock Interview question generation each cost 1 additional token).
               </p>
               <ul className={`${listClass} mt-3`}>
                 <li>Tokens are <span className={emphasisClass}>additive and do not expire</span>. Balances carry over indefinitely and are never reset at a billing boundary.</li>

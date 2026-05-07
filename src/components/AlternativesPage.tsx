@@ -210,7 +210,7 @@ const PROFILES: Record<CompetitorSlug, CompetitorProfile> = {
     faq: [
       {
         q: 'Is Vantage cheaper than Kickresume?',
-        a: 'On a per-application basis, yes. Vantage is £5 for ~6 full prep packs (CV fit + cover letter + mock interview + pitch). Kickresume is $8/month minimum on the annual plan, $19/month rolling. If you apply to a few roles per quarter, Vantage is significantly cheaper. Heavy users on Pro ($12/month) land roughly even.',
+        a: 'On a per-application basis, yes. Vantage is £5 for 20 full prep packs (CV fit + cover letter + mock interview + pitch). Kickresume is $8/month minimum on the annual plan, $19/month rolling. If you apply to a few roles per quarter, Vantage is significantly cheaper. Heavy users on Pro ($12/month for 60 prep packs/month) land far ahead.',
       },
       {
         q: 'Does Vantage produce designed CV templates like Kickresume?',
@@ -253,7 +253,7 @@ const PROFILES: Record<CompetitorSlug, CompetitorProfile> = {
       },
       {
         q: 'Can I cancel Enhancv and still get cover letters from Vantage?',
-        a: 'Yes — the £5 Vantage starter pack gives you ~6 full prep packs that never expire, no subscription. If your hunt is intermittent, this is a meaningfully cheaper way to get cover letters than $9.99–24.99/month.',
+        a: 'Yes — the £5 Vantage starter pack gives you 20 full prep packs that never expire, no subscription. If your hunt is intermittent, this is a meaningfully cheaper way to get cover letters than $9.99–24.99/month.',
       },
     ],
   },
@@ -323,7 +323,7 @@ const PROFILES: Record<CompetitorSlug, CompetitorProfile> = {
       },
       {
         q: 'Is Vantage cheaper than Huntr Pro?',
-        a: 'Substantially. Huntr Pro is $20/month rolling. Vantage is £5 one-time for 20 tokens that never expire (~6 full prep packs), or £12/month for Vantage Pro. If you apply heavily, Pro lands in the same ballpark; if you apply intermittently, the £5 pack is significantly cheaper.',
+        a: 'Substantially. Huntr Pro is $20/month rolling. Vantage is £5 one-time for 20 prep packs that never expire, or £12/month for Vantage Pro (60 prep packs/month). If you apply heavily, Pro is dramatically cheaper; if you apply intermittently, the £5 pack is unbeatable.',
       },
     ],
   },

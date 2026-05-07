@@ -9,24 +9,23 @@ interface PricingProps {
   isAuthenticated?: boolean;
 }
 
-// One full job-prep pack (company intel + cover letter + interview Qs + pitch +
-// fit score) costs 3 tokens. Tone rewrites + interview question regen cost 1 token
-// each. So the human-friendly translation is:
-//   20 tokens ≈ 6 full prep packs (with a few tone rewrites left over)
-//   60 tokens ≈ 18 prep packs / month
-//   120 tokens ≈ 36 prep packs / month
+// 2026-05-08: pricing migrated to 1 token = 1 full prep pack.
+// Tone rewrites + interview question regen cost 1 token each.
+//   20 tokens = 20 full prep packs (Starter, never expires)
+//   60 tokens = 60 prep packs / month (Pro)
+//   120 tokens = 120 prep packs / month (Premium)
 const PLANS = [
   {
     name: 'Starter',
     gbp: 5,
     usd: 5,
     tokens: 20,
-    packs: 6,
+    packs: 20,
     color: '#6B6B8D',
     icon: Zap,
     isTopup: true,
     features: [
-      '6 full prep packs (per upload + job link)',
+      '20 full prep packs (per upload + job link)',
       'Tokens never expire — pay once, use any time',
       'Company intelligence + strategic brief',
       'Tailored cover letter (4 tone variants)',
@@ -40,12 +39,12 @@ const PLANS = [
     gbp: 12,
     usd: 15,
     tokens: 60,
-    packs: 18,
+    packs: 60,
     color: '#4F46E5',
     icon: Star,
     isTopup: false,
     features: [
-      '18 prep packs every month (60 tokens)',
+      '60 prep packs every month',
       'Everything in Starter',
       'AI Mock Interview (voice mode)',
       'STAR interview stories',
@@ -58,12 +57,12 @@ const PLANS = [
     gbp: 20,
     usd: 25,
     tokens: 120,
-    packs: 36,
+    packs: 120,
     color: '#7C3AED',
     icon: Crown,
     isTopup: false,
     features: [
-      '36 prep packs every month (120 tokens)',
+      '120 prep packs every month',
       'Everything in Pro',
       'CV Fit Score Analysis',
       'Presentation Deck Builder',
@@ -122,7 +121,7 @@ export default function Pricing({ onLogin, onRegister, onCheckout, isAuthenticat
           </h1>
           <p className="text-base md:text-lg text-white/60 max-w-2xl mx-auto leading-relaxed">
             Every account starts with 3 free analyses on signup — no card. After that, top up at £5
-            for 6 more (never expires) or subscribe for 18 / 36 prep packs every month. Cancel any
+            for 20 more (never expires) or subscribe for 60 / 120 prep packs every month. Cancel any
             time. No hidden fees.
           </p>
         </div>

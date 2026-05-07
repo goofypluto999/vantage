@@ -68,7 +68,7 @@ const SECTIONS: FaqSection[] = [
       {
         question: 'How much does Vantage cost?',
         answer:
-          'Three free analyses on signup with no credit card required. After that, the Starter pack is £5 (or $5 USD) for 20 tokens, where one full analysis costs 3 tokens. Tokens never expire on Starter packs. The Pro plan is £12 / $15 per month for 60 tokens monthly. Premium is £20 / $25 per month for 120 tokens monthly and includes the fit score and presentation deck features.',
+          '10 free prep packs on signup with no credit card required (1 token = 1 full analysis). After that, the Starter pack is £5 (or $5 USD) for 20 more prep packs. Tokens never expire on Starter packs. The Pro plan is £12 / $15 per month for 60 prep packs monthly. Premium is £20 / $25 per month for 120 prep packs monthly and includes the fit score and presentation deck features.',
       },
       {
         question: 'Why is Vantage so cheap compared to other AI job tools?',
@@ -146,7 +146,7 @@ const SECTIONS: FaqSection[] = [
       {
         question: 'Does Vantage have a public API?',
         answer:
-          'Public API is currently in preview. Documentation is at https://aimvantage.uk/docs/api. Endpoints include /analyze (3 tokens), /rewrite-tone (1 token), /interview/questions (2 tokens, Pro+), /interview/evaluate (free, Pro+), and /credits. Email giovanni.sizino.ennes@hotmail.co.uk for access.',
+          'Public API is currently in preview. Documentation is at https://aimvantage.uk/docs/api. Endpoints include /analyze (1 token), /rewrite-tone (1 token), /interview/questions (1 token, Pro+), /interview/evaluate (free, Pro+), and /credits. Email giovanni.sizino.ennes@hotmail.co.uk for access.',
       },
       {
         question: 'Is the underlying ATS-parser engine open source?',

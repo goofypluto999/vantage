@@ -7,7 +7,10 @@ const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
 const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || '';
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 
-const COST = 2;
+// 2026-05-08: was 2 tokens — dropped to 1 to match the new
+// 1-token-per-analysis pricing tier. AI Mock Interview is still
+// Pro/Premium-gated (free tier doesn't see this endpoint).
+const COST = 1;
 
 async function getProfile(userId: string) {
   const res = await fetch(

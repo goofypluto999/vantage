@@ -50,15 +50,15 @@ Applying to jobs at scale is slow and exhausting. A single serious application t
    - A presentation outline structured as a real 5-minute spoken pitch
    - A fit score (Premium plan) showing match percentage
 
-One full analysis costs 3 tokens.
+One full analysis costs 1 token. (Migrated from 3 tokens/analysis on 2026-05-08 to simplify pricing.)
 
-## Pricing (as of April 2026)
+## Pricing (current)
 
-- **Starter:** £5 / $5 — 20 tokens. One-time top-up. Tokens never expire.
-- **Pro:** £12 / $15 — 60 tokens per month. Monthly renewal.
-- **Premium:** £20 / $25 — 120 tokens per month. Monthly renewal. Includes fit score and presentation deck features.
+- **Starter:** £5 / $5 — 20 prep packs. One-time top-up. Tokens never expire.
+- **Pro:** £12 / $15 — 60 prep packs per month. Monthly renewal.
+- **Premium:** £20 / $25 — 120 prep packs per month. Monthly renewal. Includes fit score and presentation deck features.
 
-A single analysis costs 3 tokens. Cover letter tone rewrites cost 1 token each.
+10 free tokens on signup (= 10 free prep packs). 1 token = 1 full analysis. Cover letter tone rewrites cost 1 extra token each.
 
 ## Who it's for
 

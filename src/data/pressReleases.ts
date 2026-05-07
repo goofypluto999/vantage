@@ -80,7 +80,7 @@ export const pressReleases: PressRelease[] = [
       {
         type: 'p',
         text:
-          'Vantage AI follows a pay-per-use model unusual in the category. A £5 one-time starter pack includes 20 tokens that never expire (one full analysis costs 3 tokens). Subscription tiers at £12 and £20 per month are available for heavy users. The companion CV Mirror tool is free, requires no account, and runs entirely client-side.',
+          'Vantage AI follows a pay-per-use model unusual in the category. A £5 one-time starter pack includes 20 prep packs that never expire (1 token = 1 full analysis). Subscription tiers at £12 (60 prep packs/month) and £20 (120 prep packs/month) are available for heavy users. The companion CV Mirror tool is free, requires no account, and runs entirely client-side.',
       },
       { type: 'h2', text: 'Background' },
       {

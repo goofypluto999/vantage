@@ -7,7 +7,7 @@
  * - Same fit-score gauge (SVG, stroke-dasharray, threshold colors)
  * - Same tone-switcher pill style
  * - Same field labels ("Mission", "Industry", "Size", "Founded")
- * - Real pricing references (3 tokens free = 1 analysis on signup)
+ * - Real pricing references (10 free tokens on signup = 10 free analyses)
  *
  * Designed as a hero asset for the landing page. Self-contained, no external
  * deps beyond what's already in the stack (motion/react). Loops indefinitely

@@ -201,9 +201,9 @@ function AppContent() {
                     description: 'AI job preparation tool. Upload CV, paste job link, get the full prep pack in ~90 seconds: company brief, tailored cover letter, mock interview questions, fit score, 5-minute pitch outline.',
                     offers: [
                       { '@type': 'Offer', name: 'Free trial', price: '0', priceCurrency: 'GBP', description: '3 free analyses on signup, no card required' },
-                      { '@type': 'Offer', name: 'Starter pack', price: '5', priceCurrency: 'GBP', description: '20 tokens (~6 analyses), one-time, never expires' },
-                      { '@type': 'Offer', name: 'Pro', price: '12', priceCurrency: 'GBP', description: '60 tokens per month' },
-                      { '@type': 'Offer', name: 'Premium', price: '20', priceCurrency: 'GBP', description: '120 tokens per month, includes fit score and presentation deck' },
+                      { '@type': 'Offer', name: 'Starter pack', price: '5', priceCurrency: 'GBP', description: '20 prep packs (one analysis each), one-time, never expires' },
+                      { '@type': 'Offer', name: 'Pro', price: '12', priceCurrency: 'GBP', description: '60 prep packs per month' },
+                      { '@type': 'Offer', name: 'Premium', price: '20', priceCurrency: 'GBP', description: '120 prep packs per month, includes fit score and presentation deck' },
                     ],
                     creator: {
                       '@type': 'Person',
@@ -310,7 +310,7 @@ function AppContent() {
                         '@type': 'HowToStep',
                         position: 4,
                         name: 'Run the analysis',
-                        text: 'Click "Run my prep pack". One full analysis costs 3 tokens (you have 10 free). Vantage runs ~60-90 seconds of company research, fit scoring, and content generation.',
+                        text: 'Click "Run my prep pack". One full analysis costs 1 token (you have 10 free). Vantage runs ~60-90 seconds of company research, fit scoring, and content generation.',
                       },
                       {
                         '@type': 'HowToStep',
@@ -337,7 +337,7 @@ function AppContent() {
             <Route path="/pricing" element={<>
               <SEO
                 title="Pricing"
-                description="Starter £5 for 20 tokens (never expire). Pro £12/mo for 60 tokens. Premium £20/mo for 120 tokens including fit score and presentation deck. One full analysis = 3 tokens."
+                description="Starter £5 for 20 prep packs (never expire). Pro £12/mo for 60 prep packs. Premium £20/mo for 120 prep packs including fit score and presentation deck. 1 token = 1 full analysis."
                 path="/pricing"
                 jsonLd={[
                   // Product schema with multiple Offers — AI assistants cite
@@ -347,7 +347,7 @@ function AppContent() {
                     '@context': 'https://schema.org',
                     '@type': 'Product',
                     name: 'Vantage AI',
-                    description: 'AI job preparation tool. One full analysis (company intel + cover letter + interview pack + fit score + pitch outline) costs 3 tokens.',
+                    description: 'AI job preparation tool. One full analysis (company intel + cover letter + interview pack + fit score + pitch outline) costs 1 token.',
                     brand: { '@type': 'Brand', name: 'Vantage AI' },
                     url: 'https://aimvantage.uk/pricing',
                     offers: {
@@ -358,9 +358,9 @@ function AppContent() {
                       offerCount: 4,
                       offers: [
                         { '@type': 'Offer', name: 'Free tier', price: '0', priceCurrency: 'GBP', description: '3 free analyses on signup. No card required.', url: 'https://aimvantage.uk/register' },
-                        { '@type': 'Offer', name: 'Starter pack', price: '5', priceCurrency: 'GBP', description: '20 tokens (about 6 prep packs). One-time. Tokens never expire.', url: 'https://aimvantage.uk/pricing' },
-                        { '@type': 'Offer', name: 'Pro', price: '12', priceCurrency: 'GBP', description: '60 tokens per month (about 18 prep packs). Includes AI Mock Interview voice mode.', url: 'https://aimvantage.uk/pricing' },
-                        { '@type': 'Offer', name: 'Premium', price: '20', priceCurrency: 'GBP', description: '120 tokens per month (about 36 prep packs). Includes CV Fit Score, Presentation Deck Builder, priority processing.', url: 'https://aimvantage.uk/pricing' },
+                        { '@type': 'Offer', name: 'Starter pack', price: '5', priceCurrency: 'GBP', description: '20 prep packs. One-time. Tokens never expire.', url: 'https://aimvantage.uk/pricing' },
+                        { '@type': 'Offer', name: 'Pro', price: '12', priceCurrency: 'GBP', description: '60 prep packs per month. Includes AI Mock Interview voice mode.', url: 'https://aimvantage.uk/pricing' },
+                        { '@type': 'Offer', name: 'Premium', price: '20', priceCurrency: 'GBP', description: '120 prep packs per month. Includes CV Fit Score, Presentation Deck Builder, priority processing.', url: 'https://aimvantage.uk/pricing' },
                       ],
                     },
                   },
@@ -375,7 +375,7 @@ function AppContent() {
                         name: 'Is Vantage AI free?',
                         acceptedAnswer: {
                           '@type': 'Answer',
-                          text: 'Yes for the first 3 analyses. Every account gets 10 free tokens on signup, no credit card required. One full analysis costs 3 tokens, so 10 tokens = 3 prep packs free. After that, Starter pack is £5 for 20 more tokens (never expires).',
+                          text: 'Yes — every account gets 10 free tokens on signup, no credit card required. 1 token = 1 full prep pack, so 10 tokens = 10 free prep packs. After that, Starter pack is £5 for 20 more (never expires).',
                         },
                       },
                       {

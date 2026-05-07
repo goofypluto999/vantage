@@ -232,9 +232,8 @@ export default function Dashboard() {
     if (!jobUrl) { setError('Please add a job URL'); return; }
     if (cvFile.size > 5 * 1024 * 1024) { setError('CV file is too large (max 5MB)'); return; }
     if (!canAnalyze) {
-      // Concrete: 'You have X / need 3'. Better than 'Not enough'.
       const tokens = profile?.token_balance ?? 0;
-      setError(`You have ${tokens} ${tokens === 1 ? 'token' : 'tokens'} but each analysis needs 3. Top up below — £5 for 6 more prep packs.`);
+      setError(`You have 0 tokens. Each analysis costs 1. Top up below — £5 for 20 more prep packs (never expires).`);
       return;
     }
 
@@ -253,7 +252,7 @@ export default function Dashboard() {
       if (isBlockedHost && !hasJdProvided) {
         const proceed = window.confirm(
           `${host} typically blocks automated readers, so the job page may come back empty.\n\n` +
-          `Without the job description pasted in Step 2, the AI will only have the URL to work from — your analysis will likely be thin and your 3 tokens will still be charged.\n\n` +
+          `Without the job description pasted in Step 2, the AI will only have the URL to work from — your analysis will likely be thin and your token will still be charged.\n\n` +
           `Do you want to:\n` +
           `  • Cancel this run and paste the JD into Step 2 first (recommended)\n` +
           `  • Or continue anyway?\n\n` +
@@ -490,7 +489,7 @@ export default function Dashboard() {
           <div className="p-6 rounded-2xl bg-gradient-to-r from-violet-600/10 to-purple-600/10 border border-violet-500/20">
             {(() => {
               const tokens = profile?.token_balance ?? 0;
-              const analyses = Math.floor(tokens / 3);
+              const analyses = tokens; // 1 token = 1 analysis as of 2026-05-08
               const analysesWord = analyses === 1 ? 'analysis' : 'analyses';
               const hasActiveSub = profile?.subscription_status === 'active' || profile?.subscription_status === 'cancelling';
               // "Free / on us" wording is only honest for users who have NEVER paid.
@@ -541,7 +540,7 @@ export default function Dashboard() {
               return (
                 <>
                   <h2 className="text-lg font-display font-bold text-white mb-1">Top up to keep going</h2>
-                  <p className="text-white/50 text-sm mb-5">Each analysis costs 3 tokens. Pick a plan to continue.</p>
+                  <p className="text-white/50 text-sm mb-5">Each analysis costs 1 token. Pick a plan to continue.</p>
                 </>
               );
             })()}
@@ -628,7 +627,7 @@ export default function Dashboard() {
                   const everPaid = !!(profile?.stripe_customer_id && profile.stripe_customer_id.length > 0);
                   const isFreshUser = !everPaid && tokens >= 7;
                   if (!isFreshUser) return null;
-                  const analyses = Math.floor(tokens / 3);
+                  const analyses = tokens; // 1 token = 1 analysis as of 2026-05-08
                   return (
                     <div className="mb-6 px-4 py-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center gap-3 text-sm">
                       <Sparkles className="w-4 h-4 text-emerald-400 flex-shrink-0" />
@@ -652,7 +651,7 @@ export default function Dashboard() {
                     <div className="flex-1">
                       <p className="text-amber-300 font-semibold text-base">You're out of free analyses.</p>
                       <p className="text-amber-100/80 text-sm mt-1 leading-relaxed">
-                        £5 unlocks <strong className="text-white">6 more prep packs</strong> (CV fit score, tailored cover letter, mock interview questions, pitch outline). One-time top-up. Tokens never expire — pay once, use any time you apply.
+                        £5 unlocks <strong className="text-white">20 more prep packs</strong> (CV fit score, tailored cover letter, mock interview questions, pitch outline). One-time top-up. Tokens never expire — pay once, use any time you apply.
                       </p>
                     </div>
                   </div>
@@ -661,7 +660,7 @@ export default function Dashboard() {
                       onClick={() => navigate('/pricing')}
                       className="px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-white font-bold text-sm transition-colors"
                     >
-                      £5 — get 6 more prep packs
+                      £5 — get 20 more prep packs
                     </button>
                     <button
                       onClick={() => window.open('https://aimvantage.uk/sample/anthropic-senior-pm', '_blank')}
@@ -881,7 +880,7 @@ export default function Dashboard() {
               >
                 <Sparkles className="w-5 h-5" />
                 Run my prep pack
-                <span className="text-white/70 text-sm font-normal ml-1">· uses 3 of your {profile?.token_balance ?? 0} tokens</span>
+                <span className="text-white/70 text-sm font-normal ml-1">· uses 1 of your {profile?.token_balance ?? 0} tokens</span>
                 <ChevronRight className="w-5 h-5" />
               </button>
 
@@ -1404,7 +1403,7 @@ export default function Dashboard() {
                 const everPaid = !!(profile?.stripe_customer_id && profile.stripe_customer_id.length > 0);
                 if (everPaid) return null;
                 if (tokens >= 10) return null; // hasn't burned anything yet
-                const analysesLeft = Math.floor(tokens / 3);
+                const analysesLeft = tokens; // 1 token = 1 analysis as of 2026-05-08
                 return (
                   <div className="p-6 rounded-2xl bg-gradient-to-r from-violet-600/15 to-purple-600/15 border border-violet-500/30">
                     <div className="flex items-start gap-4 flex-wrap">
@@ -1415,11 +1414,11 @@ export default function Dashboard() {
                             : 'You\'re out of free tokens'}
                         </h3>
                         <p className="text-white/70 text-sm">
-                          Top up at £5 for 6 more prep packs (20 tokens, never expires). Or
+                          Top up at £5 for 20 more prep packs (never expires). Or
                           {' '}<button onClick={() => navigate('/pricing')} className="text-violet-300 underline hover:text-violet-200">
                             subscribe to Pro
                           </button>{' '}
-                          for 18/month and AI Mock Interview.
+                          for 60/month and AI Mock Interview.
                         </p>
                       </div>
                       <button

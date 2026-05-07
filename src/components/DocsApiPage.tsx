@@ -73,7 +73,7 @@ export default function DocsApiPage() {
             {
               method: 'POST',
               path: '/api/v1/analyze',
-              cost: '3 tokens',
+              cost: '1 token',
               description: 'Run a full job intelligence analysis. Input: CV file + job URL. Output: company snapshot, fit score, tailored cover letter, mock interview Qs, presentation outline.',
             },
             {
@@ -85,7 +85,7 @@ export default function DocsApiPage() {
             {
               method: 'POST',
               path: '/api/v1/interview/questions',
-              cost: '2 tokens',
+              cost: '1 token',
               description: 'Generate likely interview questions for a job description with model answers.',
             },
             {

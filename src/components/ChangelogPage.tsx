@@ -154,7 +154,7 @@ const ENTRIES: ChangelogEntry[] = [
     date: '2026-04-15',
     kind: 'feature',
     title: 'Token wallet system',
-    body: 'Tokens never expire on Starter packs. Pro and Premium plans top up monthly. One full analysis costs 3 tokens.',
+    body: 'Tokens never expire on Starter packs. Pro and Premium plans top up monthly. 1 token = 1 full analysis (migrated from 3 tokens/analysis on 2026-05-08).',
     links: [{ label: '/pricing', href: '/pricing' }],
   },
   {

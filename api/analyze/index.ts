@@ -462,7 +462,7 @@ Rules:
 
   // SAFETY GATE: if a URL was provided but every layer (scrape + Gemini preflight)
   // failed to return usable text AND the user didn't paste a JD, abort here.
-  // Producing a "best-effort" analysis from no data wastes 3 tokens and ships
+  // Producing a "best-effort" analysis from no data wastes a token and ships
   // garbage. Throwing here triggers the handler's refund path (line 733).
   // Common cause: Indeed / LinkedIn / Reed block automated readers.
   if (dataSource === 'none' && jobUrl) {
@@ -736,7 +736,11 @@ export default async function handler(request: any, response: any) {
     const user = await userRes.json();
     const tokenBalance = await getTokenBalance(user.id);
 
-    const COST_PER_ANALYSIS = 3;
+    // 2026-05-08: pricing migration — moved from 3 tokens/analysis to 1.
+    // Margins still 99%+ (Gemini Flash is ~£0.0013/call). The change makes
+    // pricing easier to communicate ('1 token = 1 analysis') and 3x's the
+    // perceived value at every tier. See docs/pricing-1-token-proposal-2026-05-07.md.
+    const COST_PER_ANALYSIS = 1;
     if (tokenBalance < COST_PER_ANALYSIS) {
       return response.status(403).json({
         error: 'Insufficient tokens',
