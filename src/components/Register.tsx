@@ -110,6 +110,31 @@ export default function Register() {
             </div>
           )}
 
+          {/* Google OAuth FIRST — skips email-confirmation entirely.
+              Email confirmation is the biggest indie-SaaS funnel-leak; OAuth
+              users are auto-confirmed and land directly in the dashboard. */}
+          <button
+            type="button"
+            onClick={handleGoogleSignIn}
+            disabled={loading}
+            className="w-full mb-4 py-3.5 rounded-xl bg-white text-[#2D2B4E] font-bold hover:bg-white/90 transition-colors flex items-center justify-center gap-3 disabled:opacity-50 shadow-[0_4px_16px_rgba(0,0,0,0.15)]"
+          >
+            <Chrome className="w-5 h-5 text-[#4285F4]" />
+            <span>Continue with Google</span>
+          </button>
+          <p className="text-center text-[11px] text-emerald-300/80 mb-5 font-medium">
+            ⚡ Fastest path — skips email confirmation. You're in the dashboard in 3 seconds.
+          </p>
+
+          <div className="relative mb-5">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-white/10" />
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-4 bg-[#1a1635] text-white/30">or use email</span>
+            </div>
+          </div>
+
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-semibold text-white/70 mb-2">Full Name</label>
@@ -193,23 +218,6 @@ export default function Register() {
               )}
             </button>
           </form>
-
-          <div className="relative my-5">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-white/10" />
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-[#1a1635] text-white/30">or continue with</span>
-            </div>
-          </div>
-
-          <button
-            onClick={handleGoogleSignIn}
-            className="w-full py-3.5 rounded-xl bg-white/5 border border-white/10 text-white font-semibold hover:bg-white/10 transition-colors flex items-center justify-center gap-2"
-          >
-            <Chrome className="w-5 h-5" />
-            Google
-          </button>
 
           <p className="text-center text-white/50 mt-6">
             Already have an account?{' '}

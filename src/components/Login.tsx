@@ -69,6 +69,27 @@ export default function Login() {
             </div>
           )}
 
+          {/* Google sign-in primary — same UX as Register page. Most users sign in
+              the same way they signed up; OAuth eliminates email-confirm friction. */}
+          <button
+            type="button"
+            onClick={handleGoogleSignIn}
+            disabled={loading}
+            className="w-full mb-5 py-3.5 rounded-xl bg-white text-[#2D2B4E] font-bold hover:bg-white/90 transition-colors flex items-center justify-center gap-3 disabled:opacity-50 shadow-[0_4px_16px_rgba(0,0,0,0.15)]"
+          >
+            <Chrome className="w-5 h-5 text-[#4285F4]" />
+            <span>Continue with Google</span>
+          </button>
+
+          <div className="relative mb-5">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-white/10" />
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-4 bg-[#1a1635] text-white/30">or use email</span>
+            </div>
+          </div>
+
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <label className="block text-sm font-semibold text-white/70 mb-2">Email</label>
@@ -126,23 +147,6 @@ export default function Login() {
               )}
             </button>
           </form>
-
-          <div className="relative my-6">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-white/10" />
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-[#1a1635] text-white/30">or continue with</span>
-            </div>
-          </div>
-
-          <button
-            onClick={handleGoogleSignIn}
-            className="w-full py-3.5 rounded-xl bg-white/5 border border-white/10 text-white font-semibold hover:bg-white/10 transition-colors flex items-center justify-center gap-2"
-          >
-            <Chrome className="w-5 h-5" />
-            Google
-          </button>
 
           <p className="text-center text-white/50 mt-8">
             Don't have an account?{' '}
