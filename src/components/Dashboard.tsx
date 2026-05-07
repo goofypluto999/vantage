@@ -350,8 +350,18 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* Subscription Banner */}
-      {!checkoutSuccess && (
+      {/* Subscription Banner — hidden for fresh users (≥7 free tokens, never paid)
+          so the upload form is the first thing they see. They get the cards back
+          once they've spent some tokens or come back as a returning user. This
+          single conditional was the biggest dashboard friction observed in the
+          UX walk: pricing cards above the upload form felt like a paywall to
+          users who hadn't tried the product yet. */}
+      {!checkoutSuccess && (() => {
+        const tokens = profile?.token_balance ?? 0;
+        const everPaid = !!(profile?.stripe_customer_id && profile.stripe_customer_id.length > 0);
+        const isFreshUser = !everPaid && tokens >= 7;
+        return !isFreshUser;
+      })() && (
         <div className="max-w-5xl mx-auto px-6 pt-6">
           <div className="p-6 rounded-2xl bg-gradient-to-r from-violet-600/10 to-purple-600/10 border border-violet-500/20">
             {(() => {
@@ -481,8 +491,29 @@ export default function Dashboard() {
               exit={{ opacity: 0, y: -20 }}
             >
               <div className="mb-8">
-                <h1 className="text-2xl font-display font-bold text-white mb-2">New Analysis</h1>
-                <p className="text-white/50">Upload your CV and add a job URL to get started</p>
+                {/* Welcome strip for fresh users — replaces the pricing cards we
+                    hid above. Confirms balance + reassures it's free + sets up
+                    the 3-step expectation. */}
+                {(() => {
+                  const tokens = profile?.token_balance ?? 0;
+                  const everPaid = !!(profile?.stripe_customer_id && profile.stripe_customer_id.length > 0);
+                  const isFreshUser = !everPaid && tokens >= 7;
+                  if (!isFreshUser) return null;
+                  const analyses = Math.floor(tokens / 3);
+                  return (
+                    <div className="mb-6 px-4 py-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center gap-3 text-sm">
+                      <Sparkles className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                      <p className="text-emerald-100/90">
+                        <strong className="text-emerald-300">{tokens} free tokens — that's {analyses} full analyses on us.</strong>
+                        {' '}No card needed. Just upload your CV and paste a job URL below.
+                      </p>
+                    </div>
+                  );
+                })()}
+                <h1 className="text-2xl font-display font-bold text-white mb-2">Run a new analysis</h1>
+                <p className="text-white/50">
+                  Three quick steps: upload your CV → drop a job posting URL → click run. ~90 seconds, fully private — your CV never leaves your browser until you click run.
+                </p>
               </div>
 
               {!canAnalyze && (
