@@ -126,6 +126,21 @@ export default function InterviewQuestionsPage() {
             {pack.role} Interview Questions (2026)
           </h1>
           <p className={`mt-4 text-lg ${t.textSub}`}>{pack.intro}</p>
+
+          {/* Above-the-fold CTA — same pattern as Sample/Blog/InterviewPrep
+              shipped 2026-05-07. High commercial intent surface; visitor is
+              actively prepping for an interview. */}
+          <div className="mt-6 flex flex-wrap items-center gap-3 text-sm">
+            <Link
+              to="/register"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] text-white font-semibold hover:opacity-95 transition-opacity"
+            >
+              Run my {pack.role} prep <ArrowRight className="w-4 h-4" />
+            </Link>
+            <span className={`${t.textMuted}`}>
+              3 free analyses · no card · 90 seconds per run
+            </span>
+          </div>
         </header>
 
         {/* AEO TL;DR — direct answer block for AI crawlers */}
