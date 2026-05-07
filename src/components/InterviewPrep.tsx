@@ -42,9 +42,13 @@ export default function InterviewPrep({ onBack }: { onBack?: () => void }) {
       {/* Content Area */}
       <div className="flex-grow bg-[#fafafa] relative overflow-hidden">
         <AnimatePresence mode="wait">
+          {/* initial={false} — same defensive pattern as Pricing/Auth/Hero
+              today. Tab-visibility throttling can park the entrance frame
+              at scale 0.98 + opacity 0. Paying users hitting this should
+              never see a ghost flashcard surface. */}
           <motion.div
             key={activeTab}
-            initial={{ opacity: 0, scale: 0.98 }}
+            initial={false}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.98 }}
             className="absolute inset-0 p-8 overflow-y-auto"
@@ -368,7 +372,7 @@ function TimedPracticeView() {
       </div>
       
       {timeLeft === 0 && (
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="p-6 bg-white border border-gray-200 rounded-xl shadow-lg mt-8">
+        <motion.div initial={false} animate={{ opacity: 1, y: 0 }} className="p-6 bg-white border border-gray-200 rounded-xl shadow-lg mt-8">
           <h4 className="font-bold text-[#2D2B4E] mb-2 text-center">Rate your answer</h4>
           <div className="flex gap-2 justify-center">
             {[1,2,3,4,5].map(s => (
