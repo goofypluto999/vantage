@@ -442,20 +442,30 @@ export default function Dashboard() {
         </div>
       </header>
 
-      {/* Checkout Success Banner */}
+      {/* Checkout Success Banner — fires after Stripe redirect with ?success=true.
+          The post-purchase moment is the MOST positively-primed instant in the
+          user journey. Surface the referral link here — friends-and-family
+          referrals are 5-10× higher-converting than cold outreach. */}
       {checkoutSuccess && (
         <div className="max-w-5xl mx-auto px-6 pt-6">
-          <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center">
+          <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-start justify-between gap-3 flex-wrap">
+            <div className="flex items-start gap-3 flex-1 min-w-[260px]">
+              <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center flex-shrink-0">
                 <Sparkles className="w-4 h-4 text-emerald-400" />
               </div>
               <div>
-                <p className="text-emerald-400 font-semibold">Payment confirmed!</p>
-                <p className="text-emerald-400/70 text-sm">Your tokens have been added to your balance.</p>
+                <p className="text-emerald-400 font-semibold">Payment confirmed.</p>
+                <p className="text-emerald-400/70 text-sm">Your tokens have been added.{' '}
+                  <button
+                    onClick={() => navigate('/refer')}
+                    className="underline hover:text-emerald-300"
+                  >
+                    Refer a friend → +5 free tokens
+                  </button>
+                </p>
               </div>
             </div>
-            <button onClick={() => setCheckoutSuccess(false)} className="text-emerald-400/50 hover:text-emerald-400 text-sm">
+            <button onClick={() => setCheckoutSuccess(false)} className="text-emerald-400/50 hover:text-emerald-400 text-sm flex-shrink-0">
               Dismiss
             </button>
           </div>
