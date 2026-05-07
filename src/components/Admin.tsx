@@ -462,6 +462,20 @@ const POST_TEMPLATES: { id: string; platform: 'X' | 'LinkedIn' | 'Reddit'; angle
     targetUrl: 'https://aimvantage.uk/decode-rejection',
   },
   {
+    id: 'ghost-job-x',
+    platform: 'X',
+    angle: 'Free tool — ghost job detector',
+    body: `built a free thing: paste a job listing, AI scores how likely it's a ghost job (0-100).\n\nflags clichés ("highly motivated", "self-starter"), salary bands wider than 1.5x, multiple seniorities collapsed into one role, no concrete deliverables, no tech stack, generic team-intro fluff.\n\nfree, no signup\n\nhttps://aimvantage.uk/ghost-job-check`,
+    targetUrl: 'https://aimvantage.uk/ghost-job-check',
+  },
+  {
+    id: 'ghost-job-reddit',
+    platform: 'Reddit',
+    angle: 'Reddit honest self-rec — ghost detector',
+    body: `(disclaimer: I built it)\n\nIf you've ever applied to a job that looked too vague to be real, I built a free tool that tries to score it: paste the JD, AI flags ghost-job tells (clichés, salary band weirdness, missing concrete deliverables) and gives you a 0-100 ghost-probability.\n\nNot infallible — it's pattern-matching, not telepathy — but it catches the obvious ones. Pairs with the existing /roast tool for cover letters.\n\nFree, no signup, nothing stored.\n\nhttps://aimvantage.uk/ghost-job-check\n\nhappy to take feedback if it misses something obvious.`,
+    targetUrl: 'https://aimvantage.uk/ghost-job-check',
+  },
+  {
     id: 'cv-mirror-hook',
     platform: 'X',
     angle: 'Free open-source tool hook',
@@ -691,6 +705,8 @@ function ReplyDrafter() {
     // Specifically for promoting the new /decode-rejection tool
     { label: '✉️ Rejection-email rant',     query: '("rejection email" OR "got rejected" OR "after careful consideration") (recruiter OR application OR job) -is:retweet min_replies:1' },
     { label: '✉️ "On file" boilerplate',    query: '("we\'ll keep your CV on file" OR "we\'ll keep your resume on file" OR "future opportunities") -is:retweet' },
+    { label: '👻 Ghost job rant',           query: '("ghost job" OR "ghost listing" OR "fake job posting" OR "this job is fake") -is:retweet min_replies:1' },
+    { label: '👻 Reposted listings',        query: '("reposted again" OR "this job has been posted for months" OR "still hiring after 6 months") -is:retweet' },
   ];
 
   // Reddit subreddits where job-prep tool questions are common. Each opens
