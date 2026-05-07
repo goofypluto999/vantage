@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { motion } from 'motion/react';
+// motion entrance animation removed 2026-05-07 (same pattern that broke
+// Pricing). Auth surfaces must always paint.
 import { Lock, Eye, EyeOff, ArrowLeft, BrainCircuit, CheckCircle } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
@@ -45,11 +46,7 @@ export default function ResetPassword() {
   return (
     <div className="min-h-screen flex" style={{ background: 'linear-gradient(135deg, #0d0b1e 0%, #1a1635 50%, #2d2654 100%)' }}>
       <div className="flex-1 flex items-center justify-center p-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="w-full max-w-md"
-        >
+        <div className="w-full max-w-md">
           <div className="flex items-center justify-between mb-8">
             <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-600 to-purple-600 flex items-center justify-center">
@@ -64,17 +61,13 @@ export default function ResetPassword() {
           </div>
 
           {success ? (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-center"
-            >
+            <div className="text-center">
               <div className="w-16 h-16 rounded-full bg-green-500/10 border border-green-500/20 flex items-center justify-center mx-auto mb-6">
                 <CheckCircle className="w-8 h-8 text-green-400" />
               </div>
               <h1 className="text-3xl font-display font-bold text-white mb-2">Password updated!</h1>
               <p className="text-white/50">Redirecting to login...</p>
-            </motion.div>
+            </div>
           ) : (
             <>
               <h1 className="text-3xl font-display font-bold text-white mb-2">Set new password</h1>
@@ -145,7 +138,7 @@ export default function ResetPassword() {
               </form>
             </>
           )}
-        </motion.div>
+        </div>
       </div>
 
       <div className="hidden lg:flex flex-1 items-center justify-center p-8" style={{ background: 'linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%)' }}>

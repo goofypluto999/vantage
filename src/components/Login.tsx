@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { motion } from 'motion/react';
+// motion/react entrance animation removed 2026-05-07 — same stuck-at-opacity-0
+// pattern that broke the Pricing cards. Auth surfaces must always paint.
 import { Mail, Lock, Eye, EyeOff, ArrowRight, ArrowLeft, BrainCircuit, Chrome } from 'lucide-react';
 import { signIn, signInWithGoogle, mapAuthError } from '../lib/supabase';
 
@@ -42,11 +43,7 @@ export default function Login() {
     <div className="min-h-screen flex" style={{ background: 'linear-gradient(135deg, #0d0b1e 0%, #1a1635 50%, #2d2654 100%)' }}>
       {/* Left Side - Form */}
       <div className="flex-1 flex items-center justify-center p-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="w-full max-w-md"
-        >
+        <div className="w-full max-w-md">
           <div className="flex items-center justify-between mb-8">
             <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-600 to-purple-600 flex items-center justify-center">
@@ -154,7 +151,7 @@ export default function Login() {
               Sign up
             </Link>
           </p>
-        </motion.div>
+        </div>
       </div>
 
       {/* Right Side - Visual */}

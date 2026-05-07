@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'motion/react';
+// motion/react entrance animations were dropped on this surface 2026-05-07
+// after a same-pattern bug on the Pricing cards (initial:opacity-0 +
+// animate:opacity-1) was getting STUCK at opacity ~0.25 in production —
+// hiding the whole signup form. Auth surfaces are critical conversion
+// surfaces; they must always paint, no entrance animation.
 import { Mail, Lock, User, Eye, EyeOff, ArrowRight, ArrowLeft, BrainCircuit, Chrome, Check } from 'lucide-react';
 import { signUp, signInWithGoogle, mapAuthError } from '../lib/supabase';
 
@@ -49,11 +53,7 @@ export default function Register() {
   if (success) {
     return (
       <div className="min-h-screen flex items-center justify-center p-8" style={{ background: 'linear-gradient(135deg, #0d0b1e 0%, #1a1635 100%)' }}>
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="max-w-md text-center"
-        >
+        <div className="max-w-md text-center">
           <div className="w-16 h-16 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center mx-auto mb-4">
             <Check className="w-8 h-8 text-emerald-400" />
           </div>
@@ -74,7 +74,7 @@ export default function Register() {
           <p className="text-white/40 text-xs mt-6">
             Already confirmed? <Link to="/login" className="text-violet-400 underline hover:text-violet-300">Sign in</Link>
           </p>
-        </motion.div>
+        </div>
       </div>
     );
   }
@@ -83,11 +83,7 @@ export default function Register() {
     <div className="min-h-screen flex" style={{ background: 'linear-gradient(135deg, #0d0b1e 0%, #1a1635 50%, #2d2654 100%)' }}>
       {/* Left Side - Form */}
       <div className="flex-1 flex items-center justify-center p-8 overflow-y-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="w-full max-w-md"
-        >
+        <div className="w-full max-w-md">
           <div className="flex items-center justify-between mb-6">
             <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-600 to-purple-600 flex items-center justify-center">
@@ -225,7 +221,7 @@ export default function Register() {
               Sign in
             </Link>
           </p>
-        </motion.div>
+        </div>
       </div>
 
       {/* Right Side - Visual. No fake numbers — we're a few weeks old.
