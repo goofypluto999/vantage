@@ -108,16 +108,25 @@ export default async function handler(request: any, response: any) {
       throw err;
     }
 
-    const prompt = `You are an expert interview coach preparing a candidate for the following role:
+    const prompt = `You are an interviewer for the following role. Not a coach — an interviewer. You are about to ask the candidate questions in an actual interview.
+
+Role context:
 "${roleContext}"
 
-Generate exactly 5 interview questions that are highly specific to this role and context.
-Return a JSON array of exactly 5 objects. Each object must have:
-- question: string (the interview question)
+Generate exactly 5 interview questions a real hiring manager at this company / for this role would actually ask. Return a JSON array of 5 objects. Each object must have:
+- question: string (the interview question, written exactly as it would be spoken in the interview — natural cadence, not a chapter heading)
 - category: one of "behavioural" | "technical" | "situational" | "motivational"
-- hint: string (a brief coaching tip, 1-2 sentences, to help the candidate answer well)
+- hint: string (a 1-2 sentence prep cue for the candidate — point at the STAR or SCQA shape they should reach for, name the specific evidence-type they should bring)
 
-Only return the JSON array, no other text.`;
+STRICT RULES (this is what separates a Vantage mock from a generic ChatGPT prompt — follow them exactly):
+  • Mandatory mix of categories across the 5: at least 1 "behavioural" (past behaviour predicts future), at least 1 "technical" or domain-specific to this role, at least 1 "situational" (hypothetical / scenario), and at least 1 "motivational" (why this role / company / now). The 5th can repeat any category.
+  • Every question must reference SOMETHING SPECIFIC from the role context — a named technology, a stated responsibility, a domain, a scope. NEVER ask a generic question that could be asked in any interview.
+  • DO NOT use these dead-shape questions: "Tell me about yourself" (the candidate already prepared one), "What's your greatest weakness", "Where do you see yourself in 5 years", "Why should we hire you" (without a specific role hook), "Describe a time you had a conflict with a coworker" (use a domain-specific conflict instead).
+  • Each question should be answerable in 60-180 seconds out loud — not so wide the candidate freezes, not so narrow it's a yes/no.
+  • Hint must NAME the structure to use ("Use STAR — situation, task, action, result. Bring a number for the result.") and NAME the type of evidence to bring ("Pick a moment with at least one named stakeholder and a measurable outcome.").
+  • If the role context is unclear or generic, write the questions for a Senior IC / first-line-manager level. Do not punt with vague questions.
+
+Only return the JSON array, no other text. No markdown fences. No commentary.`;
 
     let questions: any;
     try {
