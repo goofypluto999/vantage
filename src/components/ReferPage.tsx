@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
-import { Share2, Copy, Check, Gift } from 'lucide-react';
+import { Share2, Copy, Check, Gift, Twitter, Linkedin } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import SEO from './SEO';
 import { useAuth } from '../App';
@@ -76,22 +76,52 @@ export default function ReferPage() {
 
       <section className="max-w-3xl mx-auto px-6 py-8">
         <div className="space-y-4">
-          {links.map((l) => (
-            <div key={l.label} className={`${t.glass} rounded-xl p-5`}>
-              <div className="flex items-start justify-between gap-3 mb-3">
-                <div>
-                  <h2 className={`font-semibold ${t.text}`}>{l.label}</h2>
-                  <p className={`text-xs ${t.textMuted} mt-1 break-all font-mono`}>{l.url}</p>
+          {links.map((l) => {
+            // One-click share helpers per link. Tweet text is short and
+            // doesn't claim things Vantage doesn't deliver — describes the
+            // tool and links the personalised URL.
+            const shareText = l.label.includes('CV Mirror')
+              ? 'Free, fully client-side ATS scanner — see how 5 major parsers actually read your CV. No signup, nothing uploads:'
+              : l.label.includes('laid off')
+              ? 'Just laid off? Cohort-specific layoff playbook + AI prep tool from a UK indie dev:'
+              : 'AI job-prep tool — upload CV, paste job link, get full company intel + tailored cover letter + mock interview pack in 90 seconds:';
+            const xUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(l.url)}`;
+            const liUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(l.url)}`;
+            return (
+              <div key={l.label} className={`${t.glass} rounded-xl p-5`}>
+                <div className="flex items-start justify-between gap-3 mb-3 flex-wrap">
+                  <div className="min-w-0 flex-1">
+                    <h2 className={`font-semibold ${t.text}`}>{l.label}</h2>
+                    <p className={`text-xs ${t.textMuted} mt-1 break-all font-mono`}>{l.url}</p>
+                  </div>
+                  <button
+                    onClick={() => copy(l.url, l.label)}
+                    className="inline-flex items-center gap-2 px-3 py-2 bg-[#4F46E5] text-white rounded-md text-sm font-semibold hover:bg-[#3F36D5] flex-shrink-0"
+                  >
+                    {copied === l.label ? <><Check className="w-3 h-3" /> Copied</> : <><Copy className="w-3 h-3" /> Copy</>}
+                  </button>
                 </div>
-                <button
-                  onClick={() => copy(l.url, l.label)}
-                  className="inline-flex items-center gap-2 px-3 py-2 bg-[#4F46E5] text-white rounded-md text-sm font-semibold hover:bg-[#3F36D5] flex-shrink-0"
-                >
-                  {copied === l.label ? <><Check className="w-3 h-3" /> Copied</> : <><Copy className="w-3 h-3" /> Copy</>}
-                </button>
+                <div className="flex flex-wrap gap-2">
+                  <a
+                    href={xUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-black/90 text-white text-xs font-medium hover:opacity-90 transition-opacity"
+                  >
+                    <Twitter className="w-3.5 h-3.5" /> Share on X
+                  </a>
+                  <a
+                    href={liUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#0A66C2] text-white text-xs font-medium hover:opacity-90 transition-opacity"
+                  >
+                    <Linkedin className="w-3.5 h-3.5" /> Share on LinkedIn
+                  </a>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
 
