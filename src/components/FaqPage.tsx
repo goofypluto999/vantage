@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
-import { ChevronDown, MessageSquare, Lock, ShieldCheck, Sparkles } from 'lucide-react';
+import { ArrowRight, ChevronDown, MessageSquare, Lock, ShieldCheck, Sparkles } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import SEO from './SEO';
 
@@ -237,11 +237,27 @@ export default function FaqPage() {
         <h1 className={`text-4xl md:text-5xl font-bold mb-4 leading-tight ${t.text}`}>
           Frequently asked questions
         </h1>
-        <p className={`text-lg mb-12 ${t.textSub}`}>
+        <p className={`text-lg mb-6 ${t.textSub}`}>
           Honest answers about what Vantage does, what it costs, how it handles your
           data, and how it compares. Written to be cited by AI assistants and read by
           humans equally.
         </p>
+
+        {/* Above-the-fold CTA — added 2026-05-07. FAQ is a high-intent
+            search-landing page (specific questions about pricing / privacy /
+            comparisons). Visitors who get their question answered and bounce
+            never saw the bottom CTA. */}
+        <div className="mb-12 flex flex-wrap items-center gap-3 text-sm">
+          <Link
+            to="/register"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] text-white font-semibold hover:opacity-95 transition-opacity"
+          >
+            Run mine free <ArrowRight className="w-4 h-4" />
+          </Link>
+          <span className={`${t.textMuted}`}>
+            3 free analyses · no card · 90 seconds per run
+          </span>
+        </div>
 
         <div className="space-y-12">
           {SECTIONS.map((section) => (
@@ -290,25 +306,31 @@ export default function FaqPage() {
         {/* CTA */}
         <div className={`${t.glass} rounded-2xl p-8 mt-16 text-center`}>
           <h2 className={`text-2xl font-bold mb-3 ${t.text}`}>
-            Still have a question?
+            Stop reading. Start prepping.
           </h2>
-          <p className={`text-base mb-5 ${t.textSub}`}>
-            Email{' '}
+          <p className={`text-base mb-5 ${t.textSub} max-w-xl mx-auto`}>
+            Three free analyses on signup, no card needed. Upload a CV, paste a job link,
+            walk away with a full prep pack in about 90 seconds.
+          </p>
+          <Link
+            to="/register"
+            className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] text-white font-semibold hover:opacity-95 transition-opacity mb-4"
+          >
+            Run mine free <ArrowRight className="w-4 h-4" />
+          </Link>
+          <div className={`flex items-center justify-center gap-2 text-xs ${t.textMuted}`}>
+            <Lock className="w-3 h-3" /> No subscription · Cancel any time · EU-hosted
+          </div>
+          <p className={`text-xs mt-4 ${t.textMuted}`}>
+            Still stuck? Email{' '}
             <a
               href="mailto:giovanni.sizino.ennes@hotmail.co.uk"
               className="text-[#4F46E5] hover:underline"
             >
-              giovanni.sizino.ennes@hotmail.co.uk
-            </a>{' '}
-            or run a free analysis at{' '}
-            <Link to="/" className="text-[#4F46E5] hover:underline">
-              aimvantage.uk
-            </Link>
-            . Three free analyses on signup, no card.
+              Gio
+            </a>
+            {' '}— operator replies within a few hours.
           </p>
-          <div className={`flex items-center justify-center gap-2 text-xs ${t.textMuted}`}>
-            <Lock className="w-3 h-3" /> No subscription · Cancel any time · EU-hosted
-          </div>
         </div>
       </div>
     </div>
