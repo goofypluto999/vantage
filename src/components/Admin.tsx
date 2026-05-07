@@ -630,6 +630,12 @@ function ReplyDrafter() {
     { label: 'Job application volume',      query: '("100 applications" OR "200 applications" OR "no callbacks" OR "no responses") (job OR jobs) -is:retweet' },
     { label: 'Anthropic / OpenAI prep',     query: '("Anthropic interview" OR "OpenAI interview" OR "Stripe interview") (prep OR preparing OR tips) -is:retweet' },
     { label: 'Career transition',           query: '("career change" OR "career pivot" OR "switching jobs") (resume OR cv OR "cover letter") -is:retweet min_replies:1' },
+    // UK-specific — Vantage is UK-hosted, GBP-priced, EU-friendly. UK
+    // job-seekers respond better to a UK indie tool than they do to a
+    // US one with .com pricing.
+    { label: '🇬🇧 UK job-search 2026',       query: '("UK job search" OR "UK job market" OR "UK job hunt") 2026 (advice OR tools OR tips) -is:retweet' },
+    { label: '🇬🇧 UK CV / cover letter',     query: 'UK ("CV" OR "cover letter") (help OR advice OR "any tool") -is:retweet' },
+    { label: '🇬🇧 UK ATS / Workday',          query: 'UK (ATS OR "Workday" OR "iCIMS" OR "Greenhouse") (rejected OR "no callbacks" OR struggling) -is:retweet' },
   ];
 
   // Reddit subreddits where job-prep tool questions are common. Each opens
@@ -641,6 +647,10 @@ function ReplyDrafter() {
     { label: 'r/Layoffs — fresh',         subreddit: 'Layoffs', query: 'cover letter resume help' },
     { label: 'r/resumes — review',        subreddit: 'resumes', query: 'AI tool review' },
     { label: 'r/jobsearch — overwhelm',   subreddit: 'jobsearch', query: '100 applications no responses' },
+    // UK-specific subreddits — better fit for a UK indie tool
+    { label: '🇬🇧 r/UKJobs',                subreddit: 'UKJobs', query: 'cover letter help' },
+    { label: '🇬🇧 r/UKPersonalFinance',     subreddit: 'UKPersonalFinance', query: 'job search career change' },
+    { label: '🇬🇧 r/cscareerquestionsEU',  subreddit: 'cscareerquestionsEU', query: 'interview prep tool' },
   ];
 
   // LinkedIn doesn't have a deep-search URL the same way X does, but
