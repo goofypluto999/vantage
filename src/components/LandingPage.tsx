@@ -592,6 +592,32 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
             >
               Read a complete real example output (no signup) →
             </Link>
+
+            {/* Free-tool chip cluster — added 2026-05-08. Three free tools
+                live on Vantage. Skeptics who don't want to sign up have a
+                second doorway: try a free tool first, get value, come back
+                for the paid analysis. Each chip links to a tool route. */}
+            <div className="flex flex-wrap items-center justify-center gap-2 pt-2 pointer-events-auto">
+              <span className="text-[11px] uppercase tracking-widest font-bold text-[#3B3A5C]">Or try a free tool:</span>
+              <Link
+                to="/roast"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/45 backdrop-blur-[20px] border border-white/55 text-[#2D2B4E] text-xs font-semibold hover:bg-white/65 transition-all"
+              >
+                Roast my cover letter
+              </Link>
+              <Link
+                to="/decode-rejection"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/45 backdrop-blur-[20px] border border-white/55 text-[#2D2B4E] text-xs font-semibold hover:bg-white/65 transition-all"
+              >
+                Decode rejection email
+              </Link>
+              <Link
+                to="/ghost-job-check"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/45 backdrop-blur-[20px] border border-white/55 text-[#2D2B4E] text-xs font-semibold hover:bg-white/65 transition-all"
+              >
+                Is this a ghost job?
+              </Link>
+            </div>
             <p className="text-xs text-[#3B3A5C] uppercase tracking-widest flex items-center gap-2 font-bold">
               <Lock className="w-3 h-3" /> No subscription · Cancel any time · EU-hosted
             </p>
