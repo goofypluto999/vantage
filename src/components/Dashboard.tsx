@@ -131,7 +131,11 @@ export default function Dashboard() {
   });
   const [jobDescFile, setJobDescFile] = useState<File | null>(null);
   const [jobDescText, setJobDescText] = useState('');
-  const [jdMode, setJdMode] = useState<'file' | 'text'>('file');
+  // Default to 'text' (paste) — paste-from-clipboard is the fastest way to get
+  // a JD into the form. File mode is still available via the toggle. Was 'file'
+  // before — switched after observing real users hesitate at the file-picker
+  // because they don't have JDs as files; they have them as web-page text.
+  const [jdMode, setJdMode] = useState<'file' | 'text'>('text');
   const [error, setError] = useState('');
   const [results, setResults] = useState<any>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -565,7 +569,7 @@ export default function Dashboard() {
                   }}
                   onClick={() => fileInputRef.current?.click()}
                 >
-                  <span className="absolute top-3 right-3 text-[10px] font-bold uppercase tracking-widest text-violet-300/70">Required</span>
+                  <span className="absolute top-3 right-3 text-[10px] font-bold uppercase tracking-widest text-violet-300/70">Step 1 · Required</span>
                   <input
                     ref={fileInputRef}
                     type="file"
@@ -578,33 +582,39 @@ export default function Dashboard() {
                       <>
                         <FileText className="w-8 h-8 text-emerald-400 mx-auto mb-2" />
                         <p className="text-white font-semibold text-sm truncate">{cvFile.name}</p>
+                        <p className="text-white/40 text-[11px] mt-1">Click to swap for a different CV</p>
                       </>
                     ) : (
                       <>
                         <Upload className="w-8 h-8 text-white/30 mx-auto mb-2" />
-                        <p className="text-white/50 text-sm">Upload your CV</p>
-                        <p className="text-white/30 text-xs">PDF, DOCX, TXT</p>
+                        <p className="text-white font-semibold text-sm">Upload your CV</p>
+                        <p className="text-white/40 text-xs mt-1">Drop or click — PDF, DOCX, or TXT</p>
                       </>
                     )}
                   </div>
                 </div>
 
-                {/* Job Description — File or Paste */}
-                <div className="p-4 rounded-2xl border-2 border-dashed border-white/10 bg-white/5">
-                  <div className="flex items-center gap-1 mb-3">
-                    <button
-                      onClick={() => setJdMode('file')}
-                      className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold transition-all ${jdMode === 'file' ? 'bg-violet-600/30 text-violet-300' : 'text-white/40 hover:text-white/60'}`}
-                    >
-                      <Upload className="w-3 h-3" /> File
-                    </button>
+                {/* Job Description — Paste (default) or File. Paste-from-clipboard
+                    is the fastest path: copy job posting text → paste → done. The
+                    File mode is still available for users who saved the JD as a
+                    document. Visually labelled "Step 2 · Recommended" rather than
+                    "Optional" — most users skip optional fields, but quality drops
+                    sharply without a JD on URL-protected sites. */}
+                <div className="p-4 rounded-2xl border-2 border-dashed border-white/10 bg-white/5 relative">
+                  <span className="absolute top-3 right-3 text-[10px] font-bold uppercase tracking-widest text-emerald-300/70">Step 2 · Recommended</span>
+                  <div className="flex items-center gap-1 mb-3 mt-5">
                     <button
                       onClick={() => setJdMode('text')}
                       className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold transition-all ${jdMode === 'text' ? 'bg-violet-600/30 text-violet-300' : 'text-white/40 hover:text-white/60'}`}
                     >
-                      <Type className="w-3 h-3" /> Paste
+                      <Type className="w-3 h-3" /> Paste text
                     </button>
-                    <span className="text-white/20 text-xs ml-auto">Optional</span>
+                    <button
+                      onClick={() => setJdMode('file')}
+                      className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold transition-all ${jdMode === 'file' ? 'bg-violet-600/30 text-violet-300' : 'text-white/40 hover:text-white/60'}`}
+                    >
+                      <Upload className="w-3 h-3" /> Or upload file
+                    </button>
                   </div>
                   {jdMode === 'file' ? (
                     <div
@@ -626,7 +636,8 @@ export default function Dashboard() {
                       ) : (
                         <>
                           <FileText className="w-6 h-6 text-white/30 mx-auto mb-1" />
-                          <p className="text-white/50 text-xs">Upload Job Description</p>
+                          <p className="text-white/50 text-xs">Click to upload JD file</p>
+                          <p className="text-white/30 text-[10px] mt-0.5">PDF, DOCX, or TXT</p>
                         </>
                       )}
                     </div>
@@ -635,8 +646,8 @@ export default function Dashboard() {
                       <textarea
                         value={jobDescText}
                         onChange={(e) => setJobDescText(e.target.value)}
-                        placeholder="Paste job description here..."
-                        className="w-full h-20 bg-transparent text-white placeholder-white/30 outline-none text-xs resize-none"
+                        placeholder="Paste the full job description here — the more detail, the better the AI's tailoring..."
+                        className="w-full h-24 bg-transparent text-white placeholder-white/40 outline-none text-xs resize-none leading-relaxed"
                       />
                       <button
                         onClick={async () => {
@@ -645,9 +656,9 @@ export default function Dashboard() {
                             if (text) setJobDescText(text);
                           } catch { /* clipboard access denied */ }
                         }}
-                        className="flex items-center gap-1 px-2 py-1 rounded-md bg-white/5 hover:bg-white/10 text-white/50 hover:text-white/70 text-xs transition-all"
+                        className="flex items-center gap-1 px-2 py-1 rounded-md bg-white/5 hover:bg-white/10 text-white/60 hover:text-white/80 text-xs transition-all"
                       >
-                        <ClipboardPaste className="w-3 h-3" /> Paste
+                        <ClipboardPaste className="w-3 h-3" /> Paste from clipboard
                       </button>
                     </div>
                   )}
@@ -655,8 +666,8 @@ export default function Dashboard() {
 
                 {/* Job posting URL */}
                 <div className="p-6 rounded-2xl bg-white/5 border border-white/10 relative">
-                  <span className="absolute top-3 right-3 text-[10px] font-bold uppercase tracking-widest text-violet-300/70">Required</span>
-                  <label className="block text-xs font-bold text-white/40 uppercase tracking-widest mb-3">
+                  <span className="absolute top-3 right-3 text-[10px] font-bold uppercase tracking-widest text-violet-300/70">Step 3 · Required</span>
+                  <label className="block text-xs font-bold text-white/60 uppercase tracking-widest mb-3 mt-5">
                     Job posting URL
                   </label>
                   <input
@@ -666,8 +677,8 @@ export default function Dashboard() {
                     placeholder="https://company.com/careers/role-id"
                     className="w-full bg-transparent text-white placeholder-white/30 outline-none text-sm"
                   />
-                  <p className="mt-2 text-[11px] text-white/30">
-                    The link to the actual job posting (careers page, Indeed, LinkedIn, Reed, etc.).
+                  <p className="mt-2 text-[11px] text-white/40 leading-relaxed">
+                    Paste the link from the careers page. Works with most company sites + Indeed, LinkedIn, Reed, Greenhouse, Lever. Some sites block scrapers — if so, paste the JD text in Step 2 too.
                   </p>
                 </div>
               </div>
@@ -705,8 +716,8 @@ export default function Dashboard() {
                 className="w-full py-4 rounded-xl bg-gradient-to-r from-violet-600 to-purple-600 text-white font-bold hover:from-violet-500 hover:to-purple-500 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 <Sparkles className="w-5 h-5" />
-                Generate Intelligence
-                <span className="text-white/60 text-sm font-normal ml-1">(3 tokens)</span>
+                Run my prep pack
+                <span className="text-white/70 text-sm font-normal ml-1">· uses 3 of your {profile?.token_balance ?? 0} tokens</span>
                 <ChevronRight className="w-5 h-5" />
               </button>
 
