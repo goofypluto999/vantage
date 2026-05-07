@@ -163,13 +163,13 @@ function Navbar({ onStart, showLogin }: { onStart: () => void; showLogin?: () =>
             which Clarity flagged as a dead-click target (users instinctively
             click logos to 'go home'). Now a button that smooth-scrolls to top
             so the click does something visible instead of nothing. */}
-        <motion.button
+        {/* No motion entrance on navbar elements — same defensive change as
+            the hero on 2026-05-07. Tab visibility throttling can leave them
+            stuck at opacity 0, hiding the Log In / Get Started buttons. */}
+        <button
           type="button"
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           aria-label="Scroll to top of page"
-          initial={{ opacity: 0, x: -16 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
           className="flex items-center gap-2 cursor-pointer hover:opacity-90 active:scale-95 transition-all"
         >
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#4F46E5] to-[#7C3AED] flex items-center justify-center shadow-md">
@@ -178,15 +178,10 @@ function Navbar({ onStart, showLogin }: { onStart: () => void; showLogin?: () =>
           <span className="font-display font-[800] text-[#2D2B4E] text-lg tracking-tight uppercase">
             Vantage
           </span>
-        </motion.button>
+        </button>
 
         {/* Desktop nav */}
-        <motion.nav
-          initial={{ opacity: 0, y: -8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="hidden md:flex items-center gap-1"
-        >
+        <nav className="hidden md:flex items-center gap-1">
           {links.map((link) => (
             <a
               key={link}
@@ -196,15 +191,10 @@ function Navbar({ onStart, showLogin }: { onStart: () => void; showLogin?: () =>
               {link}
             </a>
           ))}
-        </motion.nav>
+        </nav>
 
         {/* Desktop CTA */}
-        <motion.div
-          initial={{ opacity: 0, x: 16 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          className="hidden md:flex items-center gap-2"
-        >
+        <div className="hidden md:flex items-center gap-2">
           {/* Currency toggle */}
           <div className="flex items-center rounded-full bg-white/40 border border-white/60 p-0.5 mr-1" role="group" aria-label="Currency">
             <button
@@ -230,7 +220,7 @@ function Navbar({ onStart, showLogin }: { onStart: () => void; showLogin?: () =>
           >
             Get Started →
           </button>
-        </motion.div>
+        </div>
 
         {/* Mobile hamburger */}
         <button
@@ -550,45 +540,33 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
           style={{ opacity: heroOpacity, scale: heroScale }}
           className="relative z-10 text-center max-w-5xl px-6 pointer-events-none mt-16"
         >
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/30 backdrop-blur-[20px] border border-white/50 text-[#2D2B4E] text-xs font-bold tracking-widest uppercase mb-8 shadow-[0_4px_16px_rgba(0,0,0,0.06)]"
-          >
+          {/* Hero entrance reveal sequence (eyebrow pill → H1 → subtitle → CTAs)
+              previously used staggered initial:opacity-0 + animate:opacity-1.
+              Tab visibility throttling pauses requestAnimationFrame, so a
+              user who opens this in a background tab and switches back can
+              find the H1 (the LCP element) and primary CTA stuck at opacity 0.
+              The H1 IS the page LCP — must always paint. Switched all four
+              entrance frames to plain non-animated divs so the hero is
+              unconditionally visible on first frame, regardless of tab state. */}
+          <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/30 backdrop-blur-[20px] border border-white/50 text-[#2D2B4E] text-xs font-bold tracking-widest uppercase mb-8 shadow-[0_4px_16px_rgba(0,0,0,0.06)]">
             <span className="w-2 h-2 rounded-full bg-[#4F46E5] animate-pulse" />
             3 Free Analyses · No Card Needed
-          </motion.div>
+          </div>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, delay: 0.45 }}
-            className="text-[40px] leading-[1.05] sm:text-5xl md:text-7xl lg:text-[88px] font-display font-[800] tracking-[-0.04em] drop-shadow-sm"
-          >
+          <h1 className="text-[40px] leading-[1.05] sm:text-5xl md:text-7xl lg:text-[88px] font-display font-[800] tracking-[-0.04em] drop-shadow-sm">
             90 seconds from CV <br className="hidden sm:block" />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#4F46E5] to-[#7C3AED]">
               to interview-ready.
             </span>
-          </motion.h1>
+          </h1>
 
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.65 }}
-            className="mt-5 sm:mt-6 text-base sm:text-lg md:text-xl text-[#3B3A5C] max-w-2xl mx-auto font-medium leading-relaxed"
-          >
+          <p className="mt-5 sm:mt-6 text-base sm:text-lg md:text-xl text-[#3B3A5C] max-w-2xl mx-auto font-medium leading-relaxed">
             Upload your CV, paste a job link. Get a tailored cover letter, mock interview
             questions, fit score, and a 5-minute pitch outline — in the time it takes to
             make coffee.
-          </motion.p>
+          </p>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.85 }}
-            className="mt-12 pointer-events-auto flex flex-col items-center gap-4"
-          >
+          <div className="mt-12 pointer-events-auto flex flex-col items-center gap-4">
             <div className="flex flex-wrap items-center justify-center gap-3">
               <button
                 onClick={onStart}
@@ -627,7 +605,7 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
             <p className="text-[11px] text-[#6B6B8D] mt-1 font-medium">
               Built solo in 60 days · Free ATS scanner open-source on GitHub
             </p>
-          </motion.div>
+          </div>
         </motion.div>
 
         {/* Scroll indicator */}
