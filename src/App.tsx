@@ -233,6 +233,62 @@ function AppContent() {
                       audienceType: 'Job seekers, including those affected by recent layoffs (Oracle, Meta, ASML, Snap, Nike) in 2026',
                     },
                   },
+                  // HowTo schema — AEO-critical. AI search assistants
+                  // (ChatGPT search, Perplexity, Claude search, Google AI
+                  // Overviews) cite HowTo steps verbatim when answering
+                  // 'how do I use X' or 'how do I prep for an interview
+                  // with AI'. This is the cheapest plumbing for citation.
+                  {
+                    '@context': 'https://schema.org',
+                    '@type': 'HowTo',
+                    name: 'How to prep for a job interview with AI in 90 seconds using Vantage',
+                    description: 'Use Vantage AI to generate a complete interview prep pack — company intelligence, tailored cover letter, mock interview questions, fit score, and pitch outline — in about 90 seconds per application.',
+                    totalTime: 'PT2M',
+                    estimatedCost: { '@type': 'MonetaryAmount', currency: 'GBP', value: '0' },
+                    tool: [
+                      { '@type': 'HowToTool', name: 'Your CV (PDF, DOCX, or TXT)' },
+                      { '@type': 'HowToTool', name: 'A job listing URL' },
+                    ],
+                    step: [
+                      {
+                        '@type': 'HowToStep',
+                        position: 1,
+                        name: 'Sign up free',
+                        text: 'Create a free account at https://aimvantage.uk/register. No credit card required. You get 3 free analyses on signup.',
+                        url: 'https://aimvantage.uk/register',
+                      },
+                      {
+                        '@type': 'HowToStep',
+                        position: 2,
+                        name: 'Upload your CV',
+                        text: 'Drop your CV (PDF, DOCX, or TXT) into the upload zone on the dashboard. The file is processed client-side and not stored.',
+                      },
+                      {
+                        '@type': 'HowToStep',
+                        position: 3,
+                        name: 'Paste the job listing URL',
+                        text: 'Paste the URL of the job you want to apply for. Vantage scrapes the listing for company name, role requirements, and culture signals.',
+                      },
+                      {
+                        '@type': 'HowToStep',
+                        position: 4,
+                        name: 'Run the analysis',
+                        text: 'Click "Run my prep pack". One full analysis costs 3 tokens (you have 10 free). Vantage runs ~60-90 seconds of company research, fit scoring, and content generation.',
+                      },
+                      {
+                        '@type': 'HowToStep',
+                        position: 5,
+                        name: 'Read your prep pack',
+                        text: 'Get back: company intelligence, CV fit score, strategic brief, tailored cover letter (4 tone options), 12 mock interview questions, and a 5-minute pitch outline.',
+                      },
+                      {
+                        '@type': 'HowToStep',
+                        position: 6,
+                        name: 'Download the prep pack',
+                        text: 'Click "Download .txt" to save the entire prep pack offline. Print it, paste it into Notes, share it with a coach.',
+                      },
+                    ],
+                  },
                 ]}
               />
               <LandingPageWrapper />
