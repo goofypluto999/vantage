@@ -1,5 +1,6 @@
+import { useState } from 'react';
 import { useParams, Link, Navigate } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, Calendar, Clock, Star, ExternalLink } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Calendar, Clock, Star, ExternalLink, Twitter, Linkedin, Copy, Check } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { getPostBySlug, blogPosts, type BlogSection } from '../data/blogPosts';
 import { getCrossLinks } from '../data/blogCrossLinks';
@@ -10,10 +11,35 @@ const SITE_URL = 'https://aimvantage.uk';
 export default function BlogPost() {
   const { slug } = useParams<{ slug: string }>();
   const { t } = useTheme();
+  const [copied, setCopied] = useState(false);
 
   if (!slug) return <Navigate to="/blog" replace />;
   const post = getPostBySlug(slug);
   if (!post) return <Navigate to="/blog" replace />;
+
+  const postUrl = `${SITE_URL}/blog/${post.slug}`;
+  const shareTwitter = () => {
+    const text = `${post.title} — ${post.excerpt.slice(0, 140)}`;
+    window.open(
+      `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(postUrl)}`,
+      '_blank',
+      'noopener,noreferrer',
+    );
+  };
+  const shareLinkedin = () => {
+    window.open(
+      `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(postUrl)}`,
+      '_blank',
+      'noopener,noreferrer',
+    );
+  };
+  const copyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(postUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch { /* clipboard not available */ }
+  };
 
   const related = blogPosts
     .filter((p) => p.slug !== post.slug)
@@ -182,6 +208,35 @@ export default function BlogPost() {
             <span className={`${t.textMuted}`}>
               3 free analyses · no card · 90 seconds per run
             </span>
+          </div>
+
+          {/* Share row — added 2026-05-07. Each blog post is a potential
+              viral entry point. Power users who like a post can share to
+              X / LinkedIn / direct link with one click instead of
+              copying the URL. Free distribution lever. */}
+          <div className="mt-4 flex flex-wrap items-center gap-2">
+            <span className={`text-xs uppercase tracking-wider mr-1 ${t.textMuted}`}>Share</span>
+            <button
+              onClick={shareTwitter}
+              type="button"
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-black/90 text-white text-xs font-medium hover:opacity-90 transition-opacity"
+            >
+              <Twitter className="w-3.5 h-3.5" /> X
+            </button>
+            <button
+              onClick={shareLinkedin}
+              type="button"
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#0A66C2] text-white text-xs font-medium hover:opacity-90 transition-opacity"
+            >
+              <Linkedin className="w-3.5 h-3.5" /> LinkedIn
+            </button>
+            <button
+              onClick={copyLink}
+              type="button"
+              className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-white/20 text-xs font-medium hover:bg-black/5 dark:hover:bg-white/5 transition-colors ${t.textSub}`}
+            >
+              {copied ? <><Check className="w-3.5 h-3.5" /> Copied</> : <><Copy className="w-3.5 h-3.5" /> Copy link</>}
+            </button>
           </div>
         </header>
 
