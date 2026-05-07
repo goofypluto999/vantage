@@ -470,6 +470,25 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
   const [showHowItWorks, setShowHowItWorks] = useState(false);
   const [showDemo, setShowDemo] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
+
+  // Floating "Try free" CTA pill — visible after the user scrolls past the
+  // hero (so they never have to scroll back up to act). Dismissible, and
+  // dismissal persists for the session via state. No localStorage to keep
+  // this stateless across visits — fresh visitors should always see it once.
+  const [showFloatingCta, setShowFloatingCta] = useState(false);
+  const [floatingCtaDismissed, setFloatingCtaDismissed] = useState(false);
+  useEffect(() => {
+    const onScroll = () => {
+      // Show after scrolling past the first viewport (hero) and not at the
+      // very bottom (pricing section already has visible CTAs there).
+      const past = window.scrollY > window.innerHeight * 0.9;
+      const nearBottom = window.scrollY + window.innerHeight > document.documentElement.scrollHeight - 600;
+      setShowFloatingCta(past && !nearBottom);
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
   const tabs = ['Strategic Brief', 'Cover Letter', 'Interview Pack', 'Presentation Deck'];
 
   // (Old live-stats fetch removed. The "What's been built" section above now
@@ -1220,6 +1239,38 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
           </div>
         </div>
       </footer>
+
+      {/* Floating "Try free" pill — visible after the user scrolls past the
+          hero, hidden when they're already at the bottom (pricing/footer have
+          their own CTAs). Dismissible. Captures the 79%-scroll-depth users
+          who Clarity showed read the page deeply but never re-clicked a CTA. */}
+      {showFloatingCta && !floatingCtaDismissed && (
+        <motion.div
+          initial={{ opacity: 0, y: 24, scale: 0.96 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: 24 }}
+          transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+          className="fixed bottom-5 right-5 z-50 pointer-events-auto"
+        >
+          <div className="flex items-center gap-2 pl-5 pr-2 py-2 rounded-full bg-[#4F46E5] text-white shadow-[0_12px_32px_rgba(79,70,229,0.45)] hover:shadow-[0_16px_40px_rgba(79,70,229,0.55)] transition-shadow">
+            <button
+              onClick={onStart}
+              className="flex items-center gap-2 font-bold text-sm pr-3"
+              aria-label="Try Vantage free — three analyses, no card"
+            >
+              Try free — 3 analyses, no card
+              <ChevronRight className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => setFloatingCtaDismissed(true)}
+              className="w-7 h-7 rounded-full bg-white/15 hover:bg-white/25 text-white/80 hover:text-white flex items-center justify-center transition-colors text-sm"
+              aria-label="Dismiss"
+            >
+              ✕
+            </button>
+          </div>
+        </motion.div>
+      )}
     </div>
   );
 }
