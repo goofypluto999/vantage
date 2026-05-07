@@ -583,9 +583,14 @@ export default function Dashboard() {
       <main className="max-w-5xl mx-auto p-6">
         <AnimatePresence mode="wait">
           {step === 'input' && (
+            // initial={false} — skip entrance animation (mirrors Pricing/Auth
+            // fix from 2026-05-07). Animation framework was stalling at
+            // opacity ~0.2 in some Vercel deploys, hiding the upload form.
+            // exit transition kept so step → step transitions still feel
+            // connected.
             <motion.div
               key="input"
-              initial={{ opacity: 0, y: 20 }}
+              initial={false}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
             >
@@ -880,7 +885,7 @@ export default function Dashboard() {
           {step === 'processing' && (
             <motion.div
               key="processing"
-              initial={{ opacity: 0 }}
+              initial={false}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               className="text-center py-20 max-w-2xl mx-auto"
@@ -903,7 +908,7 @@ export default function Dashboard() {
           {step === 'results' && results && (
             <motion.div
               key="results"
-              initial={{ opacity: 0, y: 20 }}
+              initial={false}
               animate={{ opacity: 1, y: 0 }}
               className="space-y-6"
             >
