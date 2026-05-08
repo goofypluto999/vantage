@@ -65,6 +65,7 @@ export default function AtsVendorPage() {
         title={`${vendor.name} resume parser: how it reads your CV (and what to fix)`}
         description={`How the ${vendor.name} ATS parses CVs in 2026. Specific parse quirks, common failures, and the fixes that actually work. Free multi-vendor scanner included.`}
         path={`/ats/${vendor.slug}`}
+        image={vendor.slug === 'workday' ? 'https://aimvantage.uk/api/og?slug=workday-parser' : undefined}
         markdownAlternate={vendor.slug === 'workday' ? '/markdown/workday-resume-parser.md' : undefined}
       />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
