@@ -120,6 +120,22 @@ export default function Register() {
           <h1 className="text-3xl font-display font-bold text-white mb-2">Create your account</h1>
           <p className="text-white/50 mb-6">Start preparing for your next job today</p>
 
+          {/* Mobile-only "what you get" — the lg+ right panel with the same
+              content is hidden on mobile (hidden lg:flex), which means
+              ~70% of signup traffic was missing the value-prop bullets
+              entirely. Surface them here on small screens, identical
+              content, hidden on lg+ where the right panel takes over. */}
+          <div className="lg:hidden mb-6 rounded-xl bg-white/[0.03] border border-white/10 p-4">
+            <div className="text-xs uppercase tracking-wider text-white/40 mb-2 font-bold">What 10 free prep packs include</div>
+            <ul className="space-y-1.5 text-white/75 text-sm">
+              <li className="flex items-start gap-2"><Check className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" /><span>Company-research write-up per role</span></li>
+              <li className="flex items-start gap-2"><Check className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" /><span>Tailored cover letter (4 tones)</span></li>
+              <li className="flex items-start gap-2"><Check className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" /><span>8–12 likely interview questions</span></li>
+              <li className="flex items-start gap-2"><Check className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" /><span>5-minute pitch outline</span></li>
+              <li className="flex items-start gap-2"><Check className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" /><span>Free ATS preview across 5 parsers</span></li>
+            </ul>
+          </div>
+
           {error && (
             <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
               {error}
