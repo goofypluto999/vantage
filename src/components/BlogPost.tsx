@@ -121,7 +121,63 @@ export default function BlogPost() {
     }
   }
 
-  const allSchemas = [articleSchema, breadcrumbSchema, ...(howToSchema ? [howToSchema] : [])];
+  // FAQPage schema for posts with a '## FAQ' section. Walk the sections,
+  // find the FAQ heading, then collect every subsequent (h3, p) pair until
+  // the next h2 (or end). Each pair becomes a Question/AcceptedAnswer.
+  // AI assistants (Claude/ChatGPT/Perplexity) preferentially cite FAQPage-
+  // structured content when answering related queries — this is the
+  // single highest-leverage AEO surface a long-form post can ship.
+  let faqSchema: object | null = null;
+  const faqIdx = post.sections.findIndex(
+    (s) => s.type === 'h2' && /^FAQ$/i.test(s.text.trim())
+  );
+  if (faqIdx >= 0) {
+    const faqEntries: { question: string; answer: string }[] = [];
+    let pendingQuestion: string | null = null;
+    let pendingAnswer: string[] = [];
+    const flushPending = () => {
+      if (pendingQuestion && pendingAnswer.length > 0) {
+        faqEntries.push({
+          question: pendingQuestion,
+          answer: pendingAnswer.join('\n\n'),
+        });
+      }
+      pendingQuestion = null;
+      pendingAnswer = [];
+    };
+    for (let i = faqIdx + 1; i < post.sections.length; i += 1) {
+      const s = post.sections[i];
+      if (s.type === 'h2') {
+        // Reached the next h2 — FAQ section ended.
+        break;
+      }
+      if (s.type === 'h3') {
+        flushPending();
+        pendingQuestion = s.text;
+      } else if (s.type === 'p' && pendingQuestion) {
+        pendingAnswer.push(s.text);
+      }
+    }
+    flushPending();
+    if (faqEntries.length >= 2) {
+      faqSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: faqEntries.map((e) => ({
+          '@type': 'Question',
+          name: e.question,
+          acceptedAnswer: { '@type': 'Answer', text: e.answer },
+        })),
+      };
+    }
+  }
+
+  const allSchemas = [
+    articleSchema,
+    breadcrumbSchema,
+    ...(howToSchema ? [howToSchema] : []),
+    ...(faqSchema ? [faqSchema] : []),
+  ];
 
   return (
     <div className="min-h-screen" style={{ background: t.pageBg }}>
