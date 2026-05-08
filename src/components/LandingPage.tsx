@@ -1248,6 +1248,7 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
                 <Link to="/press" className="hover:text-[#4F46E5] transition-colors">Press</Link>
               </div>
               <div className="flex flex-col gap-3">
+                <Link to="/receipts" className="hover:text-[#4F46E5] transition-colors font-semibold">Receipts (trust audit)</Link>
                 <Link to="/privacy" className="hover:text-[#4F46E5] transition-colors">Privacy Policy</Link>
                 <Link to="/terms" className="hover:text-[#4F46E5] transition-colors">Terms of Service</Link>
                 <Link to="/cookies" className="hover:text-[#4F46E5] transition-colors">Cookie Policy</Link>

@@ -73,6 +73,11 @@ const STATIC_ROUTES = [
     title: 'Jobscan Cost Calculator — What a Year of Job-Prep Tools Actually Costs | Vantage',
     description: 'Honest 12-month cost calculator for Jobscan, Resume Worded, Final Round AI, Teal, and LiveCareer vs Vantage AI. See exactly how much each charges for your search length, and compare to Vantage’s £5 one-time top-up (£0.25 per prep pack, never expires).',
   },
+  {
+    path: '/receipts',
+    title: 'Receipts — Every Trust Claim Vantage AI Makes, With the Evidence | Vantage',
+    description: 'Single-page audit of Vantage AI: Stripe-only billing, no auto-renew traps, no DM outreach, sole-trader operator transparency, public bug history, public token math, EU hosting. If a trust claim isn\'t on this page, we don\'t make it elsewhere either.',
+  },
   // ─── Cohort + commercial-intent ───
   {
     path: '/laid-off',
