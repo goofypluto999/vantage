@@ -616,27 +616,28 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
             make coffee.
           </p>
 
+          {/* CTA hierarchy refactor 2026-05-08: Clarity showed 14/15 visitors
+              never reach signup. The hero previously had THREE same-weight
+              pill buttons (primary purple, secondary emerald diagnostic,
+              tertiary white "see it work") + 5 chips below = 9 above-fold
+              CTAs = decision paralysis. Demoted the two secondary buttons to
+              smaller secondary/tertiary links so the primary "Get 10 free
+              prep packs" is the only visual focal point. The diagnostic and
+              demo-scroll links are still present, just visually subordinate. */}
           <div className="mt-12 pointer-events-auto flex flex-col items-center gap-4">
-            <div className="flex flex-wrap items-center justify-center gap-3">
-              <button
-                onClick={() => { track('hero_cta_click', { cta: 'register_primary' }); onStart(); }}
-                className="group inline-flex items-center gap-2 px-10 py-4 bg-[#4F46E5] text-white rounded-full font-bold text-base hover:-translate-y-1 hover:shadow-[0_12px_32px_rgba(79,70,229,0.45)] active:scale-95 transition-all"
-              >
-                Get 10 free prep packs <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </button>
-              {/* Lowest-friction onramp for skeptics — Clarity (2026-05-09)
-                  showed 1 page per session and 0% returning visitors. They
-                  read the hero and leave without ever clicking. The 60s
-                  diagnostic is a tool they can complete WITHOUT signing up,
-                  WITHOUT uploading a CV, WITHOUT waiting for AI — pure
-                  client-side decision tree. Promoted from a small chip below
-                  the fold to a proper hero button alongside the primary CTA. */}
+            <button
+              onClick={() => { track('hero_cta_click', { cta: 'register_primary' }); onStart(); }}
+              className="group inline-flex items-center gap-2 px-10 py-4 bg-[#4F46E5] text-white rounded-full font-bold text-base hover:-translate-y-1 hover:shadow-[0_12px_32px_rgba(79,70,229,0.45)] active:scale-95 transition-all"
+            >
+              Get 10 free prep packs <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </button>
+            <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm">
               <Link
                 to="/tools/no-interviews-diagnostic?source=hero"
                 onClick={() => track('hero_cta_click', { cta: 'diagnostic_low_friction' })}
-                className="inline-flex items-center gap-2 px-8 py-4 bg-emerald-500/15 backdrop-blur-[20px] border border-emerald-500/35 text-emerald-700 rounded-full font-semibold text-base hover:bg-emerald-500/25 hover:-translate-y-1 active:scale-95 transition-all"
+                className="inline-flex items-center gap-1.5 font-semibold text-emerald-700 hover:text-emerald-800 underline decoration-emerald-500/40 underline-offset-4 hover:decoration-emerald-700 transition-all"
               >
-                Try the free 60s diagnostic
+                Or try the free 60-sec diagnostic <ChevronRight className="w-3.5 h-3.5" />
               </Link>
               <button
                 onClick={() => {
@@ -646,9 +647,9 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
                     block: 'center',
                   });
                 }}
-                className="inline-flex items-center gap-2 px-8 py-4 bg-white/35 backdrop-blur-[20px] border border-white/55 text-[#2D2B4E] rounded-full font-semibold text-base hover:bg-white/55 hover:-translate-y-1 active:scale-95 transition-all"
+                className="inline-flex items-center gap-1.5 font-semibold text-[#3B3A5C] hover:text-[#4F46E5] transition-colors"
               >
-                <Play className="w-4 h-4" /> See it work (22s)
+                <Play className="w-3.5 h-3.5" /> See it work (22s)
               </button>
             </div>
             <Link
