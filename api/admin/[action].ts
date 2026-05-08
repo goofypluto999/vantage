@@ -229,13 +229,20 @@ Return a JSON array of 3 objects, each with shape:
 
 Output ONLY the JSON array. No markdown, no preamble.`;
 
+    // 2026-05-09: drop responseMimeType + strip code fences (same regression
+    // pattern as /api/decode-rejection and /api/ghost-job-check).
     const aiResponse = await ai.models.generateContent({
       model: 'models/gemini-2.5-flash',
       contents: [{ parts: [{ text: prompt }] }],
-      config: { responseMimeType: 'application/json', temperature: 0.85 },
+      config: { temperature: 0.85 },
     });
     if (!aiResponse.text) throw new Error('No response from AI');
-    const replies = JSON.parse(aiResponse.text);
+    const cleanedRepliesJson = aiResponse.text
+      .trim()
+      .replace(/^```(?:json)?\s*/i, '')
+      .replace(/\s*```$/i, '')
+      .trim();
+    const replies = JSON.parse(cleanedRepliesJson);
     if (!Array.isArray(replies)) throw new Error('AI returned non-array');
     return response.status(200).json({ success: true, replies: replies.slice(0, 3) });
   } catch (error: any) {

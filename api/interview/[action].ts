@@ -128,13 +128,23 @@ Only return the JSON array, no other text. No markdown fences. No commentary.`;
 
     let questions: any;
     try {
+      // 2026-05-09: dropped responseMimeType:'application/json' — same
+      // failure mode that broke /api/decode-rejection + /api/ghost-job-check
+      // (a regression in @google/genai 1.29.0 + gemini-2.5-flash for
+      // JSON-mode requests with nested arrays). Strip code fences
+      // defensively before parsing.
       const aiResponse = await ai.models.generateContent({
         model: 'models/gemini-2.5-flash',
         contents: [{ parts: [{ text: prompt }] }],
-        config: { responseMimeType: 'application/json' },
+        config: {},
       });
       if (!aiResponse.text) throw new Error('No response from AI');
-      questions = JSON.parse(aiResponse.text);
+      const cleanedJson = aiResponse.text
+        .trim()
+        .replace(/^```(?:json)?\s*/i, '')
+        .replace(/\s*```$/i, '')
+        .trim();
+      questions = JSON.parse(cleanedJson);
     } catch (err) {
       await refundTokens(user.id, QUESTIONS_COST);
       throw err;
@@ -204,13 +214,19 @@ Banned grader phrases — do NOT use any of these in summary or strengths or imp
 
 Return only the JSON object, no other text. No markdown fences. No commentary.`;
 
+    // 2026-05-09: same responseMimeType fix — strip code fences before parse.
     const aiResponse = await ai.models.generateContent({
       model: 'models/gemini-2.5-flash',
       contents: [{ parts: [{ text: prompt }] }],
-      config: { responseMimeType: 'application/json', temperature: 0 },
+      config: { temperature: 0 },
     });
     if (!aiResponse.text) throw new Error('No response from AI');
-    const evaluation = JSON.parse(aiResponse.text);
+    const cleanedEvalJson = aiResponse.text
+      .trim()
+      .replace(/^```(?:json)?\s*/i, '')
+      .replace(/\s*```$/i, '')
+      .trim();
+    const evaluation = JSON.parse(cleanedEvalJson);
     return response.status(200).json({ success: true, evaluation });
   } catch (error: any) {
     console.error('Interview evaluate error:', error?.message || 'Unknown error');
