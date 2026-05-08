@@ -125,6 +125,21 @@ export default function AboutPage() {
               <dt className={`text-xs font-semibold uppercase tracking-widest ${t.textMuted}`}>Founded</dt>
               <dd className={t.text}>February 2026</dd>
             </div>
+            <div className="sm:col-span-2">
+              <dt className={`text-xs font-semibold uppercase tracking-widest ${t.textMuted}`}>UK ICO data-protection registration</dt>
+              <dd className={t.text}>
+                Registered as a data controller with the UK Information Commissioner's Office
+                (annual fee paid via direct debit, registration in progress as of 2026-05-08).
+                {' '}<a
+                  href="https://ico.org.uk/ESDWebPages/Search"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-violet-400 underline hover:text-violet-300 text-xs"
+                >
+                  Verify on the ICO public register →
+                </a>
+              </dd>
+            </div>
           </dl>
         </section>
 
