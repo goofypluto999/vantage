@@ -215,6 +215,84 @@ async function loadProgrammaticRoutes() {
     console.warn('Could not parse companyPacks.ts:', err?.message);
   }
 
+  // ATS vendor pages
+  try {
+    const atsTs = await fs.readFile(
+      path.join(ROOT, 'src/data/atsVendors.ts'),
+      'utf8',
+    );
+    const entries = extractEntries(atsTs, ['slug', 'name']);
+    for (const { slug, name } of entries) {
+      routes.push({
+        path: `/ats/${slug}`,
+        title: `${name} resume parser: how it reads your CV (and what to fix) | Vantage`,
+        description: `How the ${name} ATS parses CVs in 2026. Specific parse quirks, common failures, and the fixes that actually work. Free multi-vendor scanner included.`,
+      });
+    }
+  } catch (err) {
+    console.warn('Could not parse atsVendors.ts:', err?.message);
+  }
+
+  // Laid-off-from-<company> pages
+  try {
+    const laidOffTs = await fs.readFile(
+      path.join(ROOT, 'src/data/laidOffCompanies.ts'),
+      'utf8',
+    );
+    const entries = extractEntries(laidOffTs, ['slug', 'name']);
+    for (const { slug, name } of entries) {
+      routes.push({
+        path: `/laid-off/from/${slug}`,
+        title: `Just laid off from ${name}? 2026 cohort playbook | Vantage`,
+        description: `Cohort-specific playbook for the 2026 ${name} layoffs: CV fixes, warm-intro framework, interview prep. Free AI tools included. By a UK indie founder.`,
+      });
+    }
+  } catch (err) {
+    console.warn('Could not parse laidOffCompanies.ts:', err?.message);
+  }
+
+  // Company × seniority cells (top 8 companies × 5 seniorities = up to 40 cells).
+  // The data file has the shape:
+  //   { companySlug: 'google', variants: [ { slug: 'junior', ... }, ... ] }
+  // We iterate each companySlug block, then within its window collect every
+  // child `slug:` (which represents a SeniorityVariant). The window ends at
+  // the next companySlug occurrence (or end-of-file).
+  try {
+    const senTs = await fs.readFile(
+      path.join(ROOT, 'src/data/companySeniorityPacks.ts'),
+      'utf8',
+    );
+    const companyRe = /companySlug:\s*['"`]([^'"`]+)['"`]/g;
+    const companyMatches = [];
+    let cm;
+    while ((cm = companyRe.exec(senTs)) !== null) {
+      companyMatches.push({ slug: cm[1], index: cm.index });
+    }
+    for (let i = 0; i < companyMatches.length; i += 1) {
+      const start = companyMatches[i].index;
+      const end = i + 1 < companyMatches.length ? companyMatches[i + 1].index : senTs.length;
+      const window = senTs.slice(start, end);
+      const companySlug = companyMatches[i].slug;
+      const slugRe = /\bslug:\s*['"`]([^'"`]+)['"`]/g;
+      let sm;
+      while ((sm = slugRe.exec(window)) !== null) {
+        const seniority = sm[1];
+        // Skip the companySlug match itself if it leaks in. Only accept
+        // known seniority slugs from the SenioritySlug union.
+        if (!['junior', 'mid', 'senior', 'staff', 'manager'].includes(seniority)) continue;
+        const companyName = companySlug.charAt(0).toUpperCase() + companySlug.slice(1);
+        const seniorityLabel = seniority.charAt(0).toUpperCase() + seniority.slice(1);
+        routes.push({
+          path: `/interview-prep/${companySlug}/${seniority}`,
+          title: `${companyName} ${seniorityLabel} Interview Prep (2026) | Vantage`,
+          description: `${companyName} ${seniorityLabel} interview pattern, signature questions, level rubric, comp range, common gaps. Free guide, no signup.`,
+        });
+      }
+    }
+  } catch (err) {
+    console.warn('Could not parse companySeniorityPacks.ts:', err?.message);
+  }
+
   // Interview questions by role
   try {
     const rolesTs = await fs.readFile(
