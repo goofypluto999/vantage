@@ -60,9 +60,44 @@ export default function Login() {
           <h1 className="text-3xl font-display font-bold text-white mb-2">Welcome back</h1>
           <p className="text-white/50 mb-8">Sign in to access your job preparation tools</p>
 
-          {error && (
+          {error && !error.includes('confirm your account') && (
             <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
               {error}
+              {error.includes('Incorrect email or password') && (
+                <span className="block mt-2 text-red-300/80">
+                  Forgot it?{' '}
+                  <Link to="/forgot-password" className="text-red-300 underline hover:text-red-200">
+                    Reset your password
+                  </Link>
+                </span>
+              )}
+            </div>
+          )}
+
+          {/* "Email not confirmed" is the highest-leakage auth error for indie
+              SaaS. Default Supabase response is a flat "Please confirm your
+              email" — useless when the email is in spam or never arrived.
+              Surface the actual recovery paths inline: spam check, resend via
+              forgot-password (Supabase re-sends the confirmation when password
+              reset is requested for an unconfirmed account), and the manual
+              fallback to email Gio. Same content as the post-register success
+              screen so users get consistent recovery UX wherever they hit it. */}
+          {error && error.includes('confirm your account') && (
+            <div className="mb-6 p-4 rounded-xl bg-amber-500/10 border border-amber-500/30">
+              <p className="text-amber-300 text-sm font-semibold mb-2">
+                Your email isn't confirmed yet.
+              </p>
+              <ul className="text-amber-100/80 text-xs space-y-1.5 leading-relaxed mb-3">
+                <li>• <strong>Check your spam / Junk / Promotions folder</strong> — Gmail and Outlook filter mail from new domains aggressively.</li>
+                <li>• If the link expired, request a fresh one via{' '}
+                  <Link to="/forgot-password" className="text-amber-200 underline hover:text-amber-100">password reset</Link>
+                  {' '}— Supabase re-sends the confirmation in the same flow.
+                </li>
+                <li>• No email after 5 minutes? Email{' '}
+                  <a href="mailto:hello@aimvantage.uk" className="text-amber-200 underline hover:text-amber-100">hello@aimvantage.uk</a>
+                  {' '}from the same address — Gio (the operator) will manually confirm within a few hours.
+                </li>
+              </ul>
             </div>
           )}
 
