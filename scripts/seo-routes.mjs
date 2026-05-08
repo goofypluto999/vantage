@@ -83,6 +83,12 @@ const STATIC_ROUTES = [
     title: 'No Interviews After 100+ Applications? Free 60-Second Diagnostic | Vantage',
     description: '5 questions, 60 seconds, deterministic verdict. Tells you whether your zero-interview problem is ATS filtering, positioning, targeting, proof, market, or overqualified-flag — and gives you a concrete next move. Free, no signup, no LLM call (computed in your browser).',
   },
+  {
+    path: '/search',
+    title: 'Search Vantage — free AI tools, ATS guides, interview prep | Vantage',
+    description: 'Search Vantage AI: free tools (cover letter roast, ghost-job detector, no-interviews diagnostic, cost calculator), ATS vendor guides, interview-prep packs by company / role, blog, samples.',
+    noindex: true,
+  },
   // ─── Cohort + commercial-intent ───
   {
     path: '/laid-off',

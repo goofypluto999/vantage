@@ -32,6 +32,7 @@ const ToolsPage = React.lazy(() => import('./components/ToolsPage'));
 const CostCalculatorPage = React.lazy(() => import('./components/CostCalculatorPage'));
 const ReceiptsPage = React.lazy(() => import('./components/ReceiptsPage'));
 const NoInterviewsDiagnostic = React.lazy(() => import('./components/NoInterviewsDiagnostic'));
+const SearchPage = React.lazy(() => import('./components/SearchPage'));
 const ComparePage = React.lazy(() => import('./components/ComparePage'));
 const InterviewPrepCompanyHub = React.lazy(() => import('./components/InterviewPrepCompanyHub'));
 const InterviewPrepCompanyPage = React.lazy(() => import('./components/InterviewPrepCompanyPage'));
@@ -438,6 +439,7 @@ function AppContent() {
             <Route path="/tools/no-interviews-diagnostic" element={<NoInterviewsDiagnostic />} />
             <Route path="/no-interviews" element={<Navigate to="/tools/no-interviews-diagnostic" replace />} />
             <Route path="/why-no-interviews" element={<Navigate to="/tools/no-interviews-diagnostic" replace />} />
+            <Route path="/search" element={<SearchPage />} />
             <Route path="/compare" element={<ComparePage />} />
             <Route path="/interview-prep" element={<InterviewPrepCompanyHub />} />
             <Route path="/interview-prep/:company" element={<InterviewPrepCompanyPage />} />

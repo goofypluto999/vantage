@@ -138,10 +138,14 @@ export default function AboutPage() {
               <Github className={`w-4 h-4 mt-0.5 ${t.textMuted}`} />
               <div>
                 <p className={t.text}>Open-source companion tool (CV Mirror)</p>
+                {/* rel="me" tells crawlers / IndieWeb / AI assistants that this
+                    GitHub account is the SAME identity as the one operating
+                    aimvantage.uk. Bidirectional verification is achieved when
+                    the GitHub profile also links back here (see /about copy). */}
                 <a
                   href="https://github.com/goofypluto999/cv-mirror-mcp"
                   target="_blank"
-                  rel="noopener noreferrer"
+                  rel="me noopener noreferrer"
                   className="text-violet-400 hover:text-violet-300 underline text-xs inline-flex items-center gap-1"
                 >
                   github.com/goofypluto999/cv-mirror-mcp <ExternalLink className="w-3 h-3" />
@@ -155,7 +159,7 @@ export default function AboutPage() {
                 <a
                   href="https://dev.to/goofypluto999"
                   target="_blank"
-                  rel="noopener noreferrer"
+                  rel="me noopener noreferrer"
                   className="text-violet-400 hover:text-violet-300 underline text-xs inline-flex items-center gap-1"
                 >
                   dev.to/goofypluto999 <ExternalLink className="w-3 h-3" />
@@ -183,7 +187,7 @@ export default function AboutPage() {
                 <a
                   href="https://www.youtube.com/channel/UCuZxrV6LaJfGHsEvztsaB4Q"
                   target="_blank"
-                  rel="noopener noreferrer"
+                  rel="me noopener noreferrer"
                   className="text-violet-400 hover:text-violet-300 underline text-xs inline-flex items-center gap-1"
                 >
                   YouTube channel <ExternalLink className="w-3 h-3" />
@@ -191,6 +195,26 @@ export default function AboutPage() {
               </div>
             </li>
           </ul>
+        </section>
+
+        {/* Microformat h-card — IndieWeb / agent-readable identity card.
+            This is in ADDITION to the JSON-LD Person schema above; some
+            agents and IndieWeb crawlers prefer microformats2. The class
+            names are the contract — do not rename them. The visible copy
+            is intentionally short (this is not a bio section) so it
+            doesn't bloat the page; the rich bio lives in the visible
+            sections above. */}
+        <section className="h-card sr-only" aria-hidden="true">
+          <span className="p-name">Giovanni Sizino Ennes</span>
+          <span className="p-nickname">Gio</span>
+          <span className="p-job-title">Independent founder · Vantage AI</span>
+          <span className="p-note">UK-based independent founder (sole trader) building AI tools for job seekers.</span>
+          <a className="u-url p-name" href="https://aimvantage.uk/">Vantage AI</a>
+          <a className="u-email" href="mailto:hello@aimvantage.uk">hello@aimvantage.uk</a>
+          <a className="u-url" rel="me" href="https://github.com/goofypluto999">GitHub</a>
+          <a className="u-url" rel="me" href="https://dev.to/goofypluto999">DEV.to</a>
+          <a className="u-url" rel="me" href="https://www.youtube.com/channel/UCuZxrV6LaJfGHsEvztsaB4Q">YouTube</a>
+          <span className="p-country-name">United Kingdom</span>
         </section>
 
         {/* What we are NOT */}
