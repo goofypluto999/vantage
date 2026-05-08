@@ -52,9 +52,23 @@ export default function ForgotPassword() {
                 <CheckCircle className="w-8 h-8 text-green-400" />
               </div>
               <h1 className="text-3xl font-display font-bold text-white mb-2">Check your email</h1>
-              <p className="text-white/50 mb-8">
-                We sent a password reset link to <span className="text-white/70 font-medium">{email}</span>
+              <p className="text-white/60 mb-5">
+                We sent a password reset link to <span className="text-white font-semibold">{email}</span>
               </p>
+              {/* Spam / recovery block — same content pattern as Register
+                  success and Login error states. Reset emails get spam-
+                  filtered the same way confirmation emails do. */}
+              <div className="text-left rounded-xl bg-amber-500/10 border border-amber-500/30 p-4 mb-6">
+                <p className="text-amber-300 text-sm font-semibold mb-1">Didn't see it?</p>
+                <ul className="text-amber-100/80 text-xs space-y-1.5 leading-relaxed">
+                  <li>• Check <strong>Spam</strong> / <strong>Junk</strong> / <strong>Promotions</strong> — Gmail and Outlook filter mail from new domains aggressively (about half the time).</li>
+                  <li>• Wait 60 seconds — first send sometimes takes a moment.</li>
+                  <li>• Still nothing after 5 minutes? Email{' '}
+                    <a href="mailto:hello@aimvantage.uk" className="text-amber-200 underline hover:text-amber-100">hello@aimvantage.uk</a>
+                    {' '}from the same address — Gio (the operator) will manually reset within a few hours.
+                  </li>
+                </ul>
+              </div>
               <Link
                 to="/login"
                 className="inline-flex items-center gap-2 text-violet-400 hover:text-violet-300 font-semibold transition-colors"
