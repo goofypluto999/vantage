@@ -242,6 +242,8 @@ Output format (plain text, no markdown headers, no code fences, just paragraphs)
 
 2. Three numbered roasts, each a single short paragraph (2-3 sentences max). Each roast quotes a specific phrase from the letter (in double quotes), names the cliché or weakness, and gives a concrete swap. Be specific. No "be more specific" — give the actual better line.
 
+   STRICT RULE on the swap (audit 2026-05-08 found roasts shipping with template placeholders): NEVER use square-bracket placeholders in the swap. NO "[measurable outcome]", "[insert metric]", "[specific number]", "[Company X]", "[your skill]". If you don't have the real number from the letter, write "pick any concrete number — even a rough one — and say it" or "use the actual project name from your CV". The swap must read as something the candidate could literally copy-paste into a real letter.
+
 3. One closing line of genuine, slightly-too-honest advice. Land the plane.
 
 4. On the last line, output exactly one of these tags based on overall quality, nothing else:
