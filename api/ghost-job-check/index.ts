@@ -229,18 +229,29 @@ NEVER claim certainty. NEVER invent the company name, the role, or details not i
 Return ONLY the JSON. No markdown, no preamble.`;
 
   try {
+    // 2026-05-09 FIX: removed `responseMimeType: 'application/json'`. Same
+    // failure mode as /api/decode-rejection — the @google/genai 1.29.0 +
+    // gemini-2.5-flash combo rejects JSON-mode for prompts with nested
+    // arrays, returning a 500 every request. /api/roast survives because
+    // it never used responseMimeType. Mirroring that pattern here:
+    // request raw JSON in the prompt, defensively strip code fences before
+    // parsing.
     const aiResponse = await ai.models.generateContent({
       model: 'models/gemini-2.5-flash',
       contents: [{ parts: [{ text: prompt }] }],
       config: {
-        responseMimeType: 'application/json',
         temperature: 0.6,
         maxOutputTokens: 1500,
       },
     });
 
     if (!aiResponse.text) throw new Error('No response from AI');
-    const parsed = JSON.parse(aiResponse.text);
+    const cleanedJson = aiResponse.text
+      .trim()
+      .replace(/^```(?:json)?\s*/i, '')
+      .replace(/\s*```$/i, '')
+      .trim();
+    const parsed = JSON.parse(cleanedJson);
 
     // Sanitise EVERY string field before returning. Belt-and-braces in case
     // a prompt-injection broke through and the model returned attacker-
