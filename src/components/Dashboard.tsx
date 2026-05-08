@@ -267,27 +267,41 @@ export default function Dashboard() {
       return;
     }
 
-    // Pre-flight check: warn if user is about to spend tokens on a URL that's
-    // likely to fail (known-blocked sites with no JD provided). Saves wasted
-    // tokens + the disappointment of a thin analysis. Mirrors the inline amber
-    // warning rendered below the Job URL field, but at the moment of submit
-    // it's a confirm dialog so the user can't accidentally ignore it. If the
-    // URL is fine OR the JD is provided, this is a no-op.
+    // Pre-flight check: warn if user is about to spend a token on a job URL
+    // that is likely to come back thin. Two cases:
+    //
+    //   1. Known-blocked sites (Indeed, LinkedIn, etc.) with no JD pasted →
+    //      hard warning ("this URL almost certainly fails"). Pre-existing.
+    //
+    //   2. Any other host with no JD pasted → soft warning ("having the JD
+    //      gives a much better analysis. Continue without it?"). Added
+    //      2026-05-08 per dashboard-ux-plan-2026-05-06 Tier 2 / C5 — the
+    //      original "Required" label was scaring people without a JD on
+    //      hand into closing the tab. Soft warn at submit-time educates
+    //      without blocking the happy path.
+    //
+    // If the JD is provided in either mode, this whole block is a no-op.
     try {
       const host = new URL(jobUrl).hostname.toLowerCase().replace(/^www\./, '');
       const blocked = ['indeed.com', 'indeed.co.uk', 'linkedin.com', 'reed.co.uk', 'glassdoor.com', 'glassdoor.co.uk', 'totaljobs.com', 'cwjobs.co.uk', 'monster.com'];
       const isBlockedHost = blocked.some((d) => host === d || host.endsWith('.' + d));
       const hasJdProvided = (jdMode === 'file' && !!jobDescFile) ||
                             (jdMode === 'text' && jobDescText.trim().length > 50);
-      if (isBlockedHost && !hasJdProvided) {
-        const proceed = window.confirm(
-          `${host} typically blocks automated readers, so the job page may come back empty.\n\n` +
-          `Without the job description pasted in Step 2, the AI will only have the URL to work from — your analysis will likely be thin and your token will still be charged.\n\n` +
-          `Do you want to:\n` +
-          `  • Cancel this run and paste the JD into Step 2 first (recommended)\n` +
-          `  • Or continue anyway?\n\n` +
-          `OK = continue · Cancel = stop and add the JD first`
-        );
+      if (!hasJdProvided) {
+        // Stronger copy for blocked hosts (the JD is essential there); softer
+        // copy for everyone else (the analysis often works fine, but the
+        // tailoring quality is meaningfully better with a JD).
+        const message = isBlockedHost
+          ? `${host} typically blocks automated readers, so the job page may come back empty.\n\n` +
+            `Without the job description pasted in Step 2, the AI will only have the URL to work from — your analysis will likely be thin and your token will still be charged.\n\n` +
+            `Do you want to:\n` +
+            `  • Cancel this run and paste the JD into Step 2 first (recommended)\n` +
+            `  • Or continue anyway?\n\n` +
+            `OK = continue · Cancel = stop and add the JD first`
+          : `Heads up: you haven't pasted the job description in Step 2.\n\n` +
+            `The AI will fetch ${host} and read what it can from the page, which usually works — but the prep pack is meaningfully better when the JD is pasted directly.\n\n` +
+            `OK = continue with URL only · Cancel = paste the JD first`;
+        const proceed = window.confirm(message);
         if (!proceed) return;
       }
     } catch { /* invalid URL — let the regular flow handle it */ }
