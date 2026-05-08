@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { ArrowRight, ChevronDown, MessageSquare, Lock, ShieldCheck, Sparkles } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import SEO from './SEO';
+import DiagnosticCallout from './DiagnosticCallout';
 
 const SITE_URL = 'https://aimvantage.uk';
 
@@ -303,8 +304,20 @@ export default function FaqPage() {
           ))}
         </div>
 
+        {/* Diagnostic onramp for skeptics — added 2026-05-09. Visitors who
+            land on /faq are evaluating. Some are about to register; some
+            need the diagnostic first to confirm Vantage solves their
+            specific bottleneck. The verdict gives them context that
+            converts the registration when they do come back. */}
+        <DiagnosticCallout
+          source="faq"
+          variant="emerald"
+          className="mt-16"
+          prelude="Still on the fence? Run the free 60-second diagnostic — it tells you whether your job-search bottleneck is actually one Vantage can fix (positioning / proof / mock-prep) vs one it can't (ATS / market / overqualified-flag). 5 questions, no signup, runs in your browser. Saves you the question 'is this even right for me?'"
+        />
+
         {/* CTA */}
-        <div className={`${t.glass} rounded-2xl p-8 mt-16 text-center`}>
+        <div className={`${t.glass} rounded-2xl p-8 mt-8 text-center`}>
           <h2 className={`text-2xl font-bold mb-3 ${t.text}`}>
             Stop reading. Start prepping.
           </h2>
