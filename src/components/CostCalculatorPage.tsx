@@ -140,6 +140,7 @@ export default function CostCalculatorPage() {
         title="Jobscan Cost Calculator — what a year of job-prep tools actually costs"
         description="Honest 12-month cost calculator for Jobscan, Resume Worded, Final Round AI, Teal, and LiveCareer vs Vantage's one-time £5 top-up. No subscriptions, no upsells — just the math."
         path="/tools/jobscan-cost-calculator"
+        markdownAlternate="/markdown/jobscan-alternative.md"
         jsonLd={[breadcrumbSchema, faqSchema]}
       />
 

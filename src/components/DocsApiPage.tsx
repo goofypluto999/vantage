@@ -30,6 +30,7 @@ export default function DocsApiPage() {
         title="Vantage API documentation"
         description="Public API for the Vantage AI job-prep engine. Endpoint surface, authentication, rate limits, request shapes for /analyze, /rewrite-tone, /interview-questions."
         path="/docs/api"
+        markdownAlternate="/markdown/api.md"
       />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
 

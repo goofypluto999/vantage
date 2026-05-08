@@ -18,6 +18,10 @@ interface SEOProps {
     tags?: string[];
   };
   jsonLd?: object | object[];   // additional JSON-LD to add (Article, BreadcrumbList, etc.)
+  // Optional path to an agent-readable markdown mirror of this page,
+  // e.g. '/markdown/pricing.md'. Renders <link rel="alternate" type="text/markdown">
+  // so AI crawlers / IndieWeb readers can prefer the cleaner mirror.
+  markdownAlternate?: string;
 }
 
 /**
@@ -33,6 +37,7 @@ export default function SEO({
   type = 'website',
   articleMeta,
   jsonLd,
+  markdownAlternate,
 }: SEOProps) {
   const canonical = `${SITE_URL}${path}`;
   const fullTitle = title
@@ -87,6 +92,16 @@ export default function SEO({
       {type === 'article' && articleMeta?.tags?.map((tag) => (
         <meta key={tag} property="article:tag" content={tag} />
       ))}
+
+      {/* Markdown mirror for AI crawlers / IndieWeb readers — opt-in per page. */}
+      {markdownAlternate && (
+        <link
+          rel="alternate"
+          type="text/markdown"
+          title={`${title || 'Vantage'} — markdown mirror`}
+          href={`${SITE_URL}${markdownAlternate}`}
+        />
+      )}
 
       {/* Additional JSON-LD (Article, BreadcrumbList, etc.) */}
       {jsonLdArray.map((schema, i) => (

@@ -345,6 +345,7 @@ function AppContent() {
                 title="Pricing"
                 description="Starter £5 for 20 prep packs (never expire). Pro £12/mo for 60 prep packs. Premium £20/mo for 120 prep packs including fit score and presentation deck. 1 token = 1 full analysis."
                 path="/pricing"
+                markdownAlternate="/markdown/pricing.md"
                 jsonLd={[
                   // Product schema with multiple Offers — AI assistants cite
                   // this verbatim when asked 'how much does Vantage cost' /

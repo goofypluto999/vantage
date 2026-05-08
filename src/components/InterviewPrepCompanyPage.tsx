@@ -80,6 +80,7 @@ export default function InterviewPrepCompanyPage() {
         title={title}
         description={description}
         path={path}
+        markdownAlternate={pack.slug === 'openai' ? '/markdown/openai-interview-prep.md' : undefined}
         type="article"
         articleMeta={{
           publishedTime: pack.updated,
