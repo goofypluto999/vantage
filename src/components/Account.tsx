@@ -257,12 +257,43 @@ export default function Account() {
               </div>
             </div>
 
-            {/* Token Balance */}
-            <div className="p-3 rounded-xl bg-white/5 border border-white/10 mb-5">
+            {/* Token Balance — colour-coded by remaining count + inline top-up
+                CTA when running low. Previously showed a green number even at
+                0, with no obvious next step. Empty/low states now signal the
+                action: top-up £5 for 20 more or subscribe. */}
+            <div
+              className={`p-3 rounded-xl border mb-5 ${
+                creditsRemaining === 0
+                  ? 'bg-rose-500/10 border-rose-500/30'
+                  : creditsRemaining <= 2
+                  ? 'bg-amber-500/10 border-amber-500/30'
+                  : 'bg-white/5 border-white/10'
+              }`}
+            >
               <div className="flex items-center justify-between">
-                <span className="text-white/50 text-sm">Token Balance</span>
-                <span className="text-emerald-400 font-bold">{creditsRemaining}</span>
+                <span className="text-white/60 text-sm">Token Balance</span>
+                <span
+                  className={`font-bold ${
+                    creditsRemaining === 0
+                      ? 'text-rose-300'
+                      : creditsRemaining <= 2
+                      ? 'text-amber-300'
+                      : 'text-emerald-400'
+                  }`}
+                >
+                  {creditsRemaining}
+                </span>
               </div>
+              {creditsRemaining === 0 && (
+                <p className="text-rose-200/80 text-xs mt-2 leading-relaxed">
+                  You're out of tokens. Top up £5 for 20 more (never expires) or subscribe for monthly refresh.
+                </p>
+              )}
+              {creditsRemaining > 0 && creditsRemaining <= 2 && (
+                <p className="text-amber-200/80 text-xs mt-2 leading-relaxed">
+                  Running low — {creditsRemaining} {creditsRemaining === 1 ? 'pack' : 'packs'} left. Top up £5 for 20 more (never expires).
+                </p>
+              )}
             </div>
 
             {/* Actions */}
