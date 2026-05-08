@@ -62,11 +62,20 @@
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=3600, s-maxage=3600, must-revalidate" }
       ]
+    },
+    {
+      "source": "/(dashboard|account|admin|refer|reset-password)(/.*)?",
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex, nofollow" }
+      ]
     }
   ],
   "rewrites": [
     { "source": "/api/credits", "destination": "/api/user?endpoint=credits" },
     { "source": "/api/analyses", "destination": "/api/user?endpoint=analyses" },
-    { "source": "/((?!api/).*)", "destination": "/index.html" }
+    {
+      "source": "/((?!api/|\\.env|\\.git/|\\.aws/|\\.ssh/|\\.htaccess|\\.htpasswd|\\.DS_Store|wp-admin|wp-includes|wp-login|wp-config|phpmyadmin|xmlrpc\\.php|vendor/|backup/|backups/|sql/|database/|db/|config\\.|setup\\.|install\\.|admin\\.).*)",
+      "destination": "/index.html"
+    }
   ]
 }
