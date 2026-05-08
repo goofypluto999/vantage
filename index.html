@@ -59,8 +59,11 @@
          half-remember the brand and would type "vantage <something>". -->
     <link rel="search" type="application/opensearchdescription+xml" title="Vantage Job Prep" href="/opensearch.xml" />
 
-    <!-- Webmention endpoint discovery — IndieWeb protocol. -->
-    <link rel="webmention" href="/api/webmention" />
+    <!-- Webmention endpoint discovery — IndieWeb protocol.
+         Uses an absolute URL because Vite's build-html plugin tries to
+         resolve relative paths against the local filesystem and hits
+         EISDIR on the api/webmention directory. -->
+    <link rel="webmention" href="https://aimvantage.uk/api/webmention" />
 
     <!-- Structured data: WebSite with SearchAction (sitelinks searchbox in Google) -->
     <script type="application/ld+json">

@@ -1,0 +1,26 @@
+John Smith
+Product Manager · Remote · john@example.com
+
+Summary
+Results-driven, dynamic Product Manager with extensive experience in fast-paced environments. Passionate about empowering cross-functional teams to deliver value at scale. A strategic thinker with a growth mindset, thriving at the intersection of business and technology. Hard-working team player with a tireless work ethic.
+
+Experience
+
+Acme Corp — Product Manager
+2020–Present
+- Worked cross-functionally with engineering, design, and stakeholders.
+- Drove product strategy for the team.
+- Owned multiple workstreams.
+- Communicated with leadership.
+
+Beta Industries — Associate Product Manager
+2018–2020
+- Supported the senior PM with various initiatives.
+- Wrote product requirements documents.
+- Participated in standups and retros.
+
+Education
+State University — BS Business Administration
+
+Skills
+Product strategy, communication, team work, leadership, problem solving, attention to detail, ability to work in a fast-paced environment.

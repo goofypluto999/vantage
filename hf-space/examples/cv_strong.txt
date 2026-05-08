@@ -1,0 +1,30 @@
+Sarah Mitchell
+Senior Product Manager · London, UK · sarah@example.com
+
+Summary
+Senior PM with 7 years across fintech and developer-tools, including 3 at the Staff/Principal level. Shipped 2 products that crossed $10M revenue. Comfortable with technical ambiguity; led 4-engineer + 2-design teams across global rollouts.
+
+Experience
+
+Stripe — Senior Product Manager, Payments
+2022–Present
+- Led the SEPA Direct Debit migration, increasing European payment volume by 38% within 6 months and reducing failure rates from 4.1% to 1.7%.
+- Owned the Payment Intents API roadmap; shipped 5 major API revisions used by 12,000+ merchants.
+- Hired 2 PMs and built the team's incident-response playbook.
+
+Monzo — Product Manager, Money Movement
+2019–2022
+- Scaled Monzo's Faster Payments throughput 14x to handle peak Black Friday volume (450 transactions/second sustained).
+- Drove the launch of joint accounts (now 2.1M users); managed the cross-functional rollout across compliance, ops, and growth.
+- Reduced fraud false-positive rate from 8% to 2.3% by partnering with the ML team on feature engineering.
+
+GoCardless — Associate Product Manager
+2017–2019
+- Shipped the first version of the GoCardless React component library, used by 40+ partners.
+- Increased SMB conversion rate by 22% by simplifying the checkout flow.
+
+Education
+University of Bristol — BSc Economics, First Class
+
+Tech I work fluently with
+TypeScript, Python, Postgres, Stripe APIs, Looker, Mixpanel

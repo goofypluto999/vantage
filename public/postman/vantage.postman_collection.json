@@ -1,0 +1,136 @@
+{
+  "info": {
+    "name": "Vantage AI — Public API",
+    "_postman_id": "5a13e5f7-vantage-public-2026-05-08",
+    "description": "Public free endpoints for the Vantage AI job-prep platform. No auth required for the free tools (cover letter roast, rejection email decoder, ghost job detector, search suggest). Paid endpoints (full prep pack) are not yet GA — they're listed under the 'planned' folder for forward compatibility.\n\nOperator: Giovanni Sizino Ennes (UK sole trader)\nWeb: https://aimvantage.uk\nDocs: https://aimvantage.uk/docs/api\nTrust audit: https://aimvantage.uk/receipts\nOpenAPI: https://aimvantage.uk/openapi.json",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Free tools",
+      "item": [
+        {
+          "name": "Roast cover letter",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/roast",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "roast"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"coverLetter\": \"Dear Hiring Manager, I am a passionate, results-driven professional with extensive experience in fast-paced environments. I am a synergistic team player with a growth mindset, eager to leverage my unique blend of skills to drive innovative solutions and deliver value at scale.\"\n}"
+            },
+            "description": "Roast a pasted cover letter. Free public endpoint, no auth, rate-limited 30/5min/IP. Returns a multi-line roast and a 0-5 severity score.\n\nReference: https://aimvantage.uk/roast"
+          },
+          "response": []
+        },
+        {
+          "name": "Decode rejection email",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/decode-rejection",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "decode-rejection"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rejectionEmail\": \"Hi Sarah, thank you for your application. We received many strong candidates and have decided to move forward with someone whose experience more closely aligns with our current needs. We will keep your CV on file and wish you the best in your search. Best, The Hiring Team.\"\n}"
+            },
+            "description": "Translate a rejection email into the recruiter's actual meaning. Returns verdict, severity, translation, specific clues, and a next move. Free public endpoint.\n\nReference: https://aimvantage.uk/decode-rejection"
+          },
+          "response": []
+        },
+        {
+          "name": "Ghost job check",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/ghost-job-check",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ghost-job-check"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"jobListing\": \"Senior to Staff Engineer (multiple levels considered) — work on cutting-edge AI products. We are looking for a passionate, results-driven engineer who can wear many hats. Salary: $80K-$280K depending on experience. Location: anywhere in the world. Tech stack: we use the latest tech. Apply now to join our amazing team!\"\n}"
+            },
+            "description": "Score how likely a job listing is a ghost job. Returns ghostProbability (0-100), verdict, summary, tells, yourMove. Free public endpoint.\n\nReference: https://aimvantage.uk/ghost-job-check"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Search",
+      "item": [
+        {
+          "name": "Search-suggest (OpenSearch)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/search-suggest?q=workday parser",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "search-suggest"],
+              "query": [
+                { "key": "q", "value": "workday parser" }
+              ]
+            },
+            "description": "OpenSearch suggestions endpoint. Returns the JSON shape: [query, [labels], [descriptions], [urls]]. Used by browsers that have added Vantage as a search provider via /opensearch.xml."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Planned (not yet GA)",
+      "description": "These endpoints are documented for forward compatibility. They will require OAuth and consume tokens when they ship. Email hello@aimvantage.uk subject 'API early access' to be notified.",
+      "item": [
+        {
+          "name": "[Planned] Create prep pack",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Idempotency-Key", "value": "{{$guid}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/prep-pack",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "prep-pack"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cv\": \"<base64 of PDF/DOCX, OR plain text>\",\n  \"cvMimeType\": \"application/pdf\",\n  \"jobUrl\": \"https://example.com/jobs/staff-pm\",\n  \"jobDescription\": \"(optional, recommended for blocked hosts)\"\n}"
+            },
+            "description": "PLANNED — not yet GA. Will create a full prep pack and consume 1 token. Idempotency-Key required.\n\nReference: https://aimvantage.uk/markdown/api.md"
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://aimvantage.uk",
+      "type": "string"
+    },
+    {
+      "key": "accessToken",
+      "value": "<placeholder for planned OAuth token>",
+      "type": "string"
+    }
+  ]
+}

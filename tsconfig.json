@@ -22,5 +22,6 @@
     },
     "allowImportingTsExtensions": true,
     "noEmit": true
-  }
+  },
+  "exclude": ["mcp-server", "hf-space", "node_modules", "dist"]
 }

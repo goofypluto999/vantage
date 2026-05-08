@@ -1,0 +1,26 @@
+Stripe — Staff Product Manager, Payments
+London or Dublin
+
+About the team
+The Payments team owns the core money-movement primitives behind Stripe — Charges, Payment Intents, Setup Intents, and the merchant-of-record flows that thousands of businesses depend on. We are looking for a Staff PM to lead the next chapter of how merchants accept payments globally.
+
+You will
+- Define the strategy for the Payments product line.
+- Partner with engineering leadership on infrastructure trade-offs.
+- Work with risk and compliance on regulatory rollouts.
+- Translate ambiguous user pain into shipped product.
+- Hire and grow a team of PMs.
+
+We are looking for
+- 8+ years of PM experience including 3+ at Staff/Principal level.
+- Deep payments or fintech background.
+- Comfort with technical ambiguity.
+- History of shipping at scale (>$10M revenue impact).
+- Demonstrated cross-functional leadership across engineering, design, and GTM.
+- Track record of driving outcomes with quantified impact (e.g., increased throughput 10x, reduced failure rate by 60%).
+
+Bonus
+- Experience with global payment methods (SEPA, BACS, ACH).
+- Regulatory frameworks (PSD2, Reg E).
+- Open-banking integrations.
+- Postgres, TypeScript, Python familiarity.
