@@ -198,7 +198,7 @@ export default function Register() {
             <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/[0.04] p-4 flex items-start gap-3">
               <Check className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
               <div className="text-sm">
-                <div className="text-white font-semibold">10 free tokens on us — that's 3 full analyses.</div>
+                <div className="text-white font-semibold">10 free tokens on us — that's 10 full prep packs.</div>
                 <div className="text-white/60 mt-0.5">
                   Account is free. No credit card needed to sign up. After your free analyses,
                   top-ups start at {'£'}5 / $5 for 20 more tokens (one-time, never expire).
@@ -235,7 +235,7 @@ export default function Register() {
       <div className="hidden lg:flex flex-1 items-center justify-center p-8" style={{ background: 'linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%)' }}>
         <div className="max-w-md">
           <h2 className="text-3xl font-display font-bold text-white mb-5">
-            What 3 free analyses get you
+            What 10 free prep packs get you
           </h2>
           <ul className="space-y-3 text-white/85 text-base">
             <li className="flex items-start gap-3"><Check className="w-5 h-5 text-white flex-shrink-0 mt-0.5" /><span>One company-research write-up per role (mission, culture, recent moves)</span></li>

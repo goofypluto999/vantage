@@ -91,7 +91,7 @@ export default function LaidOffFromCompanyPage() {
             <Link to="/ats" className={`${t.textSub} hover:${t.text}`}>ATS Guide</Link>
             <Link to="/blog" className={`${t.textSub} hover:${t.text}`}>Blog</Link>
             <Link to="/register" className="px-4 py-2 bg-[#4F46E5] text-white rounded-full font-semibold hover:bg-[#3F36D5]">
-              3 free analyses
+              10 free prep packs
             </Link>
           </div>
         </div>
@@ -125,7 +125,7 @@ export default function LaidOffFromCompanyPage() {
             to="/register"
             className={`inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold border-2 border-[#4F46E5]/30 ${t.text} hover:bg-[#4F46E5]/10`}
           >
-            3 free Vantage analyses
+            10 free Vantage prep packs
           </Link>
         </div>
       </section>
@@ -243,7 +243,7 @@ export default function LaidOffFromCompanyPage() {
               to="/register"
               className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold border-2 border-[#4F46E5]/30 ${t.text} hover:bg-[#4F46E5]/10`}
             >
-              3 free analyses
+              10 free prep packs
             </Link>
           </div>
         </div>

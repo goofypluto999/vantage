@@ -584,7 +584,7 @@ export default function LiveDemoReel({ autoplay = true, aspectRatio = '16/10' }:
                   <ArrowRight className="w-4 h-4 md:w-5 md:h-5" />
                 </motion.button>
                 <p className="text-[10px] md:text-xs text-white/40 mt-3 md:mt-4">
-                  3 free analyses on signup · no card
+                  10 free prep packs on signup · no card
                 </p>
               </motion.div>
             )}

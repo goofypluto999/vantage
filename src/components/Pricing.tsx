@@ -120,7 +120,7 @@ export default function Pricing({ onLogin, onRegister, onCheckout, isAuthenticat
             Pay once for £5. Or skip even that and try free.
           </h1>
           <p className="text-base md:text-lg text-white/60 max-w-2xl mx-auto leading-relaxed">
-            Every account starts with 3 free analyses on signup — no card. After that, top up at £5
+            Every account starts with 10 free prep packs on signup — no card. After that, top up at £5
             for 20 more (never expires) or subscribe for 60 / 120 prep packs every month. Cancel any
             time. No hidden fees.
           </p>

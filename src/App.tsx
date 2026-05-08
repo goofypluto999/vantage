@@ -205,7 +205,7 @@ function AppContent() {
                     operatingSystem: 'Web',
                     description: 'AI job preparation tool. Upload CV, paste job link, get the full prep pack in ~90 seconds: company brief, tailored cover letter, mock interview questions, fit score, 5-minute pitch outline.',
                     offers: [
-                      { '@type': 'Offer', name: 'Free trial', price: '0', priceCurrency: 'GBP', description: '3 free analyses on signup, no card required' },
+                      { '@type': 'Offer', name: 'Free trial', price: '0', priceCurrency: 'GBP', description: '10 free prep packs on signup, no card required' },
                       { '@type': 'Offer', name: 'Starter pack', price: '5', priceCurrency: 'GBP', description: '20 prep packs (one analysis each), one-time, never expires' },
                       { '@type': 'Offer', name: 'Pro', price: '12', priceCurrency: 'GBP', description: '60 prep packs per month' },
                       { '@type': 'Offer', name: 'Premium', price: '20', priceCurrency: 'GBP', description: '120 prep packs per month, includes fit score and presentation deck' },
@@ -296,7 +296,7 @@ function AppContent() {
                         '@type': 'HowToStep',
                         position: 1,
                         name: 'Sign up free',
-                        text: 'Create a free account at https://aimvantage.uk/register. No credit card required. You get 3 free analyses on signup.',
+                        text: 'Create a free account at https://aimvantage.uk/register. No credit card required. You get 10 free prep packs on signup.',
                         url: 'https://aimvantage.uk/register',
                       },
                       {
@@ -362,7 +362,7 @@ function AppContent() {
                       highPrice: '20',
                       offerCount: 4,
                       offers: [
-                        { '@type': 'Offer', name: 'Free tier', price: '0', priceCurrency: 'GBP', description: '3 free analyses on signup. No card required.', url: 'https://aimvantage.uk/register' },
+                        { '@type': 'Offer', name: 'Free tier', price: '0', priceCurrency: 'GBP', description: '10 free prep packs on signup. No card required.', url: 'https://aimvantage.uk/register' },
                         { '@type': 'Offer', name: 'Starter pack', price: '5', priceCurrency: 'GBP', description: '20 prep packs. One-time. Tokens never expire.', url: 'https://aimvantage.uk/pricing' },
                         { '@type': 'Offer', name: 'Pro', price: '12', priceCurrency: 'GBP', description: '60 prep packs per month. Includes AI Mock Interview voice mode.', url: 'https://aimvantage.uk/pricing' },
                         { '@type': 'Offer', name: 'Premium', price: '20', priceCurrency: 'GBP', description: '120 prep packs per month. Includes CV Fit Score, Presentation Deck Builder, priority processing.', url: 'https://aimvantage.uk/pricing' },

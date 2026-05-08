@@ -152,7 +152,7 @@ export default function PressPage() {
               questions, fit score, 5-minute pitch outline. ~90 seconds per application.
             </p>
             <p className={`text-xs ${t.textMuted} mb-3`}>
-              Pricing: 3 free analyses on signup, no card. £5 starter pack for 20 tokens (~6
+              Pricing: 10 free prep packs on signup, no card. £5 starter pack for 20 tokens (~6
               analyses), no subscription.
             </p>
             <a

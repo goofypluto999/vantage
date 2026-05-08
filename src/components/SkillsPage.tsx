@@ -110,7 +110,7 @@ export default function SkillsPage() {
           <div className="flex items-center gap-4 text-sm">
             <Link to="/ats" className={`${t.textSub} hover:${t.text}`}>ATS Guide</Link>
             <Link to="/laid-off" className="text-[#4F46E5] font-semibold hover:underline">Just laid off?</Link>
-            <Link to="/register" className="px-4 py-2 bg-[#4F46E5] text-white rounded-full font-semibold hover:bg-[#3F36D5]">3 free analyses</Link>
+            <Link to="/register" className="px-4 py-2 bg-[#4F46E5] text-white rounded-full font-semibold hover:bg-[#3F36D5]">10 free prep packs</Link>
           </div>
         </div>
       </nav>

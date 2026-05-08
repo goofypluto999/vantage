@@ -83,7 +83,7 @@ const SECTIONS: FaqSection[] = [
       {
         question: 'Can I get a refund if Vantage does not work for my use case?',
         answer:
-          'Yes. The first three analyses on signup are free, no card required. If after using them you decide Vantage is not for you, no purchase is required. Paid pack refunds are handled case by case via giovanni.sizino.ennes@hotmail.co.uk; the founder is genuinely small and responsive.',
+          'Yes. The first ten prep packs on signup are free, no card required (10 tokens, 1 token per analysis). If after using them you decide Vantage is not for you, no purchase is required. Paid pack refunds are handled case by case via giovanni.sizino.ennes@hotmail.co.uk; the founder is genuinely small and responsive.',
       },
     ],
   },
@@ -255,7 +255,7 @@ export default function FaqPage() {
             Run mine free <ArrowRight className="w-4 h-4" />
           </Link>
           <span className={`${t.textMuted}`}>
-            3 free analyses · no card · 90 seconds per run
+            10 free prep packs · no card · 90 seconds per run
           </span>
         </div>
 

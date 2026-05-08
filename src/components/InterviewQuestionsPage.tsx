@@ -138,7 +138,7 @@ export default function InterviewQuestionsPage() {
               Run my {pack.role} prep <ArrowRight className="w-4 h-4" />
             </Link>
             <span className={`${t.textMuted}`}>
-              3 free analyses · no card · 90 seconds per run
+              10 free prep packs · no card · 90 seconds per run
             </span>
           </div>
         </header>

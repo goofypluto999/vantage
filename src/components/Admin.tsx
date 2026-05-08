@@ -486,7 +486,7 @@ const POST_TEMPLATES: { id: string; platform: 'X' | 'LinkedIn' | 'Reddit'; angle
     id: 'building-in-public',
     platform: 'X',
     angle: 'Build in public — operator transparency',
-    body: `Vantage AI: solo dev. UK indie founder. {update — what shipped this week, pick one}.\n\n3 free analyses on signup, no card. £5 one-time top-up that never expires. zero recurring billing required.\n\nhttps://aimvantage.uk`,
+    body: `Vantage AI: solo dev. UK indie founder. {update — what shipped this week, pick one}.\n\n10 free prep packs on signup, no card. £5 one-time top-up that never expires. zero recurring billing required.\n\nhttps://aimvantage.uk`,
     targetUrl: 'https://aimvantage.uk',
   },
   {

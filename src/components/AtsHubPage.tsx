@@ -41,7 +41,7 @@ export default function AtsHubPage() {
             <Link to="/blog" className={`${t.textSub} hover:${t.text}`}>Blog</Link>
             <Link to="/laid-off" className="text-[#4F46E5] font-semibold hover:underline">Just laid off?</Link>
             <Link to="/register" className="px-4 py-2 bg-[#4F46E5] text-white rounded-full font-semibold hover:bg-[#3F36D5]">
-              3 free analyses
+              10 free prep packs
             </Link>
           </div>
         </div>

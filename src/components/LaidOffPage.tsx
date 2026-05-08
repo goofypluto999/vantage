@@ -79,7 +79,7 @@ export default function LaidOffPage() {
           <div className="flex items-center gap-4">
             <Link to="/blog" className={`text-sm ${t.textSub} hover:${t.text}`}>Blog</Link>
             <Link to="/register" className="px-4 py-2 bg-[#4F46E5] text-white rounded-full text-sm font-semibold hover:bg-[#3F36D5] transition-all">
-              3 free analyses
+              10 free prep packs
             </Link>
           </div>
         </div>
@@ -115,7 +115,7 @@ export default function LaidOffPage() {
             to="/register"
             className={`inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full font-semibold border-2 border-[#4F46E5]/30 ${t.text} hover:bg-[#4F46E5]/10 transition-all`}
           >
-            3 free Vantage analyses
+            10 free Vantage prep packs
           </Link>
         </div>
         <p className={`mt-6 text-xs ${t.textMuted} flex items-center justify-center gap-2`}>
@@ -283,7 +283,7 @@ export default function LaidOffPage() {
             to="/register"
             className="inline-flex items-center gap-2 px-8 py-4 bg-[#4F46E5] text-white rounded-full font-bold hover:-translate-y-0.5 transition-all"
           >
-            Get 3 free Vantage analyses <ArrowRight className="w-4 h-4" />
+            Get 10 free Vantage prep packs <ArrowRight className="w-4 h-4" />
           </Link>
           <p className={`mt-4 text-xs ${t.textMuted}`}>
             No card. £5 starter pack if you want more. No subscription.

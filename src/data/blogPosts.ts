@@ -555,7 +555,7 @@ export const blogPosts: BlogPost[] = [
       { type: 'h2', text: 'How AI changes the math (the new piece nobody talks about yet)' },
       { type: 'p', text: 'In 2026, the cost of "tailoring per application" has cratered for one reason: the rewrite is no longer the slow part. Tools like Vantage take your CV and a job link and generate a tailored cover letter, brief, mock interview, and pitch outline in about 90 seconds. The CV side stays the master, and the per-application surface shifts to the cover letter and interview prep — which is where applicants actually fail.' },
       { type: 'p', text: 'Net effect: do not spend hours rewriting your CV per application. Spend the saved time on a tighter cover letter and 20 minutes of company research. That is what closes interviews.' },
-      { type: 'callout', text: 'Vantage handles this exact flow: upload CV once, paste a job link, get the prep pack (company brief, tailored cover letter in 4 tones, mock interview Qs, fit score, 5-min pitch outline) in 90 seconds. Genuinely free signup, 3 free analyses included.' },
+      { type: 'callout', text: 'Vantage handles this exact flow: upload CV once, paste a job link, get the prep pack (company brief, tailored cover letter in 4 tones, mock interview Qs, fit score, 5-min pitch outline) in 90 seconds. Genuinely free signup, 10 free prep packs included.' },
 
       { type: 'h2', text: 'FAQ' },
       { type: 'h3', text: 'But will my CV still get past the ATS without keyword tailoring?' },
@@ -696,7 +696,7 @@ export const blogPosts: BlogPost[] = [
         'For job board postings, always cross-check on the company site before applying. 60 seconds saves you an hour of tailoring time.',
       ] },
 
-      { type: 'callout', text: 'Once you know the role is real, the next problem is making the application count. Vantage takes your CV and the job link, scrapes the company\'s actual careers page if available, generates a tailored cover letter, mock interview Qs, and fit score in 90 seconds. Genuinely free signup with 3 free analyses included.' },
+      { type: 'callout', text: 'Once you know the role is real, the next problem is making the application count. Vantage takes your CV and the job link, scrapes the company\'s actual careers page if available, generates a tailored cover letter, mock interview Qs, and fit score in 90 seconds. Genuinely free signup with 10 free prep packs included.' },
 
       { type: 'h2', text: 'When ghost jobs are NOT a waste' },
       { type: 'p', text: 'Two cases where it can still pay to apply to a possible-ghost:' },
@@ -767,7 +767,7 @@ export const blogPosts: BlogPost[] = [
       { type: 'h2', text: 'After the parse — the rest of the application' },
       { type: 'p', text: 'You spent 8 years building a career. Don\'t spend 30 seconds on the CV that decides whether anyone reads about it. The foundation work above takes about 60 minutes total. After that, every application benefits.' },
       { type: 'p', text: 'Then the next problem is the rest of the application: the cover letter, the company research, the interview prep, the fit score. That\'s another hour per application, manually. At 30 applications a week, that\'s your whole weekend gone.' },
-      { type: 'callout', text: 'Vantage AI compresses that hour into ~90 seconds per application. Cover letter (4 tones), company brief, mock interview questions, fit score, 5-minute pitch outline. Free for the first 3 analyses, no card. £5 starter pack if you want more, no subscription.' },
+      { type: 'callout', text: 'Vantage AI compresses that hour into ~90 seconds per application. Cover letter (4 tones), company brief, mock interview questions, fit score, 5-minute pitch outline. Free for the first 10 prep packs, no card. £5 starter pack if you want more, no subscription.' },
 
       { type: 'h2', text: 'Genuine note to anyone caught in the cuts' },
       { type: 'p', text: 'The volume in April 2026 was historic. The system is dumber than it should be. The recruiters are buried. The ATSes are slower than usual. None of that is your fault. The work above is just the part you can control.' },
@@ -814,7 +814,7 @@ export const blogPosts: BlogPost[] = [
 
       { type: 'h2', text: 'Step 5 — Compress prep time per application' },
       { type: 'p', text: 'Once you start applying, the bottleneck is prep time per application. Manually, it\'s about an hour: company research, cover letter, interview Qs, fit check. At 30 applications a week, that\'s your whole weekend.' },
-      { type: 'callout', text: 'Vantage AI does this in ~90 seconds per application — paste a job link, get the full prep pack back. 3 free analyses on signup, no card. The economics make sense around application 5 onwards.' },
+      { type: 'callout', text: 'Vantage AI does this in ~90 seconds per application — paste a job link, get the full prep pack back. 10 free prep packs on signup, no card. The economics make sense around application 5 onwards.' },
 
       { type: 'h2', text: 'The honest part' },
       { type: 'p', text: 'Median time to next role for laid-off tech workers in 2026 is 3–6 months. Faster if you compress prep time per application and tighter if you have a strong network. Slower if you spray-and-pray.' },

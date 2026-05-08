@@ -147,7 +147,7 @@ export default function PlaybookPage() {
           <div className="flex items-center gap-4 text-sm">
             <Link to="/laid-off" className={`${t.textSub} hover:${t.text}`}>Cohort guide</Link>
             <Link to="/ats" className={`${t.textSub} hover:${t.text}`}>ATS Guide</Link>
-            <Link to="/register" className="px-4 py-2 bg-[#4F46E5] text-white rounded-full font-semibold hover:bg-[#3F36D5]">3 free analyses</Link>
+            <Link to="/register" className="px-4 py-2 bg-[#4F46E5] text-white rounded-full font-semibold hover:bg-[#3F36D5]">10 free prep packs</Link>
           </div>
         </div>
       </nav>
@@ -203,13 +203,13 @@ export default function PlaybookPage() {
         <div className={`${t.glass} rounded-2xl p-8 text-center`}>
           <h2 className={`text-2xl font-bold ${t.text} mb-3`}>Ready to start the system?</h2>
           <p className={`${t.textSub} max-w-xl mx-auto mb-6`}>
-            Vantage compresses cover letter + interview prep + fit score into ~90 seconds per application. 3 free analyses on signup, no card.
+            Vantage compresses cover letter + interview prep + fit score into ~90 seconds per application. 10 free prep packs on signup, no card.
           </p>
           <Link
             to="/register"
             className="inline-flex items-center gap-2 px-6 py-3 bg-[#4F46E5] text-white rounded-full font-semibold hover:-translate-y-0.5 transition-all"
           >
-            Get 3 free analyses <ArrowRight className="w-4 h-4" />
+            Get 10 free prep packs <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
       </section>

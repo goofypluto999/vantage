@@ -70,7 +70,7 @@ const PROFILES: Record<CompetitorSlug, CompetitorProfile> = {
     faq: [
       {
         q: 'Is Vantage a free Jobscan alternative?',
-        a: 'Vantage has a free trial (3 analyses, no card required) and a £5 one-time pack of 20 tokens. That is a free starting point and a much cheaper paid tier than Jobscan\'s $49.95/month, but Vantage is not free forever — running an analysis costs tokens because we pay Gemini compute fees per run.',
+        a: 'Vantage has a free trial (10 prep packs, no card required) and a £5 one-time pack of 20 tokens. That is a free starting point and a much cheaper paid tier than Jobscan\'s $49.95/month, but Vantage is not free forever — running an analysis costs tokens because we pay Gemini compute fees per run.',
       },
       {
         q: 'Does Vantage check ATS compatibility like Jobscan?',

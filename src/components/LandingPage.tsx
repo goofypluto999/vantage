@@ -534,7 +534,7 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
             the `z-10` here has NO effect (CSS z-index only applies to positioned
             elements). The 3D canvas above has `absolute inset-0 z-0 pointer-events-auto`
             and was capturing clicks meant for the hero CTA — Clarity surfaced this
-            as a 'dead click' on "Get 3 free analyses". Adding `relative` here
+            as a 'dead click' on "Get 10 free prep packs". Adding `relative` here
             establishes the stacking context, so the hero content reliably paints
             and receives clicks above the canvas. */}
         <motion.div
@@ -551,7 +551,7 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
               unconditionally visible on first frame, regardless of tab state. */}
           <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/30 backdrop-blur-[20px] border border-white/50 text-[#2D2B4E] text-xs font-bold tracking-widest uppercase mb-8 shadow-[0_4px_16px_rgba(0,0,0,0.06)]">
             <span className="w-2 h-2 rounded-full bg-[#4F46E5] animate-pulse" />
-            3 Free Analyses · No Card Needed
+            10 Free Prep Packs · No Card Needed
           </div>
 
           <h1 className="text-[40px] leading-[1.05] sm:text-5xl md:text-7xl lg:text-[88px] font-display font-[800] tracking-[-0.04em] drop-shadow-sm">
@@ -573,7 +573,7 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
                 onClick={onStart}
                 className="group inline-flex items-center gap-2 px-10 py-4 bg-[#4F46E5] text-white rounded-full font-bold text-base hover:-translate-y-1 hover:shadow-[0_12px_32px_rgba(79,70,229,0.45)] active:scale-95 transition-all"
               >
-                Get 3 free analyses <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                Get 10 free prep packs <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </button>
               <button
                 onClick={() =>
@@ -863,7 +863,7 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
             Run yours free now <ChevronRight className="w-4 h-4" />
           </button>
           <p className="text-xs text-[#6B6B8D] font-medium mt-3">
-            3 free analyses · no card · ~90 seconds per run
+            10 free prep packs · no card · ~90 seconds per run
           </p>
         </div>
       </section>
@@ -917,7 +917,7 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
             onClick={onStart}
             className="inline-flex items-center gap-2 px-9 py-4 bg-[#4F46E5] text-white rounded-full font-bold text-base hover:-translate-y-1 hover:shadow-[0_12px_32px_rgba(79,70,229,0.45)] active:scale-95 transition-all"
           >
-            Try it free — 3 analyses, no card <ChevronRight className="w-4 h-4" />
+            Try it free — 10 prep packs, no card <ChevronRight className="w-4 h-4" />
           </button>
           <p className="text-xs text-[#6B6B8D] font-medium mt-3">
             ~90 seconds per analysis · CV stays in your browser until you click run
@@ -1063,7 +1063,7 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
             Get this for your next job — free <ChevronRight className="w-4 h-4" />
           </button>
           <p className="text-xs text-[#6B6B8D] font-medium mt-3">
-            3 free analyses on signup. No card. £5 starter pack only if you want more.
+            10 free prep packs on signup. No card. £5 starter pack only if you want more.
           </p>
         </motion.div>
       </section>
@@ -1202,7 +1202,7 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
               Initialize Vantage <ChevronRight className="w-5 h-5" />
             </button>
             <p className="mt-5 text-sm text-[#6B6B8D] font-medium relative z-10">
-              Free signup. 10 tokens on us — that's 3 full analyses. No credit card needed.
+              Free signup. 10 tokens on us — that's 10 full prep packs. No credit card needed.
             </p>
           </div>
         </motion.div>
@@ -1338,9 +1338,9 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
             <button
               onClick={onStart}
               className="flex items-center gap-2 font-bold text-sm pr-3"
-              aria-label="Try Vantage free — three analyses, no card"
+              aria-label="Try Vantage free — ten prep packs, no card"
             >
-              Try free — 3 analyses, no card
+              Try free — 10 prep packs, no card
               <ChevronRight className="w-4 h-4" />
             </button>
             <button
