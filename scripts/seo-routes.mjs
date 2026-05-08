@@ -68,6 +68,11 @@ const STATIC_ROUTES = [
     title: 'Free Ghost Job Detector — Is This Listing Real? | Vantage AI',
     description: 'Paste a job listing — AI scores how likely it is a ghost job (0-100). Flags clichés, suspiciously wide salary bands, multiple seniorities collapsed into one role, missing tech stack, generic team-intro fluff. Free, no signup, runs in 5 seconds.',
   },
+  {
+    path: '/tools/jobscan-cost-calculator',
+    title: 'Jobscan Cost Calculator — What a Year of Job-Prep Tools Actually Costs | Vantage',
+    description: 'Honest 12-month cost calculator for Jobscan, Resume Worded, Final Round AI, Teal, and LiveCareer vs Vantage AI. See exactly how much each charges for your search length, and compare to Vantage’s £5 one-time top-up (£0.25 per prep pack, never expires).',
+  },
   // ─── Cohort + commercial-intent ───
   {
     path: '/laid-off',

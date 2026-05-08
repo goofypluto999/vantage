@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, ExternalLink, Star, Shield, Zap, FileSearch, MessageSquare, Target, Users, Briefcase } from 'lucide-react';
+import { ArrowRight, ExternalLink, Star, Shield, Zap, FileSearch, MessageSquare, Target, Users, Briefcase, Calculator } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import SEO from './SEO';
 
@@ -19,7 +19,7 @@ export default function ToolsPage() {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
     name: 'Free job search tools by Vantage AI',
-    numberOfItems: 5,
+    numberOfItems: 8,
     itemListElement: [
       {
         '@type': 'ListItem',
@@ -48,18 +48,24 @@ export default function ToolsPage() {
       {
         '@type': 'ListItem',
         position: 5,
+        url: `${SITE_URL}/tools/jobscan-cost-calculator`,
+        name: 'Job Tool Cost Calculator — Jobscan vs Vantage',
+      },
+      {
+        '@type': 'ListItem',
+        position: 6,
         url: `${SITE_URL}/interview-prep`,
         name: 'Interview Prep Packs by Company',
       },
       {
         '@type': 'ListItem',
-        position: 6,
+        position: 7,
         url: `${SITE_URL}/interview-questions`,
         name: 'Interview Questions by Role',
       },
       {
         '@type': 'ListItem',
-        position: 7,
+        position: 8,
         url: `${SITE_URL}/laid-off`,
         name: 'Layoff Recovery Guide (April 2026 cohort)',
       },
@@ -324,6 +330,26 @@ export default function ToolsPage() {
                   </p>
                 </div>
                 <Briefcase className="w-5 h-5 text-violet-400 flex-shrink-0" />
+              </div>
+            </Link>
+            <Link
+              to="/tools/jobscan-cost-calculator"
+              className={`${t.glass} rounded-xl p-5 hover:border-violet-400/40 transition group block`}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <div className={`text-xs uppercase tracking-widest ${t.textMuted} font-bold`}>
+                    Free · No signup · Calculator
+                  </div>
+                  <h3 className={`text-lg font-bold ${t.text} mt-1 group-hover:text-violet-500 transition`}>
+                    Job Tool Cost Calculator
+                  </h3>
+                  <p className={`text-sm ${t.textSub} mt-2 leading-relaxed`}>
+                    What a year of Jobscan, Resume Worded, Final Round AI, Teal, and LiveCareer would actually cost
+                    — versus Vantage's £5 one-time top-up. Drag the sliders and see the spread for yourself.
+                  </p>
+                </div>
+                <Calculator className="w-5 h-5 text-violet-400 flex-shrink-0" />
               </div>
             </Link>
             <Link

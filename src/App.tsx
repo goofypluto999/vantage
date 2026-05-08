@@ -29,6 +29,7 @@ const BlogPost = React.lazy(() => import('./components/BlogPost'));
 const InterviewQuestionsHub = React.lazy(() => import('./components/InterviewQuestionsHub'));
 const InterviewQuestionsPage = React.lazy(() => import('./components/InterviewQuestionsPage'));
 const ToolsPage = React.lazy(() => import('./components/ToolsPage'));
+const CostCalculatorPage = React.lazy(() => import('./components/CostCalculatorPage'));
 const ComparePage = React.lazy(() => import('./components/ComparePage'));
 const InterviewPrepCompanyHub = React.lazy(() => import('./components/InterviewPrepCompanyHub'));
 const InterviewPrepCompanyPage = React.lazy(() => import('./components/InterviewPrepCompanyPage'));
@@ -426,6 +427,9 @@ function AppContent() {
             <Route path="/interview-questions" element={<InterviewQuestionsHub />} />
             <Route path="/interview-questions/:role" element={<InterviewQuestionsPage />} />
             <Route path="/tools" element={<ToolsPage />} />
+            <Route path="/tools/jobscan-cost-calculator" element={<CostCalculatorPage />} />
+            <Route path="/jobscan-cost-calculator" element={<Navigate to="/tools/jobscan-cost-calculator" replace />} />
+            <Route path="/job-tool-cost-calculator" element={<Navigate to="/tools/jobscan-cost-calculator" replace />} />
             <Route path="/compare" element={<ComparePage />} />
             <Route path="/interview-prep" element={<InterviewPrepCompanyHub />} />
             <Route path="/interview-prep/:company" element={<InterviewPrepCompanyPage />} />
