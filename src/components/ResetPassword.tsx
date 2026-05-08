@@ -37,7 +37,22 @@ export default function ResetPassword() {
       setSuccess(true);
       setTimeout(() => navigate('/login'), 2000);
     } catch (err: any) {
-      setError(err.message || 'Failed to update password');
+      // Map common reset-link failures into a recognizable error string the
+      // template below can branch on. Supabase's wording isn't stable across
+      // versions, so we match by substring on a small allowlist.
+      const raw = (err?.message || '').toLowerCase();
+      if (
+        raw.includes('expired') ||
+        raw.includes('invalid') ||
+        raw.includes('not found') ||
+        raw.includes('no user') ||
+        raw.includes('jwt') ||
+        raw.includes('token')
+      ) {
+        setError('LINK_EXPIRED');
+      } else {
+        setError(err.message || 'Failed to update password');
+      }
     } finally {
       setLoading(false);
     }
@@ -73,7 +88,23 @@ export default function ResetPassword() {
               <h1 className="text-3xl font-display font-bold text-white mb-2">Set new password</h1>
               <p className="text-white/50 mb-8">Enter your new password below</p>
 
-              {error && (
+              {error === 'LINK_EXPIRED' && (
+                <div className="mb-6 p-4 rounded-xl bg-amber-500/10 border border-amber-500/30">
+                  <p className="text-amber-300 text-sm font-semibold mb-2">
+                    This reset link has expired or is invalid.
+                  </p>
+                  <p className="text-amber-100/80 text-xs leading-relaxed mb-3">
+                    Reset links expire after about an hour for security. Request a fresh one and try again — the new link will arrive in your inbox within 60 seconds.
+                  </p>
+                  <Link
+                    to="/forgot-password"
+                    className="inline-flex items-center gap-1.5 text-sm font-semibold text-amber-200 hover:text-amber-100 underline"
+                  >
+                    Send a new reset link →
+                  </Link>
+                </div>
+              )}
+              {error && error !== 'LINK_EXPIRED' && (
                 <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
                   {error}
                 </div>
