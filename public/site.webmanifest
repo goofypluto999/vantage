@@ -2,7 +2,7 @@
   "name": "Vantage — AI Job Preparation",
   "short_name": "Vantage",
   "description": "Upload your CV, paste a job link, get the full prep pack in ~90 seconds.",
-  "start_url": "/",
+  "start_url": "/dashboard?source=pwa",
   "display": "standalone",
   "background_color": "#0a0814",
   "theme_color": "#4f46e5",
@@ -27,6 +27,54 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
+    }
+  ],
+  "share_target": {
+    "action": "/share-target",
+    "method": "GET",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  },
+  "file_handlers": [
+    {
+      "action": "/open-cv",
+      "accept": {
+        "application/pdf": [".pdf"],
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [".docx"],
+        "text/plain": [".txt"]
+      }
+    }
+  ],
+  "protocol_handlers": [
+    {
+      "protocol": "web+vantage",
+      "url": "/handle?payload=%s"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Run a new prep pack",
+      "short_name": "Prep pack",
+      "description": "Open the dashboard with the new-analysis form ready",
+      "url": "/dashboard?source=pwa-shortcut",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Roast my cover letter",
+      "short_name": "Roast",
+      "description": "Free AI roast of a cover letter",
+      "url": "/roast?source=pwa-shortcut",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Why no interviews?",
+      "short_name": "Diagnose",
+      "description": "Free 60-second self-diagnostic",
+      "url": "/tools/no-interviews-diagnostic?source=pwa-shortcut",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
     }
   ]
 }

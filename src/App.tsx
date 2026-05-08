@@ -33,6 +33,9 @@ const CostCalculatorPage = React.lazy(() => import('./components/CostCalculatorP
 const ReceiptsPage = React.lazy(() => import('./components/ReceiptsPage'));
 const NoInterviewsDiagnostic = React.lazy(() => import('./components/NoInterviewsDiagnostic'));
 const SearchPage = React.lazy(() => import('./components/SearchPage'));
+const PwaShareTarget = React.lazy(() => import('./components/PwaShareTarget'));
+const PwaOpenCv = React.lazy(() => import('./components/PwaOpenCv'));
+const PwaHandle = React.lazy(() => import('./components/PwaHandle'));
 const ComparePage = React.lazy(() => import('./components/ComparePage'));
 const InterviewPrepCompanyHub = React.lazy(() => import('./components/InterviewPrepCompanyHub'));
 const InterviewPrepCompanyPage = React.lazy(() => import('./components/InterviewPrepCompanyPage'));
@@ -441,6 +444,9 @@ function AppContent() {
             <Route path="/no-interviews" element={<Navigate to="/tools/no-interviews-diagnostic" replace />} />
             <Route path="/why-no-interviews" element={<Navigate to="/tools/no-interviews-diagnostic" replace />} />
             <Route path="/search" element={<SearchPage />} />
+            <Route path="/share-target" element={<PwaShareTarget />} />
+            <Route path="/open-cv" element={<PwaOpenCv />} />
+            <Route path="/handle" element={<PwaHandle />} />
             <Route path="/compare" element={<ComparePage />} />
             <Route path="/interview-prep" element={<InterviewPrepCompanyHub />} />
             <Route path="/interview-prep/:company" element={<InterviewPrepCompanyPage />} />

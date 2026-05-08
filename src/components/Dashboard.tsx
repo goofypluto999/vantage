@@ -186,7 +186,27 @@ export default function Dashboard() {
 
   const [step, setStep] = useState<'input' | 'processing' | 'results'>('input');
   const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
-  const [cvFile, setCvFile] = useState<File | null>(null);
+  // PWA file_handler handoff: when /open-cv was used as the entry point
+  // (user did "Open with Vantage" on a CV file from their OS), the
+  // PwaOpenCv component reads the file via launchQueue, base64-encodes
+  // it, and stores it in sessionStorage. We re-hydrate that into a real
+  // File object here so the rest of the dashboard logic (which expects
+  // a File) is unchanged. Cleared on read so revisits don't keep
+  // pre-loading stale state.
+  const [cvFile, setCvFile] = useState<File | null>(() => {
+    try {
+      const raw = sessionStorage.getItem('vantage:pendingCv');
+      if (!raw) return null;
+      const parsed = JSON.parse(raw) as { name?: string; mime?: string; b64?: string };
+      sessionStorage.removeItem('vantage:pendingCv');
+      if (!parsed.b64 || !parsed.name) return null;
+      const binary = atob(parsed.b64);
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+      return new File([bytes], parsed.name, { type: parsed.mime || 'application/octet-stream' });
+    } catch { /* bad payload — skip the prefill */ }
+    return null;
+  });
   // Bookmarklet handoff: if the user installed the bookmark and clicked it on
   // a job page, App.tsx stored the URL in sessionStorage. Pre-fill it once,
   // then clear so we don't keep re-using stale state on revisit.
