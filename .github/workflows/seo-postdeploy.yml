@@ -44,3 +44,8 @@ jobs:
 
       - name: Ping IndexNow
         run: node scripts/indexnow-ping.mjs
+
+      - name: Publish to WebSub hub (Google PubSubHubbub)
+        # Notifies feed-aware systems that rss/atom/feed.json have updated.
+        # Always exits 0 — WebSub failures don't break the deploy chain.
+        run: node scripts/websub-publish.mjs

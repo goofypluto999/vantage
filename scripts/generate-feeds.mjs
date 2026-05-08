@@ -420,6 +420,7 @@ ${categories}
     <title>Vantage Blog — AI Job Prep, CV Optimisation, Interview Strategy</title>
     <link>${HOST}/blog</link>
     <atom:link href="${HOST}/rss.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://pubsubhubbub.appspot.com/" rel="hub" />
     <description>Practical, current guides on AI job preparation, CV optimisation, ATS-friendly resumes, cover letters, and interview strategy. Long-form, from a solo founder building Vantage in public.</description>
     <language>${SITE_LANG.toLowerCase()}</language>
     <copyright>${SITE_NAME} 2026</copyright>
@@ -474,6 +475,7 @@ ${categories}
   <subtitle>${SITE_DESC}</subtitle>
   <link href="${HOST}/atom.xml" rel="self" type="application/atom+xml"/>
   <link href="${HOST}/" rel="alternate" type="text/html"/>
+  <link href="https://pubsubhubbub.appspot.com/" rel="hub"/>
   <link href="${HOST}/blog" rel="related" type="text/html"/>
   <id>${HOST}/</id>
   <updated>${isoDateTime(lastBuild)}</updated>
@@ -498,6 +500,9 @@ function writeJsonFeed(posts) {
     title: `${SITE_NAME} Blog`,
     home_page_url: `${HOST}/blog`,
     feed_url: `${HOST}/feed.json`,
+    hubs: [
+      { type: 'WebSub', url: 'https://pubsubhubbub.appspot.com/' },
+    ],
     description: SITE_DESC,
     icon: SITE_LOGO,
     favicon: SITE_FAVICON,

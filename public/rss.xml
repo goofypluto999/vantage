@@ -8,6 +8,7 @@
     <title>Vantage Blog — AI Job Prep, CV Optimisation, Interview Strategy</title>
     <link>https://aimvantage.uk/blog</link>
     <atom:link href="https://aimvantage.uk/rss.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://pubsubhubbub.appspot.com/" rel="hub" />
     <description>Practical, current guides on AI job preparation, CV optimisation, ATS-friendly resumes, cover letters, and interview strategy. Long-form, from a solo founder building Vantage in public.</description>
     <language>en-gb</language>
     <copyright>Vantage 2026</copyright>

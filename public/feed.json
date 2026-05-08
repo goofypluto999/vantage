@@ -3,6 +3,12 @@
   "title": "Vantage Blog",
   "home_page_url": "https://aimvantage.uk/blog",
   "feed_url": "https://aimvantage.uk/feed.json",
+  "hubs": [
+    {
+      "type": "WebSub",
+      "url": "https://pubsubhubbub.appspot.com/"
+    }
+  ],
   "description": "AI job preparation. Upload your CV, paste a job link, get the full prep pack in ~90 seconds.",
   "icon": "https://aimvantage.uk/og-image.png",
   "favicon": "https://aimvantage.uk/favicon.svg",
