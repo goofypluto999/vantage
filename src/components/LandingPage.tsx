@@ -252,11 +252,59 @@ function Navbar({ onStart, showLogin }: { onStart: () => void; showLogin?: () =>
                   {link}
                 </a>
               ))}
+              {/* Free-tool routes — desktop users get the chip cluster in
+                  the hero, mobile users were blind to them. Surfacing here so
+                  the second-doorway conversion path works on phones too. */}
+              <div className="px-4 pt-3 pb-1 text-[10px] uppercase tracking-widest font-bold text-[#6B6B8D]">
+                Free tools — no signup
+              </div>
+              <Link
+                to="/roast"
+                onClick={() => setMobileOpen(false)}
+                className="px-4 py-2.5 text-sm font-semibold text-[#3B3A5C] hover:text-[#4F46E5] rounded-xl hover:bg-white/40 transition-all"
+              >
+                Roast my cover letter
+              </Link>
+              <Link
+                to="/tools/no-interviews-diagnostic"
+                onClick={() => setMobileOpen(false)}
+                className="px-4 py-2.5 text-sm font-semibold text-[#3B3A5C] hover:text-[#4F46E5] rounded-xl hover:bg-white/40 transition-all"
+              >
+                Why no interviews? (60s)
+              </Link>
+              <Link
+                to="/decode-rejection"
+                onClick={() => setMobileOpen(false)}
+                className="px-4 py-2.5 text-sm font-semibold text-[#3B3A5C] hover:text-[#4F46E5] rounded-xl hover:bg-white/40 transition-all"
+              >
+                Decode rejection email
+              </Link>
+              <Link
+                to="/ghost-job-check"
+                onClick={() => setMobileOpen(false)}
+                className="px-4 py-2.5 text-sm font-semibold text-[#3B3A5C] hover:text-[#4F46E5] rounded-xl hover:bg-white/40 transition-all"
+              >
+                Is this a ghost job?
+              </Link>
+              <Link
+                to="/tools/jobscan-cost-calculator"
+                onClick={() => setMobileOpen(false)}
+                className="px-4 py-2.5 text-sm font-semibold text-[#3B3A5C] hover:text-[#4F46E5] rounded-xl hover:bg-white/40 transition-all"
+              >
+                Jobscan vs Vantage cost
+              </Link>
+              <Link
+                to="/receipts"
+                onClick={() => setMobileOpen(false)}
+                className="px-4 py-2.5 text-sm font-semibold text-emerald-600 hover:text-emerald-700 rounded-xl hover:bg-emerald-50/40 transition-all"
+              >
+                Receipts (trust audit) →
+              </Link>
               <button
                 onClick={() => { setMobileOpen(false); onStart(); }}
                 className="mt-2 px-5 py-3 bg-[#4F46E5] text-white text-sm font-bold rounded-full hover:bg-[#6366F1] transition-all"
               >
-                Get Started →
+                Get 10 free prep packs →
               </button>
             </div>
           </motion.div>
@@ -607,6 +655,12 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
                 Roast my cover letter
               </Link>
               <Link
+                to="/tools/no-interviews-diagnostic"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/45 backdrop-blur-[20px] border border-white/55 text-[#2D2B4E] text-xs font-semibold hover:bg-white/65 transition-all"
+              >
+                Why no interviews? (60s)
+              </Link>
+              <Link
                 to="/decode-rejection"
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/45 backdrop-blur-[20px] border border-white/55 text-[#2D2B4E] text-xs font-semibold hover:bg-white/65 transition-all"
               >
@@ -617,6 +671,12 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/45 backdrop-blur-[20px] border border-white/55 text-[#2D2B4E] text-xs font-semibold hover:bg-white/65 transition-all"
               >
                 Is this a ghost job?
+              </Link>
+              <Link
+                to="/tools/jobscan-cost-calculator"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/45 backdrop-blur-[20px] border border-white/55 text-[#2D2B4E] text-xs font-semibold hover:bg-white/65 transition-all"
+              >
+                Jobscan vs Vantage cost
               </Link>
             </div>
             <p className="text-xs text-[#3B3A5C] uppercase tracking-widest flex items-center gap-2 font-bold">
