@@ -78,6 +78,11 @@ const STATIC_ROUTES = [
     title: 'Receipts — Every Trust Claim Vantage AI Makes, With the Evidence | Vantage',
     description: 'Single-page audit of Vantage AI: Stripe-only billing, no auto-renew traps, no DM outreach, sole-trader operator transparency, public bug history, public token math, EU hosting. If a trust claim isn\'t on this page, we don\'t make it elsewhere either.',
   },
+  {
+    path: '/tools/no-interviews-diagnostic',
+    title: 'No Interviews After 100+ Applications? Free 60-Second Diagnostic | Vantage',
+    description: '5 questions, 60 seconds, deterministic verdict. Tells you whether your zero-interview problem is ATS filtering, positioning, targeting, proof, market, or overqualified-flag — and gives you a concrete next move. Free, no signup, no LLM call (computed in your browser).',
+  },
   // ─── Cohort + commercial-intent ───
   {
     path: '/laid-off',
