@@ -9,6 +9,7 @@ import {
 import Waitlist from './Waitlist';
 import DemoWalkthrough from './DemoWalkthrough';
 import { useCurrency } from '../contexts/CurrencyContext';
+import { track } from '../lib/track';
 // getPublicStats was used for the old "Live Transparency" counter section.
 // That section now shows static build-in-public credibility metrics instead,
 // so the live-DB hit is no longer needed and the import is removed.
@@ -618,7 +619,7 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
           <div className="mt-12 pointer-events-auto flex flex-col items-center gap-4">
             <div className="flex flex-wrap items-center justify-center gap-3">
               <button
-                onClick={onStart}
+                onClick={() => { track('hero_cta_click', { cta: 'register_primary' }); onStart(); }}
                 className="group inline-flex items-center gap-2 px-10 py-4 bg-[#4F46E5] text-white rounded-full font-bold text-base hover:-translate-y-1 hover:shadow-[0_12px_32px_rgba(79,70,229,0.45)] active:scale-95 transition-all"
               >
                 Get 10 free prep packs <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -632,17 +633,19 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
                   the fold to a proper hero button alongside the primary CTA. */}
               <Link
                 to="/tools/no-interviews-diagnostic?source=hero"
+                onClick={() => track('hero_cta_click', { cta: 'diagnostic_low_friction' })}
                 className="inline-flex items-center gap-2 px-8 py-4 bg-emerald-500/15 backdrop-blur-[20px] border border-emerald-500/35 text-emerald-700 rounded-full font-semibold text-base hover:bg-emerald-500/25 hover:-translate-y-1 active:scale-95 transition-all"
               >
                 Try the free 60s diagnostic
               </Link>
               <button
-                onClick={() =>
+                onClick={() => {
+                  track('hero_cta_click', { cta: 'demo_reel_scroll' });
                   document.getElementById('watch-it-work')?.scrollIntoView({
                     behavior: 'smooth',
                     block: 'center',
-                  })
-                }
+                  });
+                }}
                 className="inline-flex items-center gap-2 px-8 py-4 bg-white/35 backdrop-blur-[20px] border border-white/55 text-[#2D2B4E] rounded-full font-semibold text-base hover:bg-white/55 hover:-translate-y-1 active:scale-95 transition-all"
               >
                 <Play className="w-4 h-4" /> See it work (22s)
