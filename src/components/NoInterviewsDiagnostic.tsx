@@ -455,6 +455,7 @@ export default function NoInterviewsDiagnostic() {
                     href={verdict.cta.to}
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={() => track('diagnostic_primary_cta_click', { verdict: verdict.key })}
                     className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] text-white font-semibold hover:opacity-95 transition-opacity"
                   >
                     {verdict.cta.label}
@@ -462,6 +463,7 @@ export default function NoInterviewsDiagnostic() {
                 ) : (
                   <Link
                     to={verdict.cta.to}
+                    onClick={() => track('diagnostic_primary_cta_click', { verdict: verdict.key })}
                     className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] text-white font-semibold hover:opacity-95 transition-opacity"
                   >
                     {verdict.cta.label}
@@ -475,6 +477,26 @@ export default function NoInterviewsDiagnostic() {
                   <RotateCcw className="w-4 h-4" />
                   Re-run with different answers
                 </button>
+              </div>
+              {/* Secondary path: every verdict points the user at the SPECIFIC
+                  matching Vantage tool, but the full Vantage prep pack solves
+                  most of these failure modes (ATS via CV Mirror integration,
+                  positioning/proof via tailored cover letter + fit score,
+                  targeting via company intelligence). The full prep pack is
+                  the broader fix, so always offer it as a secondary onramp
+                  with the verdict carried as a UTM param so we can attribute
+                  signups back to which diagnostic verdict drove them. */}
+              <div className="mt-4 pt-3 border-t border-white/10">
+                <p className={`text-xs ${t.textMuted}`}>
+                  Or run a full Vantage prep pack against your next application:{' '}
+                  <Link
+                    to={`/register?source=diagnostic&verdict=${encodeURIComponent(verdict.key)}`}
+                    onClick={() => track('diagnostic_secondary_register_click', { verdict: verdict.key })}
+                    className="text-violet-400 hover:text-violet-300 underline font-semibold"
+                  >
+                    10 free prep packs on signup, no card →
+                  </Link>
+                </p>
               </div>
             </div>
           </div>
