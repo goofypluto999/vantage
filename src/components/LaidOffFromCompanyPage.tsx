@@ -2,6 +2,7 @@ import { useParams, Link, Navigate } from 'react-router-dom';
 import { ArrowRight, Calendar, Users, Briefcase, ShieldCheck, ExternalLink } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import SEO from './SEO';
+import DiagnosticCallout from './DiagnosticCallout';
 import { getCompanyBySlug, laidOffCompanies } from '../data/laidOffCompanies';
 import { atsVendors } from '../data/atsVendors';
 
@@ -127,6 +128,13 @@ export default function LaidOffFromCompanyPage() {
           >
             10 free Vantage prep packs
           </Link>
+        </div>
+        <div className="max-w-2xl mx-auto mt-8">
+          <DiagnosticCallout
+            source={`laid-off-${company.slug}`}
+            variant="emerald"
+            prelude={`Recently laid off from ${company.name}? The market is cold for many roles right now — first run the free 60-second diagnostic so you know whether your no-interviews problem is the cold market itself, or something fixable (ATS / positioning / proof). 5 questions, deterministic verdict.`}
+          />
         </div>
       </section>
 

@@ -2,6 +2,7 @@ import { Link, useParams, Navigate } from 'react-router-dom';
 import { ArrowRight, Check, X, Star, ExternalLink, ArrowLeft } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import SEO from './SEO';
+import DiagnosticCallout from './DiagnosticCallout';
 
 const SITE_URL = 'https://aimvantage.uk';
 
@@ -510,6 +511,14 @@ export function AlternativesHub() {
           >
             Try Vantage free <ArrowRight className="w-4 h-4" />
           </Link>
+        </div>
+
+        <div className="max-w-2xl mx-auto mt-8">
+          <DiagnosticCallout
+            source="alternatives-hub"
+            variant="emerald"
+            prelude="Comparing Jobscan / Resume Worded / Final Round AI / Vantage but not sure which fits your situation? Run the free 60-second diagnostic FIRST — it tells you which job-search bottleneck you have (ATS / positioning / proof / market / overqualified). The right tool depends on the verdict; the diagnostic saves you a $50 subscription on the wrong fix."
+          />
         </div>
       </main>
     </div>

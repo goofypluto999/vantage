@@ -2,6 +2,7 @@ import { Link, useParams, Navigate } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, Star, Building2, TrendingUp, AlertTriangle } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import SEO from './SEO';
+import DiagnosticCallout from './DiagnosticCallout';
 import {
   getCompanySeniorityVariant,
   companySeniorityPacks,
@@ -249,6 +250,13 @@ export default function InterviewPrepCompanySeniorityPage() {
           >
             Run a free analysis <ArrowRight className="w-4 h-4" />
           </Link>
+
+          <DiagnosticCallout
+            source={`interview-prep-${companyData?.slug ?? company}-${variant.slug}`}
+            variant="emerald"
+            className="mt-6"
+            prelude={`Or first: confirm that the prep pack is the right next step. Run the free 60-second diagnostic — if your bottleneck is ATS, market temperature, or overqualified-flag, the ${variant.label} ${companyName} prep won't help you yet. 5 questions, 7 verdicts, runs in your browser.`}
+          />
         </section>
 
         <section className="mb-10">
