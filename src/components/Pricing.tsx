@@ -1,8 +1,35 @@
-import React from 'react';
-import { Check, Zap, Star, Crown, ArrowRight } from 'lucide-react';
+import React, { useState } from 'react';
+import { Check, Zap, Star, Crown, ArrowRight, Lock, ChevronDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useCurrency } from '../contexts/CurrencyContext';
 import { track } from '../lib/track';
+
+const PRICING_FAQ = [
+  {
+    q: 'What if Vantage doesn\'t work for me?',
+    a: 'You start with 10 free prep packs — no card. If those don\'t convince you Vantage is worth £5, you don\'t pay. For paid plans, you can cancel from the Stripe billing portal in one click — no retention emails, no friction. Tokens you already paid for never expire.',
+  },
+  {
+    q: 'Why subscription vs. one-time top-up?',
+    a: 'Top-up (£5 for 20 packs) is for occasional users — applying to a handful of roles, never expires. Subscription (Pro/Premium) is for active job hunters running 60-120 prep packs a month, which works out cheaper per pack. Pick the one that matches your apply rate.',
+  },
+  {
+    q: 'What payment methods do you accept?',
+    a: 'Card (Visa, Mastercard, Amex), Apple Pay, Google Pay, Link, and bank transfer where Stripe supports it. All processed by Stripe — Vantage never sees or stores your card details.',
+  },
+  {
+    q: 'Can I switch between plans?',
+    a: 'Yes. Upgrade or downgrade any time from your account billing portal. Stripe handles proration automatically.',
+  },
+  {
+    q: 'Do tokens roll over month to month?',
+    a: 'Subscription tokens (Pro/Premium) refresh each billing cycle and don\'t roll over — use them or lose them. Top-up tokens (Starter) never expire — pay £5 once, use them whenever you apply.',
+  },
+  {
+    q: 'Is there a refund policy?',
+    a: 'If a generation fails on our end, the token is automatically refunded to your balance — no need to ask. For other refund requests, email us within 14 days of purchase and we\'ll handle it case by case (statutory UK consumer rights apply).',
+  },
+];
 
 interface PricingProps {
   onLogin?: () => void;
@@ -77,8 +104,24 @@ const PLANS = [
 
 export default function Pricing({ onLogin, onRegister, onCheckout, isAuthenticated }: PricingProps) {
   const { currency, setCurrency, symbol } = useCurrency();
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
+
+  // FAQPage JSON-LD — emit pricing-specific FAQ structured data so Google
+  // can show rich-result FAQ snippets on /pricing search results and AI
+  // crawlers can ingest the answers. Mirrors the pattern on / and /roast.
+  const pricingFaqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: PRICING_FAQ.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  };
+
   return (
     <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #0d0b1e 0%, #1a1635 50%, #2d2654 100%)' }}>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(pricingFaqSchema) }} />
       {/* Header */}
       <header className="border-b border-white/10 px-6 py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -143,6 +186,29 @@ export default function Pricing({ onLogin, onRegister, onCheckout, isAuthenticat
             </Link>{' '}
             first — 5 questions, no signup, tells you which of 7 failure modes is yours.
           </p>
+
+          {/* Trust strip — added 2026-05-08. /pricing visitors are deeper in
+              the funnel than landing visitors but still bounce at this gate.
+              Common buyer hesitations: 'is this safe?', 'can I cancel?',
+              'will I be locked in?'. Surface the 4 strongest answers in one
+              row before they scroll past the cards. */}
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs font-semibold text-white/65">
+            <span className="inline-flex items-center gap-1.5">
+              <Lock className="w-3.5 h-3.5 text-emerald-400" /> Stripe-secured checkout
+            </span>
+            <span className="text-white/20">·</span>
+            <span className="inline-flex items-center gap-1.5">
+              <Check className="w-3.5 h-3.5 text-emerald-400" /> Cancel any time
+            </span>
+            <span className="text-white/20">·</span>
+            <span className="inline-flex items-center gap-1.5">
+              <Check className="w-3.5 h-3.5 text-emerald-400" /> Top-up tokens never expire
+            </span>
+            <span className="text-white/20">·</span>
+            <span className="inline-flex items-center gap-1.5">
+              <Check className="w-3.5 h-3.5 text-emerald-400" /> No hidden fees
+            </span>
+          </div>
         </div>
 
         <div className="grid md:grid-cols-3 gap-6">
@@ -229,6 +295,48 @@ export default function Pricing({ onLogin, onRegister, onCheckout, isAuthenticat
             No hidden fees. Cancel anytime.
           </p>
         </div>
+
+        {/* Pricing FAQ — added 2026-05-08. Conversion research: /pricing
+            visitors who don't convert often have one of 6 specific objections
+            (refund? plan switch? rollover? payment methods? subscription vs
+            top-up? what if AI fails?). Answer them inline so they don't have
+            to navigate away. JSON-LD schema above emits the same content for
+            Google rich-result FAQ snippets on /pricing SERPs. */}
+        <section className="mt-20 max-w-3xl mx-auto">
+          <h2 className="text-2xl md:text-3xl font-display font-bold text-white text-center mb-10">
+            Pricing questions
+          </h2>
+          <div className="space-y-3">
+            {PRICING_FAQ.map((item, i) => {
+              const isOpen = openFaq === i;
+              return (
+                <div key={i} className="rounded-2xl bg-white/5 border border-white/10 overflow-hidden">
+                  <button
+                    type="button"
+                    onClick={() => setOpenFaq(isOpen ? null : i)}
+                    className="w-full px-5 py-4 flex items-center justify-between text-left hover:bg-white/[0.02] transition-colors"
+                    aria-expanded={isOpen}
+                  >
+                    <span className="text-white font-semibold text-sm md:text-base pr-4">{item.q}</span>
+                    <ChevronDown
+                      className={`w-5 h-5 text-white/50 flex-shrink-0 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+                    />
+                  </button>
+                  {isOpen && (
+                    <div className="px-5 pb-4 text-white/70 text-sm leading-relaxed">
+                      {item.a}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+          <p className="text-center text-xs text-white/40 mt-8">
+            Still have questions? Email{' '}
+            <a href="mailto:hello@aimvantage.uk" className="underline hover:text-white/60">hello@aimvantage.uk</a>{' '}
+            — we reply within 24 hours.
+          </p>
+        </section>
       </main>
     </div>
   );
