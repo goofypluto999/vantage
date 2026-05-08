@@ -272,7 +272,12 @@ Return ONLY the JSON. No markdown, no preamble.`;
       yourMove: sanitizeOutput(parsed.yourMove, 400) || 'Apply, but cap your prep time at 10 minutes.',
     });
   } catch (error: any) {
-    console.error('Ghost-job check error:', error?.message || 'Unknown error');
-    return response.status(500).json({ error: 'Failed to check the listing. Try again in a minute.' });
+    const errorName = error?.name || 'Error';
+    const errorMessage = error?.message || 'Unknown error';
+    console.error(`Ghost-job check error: name=${errorName} msg=${errorMessage}`);
+    return response.status(500).json({
+      error: 'Failed to check the listing. Try again in a minute.',
+      reason: errorName === 'SyntaxError' ? 'parse_failure' : 'ai_call_failure',
+    });
   }
 }
