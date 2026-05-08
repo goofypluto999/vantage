@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, CheckCircle2, Clock, FileText, Users, Briefcase, Mail, Calendar } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import SEO from './SEO';
+import DiagnosticCallout from './DiagnosticCallout';
 
 const SITE_URL = 'https://aimvantage.uk';
 
@@ -212,6 +213,13 @@ export default function PlaybookPage() {
             Get 10 free prep packs <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
+
+        <DiagnosticCallout
+          source="playbook"
+          variant="emerald"
+          className="mt-6"
+          prelude="The playbook above is built for the 'cold market' verdict — Mode 3 in the No Interviews diagnostic. Not sure that's actually your bottleneck? Run the free 60-second diagnostic. If your verdict is ATS, positioning, or proof, the warm-intro framework here won't move the needle until you fix the upstream problem."
+        />
       </section>
     </div>
   );
