@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, Link, Navigate } from 'react-router-dom';
-import { ArrowRight, Building2, FileText, Lightbulb, Mic, Sparkles, Target, CheckCircle2, AlertTriangle, Lock, Twitter, Linkedin, Copy, Check } from 'lucide-react';
+import { ArrowRight, Building2, FileText, Lightbulb, Mic, Sparkles, Target, CheckCircle2, AlertTriangle, Lock, Twitter, Linkedin, Copy, Check, ChevronRight } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import SEO from './SEO';
 import { getSampleAnalysis, type SampleAnalysis } from '../data/sampleAnalyses';
@@ -33,6 +33,26 @@ export default function SampleAnalysisPage() {
 function SampleAnalysisContent({ sample, t }: { sample: SampleAnalysis; t: any }) {
   const [tone, setTone] = useState<'direct' | 'formal' | 'warm' | 'creative'>('direct');
   const [copied, setCopied] = useState(false);
+
+  // Floating CTA — added 2026-05-08. Sample pages are 5+ screens of content;
+  // the above-the-fold "Run mine free" pill scrolls out of view, and the
+  // bottom CTA only catches users who read all the way to the end. Floating
+  // pill appears once the user has scrolled past the hero (~70% of viewport)
+  // and disappears near the bottom (where the explicit conversion section
+  // already has a CTA). Mirrors the pattern on the landing page.
+  const [showFloatingCta, setShowFloatingCta] = useState(false);
+  const [floatingCtaDismissed, setFloatingCtaDismissed] = useState(false);
+  useEffect(() => {
+    const onScroll = () => {
+      const past = window.scrollY > window.innerHeight * 0.7;
+      const nearBottom =
+        window.scrollY + window.innerHeight > document.documentElement.scrollHeight - 700;
+      setShowFloatingCta(past && !nearBottom);
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   const baseSampleUrl = `${SITE_URL}/sample/${sample.slug}`;
   const sampleUrl = `${baseSampleUrl}?utm_source=share&utm_medium=sample&utm_content=${sample.slug}`;
@@ -505,6 +525,33 @@ function SampleAnalysisContent({ sample, t }: { sample: SampleAnalysis; t: any }
           </div>
         </div>
       </div>
+
+      {/* Floating "Run mine free" pill — visible mid-page, hidden at bottom
+          (where the explicit CTA section has its own button). Captures the
+          deep-scroll user who's read enough to be convinced but the
+          above-the-fold pill has long since scrolled out of view. */}
+      {showFloatingCta && !floatingCtaDismissed && (
+        <div className="fixed bottom-5 right-5 z-50 pointer-events-auto">
+          <div className="flex items-center gap-2 pl-5 pr-2 py-2 rounded-full bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] text-white shadow-[0_12px_32px_rgba(79,70,229,0.45)] hover:shadow-[0_16px_40px_rgba(79,70,229,0.55)] transition-shadow">
+            <Link
+              to="/register?source=sample-floating"
+              className="flex items-center gap-2 font-bold text-sm pr-3"
+              aria-label="Run my own free analysis"
+            >
+              Run mine free — 10 packs, no card
+              <ChevronRight className="w-4 h-4" />
+            </Link>
+            <button
+              type="button"
+              onClick={() => setFloatingCtaDismissed(true)}
+              className="w-7 h-7 rounded-full bg-white/15 hover:bg-white/25 text-white/80 hover:text-white flex items-center justify-center transition-colors text-sm"
+              aria-label="Dismiss"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
