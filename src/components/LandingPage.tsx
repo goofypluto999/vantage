@@ -540,8 +540,33 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
   // (Old live-stats fetch removed. The "What's been built" section above now
   // uses static, verifiable counts that link to the actual shipped surfaces.)
 
+  // FAQPage JSON-LD — emits structured data for the 10 landing-page FAQs so
+  // Google can render them as rich-result FAQ snippets and AI crawlers can
+  // ingest them. Mirrors the pattern used on /roast, /decode-rejection,
+  // /ghost-job-check etc. Single source of truth: when the JSX FAQ list
+  // changes, copy the diff here too. (Could be DRY'd via a shared array,
+  // but keeping the JSX literal as the visible source for now to avoid
+  // touching the visual section.)
+  const landingFaqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      { '@type': 'Question', name: 'Is this right for me?', acceptedAnswer: { '@type': 'Answer', text: 'If you are applying for jobs and want to walk in prepared with real company intelligence, role alignment evidence, and confident answers — yes, this is for you.' } },
+      { '@type': 'Question', name: 'How is this different from just using ChatGPT?', acceptedAnswer: { '@type': 'Answer', text: "ChatGPT writes generic cover letters from a blank prompt. Vantage scrapes the actual job page (LinkedIn, Greenhouse, Lever, company careers), extracts company intel, scores your CV against the role, then writes a cover letter grounded in those specifics — plus mock interview Qs and a 5-minute pitch outline. Same model under the hood (Gemini 2.5 Flash), but with the research, structure, and tone-switching that the blank prompt is missing." } },
+      { '@type': 'Question', name: 'Will recruiters be able to tell my cover letter was AI-written?', acceptedAnswer: { '@type': 'Answer', text: "If you submit verbatim, possibly. If you do what works — pick a tone, read it once, swap one sentence for something only you would say, then send — they can't. Vantage gives you a 90% draft. You add the human 10%." } },
+      { '@type': 'Question', name: 'How is this different from Jobscan or Teal?', acceptedAnswer: { '@type': 'Answer', text: 'Jobscan tells you keywords your CV is missing. Teal organises your job board. Both are useful but neither writes the cover letter, generates mock interview Qs, or produces a strategic brief. Vantage is the prep-pack layer that comes after you decide to apply — the deliverable, not the tracker.' } },
+      { '@type': 'Question', name: 'How long does it take?', acceptedAnswer: { '@type': 'Answer', text: 'Under 5 minutes from upload to full brief. The AI does the heavy research while you review the output.' } },
+      { '@type': 'Question', name: 'Do I need any experience with AI?', acceptedAnswer: { '@type': 'Answer', text: 'None. Upload your CV, paste a job URL, and click generate. It handles everything else.' } },
+      { '@type': 'Question', name: 'Is my CV data private?', acceptedAnswer: { '@type': 'Answer', text: 'Completely. Your data is never stored on our servers, never used for training, and never shared. The CV is sent once to Gemini for the analysis, the analysis is returned to you, and the CV content is dropped. Each session is ephemeral.' } },
+      { '@type': 'Question', name: 'How do tokens work?', acceptedAnswer: { '@type': 'Answer', text: '1 token = 1 full prep pack (company intel + cover letter + interview pack + fit score + pitch). Cover letter tone rewrites cost 1 extra token each. Starter tokens are a one-time top-up and never expire. Pro and Premium tokens refresh each month with your subscription.' } },
+      { '@type': 'Question', name: 'What if the output is not right?', acceptedAnswer: { '@type': 'Answer', text: 'You can regenerate or refine with additional context. Tokens are only consumed on successful generations — if the AI fails, we refund them automatically.' } },
+      { '@type': 'Question', name: 'Can I cancel anytime?', acceptedAnswer: { '@type': 'Answer', text: "Yes. Subscriptions cancel from the Account Billing portal in one click — managed via Stripe so it's instant. No retention emails, no friction. Tokens you already paid for never expire even after cancelling." } },
+    ],
+  };
+
   return (
     <div className="bg-gradient-to-br from-[#A8A5E6] via-[#C2C0F0] to-[#E6E5F8] text-[#2D2B4E] min-h-screen font-body selection:bg-white/50 overflow-x-hidden">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(landingFaqSchema) }} />
 
       <AnimatePresence>
         {showHowItWorks && (
