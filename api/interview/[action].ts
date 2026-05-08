@@ -18,6 +18,46 @@ const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 // Cost for 'questions' action. 'evaluate' is free.
 const QUESTIONS_COST = 1;
 
+/**
+ * Extract the first balanced { ... } object OR [ ... ] array from a string
+ * and JSON.parse it. Tolerates markdown fences, leading prose, trailing
+ * commentary. Used after Gemini calls that omit responseMimeType (which we
+ * had to drop because of the @google/genai 1.29.0 + gemini-2.5-flash JSON-
+ * mode bug). The walker tracks depth + string/escape state so that braces
+ * inside string values don't unbalance the count.
+ */
+function extractJson(raw: string): any {
+  if (!raw || typeof raw !== 'string') {
+    throw new SyntaxError('No text returned from AI');
+  }
+  // Find earliest '{' or '['
+  const candidates = [raw.indexOf('{'), raw.indexOf('[')].filter((n) => n !== -1);
+  if (candidates.length === 0) {
+    throw new SyntaxError('No JSON value found in AI response');
+  }
+  const start = Math.min(...candidates);
+  const opener = raw[start];
+  const closer = opener === '{' ? '}' : ']';
+  let depth = 0;
+  let inString = false;
+  let escape = false;
+  let end = -1;
+  for (let i = start; i < raw.length; i += 1) {
+    const ch = raw[i];
+    if (escape) { escape = false; continue; }
+    if (ch === '\\' && inString) { escape = true; continue; }
+    if (ch === '"') { inString = !inString; continue; }
+    if (inString) continue;
+    if (ch === opener) depth += 1;
+    if (ch === closer) {
+      depth -= 1;
+      if (depth === 0) { end = i; break; }
+    }
+  }
+  if (end === -1) throw new SyntaxError('Unmatched brackets in AI response');
+  return JSON.parse(raw.slice(start, end + 1));
+}
+
 async function getProfile(userId: string, fields: string) {
   const res = await fetch(
     `${SUPABASE_URL}/rest/v1/profiles?id=eq.${userId}&select=${fields}`,
@@ -139,12 +179,7 @@ Only return the JSON array, no other text. No markdown fences. No commentary.`;
         config: {},
       });
       if (!aiResponse.text) throw new Error('No response from AI');
-      const cleanedJson = aiResponse.text
-        .trim()
-        .replace(/^```(?:json)?\s*/i, '')
-        .replace(/\s*```$/i, '')
-        .trim();
-      questions = JSON.parse(cleanedJson);
+      questions = extractJson(aiResponse.text);
     } catch (err) {
       await refundTokens(user.id, QUESTIONS_COST);
       throw err;
@@ -221,12 +256,7 @@ Return only the JSON object, no other text. No markdown fences. No commentary.`;
       config: { temperature: 0 },
     });
     if (!aiResponse.text) throw new Error('No response from AI');
-    const cleanedEvalJson = aiResponse.text
-      .trim()
-      .replace(/^```(?:json)?\s*/i, '')
-      .replace(/\s*```$/i, '')
-      .trim();
-    const evaluation = JSON.parse(cleanedEvalJson);
+    const evaluation = extractJson(aiResponse.text);
     return response.status(200).json({ success: true, evaluation });
   } catch (error: any) {
     console.error('Interview evaluate error:', error?.message || 'Unknown error');

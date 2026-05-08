@@ -52,6 +52,36 @@ async function supabaseQuery(endpoint: string, params: string = ''): Promise<any
 const RATE_WINDOW_MS = 5 * 60 * 1000;
 const RATE_MAX = 30;
 const rateBuckets: Map<string, number[]> = new Map();
+/**
+ * Extract first balanced { ... } or [ ... ] from raw AI text. Same pattern
+ * as api/decode-rejection / ghost-job-check / interview to defend against
+ * Gemini occasionally wrapping JSON in markdown fences or prose when
+ * responseMimeType is not set.
+ */
+function extractJson(raw: string): any {
+  if (!raw || typeof raw !== 'string') throw new SyntaxError('No AI text');
+  const candidates = [raw.indexOf('{'), raw.indexOf('[')].filter((n) => n !== -1);
+  if (candidates.length === 0) throw new SyntaxError('No JSON value in AI response');
+  const start = Math.min(...candidates);
+  const opener = raw[start];
+  const closer = opener === '{' ? '}' : ']';
+  let depth = 0;
+  let inString = false;
+  let escape = false;
+  let end = -1;
+  for (let i = start; i < raw.length; i += 1) {
+    const ch = raw[i];
+    if (escape) { escape = false; continue; }
+    if (ch === '\\' && inString) { escape = true; continue; }
+    if (ch === '"') { inString = !inString; continue; }
+    if (inString) continue;
+    if (ch === opener) depth += 1;
+    if (ch === closer) { depth -= 1; if (depth === 0) { end = i; break; } }
+  }
+  if (end === -1) throw new SyntaxError('Unmatched brackets in AI response');
+  return JSON.parse(raw.slice(start, end + 1));
+}
+
 function checkRateLimit(userId: string): { ok: boolean; retryAfterMs?: number } {
   const now = Date.now();
   const bucket = (rateBuckets.get(userId) || []).filter((t) => now - t < RATE_WINDOW_MS);
@@ -237,12 +267,7 @@ Output ONLY the JSON array. No markdown, no preamble.`;
       config: { temperature: 0.85 },
     });
     if (!aiResponse.text) throw new Error('No response from AI');
-    const cleanedRepliesJson = aiResponse.text
-      .trim()
-      .replace(/^```(?:json)?\s*/i, '')
-      .replace(/\s*```$/i, '')
-      .trim();
-    const replies = JSON.parse(cleanedRepliesJson);
+    const replies = extractJson(aiResponse.text);
     if (!Array.isArray(replies)) throw new Error('AI returned non-array');
     return response.status(200).json({ success: true, replies: replies.slice(0, 3) });
   } catch (error: any) {

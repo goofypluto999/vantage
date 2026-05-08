@@ -83,6 +83,38 @@ function sha256(s: string): string {
   return createHash('sha256').update(s).digest('hex');
 }
 
+/**
+ * Extract the first balanced { ... } JSON object from a string and parse it.
+ * Tolerates markdown fences, leading prose, trailing commentary that Gemini
+ * occasionally emits when responseMimeType is not set. Throws SyntaxError on
+ * malformed input. Mirrors api/analyze/index.ts's parseJSON().
+ */
+function extractJsonObject(raw: string): any {
+  if (!raw || typeof raw !== 'string') {
+    throw new SyntaxError('No text returned from AI');
+  }
+  const start = raw.indexOf('{');
+  if (start === -1) throw new SyntaxError('No JSON object found in AI response');
+  let depth = 0;
+  let inString = false;
+  let escape = false;
+  let end = -1;
+  for (let i = start; i < raw.length; i += 1) {
+    const ch = raw[i];
+    if (escape) { escape = false; continue; }
+    if (ch === '\\' && inString) { escape = true; continue; }
+    if (ch === '"') { inString = !inString; continue; }
+    if (inString) continue;
+    if (ch === '{') depth += 1;
+    if (ch === '}') {
+      depth -= 1;
+      if (depth === 0) { end = i; break; }
+    }
+  }
+  if (end === -1) throw new SyntaxError('Unmatched braces in AI response');
+  return JSON.parse(raw.slice(start, end + 1));
+}
+
 function checkSlidingWindow(
   store: Map<string, number[]>,
   key: string,
@@ -246,12 +278,8 @@ Return ONLY the JSON. No markdown, no preamble.`;
     });
 
     if (!aiResponse.text) throw new Error('No response from AI');
-    const cleanedJson = aiResponse.text
-      .trim()
-      .replace(/^```(?:json)?\s*/i, '')
-      .replace(/\s*```$/i, '')
-      .trim();
-    const parsed = JSON.parse(cleanedJson);
+    // Robust JSON extraction (see extractJsonObject below).
+    const parsed = extractJsonObject(aiResponse.text);
 
     // Sanitise EVERY string field before returning. Belt-and-braces in case
     // a prompt-injection broke through and the model returned attacker-
