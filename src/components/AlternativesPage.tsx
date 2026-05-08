@@ -643,7 +643,7 @@ export default function AlternativesPage() {
         <div className={`${t.glass} rounded-2xl p-8 text-center`}>
           <h3 className={`text-2xl font-bold ${t.text}`}>Run a real prep pack on a real job</h3>
           <p className={`mt-2 ${t.textSub} max-w-xl mx-auto`}>
-            Three free analyses on signup. No card. £5 one-time pack if you want more — never expires.
+            Ten free prep packs on signup. No card. £5 one-time pack if you want more — never expires.
           </p>
           <Link
             to="/register"

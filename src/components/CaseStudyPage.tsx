@@ -191,7 +191,7 @@ export default function CaseStudyPage() {
           <div className={`mt-16 ${t.glass} rounded-2xl p-8 text-center`}>
             <h3 className={`text-2xl font-bold ${t.text}`}>Want to be the next case study?</h3>
             <p className={`mt-2 ${t.textSub} max-w-xl mx-auto`}>
-              Three free analyses on signup. No card. If Vantage helps you land
+              Ten free prep packs on signup. No card. If Vantage helps you land
               a role, we'd love to feature your story (anonymised if needed).
             </p>
             <Link

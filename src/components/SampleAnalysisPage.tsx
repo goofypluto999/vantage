@@ -446,16 +446,27 @@ function SampleAnalysisContent({ sample, t }: { sample: SampleAnalysis; t: any }
             Run your own in 90 seconds.
           </h2>
           <p className={`text-base mb-6 max-w-xl mx-auto ${t.textSub}`}>
-            Three free analyses on signup. No card. One full analysis covers company intel, fit
+            10 free prep packs on signup. No card. One full prep pack covers company intel, fit
             score, four cover-letter tones, twelve interview questions, an AI mock interview, and a
             6-slide pitch outline.
           </p>
-          <Link
-            to="/register"
-            className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] text-white font-semibold hover:opacity-95 transition-opacity"
-          >
-            Start free <ArrowRight className="w-4 h-4" />
-          </Link>
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <Link
+              to="/register?source=sample-analysis"
+              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] text-white font-semibold hover:opacity-95 transition-opacity"
+            >
+              Start free <ArrowRight className="w-4 h-4" />
+            </Link>
+            {/* Lower-friction onramp for skeptics: diagnose the bottleneck
+                before signing up. After the diagnostic verdict, they can
+                come back here and start with the right context. */}
+            <Link
+              to="/tools/no-interviews-diagnostic?source=sample-analysis"
+              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-emerald-500/15 border border-emerald-500/35 text-emerald-700 font-semibold hover:bg-emerald-500/25 transition-colors"
+            >
+              Or run the free 60s diagnostic
+            </Link>
+          </div>
           <div className={`mt-4 text-xs flex items-center justify-center gap-2 ${t.textMuted}`}>
             <Lock className="w-3 h-3" /> No subscription · Cancel any time · EU-hosted
           </div>

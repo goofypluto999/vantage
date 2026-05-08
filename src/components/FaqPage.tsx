@@ -47,7 +47,7 @@ const SECTIONS: FaqSection[] = [
       {
         question: 'How does Vantage compare to JobScan, Teal HQ, Resume Worded, or Final Round AI?',
         answer:
-          'Vantage covers a wider scope than any single competitor. JobScan and Resume Worded grade your CV against a job description but stop there. Teal HQ helps you build a CV but does not produce interview prep, mock interviews, or pitch outlines. Final Round AI focuses on live mock interviews specifically. Vantage covers the full prep pack — company intel, fit score, cover letter, mock interview, and pitch outline — for £5 per 20-token starter (one full analysis costs three tokens). The trade-off is depth: Vantage prioritises breadth of coverage in the 90-second analysis; competitors that focus on a single surface area sometimes go deeper on that one surface.',
+          'Vantage covers a wider scope than any single competitor. JobScan and Resume Worded grade your CV against a job description but stop there. Teal HQ helps you build a CV but does not produce interview prep, mock interviews, or pitch outlines. Final Round AI focuses on live mock interviews specifically. Vantage covers the full prep pack — company intel, fit score, cover letter, mock interview, and pitch outline — for £5 per 20-token Starter pack (one full prep pack = one token at £0.25 each). The trade-off is depth: Vantage prioritises breadth of coverage in the 90-second analysis; competitors that focus on a single surface area sometimes go deeper on that one surface.',
       },
       {
         question: 'How long does an analysis take?',
@@ -73,7 +73,7 @@ const SECTIONS: FaqSection[] = [
       {
         question: 'Why is Vantage so cheap compared to other AI job tools?',
         answer:
-          'Vantage runs on Google Gemini 2.5 Flash, the most cost-efficient frontier model available in 2026. The £5 starter pack covers approximately 6 full analyses. The founder absorbs the small Gemini cost overhead and prices accessibly because the original audience were friends laid off in the April 2026 tech layoff wave who could not afford the $50/month tools competitors charge.',
+          'Vantage runs on Google Gemini 2.5 Flash, the most cost-efficient frontier model available in 2026. The £5 Starter pack covers 20 full prep packs at £0.25 each (1 token = 1 prep pack since the 2026-05-08 pricing migration). The founder absorbs the small Gemini cost overhead and prices accessibly because the original audience were friends laid off in the April 2026 tech layoff wave who could not afford the $50/month tools competitors charge.',
       },
       {
         question: 'Do the tokens expire on the Starter pack?',
@@ -309,7 +309,7 @@ export default function FaqPage() {
             Stop reading. Start prepping.
           </h2>
           <p className={`text-base mb-5 ${t.textSub} max-w-xl mx-auto`}>
-            Three free analyses on signup, no card needed. Upload a CV, paste a job link,
+            Ten free prep packs on signup, no card needed. Upload a CV, paste a job link,
             walk away with a full prep pack in about 90 seconds.
           </p>
           <Link

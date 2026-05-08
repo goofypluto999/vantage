@@ -152,7 +152,7 @@ export default function CaseStudiesHub() {
           <h3 className={`text-2xl font-bold ${t.text}`}>Want to be the next case study?</h3>
           <p className={`mt-2 ${t.textSub} max-w-xl mx-auto`}>
             If Vantage helps you land a role and you're willing to share the story,
-            we'd love to feature it (anonymised if needed). Three free analyses on
+            we'd love to feature it (anonymised if needed). Ten free prep packs on
             signup, no card required.
           </p>
           <Link
