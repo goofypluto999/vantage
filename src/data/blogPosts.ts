@@ -677,6 +677,8 @@ export const blogPosts: BlogPost[] = [
         'If posted 60+ days ago: probably ghost. Treat as low priority.',
       ] },
 
+      { type: 'callout', text: 'Or paste the JD into our free Ghost Job Detector — AI scores it 0-100 and quotes the specific cliché phrases that gave each tell away. Free, no signup, runs in 5 seconds: https://aimvantage.uk/ghost-job-check' },
+
       { type: 'h2', text: 'Why ghost jobs exist' },
       { type: 'p', text: 'Three reasons companies post jobs they are not actively hiring for:' },
       { type: 'ul', items: [
@@ -769,6 +771,7 @@ export const blogPosts: BlogPost[] = [
 
       { type: 'h2', text: 'Genuine note to anyone caught in the cuts' },
       { type: 'p', text: 'The volume in April 2026 was historic. The system is dumber than it should be. The recruiters are buried. The ATSes are slower than usual. None of that is your fault. The work above is just the part you can control.' },
+      { type: 'callout', text: 'When the rejection emails start landing, paste them into our free Rejection Email Decoder — AI tells you whether you got ATS-filtered, salary-misaligned, experience-gapped, or just standard ghosting, plus your concrete next move. Free, no signup: https://aimvantage.uk/decode-rejection' },
       { type: 'p', text: 'Hope this is useful. Genuinely.' },
     ],
   },
@@ -816,6 +819,7 @@ export const blogPosts: BlogPost[] = [
       { type: 'h2', text: 'The honest part' },
       { type: 'p', text: 'Median time to next role for laid-off tech workers in 2026 is 3–6 months. Faster if you compress prep time per application and tighter if you have a strong network. Slower if you spray-and-pray.' },
       { type: 'p', text: 'The work above takes a week. After that, you\'re running an actual system. That beats 200 applications fired off in 48 hours every time.' },
+      { type: 'callout', text: 'Two free tools that pair with this checklist: paste any rejection email into our Rejection Email Decoder to see what the recruiter actually meant (https://aimvantage.uk/decode-rejection), or paste a job listing into our Ghost Job Detector to score how likely it is a real hire (https://aimvantage.uk/ghost-job-check). Both free, both no signup.' },
       { type: 'p', text: 'Genuinely sorry to anyone caught in the cuts this month. Hope this is useful.' },
     ],
   },
