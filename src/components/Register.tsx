@@ -74,6 +74,26 @@ export default function Register() {
           <p className="text-white/40 text-xs mt-6">
             Already confirmed? <Link to="/login" className="text-violet-400 underline hover:text-violet-300">Sign in</Link>
           </p>
+
+          {/* While-you-wait bridge — Gmail/Outlook confirmation emails take
+              up to 60 seconds to arrive (sometimes longer when they get
+              filtered to spam). Instead of leaving the user staring at the
+              page, give them something useful to do that ALSO advances the
+              conversion. The 60-second diagnostic is perfect: no signup
+              needed (already done), no friction, returns a verdict that
+              tells them what to focus on once they're in. */}
+          <div className="mt-8 pt-6 border-t border-white/10 text-left">
+            <div className="text-xs uppercase tracking-wider text-white/40 mb-2">While you wait for the email</div>
+            <p className="text-white/70 text-sm mb-3">
+              Run the free 60-second diagnostic — it pinpoints which of 7 failure modes is killing your interview rate (ATS / positioning / proof / market / etc.). When you confirm your email and land on the dashboard, you'll know exactly which prep pack to run first.
+            </p>
+            <Link
+              to="/tools/no-interviews-diagnostic?source=post-signup"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500/15 border border-emerald-500/35 text-emerald-300 hover:bg-emerald-500/25 text-sm font-semibold transition-colors"
+            >
+              Run the 60-second diagnostic →
+            </Link>
+          </div>
         </div>
       </div>
     );
