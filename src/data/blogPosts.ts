@@ -368,6 +368,8 @@ export const blogPosts: BlogPost[] = [
       { type: 'p', text: 'A senior recruiter at a UK-based tech company once let me sit behind her while she went through 80 applications for a single role. She averaged 28 seconds per CV. She rejected 71 of them in that time. The 9 that survived got a second pass that took about 90 seconds each.' },
       { type: 'p', text: 'This is what happens to your CV in those 30 seconds — and what to fix.' },
 
+      { type: 'callout', text: 'Different problem? If you have applied to 100+ roles and got zero interviews, the 30-second human scan might not even be the bottleneck. Run the free 60-second No Interviews diagnostic at aimvantage.uk/tools/no-interviews-diagnostic — 5 questions, deterministic verdict, tells you whether your bottleneck is ATS / positioning / proof / targeting / market / overqualified-flag. No signup. The rest of this post helps if your verdict is "proof" or "positioning".' },
+
       { type: 'callout', text: 'Quick answer: recruiters check four things in 30 seconds — the top third of page one, the most recent role title, the company names you have worked at, and one signal of seniority. Win those four, and you survive the scan. Lose any one, and the next click is reject.' },
 
       { type: 'h2', text: 'The 30-second recruiter scan' },
@@ -523,6 +525,8 @@ export const blogPosts: BlogPost[] = [
       { type: 'p', text: 'The standard advice — rewrite your resume to mirror each job description — is real and has real evidence behind it. The problem is the cost. At 30 applications a week, an hour each, that is your weekend gone, and the per-application return diminishes fast.' },
       { type: 'p', text: 'Here is what is actually happening when "tailoring" stops working — and what to do instead.' },
 
+      { type: 'callout', text: 'Different angle: if you tailor properly but interviews still stall at zero, "positioning" or "proof" is more likely the bottleneck than tailoring volume. Run the free 60-second No Interviews diagnostic at aimvantage.uk/tools/no-interviews-diagnostic. No signup, deterministic verdict, tells you which of 7 failure modes is actually yours so you do not optimise the wrong thing.' },
+
       { type: 'callout', text: 'Quick answer: stop rewriting from scratch. Build one strong "master resume" with three swappable angles, then change only the top of page one for each application. Saves 90% of the time, captures 80% of the keyword-match win.' },
 
       { type: 'h2', text: 'Why tailoring every resume stops paying off' },
@@ -583,6 +587,8 @@ export const blogPosts: BlogPost[] = [
       { type: 'p', text: 'A post on r/jobsearchhacks this week described the pattern: 5 months of job hunting, nearly 500 applications, zero interviews except a few "weird AI screening calls." The replies blamed the market, the resume content, cover letter quality, networking. Almost nobody mentioned the most common silent failure mode in 2026 hiring: the ATS literally cannot read the CV.' },
       { type: 'p', text: 'When the ATS fails to parse your file, you do not get a rejection email. You get nothing. Forever. The CV ends up classified as "Other / could not parse" and silently drops out of the recruiter\'s queue. From outside, it looks identical to "company decided to ghost me."' },
       { type: 'p', text: 'Here is the 60-second check that tells you whether the parse is the problem.' },
+
+      { type: 'callout', text: 'Faster: not sure if ATS is your bottleneck? Run the free 60-second No Interviews diagnostic at aimvantage.uk/tools/no-interviews-diagnostic. Five multiple-choice questions, deterministic verdict — tells you whether your zero-interview pattern is ATS, positioning, targeting, proof, market, or overqualified-flag. No signup, no LLM call, runs in your browser. If the verdict says ATS, the rest of this post is for you.' },
 
       { type: 'callout', text: 'Quick answer: open your CV in Google Docs, upload the PDF, then look at the raw text. If it reads coherently, ATS parsers will mostly handle it. If it looks scrambled, columns merged, sections out of order — you have a parse failure that no amount of keyword tailoring will fix.' },
 
