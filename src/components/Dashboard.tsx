@@ -202,6 +202,36 @@ export default function Dashboard() {
   });
   const [jobDescFile, setJobDescFile] = useState<File | null>(null);
   const [jobDescText, setJobDescText] = useState('');
+  // Roast handoff (GOLDEN GOSPEL Tactic 3 — 2026-05-08): if the user came in
+  // through /roast and clicked "Continue with this letter", RoastPage stored
+  // the letter + verdict in sessionStorage before navigating to /register.
+  // Once they're authenticated and land here, surface a banner that nudges
+  // them to upload their CV + paste a job URL so we can rewrite the letter
+  // against the actual application. Cleared on first read to avoid surfacing
+  // again on dashboard revisit.
+  const [pendingRoast, setPendingRoast] = useState<{
+    coverLetter: string;
+    roast: string;
+    severityScore: number;
+    capturedAt: number;
+  } | null>(() => {
+    try {
+      const raw = sessionStorage.getItem('vantage:pendingRoast');
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      sessionStorage.removeItem('vantage:pendingRoast');
+      // Validate shape — typeof guards before we trust this in render.
+      if (
+        parsed &&
+        typeof parsed.coverLetter === 'string' &&
+        typeof parsed.roast === 'string' &&
+        typeof parsed.severityScore === 'number'
+      ) {
+        return parsed;
+      }
+    } catch { /* ignore — bad JSON, just skip the handoff */ }
+    return null;
+  });
   // Default to 'text' (paste) — paste-from-clipboard is the fastest way to get
   // a JD into the form. File mode is still available via the toggle. Was 'file'
   // before — switched after observing real users hesitate at the file-picker
@@ -647,6 +677,44 @@ export default function Dashboard() {
                   Three quick steps: upload your CV → drop a job posting URL → click run. ~90 seconds, fully private — your CV never leaves your browser until you click run.
                 </p>
               </div>
+
+              {/* Pending roast handoff banner — GOLDEN GOSPEL Tactic 3 (2026-05-08).
+                  User came in via /roast and clicked "Continue with this letter".
+                  Confirm we still have their letter and tell them what to do
+                  next: drop CV + job URL, hit run. The /api/analyze pipeline
+                  will use their CV against the job, and the rewritten cover
+                  letter that comes out is the "winning version" they were
+                  promised on the roast page. */}
+              {pendingRoast && (
+                <div className="mb-6 p-5 rounded-xl bg-gradient-to-br from-emerald-500/10 to-violet-500/10 border border-emerald-500/30">
+                  <div className="flex items-start gap-3 mb-3">
+                    <Sparkles className="w-5 h-5 text-emerald-400 mt-0.5 flex-shrink-0" />
+                    <div className="flex-1">
+                      <p className="text-emerald-200 font-semibold text-base">We've got your roasted cover letter.</p>
+                      <p className="text-white/70 text-sm mt-1 leading-relaxed">
+                        Severity {pendingRoast.severityScore}/5 · {pendingRoast.coverLetter.length.toLocaleString()} characters preserved.
+                        Drop your CV in Step 1 and paste the job URL in Step 2 — Vantage will rewrite that letter
+                        against your actual CV and the role, with company intel + fit score + mock interview included.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="ml-8 flex flex-wrap items-center gap-2">
+                    <details className="text-xs text-white/60">
+                      <summary className="cursor-pointer hover:text-white/80 select-none">View the original letter you brought</summary>
+                      <div className="mt-2 p-3 rounded-lg bg-black/30 border border-white/5 max-h-48 overflow-y-auto whitespace-pre-wrap font-mono text-[11px] leading-relaxed text-white/70">
+                        {pendingRoast.coverLetter}
+                      </div>
+                    </details>
+                    <button
+                      type="button"
+                      onClick={() => setPendingRoast(null)}
+                      className="text-xs text-white/40 hover:text-white/70 underline"
+                    >
+                      Dismiss
+                    </button>
+                  </div>
+                </div>
+              )}
 
               {!canAnalyze && (
                 <div className="mb-6 p-5 rounded-xl bg-amber-500/10 border border-amber-500/30">

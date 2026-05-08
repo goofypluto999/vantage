@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { Flame, Twitter, Linkedin, Copy, ArrowRight, Loader2, AlertTriangle } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Flame, Twitter, Linkedin, Copy, ArrowRight, Loader2, AlertTriangle, Wand2 } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import SEO from './SEO';
 
@@ -55,6 +55,7 @@ interface RoastResponse {
 
 export default function RoastPage() {
   const { t } = useTheme();
+  const navigate = useNavigate();
   const [letter, setLetter] = useState('');
   const [loading, setLoading] = useState(false);
   const [roast, setRoast] = useState<RoastResponse | null>(null);
@@ -150,6 +151,27 @@ export default function RoastPage() {
     const url = `${SITE_URL}/roast`;
     const liUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`;
     window.open(liUrl, '_blank', 'noopener,noreferrer');
+  }
+
+  // GOLDEN GOSPEL Tactic 3 (2026-05-08): the roast itself doesn't convert
+  // anyone — getting savaged ends the user's day. The fix is to preserve the
+  // roasted letter + the verdict and hand it through signup so the dashboard
+  // can prompt: "you got roasted, now drop your CV + a job link and Vantage
+  // writes the version that wins". Single-click path from public free tool to
+  // signed-up user with intent. Stored in sessionStorage (not localStorage)
+  // so it dies with the browser tab — no persistent state leakage.
+  function continueWithRewrite() {
+    if (!roast) return;
+    try {
+      const payload = {
+        coverLetter: letter,
+        roast: roast.roast,
+        severityScore: roast.severityScore,
+        capturedAt: Date.now(),
+      };
+      sessionStorage.setItem('vantage:pendingRoast', JSON.stringify(payload));
+    } catch { /* sessionStorage may be disabled — proceed anyway */ }
+    navigate('/register?source=roast&intent=cover-letter-rewrite');
   }
 
   // SEO + schema
@@ -331,19 +353,37 @@ export default function RoastPage() {
               </button>
             </div>
 
-            {/* Conversion CTA */}
+            {/* Conversion CTA — GOLDEN GOSPEL Tactic 3 (2026-05-08).
+                Primary path: keep this letter, hand it through signup, and
+                let the dashboard offer to rewrite it against the user's
+                actual CV + a job URL. Secondary path: plain register link for
+                people who don't want to keep this letter. */}
             <div className="mt-8 pt-6 border-t border-white/10">
               <div className={`text-xs uppercase tracking-wider mb-2 ${t.textMuted}`}>Now write the better one</div>
               <p className={`text-sm mb-4 ${t.textSub}`}>
                 The roast tells you what's broken. Vantage writes the version that wins — tailored to the company,
-                with company intel, fit score, mock interview, and 5-minute pitch. 90 seconds. 3 free analyses on signup.
+                with company intel, fit score, mock interview, and 5-minute pitch. 90 seconds. 10 free tokens on signup
+                (1 token = 1 full analysis, no card needed).
               </p>
-              <Link
-                to="/register"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] text-white font-semibold hover:opacity-95 transition-opacity"
-              >
-                Write the winning version <ArrowRight className="w-4 h-4" />
-              </Link>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={continueWithRewrite}
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-semibold hover:opacity-95 transition-opacity"
+                >
+                  <Wand2 className="w-4 h-4" />
+                  Continue with this letter — rewrite using my CV
+                </button>
+                <Link
+                  to="/register"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-white/15 text-white/80 font-semibold hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                >
+                  Start fresh <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+              <p className={`text-[11px] mt-2 ${t.textMuted}`}>
+                Your letter and roast travel with you to your dashboard so you can pick up exactly where you are.
+              </p>
             </div>
           </div>
         )}
