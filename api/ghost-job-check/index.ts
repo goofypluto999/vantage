@@ -310,7 +310,6 @@ Return ONLY the JSON. No markdown, no preamble.`;
     return response.status(500).json({
       error: 'Failed to check the listing. Try again in a minute.',
       reason: errorName === 'SyntaxError' ? 'parse_failure' : 'ai_call_failure',
-      debugDetail: typeof errorMessage === 'string' ? errorMessage.slice(0, 300) : undefined,
     });
   }
 }
