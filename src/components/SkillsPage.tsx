@@ -182,6 +182,49 @@ export default function SkillsPage() {
         </div>
       </section>
 
+      {/* Vantage CTA — added 2026-05-08. Skills-page audience is MCP/Claude-
+          curious developers and CV-prep skeptics who landed here from the
+          MCP/Claude search cluster. They came for tooling info, but the
+          actual prep-pack product is the orchestrator these tools fit
+          inside. Convert the high-intent reader without breaking the
+          info-page tone — single pill, dev-friendly framing, no marketing
+          language. */}
+      <section className="max-w-4xl mx-auto px-6 py-10">
+        <div className={`${t.glass} rounded-2xl p-7 md:p-8`}>
+          <p className={`text-xs font-bold tracking-widest uppercase text-[#4F46E5] mb-2`}>
+            Where these tools fit
+          </p>
+          <h2 className={`text-xl md:text-2xl font-bold ${t.text} mb-3`}>
+            Vantage AI is the orchestrator. The tools above are the pipes.
+          </h2>
+          <p className={`${t.textSub} mb-5 leading-relaxed`}>
+            cv-mirror-mcp is the ATS lint layer. github-mcp + brave-search-mcp
+            are the company-research substrate. Vantage AI bundles all of it
+            into one ~90-second prep pack: company intel, fit score, tailored
+            cover letter, mock interview questions, pitch outline. If you're
+            already orchestrating MCP servers, Vantage saves you the prompt-
+            engineering for the application layer.
+          </p>
+          <div className="flex flex-wrap items-center gap-3">
+            <Link
+              to="/register?source=skills"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#4F46E5] text-white font-semibold hover:-translate-y-0.5 transition-all"
+            >
+              Run a free prep pack <ArrowRight className="w-4 h-4" />
+            </Link>
+            <Link
+              to="/sample/anthropic-senior-pm"
+              className={`inline-flex items-center gap-2 text-sm font-semibold ${t.textSub} underline decoration-[#4F46E5]/40 underline-offset-4 hover:decoration-[#4F46E5]`}
+            >
+              Or read a complete sample output (no signup)
+            </Link>
+          </div>
+          <p className={`text-[11px] ${t.textMuted} mt-3`}>
+            10 free prep packs on signup · no card · ~90 seconds per run
+          </p>
+        </div>
+      </section>
+
       <section className="max-w-4xl mx-auto px-6 py-12">
         <div className={`${t.glass} rounded-2xl p-8 text-center`}>
           <h2 className={`text-2xl font-bold ${t.text} mb-3`}>Got a tool we should add?</h2>
