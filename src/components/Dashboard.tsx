@@ -784,6 +784,50 @@ export default function Dashboard() {
                 </div>
               )}
 
+              {/* Step progress indicator (C6 from dashboard-ux-plan-2026-05-06).
+                  Three pills horizontally: filled (emerald) when the field has
+                  a value, muted otherwise. Reduces "what do I do?" anxiety by
+                  giving users a sense of progress while filling the form.
+                  Each card already has its own corner Step label — this row is
+                  the OVERVIEW so users know there are 3 steps total. */}
+              {(() => {
+                const cvDone = !!cvFile;
+                const jdDone = (jdMode === 'file' && !!jobDescFile) ||
+                               (jdMode === 'text' && jobDescText.trim().length > 50);
+                const urlDone = !!jobUrl.trim();
+                const completed = [cvDone, jdDone, urlDone].filter(Boolean).length;
+                const Pill = ({ n, label, done }: { n: number; label: string; done: boolean }) => (
+                  <div
+                    className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold transition-colors ${
+                      done
+                        ? 'bg-emerald-500/15 border border-emerald-500/40 text-emerald-300'
+                        : 'bg-white/5 border border-white/10 text-white/45'
+                    }`}
+                  >
+                    <span
+                      className={`flex items-center justify-center w-5 h-5 rounded-full text-[10px] font-bold ${
+                        done ? 'bg-emerald-500 text-white' : 'bg-white/10 text-white/60'
+                      }`}
+                    >
+                      {done ? '✓' : n}
+                    </span>
+                    {label}
+                  </div>
+                );
+                return (
+                  <div className="mb-4 flex flex-wrap items-center gap-2">
+                    <Pill n={1} label="CV" done={cvDone} />
+                    <span className="text-white/20 text-xs">→</span>
+                    <Pill n={2} label="Job description" done={jdDone} />
+                    <span className="text-white/20 text-xs">→</span>
+                    <Pill n={3} label="Job URL" done={urlDone} />
+                    <span className="ml-auto text-[11px] text-white/40 font-medium">
+                      {completed}/3 filled
+                    </span>
+                  </div>
+                );
+              })()}
+
               <div className="grid md:grid-cols-3 gap-5 mb-6">
                 {/* CV Upload */}
                 <div
