@@ -352,7 +352,6 @@ export default function NoInterviewsDiagnostic() {
         title="No Interviews After 100 Applications? Free 60-Second Diagnostic | Vantage"
         description="200 applications, zero interviews? Run the free Vantage diagnostic. 5 questions, 60 seconds, deterministic verdict — ATS filter, positioning, targeting, proof, market, or overqualified. No signup. Built by a UK indie founder."
         path="/tools/no-interviews-diagnostic"
-        image="https://aimvantage.uk/api/og?slug=no-interviews"
         jsonLd={[breadcrumbSchema, faqSchema]}
       />
 

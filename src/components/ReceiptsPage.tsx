@@ -143,7 +143,6 @@ export default function ReceiptsPage() {
         title="Receipts — every trust claim Vantage AI makes, with the evidence | Vantage"
         description="Single-page audit of Vantage AI: Stripe-only billing, no auto-renew traps, no DM outreach, sole-trader operator transparency, public bug history, public token math, EU hosting. If a claim isn't here, we don't make it elsewhere."
         path="/receipts"
-        image="https://aimvantage.uk/api/og?slug=receipts"
         jsonLd={[breadcrumbSchema, orgSchema]}
       />
 

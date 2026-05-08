@@ -236,7 +236,6 @@ export default function RoastPage() {
         title="AI Cover Letter Roast — savage, free, no signup"
         description="Paste your cover letter, get a savage but constructive roast in 10 seconds. Free, no signup. Built by Vantage AI."
         path="/roast"
-        image="https://aimvantage.uk/api/og?slug=cover-letter-roast"
         jsonLd={[breadcrumbSchema, softwareSchema, faqSchema]}
       />
 
