@@ -517,6 +517,31 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
   const [showBookmarkletHelp, setShowBookmarkletHelp] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
 
+  // 3D hero scene gating — added 2026-05-08. The Hero3DScene chunk pulls in
+  // ~1MB of three.js + react-three-fiber + drei. On mobile and on connections
+  // that prefer reduced data, that's a real bounce factor — the canvas
+  // sits empty for 1-5s while the chunk downloads. Decorative-only content
+  // shouldn't gate first paint.
+  // Behavior:
+  //   - Desktop (>= 1024px viewport) AND no prefers-reduced-motion → render
+  //     the 3D scene (lazy chunk loads in parallel, fallback is the page bg).
+  //   - Mobile / tablet OR user has prefers-reduced-motion → skip it entirely.
+  //     The static bg-[#A8A5E6] gradient is the visual; saves the 1MB chunk.
+  const [load3DHero, setLoad3DHero] = useState(false);
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.matchMedia) return;
+    const desktopMq = window.matchMedia('(min-width: 1024px)');
+    const reducedMq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const update = () => setLoad3DHero(desktopMq.matches && !reducedMq.matches);
+    update();
+    desktopMq.addEventListener('change', update);
+    reducedMq.addEventListener('change', update);
+    return () => {
+      desktopMq.removeEventListener('change', update);
+      reducedMq.removeEventListener('change', update);
+    };
+  }, []);
+
   // Floating "Try free" CTA pill — visible after the user scrolls past the
   // hero (so they never have to scroll back up to act). Dismissible, and
   // dismissal persists for the session via state. No localStorage to keep
@@ -597,11 +622,17 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
           HERO — dot-matrix globe behind the headline
       ================================================================ */}
       <section id="features" className="relative h-screen flex flex-col items-center justify-center overflow-hidden grain-overlay">
-        {/* 3D canvas */}
+        {/* 3D canvas — desktop + non-reduced-motion only. On mobile or when
+            the user prefers reduced motion, we show the static bg-[#A8A5E6]
+            gradient instead and skip the ~1MB three.js chunk download. The
+            hero text + CTAs are the actual conversion surface; the 3D globe
+            is decorative. */}
         <div className="absolute inset-0 z-0 pointer-events-auto bg-[#A8A5E6]">
-          <React.Suspense fallback={null}>
-            <Hero3DScene />
-          </React.Suspense>
+          {load3DHero && (
+            <React.Suspense fallback={null}>
+              <Hero3DScene />
+            </React.Suspense>
+          )}
         </div>
 
         {/* Hero text. The `relative` is critical — without explicit positioning,
