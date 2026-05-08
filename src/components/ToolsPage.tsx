@@ -36,18 +36,30 @@ export default function ToolsPage() {
       {
         '@type': 'ListItem',
         position: 3,
+        url: `${SITE_URL}/decode-rejection`,
+        name: 'Rejection Email Decoder — Free AI Translation',
+      },
+      {
+        '@type': 'ListItem',
+        position: 4,
+        url: `${SITE_URL}/ghost-job-check`,
+        name: 'Ghost Job Detector — Free AI Listing Score',
+      },
+      {
+        '@type': 'ListItem',
+        position: 5,
         url: `${SITE_URL}/interview-prep`,
         name: 'Interview Prep Packs by Company',
       },
       {
         '@type': 'ListItem',
-        position: 4,
+        position: 6,
         url: `${SITE_URL}/interview-questions`,
         name: 'Interview Questions by Role',
       },
       {
         '@type': 'ListItem',
-        position: 5,
+        position: 7,
         url: `${SITE_URL}/laid-off`,
         name: 'Layoff Recovery Guide (April 2026 cohort)',
       },
@@ -66,8 +78,8 @@ export default function ToolsPage() {
   return (
     <div className="min-h-screen" style={{ background: t.pageBg }}>
       <SEO
-        title="Free ATS Resume Checker, Cover Letter Feedback, and Interview Prep Tools"
-        description="Free job search tools by Vantage AI: ATS resume checker (CV Mirror), AI cover letter feedback (Roast), interview prep packs by company and role, and LinkedIn-friendly CV optimisation. No signup, no upsell wall."
+        title="Free Job Search AI Tools — Cover Letter Roast, Rejection Decoder, Ghost Job Detector"
+        description="Five free AI tools by Vantage AI: ATS resume checker (CV Mirror), cover letter roast, rejection email decoder, ghost-job detector, interview prep by company / role, layoff recovery guide. No signup, no upsell wall."
         path="/tools"
         jsonLd={[itemListSchema, breadcrumbSchema]}
       />
@@ -236,6 +248,44 @@ export default function ToolsPage() {
                   </p>
                 </div>
                 <MessageSquare className="w-5 h-5 text-violet-400 flex-shrink-0" />
+              </div>
+            </Link>
+            <Link
+              to="/decode-rejection"
+              className={`${t.glass} rounded-xl p-5 hover:border-violet-400/40 transition group block`}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <div className={`text-xs uppercase tracking-widest ${t.textMuted} font-bold`}>
+                    Free · No signup
+                  </div>
+                  <h3 className={`text-lg font-bold ${t.text} mt-1 group-hover:text-violet-500 transition`}>
+                    Rejection Email Decoder
+                  </h3>
+                  <p className={`text-sm ${t.textSub} mt-2 leading-relaxed`}>
+                    Paste a job rejection email — AI tells you what the recruiter actually meant + your concrete next move. 10 verdicts: ghosted, ATS-filtered, salary mismatch, experience gap, internal hire, etc.
+                  </p>
+                </div>
+                <MessageSquare className="w-5 h-5 text-violet-400 flex-shrink-0" />
+              </div>
+            </Link>
+            <Link
+              to="/ghost-job-check"
+              className={`${t.glass} rounded-xl p-5 hover:border-violet-400/40 transition group block`}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <div className={`text-xs uppercase tracking-widest ${t.textMuted} font-bold`}>
+                    Free · No signup
+                  </div>
+                  <h3 className={`text-lg font-bold ${t.text} mt-1 group-hover:text-violet-500 transition`}>
+                    Ghost Job Detector
+                  </h3>
+                  <p className={`text-sm ${t.textSub} mt-2 leading-relaxed`}>
+                    Paste a job listing — AI scores how likely it's a ghost (0-100). Flags clichés, suspiciously wide salary bands, missing concrete deliverables. Saves you the wasted application.
+                  </p>
+                </div>
+                <Target className="w-5 h-5 text-violet-400 flex-shrink-0" />
               </div>
             </Link>
             <Link
