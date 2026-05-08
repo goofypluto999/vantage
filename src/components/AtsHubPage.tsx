@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, ShieldCheck, ExternalLink } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import SEO from './SEO';
+import DiagnosticCallout from './DiagnosticCallout';
 import { atsVendors } from '../data/atsVendors';
 
 const SITE_URL = 'https://aimvantage.uk';
@@ -72,6 +73,14 @@ export default function AtsHubPage() {
         >
           Test your CV against all 5 (free, 60s) <ArrowRight className="w-4 h-4" />
         </a>
+
+        <div className="max-w-2xl mx-auto mt-10 text-left">
+          <DiagnosticCallout
+            source="ats-hub"
+            variant="emerald"
+            prelude="Not sure ATS is even your bottleneck? Run the free 60-second diagnostic FIRST. ATS is just 1 of 7 failure modes — if your verdict comes back 'positioning' or 'targeting' or 'overqualified-flag', no parser fix will help. 5 questions, deterministic verdict, runs in your browser."
+          />
+        </div>
       </section>
 
       {/* Vendor cards */}

@@ -3,6 +3,7 @@ import { ArrowLeft, ArrowRight, Star, Sparkles, ExternalLink } from 'lucide-reac
 import { useTheme } from '../contexts/ThemeContext';
 import { getCompanyPack, companyPacks } from '../data/companyPacks';
 import SEO from './SEO';
+import DiagnosticCallout from './DiagnosticCallout';
 
 const SITE_URL = 'https://aimvantage.uk';
 
@@ -241,6 +242,18 @@ export default function InterviewPrepCompanyPage() {
             Try Vantage free <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
+
+        {/* Lower-friction onramp: visitors who landed on a company-specific
+            prep page came in with company-specific intent. The diagnostic
+            tells them whether the prep pack is even the right move (vs an
+            ATS / market / overqualified-flag fix first). Skeptics convert
+            here at higher rate than the direct register link. */}
+        <DiagnosticCallout
+          source={`interview-prep-${pack.slug}`}
+          variant="emerald"
+          className="mt-8"
+          prelude={`Got the role profile, but applications aren't landing? Run the free 60-second diagnostic — it tells you whether your bottleneck is ATS / positioning / proof / market / overqualified-flag, BEFORE you spend hours tailoring for ${pack.company}. No signup, no LLM call, runs in your browser.`}
+        />
 
         <section className="mt-16">
           <h3 className={`text-sm uppercase tracking-widest ${t.textMuted} mb-4`}>

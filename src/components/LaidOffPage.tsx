@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Check, ShieldCheck, FileText, Briefcase, Clock, Users, Lock } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import SEO from './SEO';
+import DiagnosticCallout from './DiagnosticCallout';
 import { laidOffCompanies } from '../data/laidOffCompanies';
 
 const SITE_URL = 'https://aimvantage.uk';
@@ -288,6 +289,14 @@ export default function LaidOffPage() {
           <p className={`mt-4 text-xs ${t.textMuted}`}>
             No card. £5 starter pack if you want more. No subscription.
           </p>
+
+          <div className="max-w-2xl mx-auto mt-10 text-left">
+            <DiagnosticCallout
+              source="laid-off"
+              variant="emerald"
+              prelude="Recently laid off and applications are stalling? The market is cold for many roles right now — first run the free 60-second diagnostic so you know whether your bottleneck is ATS, positioning, market temperature, or overqualified-flag. The right fix depends on the verdict; tailoring 200 CVs without knowing the leak is wasted weeks."
+            />
+          </div>
         </div>
       </section>
 

@@ -3,6 +3,7 @@ import { ArrowLeft, ArrowRight, Star, Sparkles } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { getRolePack, rolePacks } from '../data/interviewQuestions';
 import SEO from './SEO';
+import DiagnosticCallout from './DiagnosticCallout';
 
 const SITE_URL = 'https://aimvantage.uk';
 
@@ -222,6 +223,13 @@ export default function InterviewQuestionsPage() {
             Try Vantage free <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
+
+        <DiagnosticCallout
+          source={`interview-questions-${pack.slug}`}
+          variant="emerald"
+          className="mt-8"
+          prelude={`Got the ${pack.role} questions, but applications still not landing? The interview is a downstream problem — first confirm where the leak is. Run the free 60-second diagnostic — 5 questions, 7 verdicts (ATS / positioning / proof / market / overqualified / etc). No signup.`}
+        />
 
         {/* More role packs (internal linking) */}
         <section className="mt-16">

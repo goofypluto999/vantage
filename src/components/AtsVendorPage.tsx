@@ -2,6 +2,7 @@ import { useParams, Link, Navigate } from 'react-router-dom';
 import { ArrowRight, ExternalLink, ShieldCheck, AlertCircle, Check } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import SEO from './SEO';
+import DiagnosticCallout from './DiagnosticCallout';
 import { getVendorBySlug, atsVendors } from '../data/atsVendors';
 
 const SITE_URL = 'https://aimvantage.uk';
@@ -115,6 +116,18 @@ export default function AtsVendorPage() {
             Test your CV against {vendor.name} (free, 60s) <ArrowRight className="w-4 h-4" />
           </a>
         </div>
+
+        {/* Bottleneck-confirmation onramp: visitors landed on this page
+            because they suspect their ATS is the problem. The diagnostic
+            confirms (or rules it out) before they commit to a CV-Mirror
+            tear-down. If the verdict is 'targeting' or 'overqualified', no
+            amount of ATS optimization will help them. */}
+        <DiagnosticCallout
+          source={`ats-${vendor.slug}`}
+          variant="emerald"
+          className="mt-8"
+          prelude={`Suspect ${vendor.name} is filtering your CV out? Run the free 60-second diagnostic FIRST — it tells you whether ATS is actually your bottleneck or something else (positioning / targeting / proof / market). If the verdict says ATS, come back here and run the parser test. If not, you'll save hours fixing the wrong thing.`}
+        />
       </section>
 
       {/* Quirks */}
