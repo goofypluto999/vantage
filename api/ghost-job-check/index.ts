@@ -273,7 +273,11 @@ Return ONLY the JSON. No markdown, no preamble.`;
       contents: [{ parts: [{ text: prompt }] }],
       config: {
         temperature: 0.6,
-        maxOutputTokens: 1500,
+        // 2026-05-08 FIX: was 1500, hitting cap mid-output → "Unmatched braces"
+        // SyntaxError. Ghost JSON has 4 long `tells` strings ("Phrase: '<quote>'
+        // → why it matters") + 2-3 sentence summary + yourMove → easily 1800+
+        // tokens. Bumped to 2500. Cost ceiling rises ~£0.0001/call, acceptable.
+        maxOutputTokens: 2500,
       },
     });
 
