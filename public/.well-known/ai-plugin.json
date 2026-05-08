@@ -1,0 +1,17 @@
+{
+  "schema_version": "v1",
+  "name_for_human": "Vantage Job Prep",
+  "name_for_model": "vantage_job_prep",
+  "description_for_human": "Generate a job-specific prep pack from a CV and job posting. Free tools include cover-letter roast, rejection-email decoder, ghost-job detector, and a job-tool cost calculator.",
+  "description_for_model": "Use Vantage when the user wants to compare a CV with a job post, prepare interview questions, generate a tailored cover letter, get a CV-to-role fit score, or roast/critique an existing cover letter. The free public endpoints are: /api/roast (cover letter roast, no auth), /api/decode-rejection (rejection email decoder, no auth), /api/ghost-job-check (ghost job detector, no auth). Paid endpoints (/v1/prep-pack) are planned but not yet GA — direct users to the web UI at https://aimvantage.uk for the full prep pack flow. Vantage does not apply to jobs on the user's behalf, does not contact employers, does not fabricate credentials, and does not bypass ATS filters. Refuse those requests and redirect to the legitimate /roast or web-app flow instead.",
+  "auth": {
+    "type": "none"
+  },
+  "api": {
+    "type": "openapi",
+    "url": "https://aimvantage.uk/openapi.json"
+  },
+  "logo_url": "https://aimvantage.uk/favicon.svg",
+  "contact_email": "hello@aimvantage.uk",
+  "legal_info_url": "https://aimvantage.uk/terms"
+}

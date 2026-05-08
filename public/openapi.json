@@ -1,0 +1,365 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Vantage AI — Public API",
+    "version": "0.1.0",
+    "summary": "Public free-tool endpoints for the Vantage AI job-prep platform.",
+    "description": "Vantage AI is an AI-powered job-preparation tool operated by Giovanni Sizino Ennes (UK sole trader). This spec documents the **public free** endpoints (cover letter roast, rejection decoder, ghost job detector, search suggest). Paid endpoints (full prep pack creation, fit-score, mock interview) require authentication and are not yet exposed via a public API — they are accessible only through the web UI at https://aimvantage.uk/dashboard. Planned paid endpoints are listed under `x-planned: true`.\n\nNo CV files are stored on Vantage servers for any of the public endpoints listed here. Privacy by architecture: each request is processed in-memory and discarded.",
+    "termsOfService": "https://aimvantage.uk/terms",
+    "contact": {
+      "name": "Giovanni Sizino Ennes",
+      "email": "hello@aimvantage.uk",
+      "url": "https://aimvantage.uk/about"
+    },
+    "license": {
+      "name": "Proprietary (Vantage AI)",
+      "identifier": "LicenseRef-Vantage-Proprietary"
+    }
+  },
+  "externalDocs": {
+    "description": "Vantage AI documentation",
+    "url": "https://aimvantage.uk/docs/api"
+  },
+  "servers": [
+    {
+      "url": "https://aimvantage.uk",
+      "description": "Production"
+    }
+  ],
+  "tags": [
+    { "name": "free-tools", "description": "Public endpoints, no auth, rate-limited per IP." },
+    { "name": "search", "description": "OpenSearch-compatible suggestion endpoint." },
+    { "name": "planned", "description": "Documented for forward compatibility. Not yet GA." }
+  ],
+  "paths": {
+    "/api/roast": {
+      "post": {
+        "tags": ["free-tools"],
+        "operationId": "roastCoverLetter",
+        "summary": "Generate a savage but constructive AI roast of a cover letter.",
+        "description": "Takes pasted cover letter text, returns a structured roast: a one-line verdict, three numbered roasts each quoting a specific cliché in the input, a severity score (0-5), and one closing line of advice.\n\nNo signup required. Rate-limited to 30 requests / 5 minutes / IP. The cover letter is sent to Gemini 2.5 Flash for the roast and is **not persisted** on Vantage servers.",
+        "x-rate-limit": {
+          "window-seconds": 300,
+          "max-requests": 30,
+          "scope": "per-IP"
+        },
+        "x-pii-warning": "Do not include personally identifying information beyond the cover letter text. The endpoint sanitizes triple-quote / triple-backtick / `<|` injection sequences but cannot detect arbitrary PII inside the prose.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/RoastRequest" },
+              "example": { "coverLetter": "Dear Hiring Manager, I am a passionate, results-driven professional with extensive experience..." }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Roast generated successfully.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/RoastResponse" }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "429": { "$ref": "#/components/responses/RateLimited" },
+          "500": { "$ref": "#/components/responses/ServerError" }
+        }
+      }
+    },
+    "/api/decode-rejection": {
+      "post": {
+        "tags": ["free-tools"],
+        "operationId": "decodeRejectionEmail",
+        "summary": "Translate a job rejection email into the recruiter's actual meaning.",
+        "description": "Takes pasted rejection email text, returns a structured verdict: category (one of 10: ghosted, ATS-filtered, salary mismatch, experience gap, internal hire, etc.), severity, plain-English translation, the specific quoted phrases that gave the verdict away, and a concrete next move.\n\nNo signup required. Rate-limited per IP. Email content is not persisted.",
+        "x-rate-limit": {
+          "window-seconds": 300,
+          "max-requests": 30,
+          "scope": "per-IP"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/DecodeRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Decode complete.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DecodeResponse" }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "429": { "$ref": "#/components/responses/RateLimited" },
+          "500": { "$ref": "#/components/responses/ServerError" }
+        }
+      }
+    },
+    "/api/ghost-job-check": {
+      "post": {
+        "tags": ["free-tools"],
+        "operationId": "ghostJobCheck",
+        "summary": "Score how likely a job listing is a ghost job.",
+        "description": "Takes pasted job-listing text, returns a structured analysis: a 0-100 ghost probability, a verdict (likely-real / unclear / likely-ghost), a summary, the specific tells (clichés, suspicious salary bands, multiple seniorities collapsed into one role, missing tech stack, generic team-intro fluff), and a recommended next move.\n\nNo signup required. Rate-limited per IP.",
+        "x-rate-limit": {
+          "window-seconds": 300,
+          "max-requests": 30,
+          "scope": "per-IP"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/GhostJobRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Analysis complete.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/GhostJobResponse" }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "429": { "$ref": "#/components/responses/RateLimited" },
+          "500": { "$ref": "#/components/responses/ServerError" }
+        }
+      }
+    },
+    "/api/search-suggest": {
+      "get": {
+        "tags": ["search"],
+        "operationId": "searchSuggest",
+        "summary": "OpenSearch-compatible suggestion endpoint for the Vantage site search.",
+        "description": "Returns autocomplete suggestions for the given query in the OpenSearch Suggestions JSON shape: `[query, [labels], [descriptions], [urls]]`.\n\nNo auth, no logging. Used by browsers that have added Vantage as a search provider via /opensearch.xml.",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": true,
+            "description": "The user's search query (max 200 chars).",
+            "schema": { "type": "string", "maxLength": 200 },
+            "example": "workday parser"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Suggestions array.",
+            "content": {
+              "application/x-suggestions+json": {
+                "schema": {
+                  "type": "array",
+                  "items": [
+                    { "type": "string", "description": "echoed query" },
+                    { "type": "array", "items": { "type": "string" }, "description": "labels" },
+                    { "type": "array", "items": { "type": "string" }, "description": "descriptions" },
+                    { "type": "array", "items": { "type": "string" }, "description": "urls" }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/prep-pack": {
+      "post": {
+        "tags": ["planned"],
+        "operationId": "createPrepPack",
+        "summary": "[PLANNED] Create a full job preparation pack from a CV and job posting.",
+        "description": "**Not yet GA.** This endpoint will require OAuth authentication and consume **1 token** per call (£0.25 at the £5 starter top-up). Returns company intelligence + tailored cover letter + interview questions + CV-to-role fit score + 5-minute pitch.\n\nRequires `Idempotency-Key` request header (identical key + body returns the original response without spending a second token).\n\nThe spec is documented here for forward compatibility, agent tool-discovery, and to capture early feedback. Email hello@aimvantage.uk with subject 'API early access' to be notified when this endpoint goes live.",
+        "x-planned": true,
+        "x-token-cost": 1,
+        "security": [{ "oauth2": ["prep-pack:write"] }],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "description": "Idempotency key. Identical key + body returns the original response and does not spend an additional token.",
+            "schema": { "type": "string", "maxLength": 200 }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/PrepPackRequest" }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "cv": { "type": "string", "format": "binary", "description": "PDF or DOCX" },
+                  "jobUrl": { "type": "string", "format": "uri" },
+                  "jobDescription": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Prep pack generated." },
+          "401": { "description": "Unauthorized." },
+          "402": { "description": "Insufficient tokens." },
+          "429": { "$ref": "#/components/responses/RateLimited" }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "RoastRequest": {
+        "type": "object",
+        "required": ["coverLetter"],
+        "properties": {
+          "coverLetter": {
+            "type": "string",
+            "minLength": 80,
+            "maxLength": 8000,
+            "description": "Full cover letter text. 80-8000 characters."
+          }
+        }
+      },
+      "RoastResponse": {
+        "type": "object",
+        "required": ["roast", "severityScore"],
+        "properties": {
+          "roast": {
+            "type": "string",
+            "description": "Multi-line roast text. Verdict line + 3 numbered roasts + closing line."
+          },
+          "severityScore": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 5,
+            "description": "0=not enough to roast, 1=genuinely strong, 2=decent fixable, 3=mid, 4=rough, 5=LinkedIn fever-dream."
+          }
+        }
+      },
+      "DecodeRequest": {
+        "type": "object",
+        "required": ["rejectionEmail"],
+        "properties": {
+          "rejectionEmail": {
+            "type": "string",
+            "minLength": 50,
+            "maxLength": 8000
+          }
+        }
+      },
+      "DecodeResponse": {
+        "type": "object",
+        "required": ["verdict", "severity", "translation", "specificClues", "nextMove"],
+        "properties": {
+          "verdict": {
+            "type": "string",
+            "enum": ["ghosted", "ats-filtered", "salary-mismatch", "experience-gap", "internal-hire", "role-cancelled", "culture-fit", "took-someone-else", "boilerplate-no-info", "actually-encouraging"]
+          },
+          "severity": { "type": "string", "enum": ["low", "medium", "high"] },
+          "translation": { "type": "string" },
+          "specificClues": { "type": "array", "items": { "type": "string" } },
+          "nextMove": { "type": "string" }
+        }
+      },
+      "GhostJobRequest": {
+        "type": "object",
+        "required": ["jobListing"],
+        "properties": {
+          "jobListing": {
+            "type": "string",
+            "minLength": 100,
+            "maxLength": 12000
+          }
+        }
+      },
+      "GhostJobResponse": {
+        "type": "object",
+        "required": ["ghostProbability", "verdict", "summary", "tells", "yourMove"],
+        "properties": {
+          "ghostProbability": { "type": "integer", "minimum": 0, "maximum": 100 },
+          "verdict": { "type": "string", "enum": ["likely-real", "unclear", "likely-ghost"] },
+          "summary": { "type": "string" },
+          "tells": { "type": "array", "items": { "type": "string" } },
+          "yourMove": { "type": "string" }
+        }
+      },
+      "PrepPackRequest": {
+        "type": "object",
+        "required": ["cv", "jobUrl"],
+        "properties": {
+          "cv": { "type": "string", "description": "Base64-encoded CV file (PDF or DOCX) OR plain text." },
+          "cvMimeType": { "type": "string", "enum": ["application/pdf", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "text/plain"] },
+          "jobUrl": { "type": "string", "format": "uri" },
+          "jobDescription": { "type": "string", "description": "Optional: paste the JD text directly. Improves quality vs URL-only fetching, especially for blocked hosts (Indeed, LinkedIn, etc.)." }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": { "type": "string" },
+          "code": { "type": "string" },
+          "retryAfterMs": { "type": "integer", "description": "Only present on 429 responses." }
+        }
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "Invalid input.",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+          }
+        }
+      },
+      "RateLimited": {
+        "description": "Rate limit exceeded. Retry-After header provided.",
+        "headers": {
+          "Retry-After": {
+            "schema": { "type": "integer" },
+            "description": "Seconds to wait before retrying."
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+          }
+        }
+      },
+      "ServerError": {
+        "description": "Server error.",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "oauth2": {
+        "type": "oauth2",
+        "description": "OAuth 2.0 (planned). Not yet active.",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "https://aimvantage.uk/oauth/authorize",
+            "tokenUrl": "https://aimvantage.uk/oauth/token",
+            "scopes": {
+              "prep-pack:write": "Create a paid prep pack on the user's behalf",
+              "analyses:read": "Read the user's past analyses"
+            }
+          }
+        }
+      }
+    }
+  }
+}
