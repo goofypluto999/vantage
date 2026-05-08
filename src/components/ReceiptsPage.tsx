@@ -140,7 +140,7 @@ export default function ReceiptsPage() {
   return (
     <div className="min-h-screen" style={{ background: t.pageBg }}>
       <SEO
-        title="Receipts — every trust claim Vantage AI makes, with the evidence | Vantage"
+        title="Receipts — every trust claim Vantage AI makes, with the evidence"
         description="Single-page audit of Vantage AI: Stripe-only billing, no auto-renew traps, no DM outreach, sole-trader operator transparency, public bug history, public token math, EU hosting. If a claim isn't here, we don't make it elsewhere."
         path="/receipts"
         jsonLd={[breadcrumbSchema, orgSchema]}

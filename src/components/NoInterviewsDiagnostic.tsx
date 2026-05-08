@@ -349,7 +349,7 @@ export default function NoInterviewsDiagnostic() {
   return (
     <div className="min-h-screen" style={{ background: t.pageBg }}>
       <SEO
-        title="No Interviews After 100 Applications? Free 60-Second Diagnostic | Vantage"
+        title="No Interviews After 100 Applications? Free 60-Second Diagnostic"
         description="200 applications, zero interviews? Run the free Vantage diagnostic. 5 questions, 60 seconds, deterministic verdict — ATS filter, positioning, targeting, proof, market, or overqualified. No signup. Built by a UK indie founder."
         path="/tools/no-interviews-diagnostic"
         jsonLd={[breadcrumbSchema, faqSchema]}

@@ -40,8 +40,14 @@ export default function SEO({
   markdownAlternate,
 }: SEOProps) {
   const canonical = `${SITE_URL}${path}`;
+  // Idempotent suffixing — if a caller already includes '| Vantage' in their
+  // title prop (regression spotted on /receipts and /tools/no-interviews-
+  // diagnostic on 2026-05-09 producing 'Title | Vantage | Vantage' in the
+  // browser tab), skip the second suffix.
   const fullTitle = title
-    ? `${title} | ${SITE_NAME}`
+    ? /\|\s*Vantage(\s|$)/i.test(title)
+      ? title
+      : `${title} | ${SITE_NAME}`
     : 'Vantage | AI Job Preparation: CV Fit, Cover Letters, Interview Prep in 90 Seconds';
   const metaDescription = description
     ?? 'Upload your CV, paste a job link, and get the full prep pack in ~90 seconds: company intel, tailored cover letter, mock interview questions, and a CV fit score.';
