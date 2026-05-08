@@ -2,17 +2,22 @@ import { motion } from 'motion/react';
 import { Link } from 'react-router-dom';
 import { Star, ArrowLeft, Shield, Mail } from 'lucide-react';
 
-const LAST_UPDATED = '20 April 2026';
+const LAST_UPDATED = '8 May 2026';
 
 const sections = [
   {
     id: 'who-we-are',
     title: '1. Who Operates This Service',
-    content: `Vantage ("we", "us", "our") is operated by an individual based in the United Kingdom. This is a personal passion project and is not a registered company. We sell our services worldwide.`,
+    content: `Vantage ("we", "us", "our") is operated by Giovanni Sizino Ennes, an independent UK-based software developer trading as a sole trader. We are not a registered company. We sell our services worldwide.`,
+  },
+  {
+    id: 'ico-registration',
+    title: '2. Data Controller & ICO Registration',
+    content: `For the purposes of UK GDPR and the Data Protection Act 2018, the data controller is Giovanni Sizino Ennes (sole trader, United Kingdom).\n\nWe are registered with the UK Information Commissioner's Office (ICO) as a data controller. Annual data protection fee paid via direct debit. Public registration number will be added here once issued by the ICO (typically within 3-5 working days of payment).\n\nYou can verify any registered data controller at the public ICO register: https://ico.org.uk/ESDWebPages/Search`,
   },
   {
     id: 'data-we-collect',
-    title: '2. What Data We Collect',
+    title: '3. What Data We Collect',
     content: null,
     subsections: [
       {
@@ -43,7 +48,7 @@ const sections = [
   },
   {
     id: 'legal-basis',
-    title: '3. Legal Basis for Processing',
+    title: '4. Legal Basis for Processing',
     content: null,
     subsections: [
       {
@@ -62,12 +67,12 @@ const sections = [
   },
   {
     id: 'how-we-use',
-    title: '4. How We Use Your Data',
+    title: '5. How We Use Your Data',
     content: `We use your data to:\n\n- Provide and operate the Vantage service, including AI-powered job preparation analyses\n- Process payments and manage subscriptions\n- Communicate with you about your account, service updates, and support requests\n- Improve the service through aggregated, anonymised usage analysis\n- Comply with legal obligations`,
   },
   {
     id: 'third-parties',
-    title: '5. Third-Party Processors',
+    title: '6. Third-Party Processors',
     content: 'We share your data with the following third-party service providers who process data on our behalf:',
     subsections: [
       {
@@ -90,12 +95,12 @@ const sections = [
   },
   {
     id: 'ai-processing',
-    title: '6. AI Processing Disclosure',
+    title: '7. AI Processing Disclosure',
     content: `When you use Vantage, the text content of your CV/resume and job descriptions are sent to Google's Gemini AI for analysis. This processing generates your company intelligence, strategic briefs, cover letters, interview preparation materials, and fit scores.\n\nImportant points about AI processing:\n\n- CV text is sent to Google's API servers in the US for processing\n- We do not permanently store the raw CV text after analysis is complete; structured results are retained for your access\n- AI-generated content (cover letters, briefs, interview packs) may contain inaccuracies, and we do not guarantee the accuracy, completeness, or suitability of any AI-generated output\n- You are responsible for reviewing all AI-generated content before using it in job applications or interviews\n- Google's use of data sent via the Gemini API is governed by their API terms of service and privacy policy`,
   },
   {
     id: 'data-retention',
-    title: '7. Data Retention',
+    title: '8. Data Retention',
     content: null,
     subsections: [
       {
@@ -118,37 +123,37 @@ const sections = [
   },
   {
     id: 'international-transfers',
-    title: '8. International Data Transfers',
+    title: '9. International Data Transfers',
     content: `Your data may be processed outside the United Kingdom and European Economic Area, primarily in the United States, by our third-party service providers (Supabase, Stripe, Google, and Vercel).\n\nThese providers maintain appropriate safeguards for international data transfers, including Standard Contractual Clauses (SCCs) approved by the European Commission and the UK Information Commissioner's Office, and compliance with applicable data protection frameworks.\n\nBy using Vantage, you acknowledge that your data may be transferred to and processed in countries outside the UK/EEA.`,
   },
   {
     id: 'your-rights',
-    title: '9. Your Rights',
+    title: '10. Your Rights',
     content: `Under UK GDPR and applicable data protection law, you have the following rights:\n\n- Right of Access: request a copy of the personal data we hold about you\n- Right to Rectification: request correction of inaccurate or incomplete data\n- Right to Erasure: request deletion of your personal data ("right to be forgotten")\n- Right to Data Portability: request your data in a structured, machine-readable format\n- Right to Restrict Processing: request that we limit how we process your data\n- Right to Object: object to processing based on legitimate interests\n- Right to Withdraw Consent: withdraw consent at any time where processing is based on consent\n\nTo exercise any of these rights, contact us at giovanni.sizino.ennes@hotmail.co.uk. We will respond to your request within one month, as required by law. We may ask you to verify your identity before processing your request.`,
   },
   {
     id: 'children',
-    title: '10. Children',
+    title: '11. Children',
     content: `Vantage is not intended for use by anyone under the age of 16. We do not knowingly collect personal data from children under 16. If you believe we have inadvertently collected data from a child under 16, please contact us immediately at giovanni.sizino.ennes@hotmail.co.uk and we will delete it promptly.`,
   },
   {
     id: 'security',
-    title: '11. Security Measures',
+    title: '12. Security Measures',
     content: `We implement appropriate technical and organisational measures to protect your personal data, including:\n\n- Encryption of data in transit (TLS/HTTPS)\n- Row Level Security (RLS) policies in our database, ensuring users can only access their own data\n- Secure authentication via Supabase Auth, including support for OAuth providers\n- No storage of raw payment card details (handled entirely by Stripe's PCI-compliant infrastructure)\n- Regular review of access controls and security practices\n\nWhile we take reasonable steps to protect your data, no method of transmission over the internet or electronic storage is completely secure. We cannot guarantee absolute security.`,
   },
   {
     id: 'changes',
-    title: '12. Changes to This Policy',
+    title: '13. Changes to This Policy',
     content: `We may update this Privacy Policy from time to time to reflect changes in our practices, technologies, legal requirements, or other factors. When we make material changes, we will update the "Last Updated" date at the top of this page.\n\nWe encourage you to review this policy periodically. Your continued use of Vantage after any changes constitutes acceptance of the updated policy.`,
   },
   {
     id: 'contact',
-    title: '13. Contact',
+    title: '14. Contact',
     content: `If you have any questions, concerns, or requests regarding this Privacy Policy or how we handle your personal data, please contact us:\n\nEmail: giovanni.sizino.ennes@hotmail.co.uk`,
   },
   {
     id: 'ico',
-    title: '14. Supervisory Authority',
+    title: '15. Supervisory Authority',
     content: `If you are not satisfied with our response to a privacy concern, you have the right to lodge a complaint with the UK Information Commissioner's Office (ICO):\n\nWebsite: https://ico.org.uk\nTelephone: 0303 123 1113\nPost: Information Commissioner's Office, Wycliffe House, Water Lane, Wilmslow, Cheshire, SK9 5AF`,
   },
 ];
