@@ -465,6 +465,7 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
 
   const [showHowItWorks, setShowHowItWorks] = useState(false);
   const [showDemo, setShowDemo] = useState(false);
+  const [showBookmarkletHelp, setShowBookmarkletHelp] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
 
   // Floating "Try free" CTA pill — visible after the user scrolls past the
@@ -747,22 +748,69 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
             <p className="text-[#4A4870] max-w-xl mx-auto mb-7 leading-relaxed">
               Click it on any job listing — LinkedIn, Greenhouse, Lever, the company careers page — and Vantage opens with the URL captured. Skip the copy-paste forever.
             </p>
-            {/* eslint-disable-next-line react/no-unknown-property */}
-            <a
-              href="javascript:(function(){var u=location.href;window.open('https://aimvantage.uk/?job='+encodeURIComponent(u),'_blank')})();"
-              draggable
-              onClick={(e) => {
-                e.preventDefault();
-                alert('Drag this button up to your browser\'s bookmarks bar instead of clicking. Once it\'s there, click it on any job listing to instantly open Vantage with that URL.');
-              }}
-              className="inline-flex items-center gap-2 px-7 py-3.5 bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] text-white rounded-full font-bold text-base hover:-translate-y-0.5 hover:shadow-[0_12px_32px_rgba(79,70,229,0.4)] transition-all cursor-grab active:cursor-grabbing select-none"
-            >
-              📌 Prep with Vantage
-            </a>
-            <p className="text-[11px] text-[#6B6B8D] mt-4 font-medium">
-              Drag the button (don't click it) up onto your browser's bookmarks bar.
-              On Safari mobile, tap-and-hold &rarr; Add to Bookmarks.
-            </p>
+            {/* Bookmarklet — audit 2026-05-08: React blocks plain
+                javascript: hrefs as a security warning, and clicking a
+                drag-only anchor 'looks broken' to first-time users.
+                Pattern below: <button> with proper draggable + dragstart
+                (sets text/uri-list to the bookmarklet URL so the drop
+                target — bookmarks bar — gets the right value), and the
+                onClick opens an instructions panel instead of the alert.
+                The actual javascript: URL is stored as a string and
+                never lands in an href attribute. */}
+            {(() => {
+              const BOOKMARKLET = "javascript:(function(){var u=location.href;window.open('https://aimvantage.uk/?job='+encodeURIComponent(u),'_blank')})();";
+              return (
+                <>
+                  <button
+                    type="button"
+                    draggable
+                    onDragStart={(e) => {
+                      // Browsers vary here. Setting text/uri-list is the
+                      // most robust signal for 'this is a URL drop'.
+                      // Setting plain text is the cross-browser fallback.
+                      e.dataTransfer.setData('text/uri-list', BOOKMARKLET);
+                      e.dataTransfer.setData('text/plain', BOOKMARKLET);
+                      e.dataTransfer.effectAllowed = 'copyLink';
+                    }}
+                    onClick={() => setShowBookmarkletHelp((s) => !s)}
+                    className="inline-flex items-center gap-2 px-7 py-3.5 bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] text-white rounded-full font-bold text-base hover:-translate-y-0.5 hover:shadow-[0_12px_32px_rgba(79,70,229,0.4)] transition-all cursor-grab active:cursor-grabbing select-none"
+                  >
+                    📌 Prep with Vantage
+                  </button>
+                  <p className="text-[11px] text-[#6B6B8D] mt-4 font-medium">
+                    Drag the button up to your browser's bookmarks bar.{' '}
+                    <button
+                      type="button"
+                      onClick={() => setShowBookmarkletHelp((s) => !s)}
+                      className="underline hover:text-[#4F46E5]"
+                    >
+                      How does this work?
+                    </button>
+                  </p>
+                  {showBookmarkletHelp && (
+                    <div className="mt-4 max-w-md mx-auto p-4 rounded-xl bg-white/55 border border-white/60 text-left">
+                      <p className="text-sm text-[#2D2B4E] font-semibold mb-2">
+                        How to install:
+                      </p>
+                      <ol className="text-sm text-[#3B3A5C] space-y-1 list-decimal pl-5 mb-3">
+                        <li>Make sure your bookmarks bar is visible (Ctrl/Cmd-Shift-B in most browsers).</li>
+                        <li>Drag the purple <span className="font-semibold">📌 Prep with Vantage</span> button onto the bookmarks bar.</li>
+                        <li>On any job page (LinkedIn, Greenhouse, Lever, company careers page), click the bookmark — Vantage opens with that URL pre-filled.</li>
+                      </ol>
+                      <details className="text-xs text-[#6B6B8D]">
+                        <summary className="cursor-pointer hover:text-[#4F46E5]">Manual install (drag not working?)</summary>
+                        <div className="mt-2">
+                          Right-click the bookmarks bar → "Add page" → paste this as the URL:
+                          <code className="block mt-1 p-2 bg-white/60 rounded text-[10px] break-all font-mono">
+                            {BOOKMARKLET}
+                          </code>
+                        </div>
+                      </details>
+                    </div>
+                  )}
+                </>
+              );
+            })()}
           </GlassCard>
         </motion.div>
       </section>
