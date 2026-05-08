@@ -199,14 +199,44 @@ export default function DecodeRejectionPage() {
             <span>Min 50 chars</span>
           </div>
 
-          <button
-            type="button"
-            onClick={handleDecode}
-            disabled={loading || rejectionEmail.length < 50}
-            className="mt-4 inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] text-white font-semibold hover:opacity-95 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {loading ? <><Loader2 className="w-4 h-4 animate-spin" /> Decoding…</> : <>Decode it <ArrowRight className="w-4 h-4" /></>}
-          </button>
+          <div className="mt-4 flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={handleDecode}
+              disabled={loading || rejectionEmail.length < 50}
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] text-white font-semibold hover:opacity-95 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? <><Loader2 className="w-4 h-4 animate-spin" /> Decoding…</> : <>Decode it <ArrowRight className="w-4 h-4" /></>}
+            </button>
+            {/* Sample loader — added 2026-05-08. Lets visitors see what
+                the output looks like with one click, no typing needed.
+                Three realistic recruiter rejection emails covering the
+                most common verdict shapes. */}
+            <button
+              type="button"
+              onClick={() => setRejectionEmail(`Hi Sarah,\n\nThank you for your interest in the Senior Product Manager position at our company. We received a high volume of strong applications, and after careful consideration we have decided to move forward with other candidates whose experience more closely matches our current needs.\n\nWe will keep your CV on file for any future opportunities that may align with your background.\n\nWishing you the best of luck in your job search.\n\nBest regards,\nMaya — Talent Acquisition`)}
+              disabled={loading}
+              className={`text-xs px-3 py-1.5 rounded-lg border border-white/15 hover:bg-black/5 dark:hover:bg-white/5 transition-colors ${t.textSub}`}
+            >
+              Sample 1: standard ghosting
+            </button>
+            <button
+              type="button"
+              onClick={() => setRejectionEmail(`Hi,\n\nThanks for applying to the Senior Engineer role. While your background is impressive, we have decided to move forward with a candidate whose compensation expectations align more closely with the budget we have for this position.\n\nWe encourage you to apply for other roles that may be a better fit on the salary side.\n\nBest,\nRecruitment Team`)}
+              disabled={loading}
+              className={`text-xs px-3 py-1.5 rounded-lg border border-white/15 hover:bg-black/5 dark:hover:bg-white/5 transition-colors ${t.textSub}`}
+            >
+              Sample 2: salary mismatch
+            </button>
+            <button
+              type="button"
+              onClick={() => setRejectionEmail(`Dear applicant,\n\nThank you for submitting your application for the Marketing Lead position. After reviewing your application, we have determined that your experience does not currently meet the requirements for this role.\n\nWe wish you success in your future career endeavors.\n\nThe Hiring Team`)}
+              disabled={loading}
+              className={`text-xs px-3 py-1.5 rounded-lg border border-white/15 hover:bg-black/5 dark:hover:bg-white/5 transition-colors ${t.textSub}`}
+            >
+              Sample 3: ATS-filtered
+            </button>
+          </div>
         </section>
 
         {/* Error */}

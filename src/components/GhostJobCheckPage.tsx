@@ -185,14 +185,43 @@ export default function GhostJobCheckPage() {
             <span>Min 100 chars</span>
           </div>
 
-          <button
-            type="button"
-            onClick={handleCheck}
-            disabled={loading || jobDescription.length < 100}
-            className="mt-4 inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] text-white font-semibold hover:opacity-95 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {loading ? <><Loader2 className="w-4 h-4 animate-spin" /> Checking…</> : <>Check it <ArrowRight className="w-4 h-4" /></>}
-          </button>
+          <div className="mt-4 flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={handleCheck}
+              disabled={loading || jobDescription.length < 100}
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] text-white font-semibold hover:opacity-95 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? <><Loader2 className="w-4 h-4 animate-spin" /> Checking…</> : <>Check it <ArrowRight className="w-4 h-4" /></>}
+            </button>
+            {/* Sample loaders — added 2026-05-08. Three realistic JDs
+                spanning ghost / mixed / real shapes so visitors can see
+                the calibration with one click. */}
+            <button
+              type="button"
+              onClick={() => setJobDescription(`Senior Product Manager — TechCorp\n\nWe are looking for a highly motivated, results-driven Senior Product Manager to join our growing team. The ideal candidate will be a self-starter who thrives in ambiguity and is passionate about building great products.\n\nResponsibilities:\n- Drive product strategy and roadmap\n- Work cross-functionally with engineering, design, and marketing\n- Be a team player and wear many hats\n\nRequirements:\n- 3-15 years of product management experience\n- Strong communication skills\n- Bachelor's degree preferred\n\nSalary: £40,000 - £120,000 depending on experience.\nHybrid: 2-3 days in office (London).`)}
+              disabled={loading}
+              className={`text-xs px-3 py-1.5 rounded-lg border border-white/15 hover:bg-black/5 dark:hover:bg-white/5 transition-colors ${t.textSub}`}
+            >
+              Sample 1: high-ghost
+            </button>
+            <button
+              type="button"
+              onClick={() => setJobDescription(`Staff Product Manager — Stripe Payments\n\nThe Payments team owns the core money-movement primitives behind Stripe — Charges, Payment Intents, Setup Intents. You'll lead the next chapter of how merchants accept payments globally.\n\nYou will:\n- Define strategy for the Payments product line, partnering with eng leadership on infrastructure trade-offs\n- Work with risk and compliance on regulatory rollouts (PSD2, Reg E)\n- Translate ambiguous user pain into shipped product\n\nWe're looking for:\n- 8+ years of PM experience including 3+ at Staff/Principal level\n- Deep payments or fintech background\n- Track record of shipping at scale ($10M+ revenue impact)\n\nReports to: VP Product, Payments. Manages: 6-engineer + 2-designer team.\nSalary band: £155K - £180K base + equity.`)}
+              disabled={loading}
+              className={`text-xs px-3 py-1.5 rounded-lg border border-white/15 hover:bg-black/5 dark:hover:bg-white/5 transition-colors ${t.textSub}`}
+            >
+              Sample 2: real job
+            </button>
+            <button
+              type="button"
+              onClick={() => setJobDescription(`Marketing Manager — Various levels\n\nDynamic role at a fast-growing startup. We need a passionate marketing rockstar who can wear many hats and drive results. The ideal candidate is self-motivated and ready to make an impact.\n\nResponsibilities include marketing activities, campaign management, and other duties as assigned. Must be comfortable with ambiguity.\n\nLevel: Junior / Mid / Senior depending on candidate.\nSalary: Competitive.\n\nLocation: Hybrid.\nReports to: TBD.\n\nApply if you're hungry for an opportunity to grow with us.`)}
+              disabled={loading}
+              className={`text-xs px-3 py-1.5 rounded-lg border border-white/15 hover:bg-black/5 dark:hover:bg-white/5 transition-colors ${t.textSub}`}
+            >
+              Sample 3: textbook ghost
+            </button>
+          </div>
         </section>
 
         {error && (
