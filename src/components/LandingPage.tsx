@@ -623,6 +623,19 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
               >
                 Get 10 free prep packs <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </button>
+              {/* Lowest-friction onramp for skeptics — Clarity (2026-05-09)
+                  showed 1 page per session and 0% returning visitors. They
+                  read the hero and leave without ever clicking. The 60s
+                  diagnostic is a tool they can complete WITHOUT signing up,
+                  WITHOUT uploading a CV, WITHOUT waiting for AI — pure
+                  client-side decision tree. Promoted from a small chip below
+                  the fold to a proper hero button alongside the primary CTA. */}
+              <Link
+                to="/tools/no-interviews-diagnostic?source=hero"
+                className="inline-flex items-center gap-2 px-8 py-4 bg-emerald-500/15 backdrop-blur-[20px] border border-emerald-500/35 text-emerald-700 rounded-full font-semibold text-base hover:bg-emerald-500/25 hover:-translate-y-1 active:scale-95 transition-all"
+              >
+                Try the free 60s diagnostic
+              </Link>
               <button
                 onClick={() =>
                   document.getElementById('watch-it-work')?.scrollIntoView({
