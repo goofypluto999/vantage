@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Flame, Twitter, Linkedin, Copy, ArrowRight, Loader2, AlertTriangle, Wand2 } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import SEO from './SEO';
+import { taskStarted, recordTaskCompletion, armExitFastDetector, track } from '../lib/track';
 
 const SITE_URL = 'https://aimvantage.uk';
 const API_BASE = import.meta.env.VITE_API_URL || '/api';
@@ -73,8 +74,18 @@ export default function RoastPage() {
   useEffect(() => {
     if (roast && resultRef.current) {
       resultRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // Result appearing on screen IS the task completion for /roast.
+      recordTaskCompletion('/roast', 'roast_result_returned');
     }
   }, [roast]);
+
+  // Arm exit-fast detector once on mount. If the user leaves /roast within
+  // 10s without ever getting a result, that's a strong "page didn't end
+  // their job" signal we want to capture for the satisfaction funnel.
+  useEffect(() => {
+    const cleanup = armExitFastDetector('/roast', 10);
+    return cleanup;
+  }, []);
 
   async function handleRoast() {
     setError(null);
@@ -88,6 +99,7 @@ export default function RoastPage() {
       return;
     }
     setLoading(true);
+    taskStarted('/roast', 'roast_request_submitted');
     try {
       const res = await fetch(`${API_BASE}/roast`, {
         method: 'POST',
@@ -171,6 +183,7 @@ export default function RoastPage() {
       };
       sessionStorage.setItem('vantage:pendingRoast', JSON.stringify(payload));
     } catch { /* sessionStorage may be disabled — proceed anyway */ }
+    track('roast_to_register_clicked', { severity: roast.severityScore });
     navigate('/register?source=roast&intent=cover-letter-rewrite');
   }
 

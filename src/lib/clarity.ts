@@ -23,11 +23,9 @@
  * on subsequent builds.
  */
 
-declare global {
-  interface Window {
-    clarity?: (...args: unknown[]) => void;
-  }
-}
+// `clarity` global is declared in src/lib/track.ts as a richer type with
+// the optional `q` queue property. Both definitions need to match,
+// so we don't redeclare here — track.ts is loaded eagerly via main.tsx.
 
 let injected = false;
 

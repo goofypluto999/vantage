@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Activity, ArrowRight, AlertTriangle, Target, FileSearch,
@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import SEO from './SEO';
+import { taskStarted, recordTaskCompletion, armExitFastDetector, track } from '../lib/track';
 
 const SITE_URL = 'https://aimvantage.uk';
 
@@ -285,6 +286,21 @@ export default function NoInterviewsDiagnostic() {
 
   const allAnswered = QUESTIONS.every((q) => !!answers[q.id]);
   const verdict = useMemo(() => (allAnswered ? diagnose(answers) : null), [answers, allAnswered]);
+
+  // Mount: arm exit-fast detector + tag the start of the diagnostic task.
+  useEffect(() => {
+    taskStarted('/tools/no-interviews-diagnostic', 'diagnostic_started');
+    const cleanup = armExitFastDetector('/tools/no-interviews-diagnostic', 15);
+    return cleanup;
+  }, []);
+
+  // Verdict shown = task complete.
+  useEffect(() => {
+    if (verdict) {
+      recordTaskCompletion('/tools/no-interviews-diagnostic', 'verdict_shown');
+      track('diagnostic_verdict', { verdict_key: verdict.key });
+    }
+  }, [verdict]);
   const colors = verdict ? COLOR_MAP[verdict.color] : null;
 
   function answer(qid: string, value: string) {

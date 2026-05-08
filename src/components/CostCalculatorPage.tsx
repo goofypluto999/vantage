@@ -1,8 +1,9 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Calculator, TrendingDown, ArrowRight, Info, Check } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import SEO from './SEO';
+import { taskStarted, recordTaskCompletion, armExitFastDetector } from '../lib/track';
 
 const SITE_URL = 'https://aimvantage.uk';
 
@@ -77,6 +78,25 @@ export default function CostCalculatorPage() {
   const { t } = useTheme();
   const [monthsSearching, setMonthsSearching] = useState(4);
   const [appsPerWeek, setAppsPerWeek] = useState(5);
+
+  // Page entry = task started. Sliding sliders = engagement (handled
+  // implicitly by recordTaskCompletion the first time a slider moves).
+  useEffect(() => {
+    taskStarted('/tools/jobscan-cost-calculator', 'calculator_loaded');
+    const cleanup = armExitFastDetector('/tools/jobscan-cost-calculator', 8);
+    return cleanup;
+  }, []);
+
+  // First non-default slider movement = task completed (the user
+  // engaged with the cost comparison and saw the spread).
+  const [hasInteracted, setHasInteracted] = useState(false);
+  useEffect(() => {
+    if (hasInteracted) return;
+    if (monthsSearching !== 4 || appsPerWeek !== 5) {
+      setHasInteracted(true);
+      recordTaskCompletion('/tools/jobscan-cost-calculator', 'slider_engaged');
+    }
+  }, [monthsSearching, appsPerWeek, hasInteracted]);
 
   // Total Vantage spend = 1 analysis per app, plus the initial 10-token
   // freebie that lasts the first ~10 apps.
