@@ -64,7 +64,7 @@
     { "source": "/api/analyses", "destination": "/api/user?endpoint=analyses" },
     {
       "source": "/((?!api/|\\.env|\\.git/|\\.aws/|\\.ssh/|\\.htaccess|\\.htpasswd|\\.DS_Store|wp-admin|wp-includes|wp-login|wp-config|phpmyadmin|xmlrpc\\.php|vendor/|backup/|backups/|sql/|database/|db/|config\\.|setup\\.|install\\.|admin\\.).*)",
-      "destination": "/index.html"
+      "destination": "/"
     }
   ]
 }
