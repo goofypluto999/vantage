@@ -932,25 +932,24 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
         {/* Post-demo CTA — added 2026-05-07. Users watching the 22s
             walkthrough hit peak interest at the end. Without a CTA they
             scroll past to story cards. This captures the moment.
-            2026-05-09: added the 60-second diagnostic as a parallel
-            lower-friction onramp for skeptics who watched the demo but
-            aren't ready to commit a CV upload. */}
+            2026-05-08 hierarchy refactor: same pattern as hero — one
+            dominant pill button + one smaller text-link diagnostic
+            onramp instead of two same-weight pill buttons (the latter
+            split attention 50/50 and diluted the primary CTA). */}
         <div className="mt-10 text-center flex flex-col items-center gap-3">
-          <div className="flex flex-wrap justify-center gap-3">
-            <button
-              onClick={() => { track('post_demo_cta_click', { cta: 'register_primary' }); onStart(); }}
-              className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#4F46E5] text-white rounded-full font-bold hover:-translate-y-1 hover:shadow-[0_12px_32px_rgba(79,70,229,0.45)] active:scale-95 transition-all"
-            >
-              Run yours free now <ChevronRight className="w-4 h-4" />
-            </button>
-            <Link
-              to="/tools/no-interviews-diagnostic?source=post-demo"
-              onClick={() => track('post_demo_cta_click', { cta: 'diagnostic_low_friction' })}
-              className="inline-flex items-center gap-2 px-7 py-3.5 bg-emerald-500/15 backdrop-blur-[20px] border border-emerald-500/35 text-emerald-700 rounded-full font-semibold hover:bg-emerald-500/25 active:scale-95 transition-all"
-            >
-              Or first: 60s diagnostic
-            </Link>
-          </div>
+          <button
+            onClick={() => { track('post_demo_cta_click', { cta: 'register_primary' }); onStart(); }}
+            className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#4F46E5] text-white rounded-full font-bold hover:-translate-y-1 hover:shadow-[0_12px_32px_rgba(79,70,229,0.45)] active:scale-95 transition-all"
+          >
+            Run yours free now <ChevronRight className="w-4 h-4" />
+          </button>
+          <Link
+            to="/tools/no-interviews-diagnostic?source=post-demo"
+            onClick={() => track('post_demo_cta_click', { cta: 'diagnostic_low_friction' })}
+            className="inline-flex items-center gap-1.5 text-sm font-semibold text-emerald-700 hover:text-emerald-800 underline decoration-emerald-500/40 underline-offset-4 hover:decoration-emerald-700 transition-all"
+          >
+            Or first: try the free 60-sec diagnostic <ChevronRight className="w-3.5 h-3.5" />
+          </Link>
           <p className="text-xs text-[#6B6B8D] font-medium">
             10 free prep packs · no card · ~90 seconds per run · OR diagnose your bottleneck before signing up
           </p>
