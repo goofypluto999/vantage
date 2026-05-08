@@ -1,6 +1,8 @@
 import React from 'react';
 import { Check, Zap, Star, Crown, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { useCurrency } from '../contexts/CurrencyContext';
+import { track } from '../lib/track';
 
 interface PricingProps {
   onLogin?: () => void;
@@ -123,6 +125,23 @@ export default function Pricing({ onLogin, onRegister, onCheckout, isAuthenticat
             Every account starts with 10 free prep packs on signup — no card. After that, top up at £5
             for 20 more (never expires) or subscribe for 60 / 120 prep packs every month. Cancel any
             time. No hidden fees.
+          </p>
+          {/* Pricing-page diagnostic onramp: visitors who land on /pricing
+              are commitment-curious but not all of them will benefit from
+              Vantage. The diagnostic confirms whether their bottleneck is
+              one Vantage actually solves (positioning / proof / mock-prep)
+              vs one it can't (ATS / market / overqualified-flag). Saves
+              both us and them from a refund. */}
+          <p className="text-sm text-white/50 mt-4">
+            Not sure Vantage is the right fix for your specific bottleneck?{' '}
+            <Link
+              to="/tools/no-interviews-diagnostic?source=pricing"
+              onClick={() => track('pricing_diagnostic_click', {})}
+              className="text-emerald-400 hover:text-emerald-300 underline font-semibold"
+            >
+              Run the free 60-second diagnostic
+            </Link>{' '}
+            first — 5 questions, no signup, tells you which of 7 failure modes is yours.
           </p>
         </div>
 
