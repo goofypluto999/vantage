@@ -7,12 +7,26 @@
   <link href="https://pubsubhubbub.appspot.com/" rel="hub"/>
   <link href="https://aimvantage.uk/blog" rel="related" type="text/html"/>
   <id>https://aimvantage.uk/</id>
-  <updated>2026-05-04T00:00:00.000Z</updated>
+  <updated>2026-05-09T00:00:00.000Z</updated>
   <icon>https://aimvantage.uk/favicon.svg</icon>
   <logo>https://aimvantage.uk/og-image.png</logo>
   <rights>© 2026 Giovanni Sizino Ennes (Vantage AI, UK sole trader)</rights>
   <generator uri="https://aimvantage.uk" version="2.0">Vantage scripts/generate-feeds.mjs</generator>
 
+  <entry>
+    <title type="text">Why am I not getting interviews? The 7 failure modes, and a 60-second diagnostic to find yours.</title>
+    <link href="https://aimvantage.uk/blog/why-am-i-not-getting-interviews-7-failure-modes" rel="alternate" type="text/html"/>
+    <id>https://aimvantage.uk/blog/why-am-i-not-getting-interviews-7-failure-modes</id>
+    <published>2026-05-09T00:00:00.000Z</published>
+    <updated>2026-05-09T00:00:00.000Z</updated>
+    <author>
+      <name>Gio</name>
+      <uri>https://aimvantage.uk/press</uri>
+    </author>
+    <summary type="text">You sent 100 applications. Maybe 200. Zero interviews. The Reddit advice blames &quot;the market&quot; or &quot;your resume.&quot; Reality: it is one of seven specific failure modes. Here is each one, how to spot it, the fix, and a free 60-second diagnostic that tells you which is actually yours.</summary>
+    <content type="html"><![CDATA[<p>You sent 100 applications. Maybe 200. Zero interviews. The Reddit advice blames &quot;the market&quot; or &quot;your resume.&quot; Reality: it is one of seven specific failure modes. Here is each one, how to spot it, the fix, and a free 60-second diagnostic that tells you which is actually yours.</p>]]></content>
+
+  </entry>
   <entry>
     <title type="text">I shipped a fake AggregateRating to my own site. Then I caught myself.</title>
     <link href="https://aimvantage.uk/blog/i-shipped-fake-review-schema-then-caught-myself" rel="alternate" type="text/html"/>

@@ -21,6 +21,24 @@
   ],
   "items": [
     {
+      "id": "https://aimvantage.uk/blog/why-am-i-not-getting-interviews-7-failure-modes",
+      "url": "https://aimvantage.uk/blog/why-am-i-not-getting-interviews-7-failure-modes",
+      "title": "Why am I not getting interviews? The 7 failure modes, and a 60-second diagnostic to find yours.",
+      "summary": "You sent 100 applications. Maybe 200. Zero interviews. The Reddit advice blames \"the market\" or \"your resume.\" Reality: it is one of seven specific failure modes. Here is each one, how to spot it, the fix, and a free 60-second diagnostic that tells you which is actually yours.",
+      "content_html": "<p>You sent 100 applications. Maybe 200. Zero interviews. The Reddit advice blames &quot;the market&quot; or &quot;your resume.&quot; Reality: it is one of seven specific failure modes. Here is each one, how to spot it, the fix, and a free 60-second diagnostic that tells you which is actually yours.</p>",
+      "content_text": "You sent 100 applications. Maybe 200. Zero interviews. The Reddit advice blames \"the market\" or \"your resume.\" Reality: it is one of seven specific failure modes. Here is each one, how to spot it, the fix, and a free 60-second diagnostic that tells you which is actually yours.",
+      "date_published": "2026-05-09T00:00:00.000Z",
+      "date_modified": "2026-05-09T00:00:00.000Z",
+      "tags": [],
+      "authors": [
+        {
+          "name": "Gio",
+          "url": "https://aimvantage.uk/press"
+        }
+      ],
+      "language": "en-GB"
+    },
+    {
       "id": "https://aimvantage.uk/blog/i-shipped-fake-review-schema-then-caught-myself",
       "url": "https://aimvantage.uk/blog/i-shipped-fake-review-schema-then-caught-myself",
       "title": "I shipped a fake AggregateRating to my own site. Then I caught myself.",

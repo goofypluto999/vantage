@@ -486,7 +486,7 @@ export default function NoInterviewsDiagnostic() {
                   the broader fix, so always offer it as a secondary onramp
                   with the verdict carried as a UTM param so we can attribute
                   signups back to which diagnostic verdict drove them. */}
-              <div className="mt-4 pt-3 border-t border-white/10">
+              <div className="mt-4 pt-3 border-t border-white/10 space-y-2">
                 <p className={`text-xs ${t.textMuted}`}>
                   Or run a full Vantage prep pack against your next application:{' '}
                   <Link
@@ -495,6 +495,16 @@ export default function NoInterviewsDiagnostic() {
                     className="text-violet-400 hover:text-violet-300 underline font-semibold"
                   >
                     10 free prep packs on signup, no card →
+                  </Link>
+                </p>
+                <p className={`text-xs ${t.textMuted}`}>
+                  Want the depth? Read the full breakdown of all 7 failure modes:{' '}
+                  <Link
+                    to="/blog/why-am-i-not-getting-interviews-7-failure-modes"
+                    onClick={() => track('diagnostic_pillar_read_click', { verdict: verdict.key })}
+                    className="text-violet-400 hover:text-violet-300 underline font-semibold"
+                  >
+                    Why am I not getting interviews? The 7 modes →
                   </Link>
                 </p>
               </div>
