@@ -309,21 +309,24 @@ export default function Pricing({ onLogin, onRegister, onCheckout, isAuthenticat
           <div className="space-y-3">
             {PRICING_FAQ.map((item, i) => {
               const isOpen = openFaq === i;
+              const panelId = `pricing-faq-panel-${i}`;
               return (
                 <div key={i} className="rounded-2xl bg-white/5 border border-white/10 overflow-hidden">
                   <button
                     type="button"
                     onClick={() => setOpenFaq(isOpen ? null : i)}
-                    className="w-full px-5 py-4 flex items-center justify-between text-left hover:bg-white/[0.02] transition-colors"
+                    className="w-full px-5 py-4 flex items-center justify-between text-left cursor-pointer hover:bg-white/[0.02] transition-colors focus-visible:outline-2 focus-visible:outline-offset-[-4px] focus-visible:outline-violet-500"
                     aria-expanded={isOpen}
+                    aria-controls={panelId}
                   >
                     <span className="text-white font-semibold text-sm md:text-base pr-4">{item.q}</span>
                     <ChevronDown
+                      aria-hidden="true"
                       className={`w-5 h-5 text-white/50 flex-shrink-0 transition-transform ${isOpen ? 'rotate-180' : ''}`}
                     />
                   </button>
                   {isOpen && (
-                    <div className="px-5 pb-4 text-white/70 text-sm leading-relaxed">
+                    <div id={panelId} className="px-5 pb-4 text-white/70 text-sm leading-relaxed">
                       {item.a}
                     </div>
                   )}

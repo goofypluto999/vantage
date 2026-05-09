@@ -273,24 +273,29 @@ export default function FaqPage() {
                 {section.entries.map((entry, i) => {
                   const key = `${section.title}-${i}`;
                   const isOpen = !!open[key];
+                  const panelId = `faq-panel-${key}`;
                   return (
                     <div
                       key={key}
                       className={`${t.glass} rounded-xl overflow-hidden`}
                     >
                       <button
+                        type="button"
                         onClick={() => toggle(key)}
-                        className={`w-full text-left px-5 md:px-6 py-4 md:py-5 flex items-start justify-between gap-4 ${t.text}`}
+                        aria-expanded={isOpen}
+                        aria-controls={panelId}
+                        className={`w-full text-left px-5 md:px-6 py-4 md:py-5 flex items-start justify-between gap-4 cursor-pointer hover:bg-white/[0.02] transition-colors focus-visible:outline-2 focus-visible:outline-offset-[-4px] focus-visible:outline-violet-500 ${t.text}`}
                       >
                         <span className="font-semibold leading-snug">{entry.question}</span>
                         <ChevronDown
+                          aria-hidden="true"
                           className={`w-5 h-5 flex-shrink-0 mt-0.5 transition-transform ${
                             isOpen ? 'rotate-180' : ''
                           } ${t.textMuted}`}
                         />
                       </button>
                       {isOpen && (
-                        <div className={`px-5 md:px-6 pb-5 md:pb-6 -mt-2`}>
+                        <div id={panelId} className={`px-5 md:px-6 pb-5 md:pb-6 -mt-2`}>
                           <p className={`leading-relaxed text-[15px] ${t.textSub}`}>
                             {entry.answer}
                           </p>
