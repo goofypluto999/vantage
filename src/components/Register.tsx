@@ -169,10 +169,11 @@ export default function Register() {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-semibold text-white/70 mb-2">Full Name</label>
+              <label htmlFor="register-name" className="block text-sm font-semibold text-white/70 mb-2">Full Name</label>
               <div className="relative">
                 <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/30" />
                 <input
+                  id="register-name"
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
@@ -187,10 +188,11 @@ export default function Register() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-white/70 mb-2">Email</label>
+              <label htmlFor="register-email" className="block text-sm font-semibold text-white/70 mb-2">Email</label>
               <div className="relative">
                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/30" />
                 <input
+                  id="register-email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -204,10 +206,11 @@ export default function Register() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-white/70 mb-2">Password</label>
+              <label htmlFor="register-password" className="block text-sm font-semibold text-white/70 mb-2">Password</label>
               <div className="relative">
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/30" />
                 <input
+                  id="register-password"
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
