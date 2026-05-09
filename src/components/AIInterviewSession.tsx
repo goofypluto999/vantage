@@ -224,6 +224,19 @@ function Spinner({ label }: { label: string }) {
   );
 }
 
+// Body-scroll lock helper — locks document.body overflow on mount, restores
+// on unmount. Mounted as a child of the modal wrapper so the lifecycle is
+// tied to the modal being rendered. Used here (and could be reused on other
+// modals) so the page behind the modal doesn't scroll while it's open.
+function BodyScrollLock() {
+  useEffect(() => {
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = prev; };
+  }, []);
+  return null;
+}
+
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export default function AIInterviewSession({ roleContext, onClose }: AIInterviewSessionProps) {
@@ -417,7 +430,19 @@ export default function AIInterviewSession({ roleContext, onClose }: AIInterview
 
   // ── Render ────────────────────────────────────────────────────────────────
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="ai-interview-title"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+    >
+      {/* No ESC handler / click-outside-close on this modal — unlike the
+          static modals (HowItWorks, Demo), this one contains in-progress
+          interview state (recording transcript, partial answers, evaluation
+          mid-flight) that would be lost on accidental dismiss. Closing
+          requires explicit click on the X button. role=dialog + body
+          scroll lock are still added for screen-reader support. */}
+      <BodyScrollLock />
       <motion.div
         initial={{ opacity: 0, scale: 0.96, y: 16 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -428,7 +453,7 @@ export default function AIInterviewSession({ roleContext, onClose }: AIInterview
         {/* Header */}
         <div className="flex items-center justify-between px-8 pt-7 pb-4 border-b border-gray-100 flex-shrink-0">
           <div>
-            <h2 className="font-display font-bold text-xl text-[#2D2B4E]">AI Mock Interview</h2>
+            <h2 id="ai-interview-title" className="font-display font-bold text-xl text-[#2D2B4E]">AI Mock Interview</h2>
             <p className="text-xs text-[#6B6B8D] font-body mt-0.5 line-clamp-1">{roleContext}</p>
           </div>
           <button
