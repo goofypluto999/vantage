@@ -801,11 +801,24 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
           TRUST BAR
       ================================================================ */}
       <section className="relative z-10 w-full px-4 -mt-10 max-w-5xl mx-auto">
-        <GlassCard className="!rounded-[24px] !p-6 flex justify-between items-center bg-white/40 max-md:grid max-md:grid-cols-2 max-md:gap-4 md:flex-row">
+        <GlassCard className="!rounded-[24px] !p-6 flex flex-wrap justify-around items-center gap-4 bg-white/40 max-md:grid max-md:grid-cols-2 max-md:gap-4">
           <div className="flex items-center gap-3"><ShieldAlert className="w-5 h-5 text-[#4F46E5]" /><span className="text-sm font-bold text-[#3B3A5C]">No Auto-Apply</span></div>
           <div className="flex items-center gap-3"><CheckCircle className="w-5 h-5 text-[#4F46E5]" /><span className="text-sm font-bold text-[#3B3A5C]">No Fabrication</span></div>
           <div className="flex items-center gap-3"><Lock className="w-5 h-5 text-[#4F46E5]" /><span className="text-sm font-bold text-[#3B3A5C]">No Hidden Scraping</span></div>
           <div className="flex items-center gap-3"><Eye className="w-5 h-5 text-[#4F46E5]" /><span className="text-sm font-bold text-[#3B3A5C]">Human Review Always</span></div>
+          {/* Trust bar item #5 — UK ICO data-protection registered. Added
+              2026-05-08 once the registration was paid + in-progress.
+              Once the ZA reg# is issued we can swap to 'ICO ZA######'
+              for hardest-possible claim. Verifiable via /privacy section 2
+              and the /about Hard Facts. */}
+          <Link
+            to="/privacy#ico-registration"
+            className="flex items-center gap-3 hover:opacity-80 transition-opacity"
+            title="Registered as a data controller with the UK Information Commissioner's Office"
+          >
+            <ShieldCheck className="w-5 h-5 text-[#4F46E5]" />
+            <span className="text-sm font-bold text-[#3B3A5C]">UK ICO Registered</span>
+          </Link>
         </GlassCard>
       </section>
 
