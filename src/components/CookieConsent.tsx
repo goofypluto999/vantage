@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { Cookie, X, Shield } from 'lucide-react';
 
@@ -71,7 +71,7 @@ export default function CookieConsent({ onAccept, onReject }: CookieConsentProps
                   <Cookie className="w-3.5 h-3.5 text-violet-400 flex-shrink-0" />
                   <span className="text-white/70 truncate">
                     Cookies for analytics + auth.{' '}
-                    <a href="/privacy" className="underline hover:text-white">Privacy policy</a>
+                    <Link to="/privacy" className="underline hover:text-white">Privacy policy</Link>
                   </span>
                 </div>
                 <div className="flex gap-2 flex-shrink-0">
@@ -125,9 +125,9 @@ export default function CookieConsent({ onAccept, onReject }: CookieConsentProps
                 </div>
                 <p className="text-xs text-white/60 leading-relaxed mb-3">
                   Cookies improve experience and traffic analysis.{' '}
-                  <a href="/privacy" className="text-white/80 hover:text-white underline">
+                  <Link to="/privacy" className="text-white/80 hover:text-white underline">
                     Privacy policy
-                  </a>.
+                  </Link>.
                 </p>
                 <div className="flex flex-wrap gap-2">
                   <button

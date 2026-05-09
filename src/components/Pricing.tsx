@@ -146,9 +146,9 @@ export default function Pricing({ onLogin, onRegister, onCheckout, isAuthenticat
               >$ USD</button>
             </div>
             {isAuthenticated ? (
-              <a href="/dashboard" className="text-white/70 hover:text-white font-semibold">
+              <Link to="/dashboard" className="text-white/70 hover:text-white font-semibold">
                 Dashboard
-              </a>
+              </Link>
             ) : (
               <button onClick={onLogin} className="text-white/70 hover:text-white font-semibold">
                 Sign in
