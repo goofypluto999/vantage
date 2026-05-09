@@ -319,6 +319,19 @@ function Navbar({ onStart, showLogin }: { onStart: () => void; showLogin?: () =>
 // HOW IT WORKS MODAL
 // ============================================================================
 function HowItWorksModal({ onClose, onStart }: { onClose: () => void; onStart: () => void }) {
+  // ESC + body-scroll lock for modal a11y. Pressing ESC closes the modal
+  // (standard expectation, was missing). Body-scroll lock prevents the
+  // background scrolling while the modal is open. Cleanup on unmount.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [onClose]);
   const steps = [
     {
       num: '01',
@@ -372,6 +385,10 @@ function HowItWorksModal({ onClose, onStart }: { onClose: () => void; onStart: (
 
   return (
     <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="hiw-title"
+      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
       className="fixed inset-0 z-[100] flex flex-col"
       style={{ background: 'rgba(20,18,50,0.88)', backdropFilter: 'blur(16px)' }}
     >
@@ -379,7 +396,7 @@ function HowItWorksModal({ onClose, onStart }: { onClose: () => void; onStart: (
       <div className="flex items-center justify-between px-8 py-5 border-b border-white/10 flex-shrink-0">
         <div>
           <div className="text-[10px] font-bold text-[#A8A5E6] uppercase tracking-widest mb-1">Product Overview</div>
-          <h2 className="text-2xl font-display font-bold text-white">How Vantage Works</h2>
+          <h2 id="hiw-title" className="text-2xl font-display font-bold text-white">How Vantage Works</h2>
         </div>
         <div className="flex items-center gap-3">
           <button

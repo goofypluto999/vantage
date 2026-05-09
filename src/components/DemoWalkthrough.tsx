@@ -53,6 +53,20 @@ export default function DemoWalkthrough({ onClose, onStartReal }: DemoWalkthroug
   const containerRef = useRef<HTMLDivElement>(null);
   const stepRef = useRef<HTMLDivElement>(null);
 
+  // ESC + body-scroll lock — same pattern as HowItWorksModal. Pressing ESC
+  // closes the demo, body scroll locked while open.
+  useEffect(() => {
+    if (!onClose) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [onClose]);
+
   useEffect(() => {
     if (stepRef.current) {
       gsap.fromTo(stepRef.current,
@@ -78,7 +92,15 @@ export default function DemoWalkthrough({ onClose, onStartReal }: DemoWalkthroug
   const StepIcon = step.icon;
 
   return (
-    <div ref={containerRef} className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8" style={{ backdropFilter: 'blur(20px)', background: 'rgba(20,18,48,0.85)' }}>
+    <div
+      ref={containerRef}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Vantage demo walkthrough"
+      onClick={(e) => { if (e.target === e.currentTarget && onClose) onClose(); }}
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8"
+      style={{ backdropFilter: 'blur(20px)', background: 'rgba(20,18,48,0.85)' }}
+    >
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
