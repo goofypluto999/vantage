@@ -183,16 +183,18 @@ export default function Account() {
             </div>
 
             {/* Name editing */}
-            <label className="block text-xs font-bold text-white/40 uppercase tracking-widest mb-2">
+            <label htmlFor="account-fullname" className="block text-xs font-bold text-white/40 uppercase tracking-widest mb-2">
               Full Name
             </label>
             {editingName ? (
               <div className="flex gap-2">
                 <input
+                  id="account-fullname"
                   type="text"
                   value={nameValue}
                   onChange={(e) => setNameValue(e.target.value)}
                   className="flex-1 px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm outline-none focus:border-violet-500/50 transition-colors"
+                  autoComplete="name"
                   autoFocus
                 />
                 <button
@@ -335,15 +337,17 @@ export default function Account() {
 
             <div className="space-y-3 mb-4">
               <div>
-                <label className="block text-xs font-bold text-white/40 uppercase tracking-widest mb-1.5">
+                <label htmlFor="account-new-password" className="block text-xs font-bold text-white/40 uppercase tracking-widest mb-1.5">
                   New Password
                 </label>
                 <div className="relative">
                   <input
+                    id="account-new-password"
                     type={showPassword ? 'text' : 'password'}
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
                     placeholder="Min. 6 characters"
+                    autoComplete="new-password"
                     className="w-full px-3 py-2 pr-10 rounded-lg bg-white/5 border border-white/10 text-white text-sm outline-none focus:border-violet-500/50 transition-colors placeholder-white/20"
                   />
                   <button
@@ -356,14 +360,16 @@ export default function Account() {
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-bold text-white/40 uppercase tracking-widest mb-1.5">
+                <label htmlFor="account-confirm-password" className="block text-xs font-bold text-white/40 uppercase tracking-widest mb-1.5">
                   Confirm Password
                 </label>
                 <input
+                  id="account-confirm-password"
                   type={showPassword ? 'text' : 'password'}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Re-enter password"
+                  autoComplete="new-password"
                   className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm outline-none focus:border-violet-500/50 transition-colors placeholder-white/20"
                 />
               </div>
