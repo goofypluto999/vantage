@@ -22,6 +22,7 @@ export default function Waitlist({ launchDate, onSignUpClick }: WaitlistProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [waitlistCount, setWaitlistCount] = useState(0);
+  const [errorMsg, setErrorMsg] = useState('');
   const [timeLeft, setTimeLeft] = useState<TimeLeft>({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -69,16 +70,20 @@ export default function Waitlist({ launchDate, onSignUpClick }: WaitlistProps) {
     e.preventDefault();
     if (!email.trim()) return;
 
+    setErrorMsg('');
     setIsLoading(true);
     try {
       const result = await joinWaitlist(email.trim(), name.trim() || undefined);
       if (result.success) {
         setIsSubmitted(true);
       } else {
-        alert(result.error || 'Something went wrong. Please try again.');
+        // Was: alert(...). Browser alerts are jarring on a marketing surface,
+        // and on mobile they steal the entire viewport — high abandon rate.
+        // Inline error renders below the form fields without breaking flow.
+        setErrorMsg(result.error || 'Something went wrong. Please try again.');
       }
     } catch {
-      alert('Failed to join waitlist. Please try again.');
+      setErrorMsg('Failed to join waitlist. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -165,6 +170,11 @@ export default function Waitlist({ launchDate, onSignUpClick }: WaitlistProps) {
                     className="w-full pl-12 pr-4 py-4 rounded-2xl bg-white/60 border border-[#4F46E5]/15 text-[#2D2B4E] placeholder-[#6B6B8D]/60 font-medium outline-none focus:border-[#4F46E5]/50 transition-colors"
                   />
                 </div>
+                {errorMsg && (
+                  <div role="alert" className="px-4 py-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-sm">
+                    {errorMsg}
+                  </div>
+                )}
                 <button
                   type="submit"
                   disabled={isLoading || !email.trim()}
