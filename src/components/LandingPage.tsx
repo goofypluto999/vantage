@@ -307,6 +307,17 @@ function Navbar({ onStart, showLogin }: { onStart: () => void; showLogin?: () =>
               >
                 Get 10 free prep packs →
               </button>
+              {/* Mobile-only Log In — desktop has it in the navbar; mobile
+                  was missing it entirely. Returning users on mobile had to
+                  close the menu and hunt for /login elsewhere. Adding a
+                  text link below the primary CTA so it doesn't compete
+                  visually but is one tap away. */}
+              <button
+                onClick={() => { setMobileOpen(false); showLogin(); }}
+                className="mt-2 px-4 py-2.5 text-sm font-semibold text-[#4F46E5] hover:text-[#3F36D5] text-left transition-colors"
+              >
+                Already have an account? Log in →
+              </button>
             </div>
           </motion.div>
         )}
