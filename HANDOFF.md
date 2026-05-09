@@ -5,6 +5,14 @@
 
 ---
 
+## RECENT SESSIONS (read first)
+
+- `docs/conversion-fixes-session-2026-05-08-final.md` — 35-commit conversion + a11y + UX pass (free-tools backend bugs, landing CTAs, FAQ + JSON-LD, modal/accordion/form a11y, ICO compliance, trust bar, auth recovery, Stripe checkout cancel handler, dashboard error UX). 7 stable rollback tags. Read this first if continuing the funnel work.
+- `docs/conversion-fixes-session-2026-05-08.md` — mid-session log (subset of the above; the -final.md supersedes).
+- `docs/dashboard-ux-plan-2026-05-06.md` — Tier 1 + Tier 2 dashboard UX changes (mostly shipped). Tier 3 (C7) still deferred.
+
+---
+
 ## WHAT VANTAGE IS
 
 Vantage AI is a job preparation SaaS. Users upload their CV, paste/link a job listing, and get back:
