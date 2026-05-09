@@ -66,8 +66,8 @@ export default function ReferPage() {
         </p>
         <p className={`text-sm ${t.textMuted} max-w-2xl mx-auto`}>
           Manual rewards for now: if a friend signs up via your link, email{' '}
-          <a href="mailto:giovanni.sizino.ennes@hotmail.co.uk" className="text-[#4F46E5] hover:underline">
-            giovanni.sizino.ennes@hotmail.co.uk
+          <a href="mailto:hello@aimvantage.uk?subject=Referral%20%2B%205%20tokens" className="text-[#4F46E5] hover:underline">
+            hello@aimvantage.uk
           </a>{' '}
           with their email and we'll add 5 free tokens to your account. Automated rewards
           coming once we have steady traffic.
