@@ -1510,21 +1510,41 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
 // ============================================================================
 function FaqItem({ question, answer }: { question: string; answer: string }) {
   const [open, setOpen] = useState(false);
+  // Stable id for aria-controls — derived from the question so it survives
+  // re-renders and works for SSR/prerendered pages.
+  const panelId = `faq-${question.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 40)}`;
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5 }}
-      className="bg-white/30 backdrop-blur-[20px] border border-white/50 shadow-[0_4px_16px_rgba(0,0,0,0.06)] rounded-[24px] overflow-hidden cursor-pointer"
-      onClick={() => setOpen(!open)}
+      className="bg-white/30 backdrop-blur-[20px] border border-white/50 shadow-[0_4px_16px_rgba(0,0,0,0.06)] rounded-[24px] overflow-hidden"
     >
-      <button className="w-full text-left flex items-center justify-between gap-4 p-6">
+      {/* Click handler moved from parent div to the actual button — fixes
+          two issues caught in the 2026-05-08 a11y/dead-click pass:
+          1. Keyboard users tabbing to the button + pressing Enter previously
+             relied on the click event bubbling to the parent's onClick,
+             which is fragile and incorrect a11y.
+          2. The parent div had cursor-pointer but no onClick on the button
+             itself — Clarity would log clicks on the question text whose
+             effect (parent toggle) was easy to confuse with no-op. Moving
+             the handler onto the button makes the click target == the
+             interactive element. Clean ARIA expanded/controls wired up so
+             screen readers announce the disclosure state. */}
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        aria-expanded={open}
+        aria-controls={panelId}
+        className="w-full text-left flex items-center justify-between gap-4 p-6 cursor-pointer hover:bg-white/10 transition-colors focus-visible:outline-2 focus-visible:outline-offset-[-4px] focus-visible:outline-[#4F46E5]"
+      >
         <span className="font-display font-bold text-[#2D2B4E] text-base">{question}</span>
         <motion.span
           animate={{ rotate: open ? 45 : 0 }}
           transition={{ duration: 0.2 }}
           className="text-[#4F46E5] font-bold text-2xl leading-none flex-shrink-0"
+          aria-hidden="true"
         >
           +
         </motion.span>
@@ -1532,6 +1552,7 @@ function FaqItem({ question, answer }: { question: string; answer: string }) {
       <AnimatePresence>
         {open && (
           <motion.div
+            id={panelId}
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
