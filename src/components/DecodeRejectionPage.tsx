@@ -183,10 +183,11 @@ export default function DecodeRejectionPage() {
 
         {/* Input */}
         <section className={`${t.glass} rounded-2xl p-6 md:p-8 mb-6`}>
-          <label className={`block text-xs uppercase tracking-widest font-semibold ${t.textMuted} mb-3`}>
+          <label htmlFor="decode-rejection-email" className={`block text-xs uppercase tracking-widest font-semibold ${t.textMuted} mb-3`}>
             Paste the rejection email
           </label>
           <textarea
+            id="decode-rejection-email"
             value={rejectionEmail}
             onChange={(e) => setRejectionEmail(e.target.value)}
             rows={8}

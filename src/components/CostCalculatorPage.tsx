@@ -192,17 +192,17 @@ export default function CostCalculatorPage() {
         <div className={`${t.glass} rounded-2xl p-6 md:p-8 mb-6`}>
           <div className="grid md:grid-cols-2 gap-6">
             <div>
-              <label className={`block text-xs uppercase tracking-wider mb-2 ${t.textMuted}`}>
+              <label htmlFor="cost-months-searching" className={`block text-xs uppercase tracking-wider mb-2 ${t.textMuted}`}>
                 How long is your search?
               </label>
               <input
+                id="cost-months-searching"
                 type="range"
                 min={1}
                 max={12}
                 value={monthsSearching}
                 onChange={(e) => setMonthsSearching(Number(e.target.value))}
                 className="w-full accent-violet-500"
-                aria-label="Months searching"
               />
               <div className={`flex justify-between text-xs mt-1 ${t.textMuted}`}>
                 <span>1 month</span>
@@ -212,17 +212,17 @@ export default function CostCalculatorPage() {
             </div>
 
             <div>
-              <label className={`block text-xs uppercase tracking-wider mb-2 ${t.textMuted}`}>
+              <label htmlFor="cost-apps-per-week" className={`block text-xs uppercase tracking-wider mb-2 ${t.textMuted}`}>
                 Apps per week
               </label>
               <input
+                id="cost-apps-per-week"
                 type="range"
                 min={1}
                 max={25}
                 value={appsPerWeek}
                 onChange={(e) => setAppsPerWeek(Number(e.target.value))}
                 className="w-full accent-violet-500"
-                aria-label="Applications per week"
               />
               <div className={`flex justify-between text-xs mt-1 ${t.textMuted}`}>
                 <span>1/week</span>

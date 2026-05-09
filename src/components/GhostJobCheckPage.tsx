@@ -169,10 +169,11 @@ export default function GhostJobCheckPage() {
 
         {/* Input */}
         <section className={`${t.glass} rounded-2xl p-6 md:p-8 mb-6`}>
-          <label className={`block text-xs uppercase tracking-widest font-semibold ${t.textMuted} mb-3`}>
+          <label htmlFor="ghost-job-description" className={`block text-xs uppercase tracking-widest font-semibold ${t.textMuted} mb-3`}>
             Paste the job description
           </label>
           <textarea
+            id="ghost-job-description"
             value={jobDescription}
             onChange={(e) => setJobDescription(e.target.value)}
             rows={10}
