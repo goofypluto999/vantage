@@ -159,6 +159,7 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [checkoutSuccess, setCheckoutSuccess] = useState(false);
+  const [checkoutCancelled, setCheckoutCancelled] = useState(false);
 
   // Sync subscription state from Stripe on every mount, then refresh profile
   useEffect(() => {
@@ -170,17 +171,24 @@ export default function Dashboard() {
     }
   }, [user]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Handle post-checkout return — sync from Stripe then refresh profile
+  // Handle post-checkout return — sync from Stripe then refresh profile.
+  // Both ?success=true and ?cancelled=true are set by api/stripe/[action].ts
+  // as Stripe Checkout success_url / cancel_url targets. The cancel branch
+  // was previously unhandled — users who clicked back from Stripe Checkout
+  // landed on the dashboard with a stranded query param and no acknowledgement.
   useEffect(() => {
     if (searchParams.get('success') === 'true') {
       setCheckoutSuccess(true);
       setSearchParams({}, { replace: true });
-      // Give webhook a moment, then force-sync from Stripe as fallback
       const timer = setTimeout(async () => {
         await syncSubscription();
         await refreshProfile();
       }, 2000);
       return () => clearTimeout(timer);
+    }
+    if (searchParams.get('cancelled') === 'true' || searchParams.get('canceled') === 'true') {
+      setCheckoutCancelled(true);
+      setSearchParams({}, { replace: true });
     }
   }, []);
 
@@ -531,6 +539,40 @@ export default function Dashboard() {
               </div>
             </div>
             <button onClick={() => setCheckoutSuccess(false)} className="text-emerald-400/50 hover:text-emerald-400 text-sm flex-shrink-0">
+              Dismiss
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Checkout Cancelled Banner — fires after Stripe redirects back with
+          ?cancelled=true (user clicked Back, closed the tab, or hit any
+          cancel control in Stripe Checkout). Previously this query param
+          was just stranded with no UX acknowledgement. Now: non-judgmental
+          notice that no charge happened, with two soft re-engagement paths
+          (run the free analyses they already have, or ping Gio for help). */}
+      {checkoutCancelled && (
+        <div className="max-w-5xl mx-auto px-6 pt-6">
+          <div className="p-4 rounded-xl bg-white/5 border border-white/10 flex items-start justify-between gap-3 flex-wrap">
+            <div className="flex items-start gap-3 flex-1 min-w-[260px]">
+              <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
+                <CreditCard className="w-4 h-4 text-white/70" />
+              </div>
+              <div>
+                <p className="text-white font-semibold">No charge — picking up where you left off.</p>
+                <p className="text-white/60 text-sm mt-0.5">
+                  You can keep using your free prep packs below.{' '}
+                  <a
+                    href="mailto:hello@aimvantage.uk?subject=Stripe%20checkout%20question"
+                    className="underline text-white/80 hover:text-white"
+                  >
+                    Question about pricing? Email Gio
+                  </a>
+                  {' '}— he replies within a few hours.
+                </p>
+              </div>
+            </div>
+            <button onClick={() => setCheckoutCancelled(false)} className="text-white/40 hover:text-white/70 text-sm flex-shrink-0">
               Dismiss
             </button>
           </div>
