@@ -1437,6 +1437,77 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
       </section>
 
       {/* ================================================================
+          POPULAR INTERVIEW GUIDES — added 2026-05-10
+          Surfaces 6 of the 16 long-tail interview-guide deep-dives so
+          landing-page visitors can see we have content depth without
+          having to find /blog manually. Conversion path: landing -> guide
+          -> register CTA at the bottom of every post.
+      ================================================================ */}
+      <section
+        id="popular-guides"
+        className="py-16 px-6 max-w-6xl mx-auto relative z-20"
+        aria-labelledby="popular-guides-heading"
+      >
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-10"
+        >
+          <p className="text-xs font-bold tracking-widest uppercase text-[#4F46E5] mb-3">
+            Free reads · No signup
+          </p>
+          <h2 id="popular-guides-heading" className="text-4xl font-display font-bold text-[#2D2B4E]">
+            Targeting a specific company?
+          </h2>
+          <p className="mt-3 text-[#5A5675] max-w-2xl mx-auto">
+            We've shipped 16 deep-dives on company-specific interview loops in 2026 — five-stage
+            breakdowns, the questions that actually come up, the traps that kill candidates, and a
+            prep checklist. Free to read. No card.
+          </p>
+        </motion.div>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {[
+            { company: 'Stripe', role: 'Senior PM', slug: 'stripe-senior-pm-interview-guide-2026', time: '8 min' },
+            { company: 'Anthropic', role: 'AI Safety', slug: 'anthropic-ai-safety-interview-questions-2026', time: '8 min' },
+            { company: 'OpenAI', role: 'Applied Research', slug: 'openai-applied-research-interview-prep-2026', time: '8 min' },
+            { company: 'DeepMind', role: 'Research Scientist', slug: 'deepmind-research-scientist-interview-2026', time: '8 min' },
+            { company: 'Cloudflare', role: 'PM', slug: 'cloudflare-product-manager-interview-2026', time: '8 min' },
+            { company: 'Vercel', role: 'Software Engineer', slug: 'vercel-software-engineer-interview-2026', time: '8 min' },
+          ].map((guide) => (
+            <Link
+              key={guide.slug}
+              to={`/blog/${guide.slug}`}
+              className="group block rounded-2xl bg-white/60 backdrop-blur-xl border border-white/50 shadow-[0_4px_16px_rgba(79,70,229,0.05)] p-5 hover:border-[#4F46E5]/40 hover:shadow-[0_8px_32px_rgba(79,70,229,0.12)] transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#4F46E5] focus-visible:ring-offset-2"
+            >
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs font-bold uppercase tracking-wide text-[#4F46E5]">
+                  {guide.company}
+                </span>
+                <span className="text-xs text-[#5A5675]">{guide.time}</span>
+              </div>
+              <p className="text-base font-semibold text-[#2D2B4E] group-hover:text-[#4F46E5] transition leading-snug">
+                {guide.role} interview, 2026
+              </p>
+              <p className="mt-3 text-sm text-[#4F46E5] font-medium inline-flex items-center gap-1">
+                Read the guide
+                <span aria-hidden="true">&rarr;</span>
+              </p>
+            </Link>
+          ))}
+        </div>
+        <div className="mt-8 text-center">
+          <Link
+            to="/blog"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold text-[#4F46E5] hover:bg-[#4F46E5]/10 transition"
+          >
+            See all 16 company guides
+            <span aria-hidden="true">&rarr;</span>
+          </Link>
+        </div>
+      </section>
+
+      {/* ================================================================
           FAQ
       ================================================================ */}
       <section id="faq" className="py-16 px-6 max-w-3xl mx-auto relative z-20">
