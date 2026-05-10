@@ -131,6 +131,11 @@ const STATIC_ROUTES = [
     description: 'Paste two cover letter drafts. Get a side-by-side score across 8 dimensions: opening strength, metrics, filler phrases, passive voice, I/me/my ratio, specificity, length. Pick the winner. Runs in your browser. No signup.',
   },
   {
+    path: '/tools/negotiation-script',
+    title: 'Free Salary Negotiation Script Generator — Email + Phone Variants | Vantage',
+    description: 'Plug in your offer + target asks (base, signing, RSU). Get a personalised salary negotiation script in email or phone format, plus the 7 talking points that win negotiations. Pure client-side. No signup.',
+  },
+  {
     path: '/alternatives',
     title: 'Vantage AI Alternatives — Compared to Jobscan, Teal, Resume Worded, Final Round AI',
     description: 'Honest side-by-side comparisons of Vantage AI vs Jobscan, Teal HQ, Resume Worded, Final Round AI, Kickresume, Enhancv, Yoodli, Huntr, and Big Interview. Where each wins, where each loses.',
