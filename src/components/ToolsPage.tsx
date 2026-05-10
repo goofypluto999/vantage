@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, ExternalLink, Star, Shield, Zap, FileSearch, MessageSquare, Target, Users, Briefcase, Calculator, Activity, ScanLine, Search, Sparkles, Calendar, GitCompareArrows, Mail, Linkedin, Inbox } from 'lucide-react';
+import { ArrowRight, ExternalLink, Star, Shield, Zap, FileSearch, MessageSquare, Target, Users, Briefcase, Calculator, Activity, ScanLine, Search, Sparkles, Calendar, GitCompareArrows, Mail, Linkedin, Inbox, Send, Layers } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import SEO from './SEO';
 
@@ -114,18 +114,30 @@ export default function ToolsPage() {
       {
         '@type': 'ListItem',
         position: 16,
+        url: `${SITE_URL}/tools/cold-email-hiring-manager`,
+        name: 'Cold Email to Hiring Manager Generator',
+      },
+      {
+        '@type': 'ListItem',
+        position: 17,
+        url: `${SITE_URL}/tools/star-story-builder`,
+        name: 'STAR Story Builder',
+      },
+      {
+        '@type': 'ListItem',
+        position: 18,
         url: `${SITE_URL}/interview-prep`,
         name: 'Interview Prep Packs by Company',
       },
       {
         '@type': 'ListItem',
-        position: 17,
+        position: 19,
         url: `${SITE_URL}/interview-questions`,
         name: 'Interview Questions by Role',
       },
       {
         '@type': 'ListItem',
-        position: 18,
+        position: 20,
         url: `${SITE_URL}/laid-off`,
         name: 'Layoff Recovery Guide (April-May 2026 cohort)',
       },
@@ -523,6 +535,44 @@ export default function ToolsPage() {
                   </p>
                 </div>
                 <Inbox className="w-5 h-5 text-violet-400 flex-shrink-0" />
+              </div>
+            </Link>
+            <Link
+              to="/tools/cold-email-hiring-manager"
+              className={`${t.glass} rounded-xl p-5 hover:border-violet-400/40 transition group block`}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <div className={`text-xs uppercase tracking-widest ${t.textMuted} font-bold`}>
+                    Free · No signup · ATS-bypass move
+                  </div>
+                  <h3 className={`text-lg font-bold ${t.text} mt-1 group-hover:text-violet-500 transition`}>
+                    Cold Email to Hiring Manager
+                  </h3>
+                  <p className={`text-sm ${t.textSub} mt-2 leading-relaxed`}>
+                    Bypassing the ATS is the highest-leverage single move in 2026 hiring. Pick a hook (mutual connection / recent post / product use / shared history / public artefact / cold) and stage. Get 2-3 calibrated email variants plus 8 sending tips.
+                  </p>
+                </div>
+                <Send className="w-5 h-5 text-violet-400 flex-shrink-0" />
+              </div>
+            </Link>
+            <Link
+              to="/tools/star-story-builder"
+              className={`${t.glass} rounded-xl p-5 hover:border-violet-400/40 transition group block`}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <div className={`text-xs uppercase tracking-widest ${t.textMuted} font-bold`}>
+                    Free · No signup · 16 principles
+                  </div>
+                  <h3 className={`text-lg font-bold ${t.text} mt-1 group-hover:text-violet-500 transition`}>
+                    STAR Story Builder
+                  </h3>
+                  <p className={`text-sm ${t.textSub} mt-2 leading-relaxed`}>
+                    Per the 2026 hiring report, you need 8-10 stories with REAL FAILURES. Plug Situation / Task / Action / Result + pick a principle (Ownership / Bias for Action / 14 more). Get 3 calibrated variants (Classic STAR, 45-second, Principle-calibrated) + 7 rehearsal tips.
+                  </p>
+                </div>
+                <Layers className="w-5 h-5 text-violet-400 flex-shrink-0" />
               </div>
             </Link>
             <Link

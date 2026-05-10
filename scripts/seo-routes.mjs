@@ -161,6 +161,11 @@ const STATIC_ROUTES = [
     description: 'Plug Situation / Task / Action / Result, pick a principle (Ownership / Bias for Action / Customer Obsession / 13 more), get 3 calibrated story variants (Classic STAR, Problem-led 45s, Principle-calibrated) plus 7 rehearsal tips. Pure client-side. No signup.',
   },
   {
+    path: '/tools/glassdoor-decoder',
+    title: 'Free Glassdoor Review Decoder — Spot Red Flags Most Candidates Miss | Vantage',
+    description: 'Paste 5-10 Glassdoor reviews. Get pattern-matched flags across 11 categories: burnout, fast-paced warning, micromanagement, bad leadership, high turnover, comp below market, layoff history, toxic culture, no DEI, plus positive signals (learning culture, genuine flexibility, reasonable comp). Pure client-side. No signup.',
+  },
+  {
     path: '/alternatives',
     title: 'Vantage AI Alternatives — Compared to Jobscan, Teal, Resume Worded, Final Round AI',
     description: 'Honest side-by-side comparisons of Vantage AI vs Jobscan, Teal HQ, Resume Worded, Final Round AI, Kickresume, Enhancv, Yoodli, Huntr, and Big Interview. Where each wins, where each loses.',
