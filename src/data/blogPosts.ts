@@ -1171,6 +1171,12 @@ export const blogPosts: BlogPost[] = [
   },
 ];
 
+// Append the long-tail SEO interview-guide drafts. Kept in a separate file
+// so the main blogPosts.ts stays under reasonable line-count + so future
+// agents can drop new draft batches in without rebasing this 1000-line array.
+import { newBlogPosts } from './blogPosts-newDrafts';
+blogPosts.push(...newBlogPosts);
+
 export function getPostBySlug(slug: string): BlogPost | undefined {
   return blogPosts.find((p) => p.slug === slug);
 }

@@ -175,7 +175,7 @@ export default function Account() {
               )}
               <div>
                 <p className="text-white font-semibold">{profile?.full_name || 'No name set'}</p>
-                <div className="flex items-center gap-1.5 text-white/40 text-sm">
+                <div className="flex items-center gap-1.5 text-white/60 text-sm">
                   <Mail className="w-3.5 h-3.5" />
                   {user?.email || profile?.email}
                 </div>
@@ -183,7 +183,7 @@ export default function Account() {
             </div>
 
             {/* Name editing */}
-            <label htmlFor="account-fullname" className="block text-xs font-bold text-white/40 uppercase tracking-widest mb-2">
+            <label htmlFor="account-fullname" className="block text-xs font-bold text-white/60 uppercase tracking-widest mb-2">
               Full Name
             </label>
             {editingName ? (
@@ -249,7 +249,7 @@ export default function Account() {
                   profile?.subscription_status === 'cancelling' ? 'text-amber-400' :
                   profile?.subscription_status === 'cancelled' ? 'text-amber-400' :
                   profile?.subscription_status === 'past_due' ? 'text-red-400' :
-                  'text-white/40'
+                  'text-white/60'
                 }`}>
                   {profile?.subscription_status === 'active' ? `${planInfo.label} — Active` :
                    profile?.subscription_status === 'cancelling' ? 'Cancelling at end of period' :
@@ -337,7 +337,7 @@ export default function Account() {
 
             <div className="space-y-3 mb-4">
               <div>
-                <label htmlFor="account-new-password" className="block text-xs font-bold text-white/40 uppercase tracking-widest mb-1.5">
+                <label htmlFor="account-new-password" className="block text-xs font-bold text-white/60 uppercase tracking-widest mb-1.5">
                   New Password
                 </label>
                 <div className="relative">
@@ -353,14 +353,14 @@ export default function Account() {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors"
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-white/55 hover:text-white/60 transition-colors"
                   >
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
               </div>
               <div>
-                <label htmlFor="account-confirm-password" className="block text-xs font-bold text-white/40 uppercase tracking-widest mb-1.5">
+                <label htmlFor="account-confirm-password" className="block text-xs font-bold text-white/60 uppercase tracking-widest mb-1.5">
                   Confirm Password
                 </label>
                 <input
@@ -405,7 +405,7 @@ export default function Account() {
               <LogOut className="w-5 h-5 text-red-400" />
               <h2 className="text-lg font-bold text-white">Danger Zone</h2>
             </div>
-            <p className="text-white/40 text-sm mb-4">Sign out of your account on this device.</p>
+            <p className="text-white/60 text-sm mb-4">Sign out of your account on this device.</p>
             <button
               onClick={handleSignOut}
               className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm font-semibold hover:bg-red-500/20 transition-colors"

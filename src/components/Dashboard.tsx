@@ -77,7 +77,7 @@ function ProcessingStages() {
               <p className={`text-sm font-semibold ${current ? 'text-white' : done ? 'text-emerald-300' : 'text-white/50'}`}>
                 {s.label}
               </p>
-              <p className={`text-xs leading-relaxed ${current ? 'text-white/70' : done ? 'text-emerald-300/60' : 'text-white/30'}`}>
+              <p className={`text-xs leading-relaxed ${current ? 'text-white/70' : done ? 'text-emerald-300/60' : 'text-white/55'}`}>
                 {s.detail}
               </p>
             </div>
@@ -133,7 +133,7 @@ function AnalysisHistory({ onLoad }: { onLoad: (data: any) => void }) {
           >
             <div className="min-w-0 flex-1">
               <span className="text-white text-sm font-medium truncate block">{a.company_name || 'Unknown Company'}</span>
-              <span className="text-white/30 text-xs">
+              <span className="text-white/55 text-xs">
                 {new Date(a.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
               </span>
             </div>
@@ -141,7 +141,7 @@ function AnalysisHistory({ onLoad }: { onLoad: (data: any) => void }) {
               {loadingId === a.id ? (
                 <Loader2 className="w-4 h-4 text-violet-400 animate-spin" />
               ) : (
-                <ChevronRight className="w-4 h-4 text-white/30" />
+                <ChevronRight className="w-4 h-4 text-white/55" />
               )}
             </div>
           </button>
@@ -605,7 +605,7 @@ export default function Dashboard() {
             </div>
 
             {profile?.plan && (
-              <span className="text-xs font-semibold text-white/40 uppercase tracking-wider">
+              <span className="text-xs font-semibold text-white/60 uppercase tracking-wider">
                 {profile.plan}
               </span>
             )}
@@ -739,7 +739,7 @@ export default function Dashboard() {
                 </p>
               </div>
             </div>
-            <button onClick={() => setCheckoutCancelled(false)} className="text-white/40 hover:text-white/70 text-sm flex-shrink-0">
+            <button onClick={() => setCheckoutCancelled(false)} className="text-white/60 hover:text-white/70 text-sm flex-shrink-0">
               Dismiss
             </button>
           </div>
@@ -844,7 +844,7 @@ export default function Dashboard() {
                     <div className={`font-bold ${isCurrentPlan ? 'text-emerald-400' : 'text-white'}`}>{plan.name}</div>
                     <div className="text-2xl font-bold text-white my-1">
                       {symbol}{currency === 'usd' ? plan.usd : plan.gbp}
-                      <span className="text-sm text-white/40 font-normal">{plan.isTopup ? '' : '/mo'}</span>
+                      <span className="text-sm text-white/60 font-normal">{plan.isTopup ? '' : '/mo'}</span>
                     </div>
                     <div className="text-xs text-white/50 mb-3">
                       {plan.isTopup ? `${plan.tokens} tokens (one-time)` : `${plan.tokens} tokens/month`}
@@ -951,7 +951,7 @@ export default function Dashboard() {
                     <button
                       type="button"
                       onClick={() => setPendingRoast(null)}
-                      className="text-xs text-white/40 hover:text-white/70 underline"
+                      className="text-xs text-white/60 hover:text-white/70 underline"
                     >
                       Dismiss
                     </button>
@@ -1052,7 +1052,7 @@ export default function Dashboard() {
                     <Pill n={2} label="Job description" done={jdDone} />
                     <span className="text-white/20 text-xs">→</span>
                     <Pill n={3} label="Job URL" done={urlDone} />
-                    <span className="ml-auto text-[11px] text-white/40 font-medium">
+                    <span className="ml-auto text-[11px] text-white/60 font-medium">
                       {completed}/3 filled
                     </span>
                   </div>
@@ -1087,13 +1087,13 @@ export default function Dashboard() {
                       <>
                         <FileText className="w-8 h-8 text-emerald-400 mx-auto mb-2" />
                         <p className="text-white font-semibold text-sm truncate">{cvFile.name}</p>
-                        <p className="text-white/40 text-[11px] mt-1">Click to swap for a different CV</p>
+                        <p className="text-white/60 text-[11px] mt-1">Click to swap for a different CV</p>
                       </>
                     ) : (
                       <>
-                        <Upload className="w-8 h-8 text-white/30 mx-auto mb-2" />
+                        <Upload className="w-8 h-8 text-white/55 mx-auto mb-2" />
                         <p className="text-white font-semibold text-sm">Upload your CV</p>
-                        <p className="text-white/40 text-xs mt-1">Drop or click — PDF, DOCX, or TXT</p>
+                        <p className="text-white/60 text-xs mt-1">Drop or click — PDF, DOCX, or TXT</p>
                         {/* Sample CV escape hatch — clicking this fetches public/sample-cv.txt
                             and creates a File object so the user can run a real analysis
                             with our example. Removes the biggest blocker for first-time
@@ -1149,13 +1149,13 @@ export default function Dashboard() {
                   <div className="flex items-center gap-1 mb-3 mt-5">
                     <button
                       onClick={() => setJdMode('text')}
-                      className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold transition-all ${jdMode === 'text' ? 'bg-violet-600/30 text-violet-300' : 'text-white/40 hover:text-white/60'}`}
+                      className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold transition-all ${jdMode === 'text' ? 'bg-violet-600/30 text-violet-300' : 'text-white/60 hover:text-white/60'}`}
                     >
                       <Type className="w-3 h-3" /> Paste text
                     </button>
                     <button
                       onClick={() => setJdMode('file')}
-                      className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold transition-all ${jdMode === 'file' ? 'bg-violet-600/30 text-violet-300' : 'text-white/40 hover:text-white/60'}`}
+                      className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold transition-all ${jdMode === 'file' ? 'bg-violet-600/30 text-violet-300' : 'text-white/60 hover:text-white/60'}`}
                     >
                       <Upload className="w-3 h-3" /> Or upload file
                     </button>
@@ -1179,9 +1179,9 @@ export default function Dashboard() {
                         </>
                       ) : (
                         <>
-                          <FileText className="w-6 h-6 text-white/30 mx-auto mb-1" />
+                          <FileText className="w-6 h-6 text-white/55 mx-auto mb-1" />
                           <p className="text-white/50 text-xs">Click to upload JD file</p>
-                          <p className="text-white/30 text-[10px] mt-0.5">PDF, DOCX, or TXT</p>
+                          <p className="text-white/55 text-[10px] mt-0.5">PDF, DOCX, or TXT</p>
                         </>
                       )}
                     </div>
@@ -1221,7 +1221,7 @@ export default function Dashboard() {
                     placeholder="https://company.com/careers/role-id"
                     className="w-full bg-transparent text-white placeholder-white/30 outline-none text-sm"
                   />
-                  <p className="mt-2 text-[11px] text-white/40 leading-relaxed">
+                  <p className="mt-2 text-[11px] text-white/60 leading-relaxed">
                     Paste the link from the careers page. Works with most company sites + Indeed, LinkedIn, Reed, Greenhouse, Lever. Some sites block scrapers — if so, paste the JD text in Step 2 too.
                   </p>
                 </div>
@@ -1268,7 +1268,7 @@ export default function Dashboard() {
               {/* Explain why the button is disabled — silent disabled state was confusing
                   users who didn't realise CV + Job URL were both required. */}
               {(!cvFile || !jobUrl) && canAnalyze && (
-                <p className="mt-2 text-center text-xs text-white/40">
+                <p className="mt-2 text-center text-xs text-white/60">
                   {!cvFile && !jobUrl
                     ? 'Add your CV and a job posting URL above to enable.'
                     : !cvFile
@@ -1400,31 +1400,31 @@ export default function Dashboard() {
                   <h3 className="text-lg font-bold text-white mb-4">Company Intelligence</h3>
                   <div className="space-y-3">
                     <div>
-                      <p className="text-xs text-white/40 uppercase">Mission</p>
+                      <p className="text-xs text-white/60 uppercase">Mission</p>
                       <p className="text-white">{results.companySnapshot.mission}</p>
                     </div>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                       {results.companySnapshot.name && (
                         <div>
-                          <p className="text-xs text-white/40 uppercase">Company</p>
+                          <p className="text-xs text-white/60 uppercase">Company</p>
                           <p className="text-white font-semibold">{results.companySnapshot.name}</p>
                         </div>
                       )}
                       {results.companySnapshot.industry && (
                         <div>
-                          <p className="text-xs text-white/40 uppercase">Industry</p>
+                          <p className="text-xs text-white/60 uppercase">Industry</p>
                           <p className="text-white">{results.companySnapshot.industry}</p>
                         </div>
                       )}
                       {results.companySnapshot.size && (
                         <div>
-                          <p className="text-xs text-white/40 uppercase">Size</p>
+                          <p className="text-xs text-white/60 uppercase">Size</p>
                           <p className="text-white">{results.companySnapshot.size}</p>
                         </div>
                       )}
                       {results.companySnapshot.founded && (
                         <div>
-                          <p className="text-xs text-white/40 uppercase">Founded</p>
+                          <p className="text-xs text-white/60 uppercase">Founded</p>
                           <p className="text-white">{results.companySnapshot.founded}</p>
                         </div>
                       )}
@@ -1463,7 +1463,7 @@ export default function Dashboard() {
                       Vantage shoutout. Every share = social proof + free
                       traffic from the user's network. */}
                   <div className="mt-5 pt-5 border-t border-white/10 flex flex-wrap items-center gap-2">
-                    <span className="text-[11px] uppercase tracking-wider text-white/40 mr-1">Share this score</span>
+                    <span className="text-[11px] uppercase tracking-wider text-white/60 mr-1">Share this score</span>
                     {(() => {
                       const role = results.keyRequirements?.[0]
                         ? `the ${(results.companySnapshot?.industry || 'role').toLowerCase()} role`
@@ -1519,7 +1519,7 @@ export default function Dashboard() {
               {cvFile && (
                 <div className="p-6 rounded-2xl bg-white/5 border border-white/10">
                   <h3 className="text-lg font-bold text-white mb-1">Free ATS preview</h3>
-                  <p className="text-xs text-white/40 mb-4">
+                  <p className="text-xs text-white/60 mb-4">
                     What 5 real ATS parsers (Workday / Greenhouse / Lever / Taleo / iCIMS)
                     will see when you upload this CV. Runs locally in your browser, free,
                     no extra tokens.
@@ -1610,7 +1610,7 @@ export default function Dashboard() {
                         </button>
                       ))}
                       {activeTone !== 'original' && (
-                        <span className="text-white/30 text-xs ml-1">1 token per tone</span>
+                        <span className="text-white/55 text-xs ml-1">1 token per tone</span>
                       )}
                     </div>
                   </div>
@@ -1768,7 +1768,7 @@ export default function Dashboard() {
                     </button>
                   )}
                 </div>
-                <p className="text-white/40 text-sm mt-2">
+                <p className="text-white/60 text-sm mt-2">
                   Practice with AI-generated questions, voice recording, timed responses, and detailed evaluation with scores.
                 </p>
               </div>
