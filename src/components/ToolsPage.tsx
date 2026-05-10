@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, ExternalLink, Star, Shield, Zap, FileSearch, MessageSquare, Target, Users, Briefcase, Calculator, Activity, ScanLine, Search, Sparkles, Calendar, GitCompareArrows } from 'lucide-react';
+import { ArrowRight, ExternalLink, Star, Shield, Zap, FileSearch, MessageSquare, Target, Users, Briefcase, Calculator, Activity, ScanLine, Search, Sparkles, Calendar, GitCompareArrows, Mail } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import SEO from './SEO';
 
@@ -96,18 +96,24 @@ export default function ToolsPage() {
       {
         '@type': 'ListItem',
         position: 13,
+        url: `${SITE_URL}/tools/thank-you-note`,
+        name: 'Post-Interview Thank-You Note Generator',
+      },
+      {
+        '@type': 'ListItem',
+        position: 14,
         url: `${SITE_URL}/interview-prep`,
         name: 'Interview Prep Packs by Company',
       },
       {
         '@type': 'ListItem',
-        position: 14,
+        position: 15,
         url: `${SITE_URL}/interview-questions`,
         name: 'Interview Questions by Role',
       },
       {
         '@type': 'ListItem',
-        position: 15,
+        position: 16,
         url: `${SITE_URL}/laid-off`,
         name: 'Layoff Recovery Guide (April-May 2026 cohort)',
       },
@@ -448,6 +454,25 @@ export default function ToolsPage() {
                   </p>
                 </div>
                 <MessageSquare className="w-5 h-5 text-violet-400 flex-shrink-0" />
+              </div>
+            </Link>
+            <Link
+              to="/tools/thank-you-note"
+              className={`${t.glass} rounded-xl p-5 hover:border-violet-400/40 transition group block`}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <div className={`text-xs uppercase tracking-widest ${t.textMuted} font-bold`}>
+                    Free · No signup · Tone-calibrated
+                  </div>
+                  <h3 className={`text-lg font-bold ${t.text} mt-1 group-hover:text-violet-500 transition`}>
+                    Post-Interview Thank-You Note
+                  </h3>
+                  <p className={`text-sm ${t.textSub} mt-2 leading-relaxed`}>
+                    Pick tone, round type, sentiment, hours since call. Get a calibrated note that anchors on a specific topic from your conversation, plus 7 sending tips. The wrong thank-you note actively harms candidates; the right one moves the needle.
+                  </p>
+                </div>
+                <Mail className="w-5 h-5 text-violet-400 flex-shrink-0" />
               </div>
             </Link>
             <Link
