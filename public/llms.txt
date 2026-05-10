@@ -226,6 +226,9 @@ Each post covers a specific company's interview process: 5-stage breakdown with 
 - [GitLab software engineer interview 2026](https://aimvantage.uk/blog/gitlab-software-engineer-interview-2026): Post-Duo + Dedicated + Cells multi-tenant scale-out, Rails monolith + Sidekiq + Gitaly depth, all-remote async register.
 - [Vercel software engineer interview 2026](https://aimvantage.uk/blog/vercel-software-engineer-interview-2026): Post-v0 + AI SDK + Fluid Compute + Next.js 15, edge / serverless / frontend-cloud depth, AI-coding-tools competitive register.
 - [HashiCorp software engineer interview 2026](https://aimvantage.uk/blog/hashicorp-software-engineer-interview-2026): Post-IBM acquisition (Feb 2025), Terraform + Vault + Consul + Nomad infrastructure depth, BUSL / OpenTofu community register.
+- [Spotify software engineer interview 2026](https://aimvantage.uk/blog/spotify-software-engineer-interview-2026): Post-AI DJ + AI Playlist + audiobooks-in-Premium + Wrapped AI, recommender systems at 600M+ MAU, Squad / Tribe / Chapter / Guild model.
+- [Wise software engineer interview 2026](https://aimvantage.uk/blog/wise-software-engineer-interview-2026): Post-Mission-Roadmap + Wise Platform + Wise Business, cross-border payments + FX engine + multi-currency ledger, 50+ jurisdictions regulated register.
+- [Palantir software engineer interview 2026](https://aimvantage.uk/blog/palantir-software-engineer-interview-2026): Post-AIP + Foundry + Apollo + Gotham, distributed-data + cell-level permissions depth, forward-deployed engineer + commercial-vs-government register.
 
 ## Blog (long-form guides)
 
