@@ -1186,7 +1186,8 @@ import { newBlogPosts9 } from './blogPosts-newDrafts9';
 import { newBlogPosts10 } from './blogPosts-newDrafts10';
 import { newBlogPosts11 } from './blogPosts-newDrafts11';
 import { newBlogPosts12 } from './blogPosts-newDrafts12';
-blogPosts.push(...newBlogPosts, ...newBlogPosts2, ...newBlogPosts3, ...newBlogPosts4, ...newBlogPosts5, ...newBlogPosts6, ...newBlogPosts7, ...newBlogPosts8, ...newBlogPosts9, ...newBlogPosts10, ...newBlogPosts11, ...newBlogPosts12);
+import { newBlogPosts13 } from './blogPosts-newDrafts13';
+blogPosts.push(...newBlogPosts, ...newBlogPosts2, ...newBlogPosts3, ...newBlogPosts4, ...newBlogPosts5, ...newBlogPosts6, ...newBlogPosts7, ...newBlogPosts8, ...newBlogPosts9, ...newBlogPosts10, ...newBlogPosts11, ...newBlogPosts12, ...newBlogPosts13);
 
 export function getPostBySlug(slug: string): BlogPost | undefined {
   return blogPosts.find((p) => p.slug === slug);

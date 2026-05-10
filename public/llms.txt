@@ -172,6 +172,9 @@ Each post covers a specific company's interview process: 5-stage breakdown with 
 - [Tesla software engineer interview 2026](https://aimvantage.uk/blog/tesla-software-engineer-interview-2026): FSD-era systems depth, real-time perception-to-planning latency budgets, founders-round directness.
 - [Netflix software engineer interview 2026](https://aimvantage.uk/blog/netflix-software-engineer-interview-2026): Senior-only hiring, Keeper Test framing, no-management-needed autonomy stories.
 - [Coinbase software engineer interview 2026](https://aimvantage.uk/blog/coinbase-software-engineer-interview-2026): Post-correction efficiency mandate, blockchain reasoning at production scale, regulatory awareness.
+- [Adobe software engineer interview 2026](https://aimvantage.uk/blog/adobe-software-engineer-interview-2026): GenAI-pivot register, Firefly + Express daily-usage filter, commercial-safe AI training-data position.
+- [Uber software engineer interview 2026](https://aimvantage.uk/blog/uber-software-engineer-interview-2026): Post-2024 profitability mandate, marketplace reasoning, A/B-test framing of every feature story.
+- [Booking.com software engineer interview 2026](https://aimvantage.uk/blog/booking-com-software-engineer-interview-2026): Famously data-driven culture, every story needs A/B-tested outcome, Amsterdam-HQ relocation expectation.
 
 ## Blog (long-form guides)
 

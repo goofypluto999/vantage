@@ -48,6 +48,9 @@ const COMPANY_FILTERS = [
   'Tesla',
   'Netflix',
   'Coinbase',
+  'Adobe',
+  'Uber',
+  'Booking.com',
 ] as const;
 
 type CompanyFilter = typeof COMPANY_FILTERS[number];
