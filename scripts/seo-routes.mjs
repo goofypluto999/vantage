@@ -126,6 +126,11 @@ const STATIC_ROUTES = [
     description: 'Pick your role, country, severance, visa status — get a personalised 30-day post-layoff plan with the right specific action for each day. Markdown export. Runs in your browser. No signup.',
   },
   {
+    path: '/tools/cover-letter-compare',
+    title: 'Free Cover Letter A/B Comparator — Score Two Drafts Side by Side | Vantage',
+    description: 'Paste two cover letter drafts. Get a side-by-side score across 8 dimensions: opening strength, metrics, filler phrases, passive voice, I/me/my ratio, specificity, length. Pick the winner. Runs in your browser. No signup.',
+  },
+  {
     path: '/alternatives',
     title: 'Vantage AI Alternatives — Compared to Jobscan, Teal, Resume Worded, Final Round AI',
     description: 'Honest side-by-side comparisons of Vantage AI vs Jobscan, Teal HQ, Resume Worded, Final Round AI, Kickresume, Enhancv, Yoodli, Huntr, and Big Interview. Where each wins, where each loses.',
