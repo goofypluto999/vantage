@@ -7,12 +7,82 @@
   <link href="https://pubsubhubbub.appspot.com/" rel="hub"/>
   <link href="https://aimvantage.uk/blog" rel="related" type="text/html"/>
   <id>https://aimvantage.uk/</id>
-  <updated>2026-05-09T00:00:00.000Z</updated>
+  <updated>2026-05-10T00:00:00.000Z</updated>
   <icon>https://aimvantage.uk/favicon.svg</icon>
   <logo>https://aimvantage.uk/og-image.png</logo>
   <rights>© 2026 Giovanni Sizino Ennes (Vantage AI, UK sole trader)</rights>
   <generator uri="https://aimvantage.uk" version="2.0">Vantage scripts/generate-feeds.mjs</generator>
 
+  <entry>
+    <title type="text">Stripe senior PM interview: the 2026 guide nobody writes honestly</title>
+    <link href="https://aimvantage.uk/blog/stripe-senior-pm-interview-guide-2026" rel="alternate" type="text/html"/>
+    <id>https://aimvantage.uk/blog/stripe-senior-pm-interview-guide-2026</id>
+    <published>2026-05-10T00:00:00.000Z</published>
+    <updated>2026-05-10T00:00:00.000Z</updated>
+    <author>
+      <name>Gio</name>
+      <uri>https://aimvantage.uk/press</uri>
+    </author>
+    <summary type="text">The actual Stripe senior PM interview process in 2026 — five stages, the take-home memo, the questions, the traps, and a 94-minute prep checklist.</summary>
+    <content type="html"><![CDATA[<p>The actual Stripe senior PM interview process in 2026 — five stages, the take-home memo, the questions, the traps, and a 94-minute prep checklist.</p>]]></content>
+
+  </entry>
+  <entry>
+    <title type="text">Anthropic AI safety interview: real questions and the trap</title>
+    <link href="https://aimvantage.uk/blog/anthropic-ai-safety-interview-questions-2026" rel="alternate" type="text/html"/>
+    <id>https://aimvantage.uk/blog/anthropic-ai-safety-interview-questions-2026</id>
+    <published>2026-05-10T00:00:00.000Z</published>
+    <updated>2026-05-10T00:00:00.000Z</updated>
+    <author>
+      <name>Gio</name>
+      <uri>https://aimvantage.uk/press</uri>
+    </author>
+    <summary type="text">The Anthropic AI safety interview in 2026 — six stages, the values round, the questions they actually ask, and the safety-theatre trap that takes out strong candidates.</summary>
+    <content type="html"><![CDATA[<p>The Anthropic AI safety interview in 2026 — six stages, the values round, the questions they actually ask, and the safety-theatre trap that takes out strong candidates.</p>]]></content>
+
+  </entry>
+  <entry>
+    <title type="text">Datadog software engineer interview: the project deep dive trap</title>
+    <link href="https://aimvantage.uk/blog/datadog-software-engineer-interview-guide-2026" rel="alternate" type="text/html"/>
+    <id>https://aimvantage.uk/blog/datadog-software-engineer-interview-guide-2026</id>
+    <published>2026-05-10T00:00:00.000Z</published>
+    <updated>2026-05-10T00:00:00.000Z</updated>
+    <author>
+      <name>Gio</name>
+      <uri>https://aimvantage.uk/press</uri>
+    </author>
+    <summary type="text">The Datadog SWE interview in 2026 — five stages, the project deep dive, the broken-service round, the questions, and a 90-minute prep checklist.</summary>
+    <content type="html"><![CDATA[<p>The Datadog SWE interview in 2026 — five stages, the project deep dive, the broken-service round, the questions, and a 90-minute prep checklist.</p>]]></content>
+
+  </entry>
+  <entry>
+    <title type="text">Revolut product designer interview: the 6-stage UK loop</title>
+    <link href="https://aimvantage.uk/blog/revolut-product-designer-interview-process-2026" rel="alternate" type="text/html"/>
+    <id>https://aimvantage.uk/blog/revolut-product-designer-interview-process-2026</id>
+    <published>2026-05-10T00:00:00.000Z</published>
+    <updated>2026-05-10T00:00:00.000Z</updated>
+    <author>
+      <name>Gio</name>
+      <uri>https://aimvantage.uk/press</uri>
+    </author>
+    <summary type="text">The Revolut product designer interview in 2026 — six stages, the live design challenge, the case study trap, and a 92-minute prep checklist.</summary>
+    <content type="html"><![CDATA[<p>The Revolut product designer interview in 2026 — six stages, the live design challenge, the case study trap, and a 92-minute prep checklist.</p>]]></content>
+
+  </entry>
+  <entry>
+    <title type="text">OpenAI applied research interview: the prep that actually works</title>
+    <link href="https://aimvantage.uk/blog/openai-applied-research-interview-prep-2026" rel="alternate" type="text/html"/>
+    <id>https://aimvantage.uk/blog/openai-applied-research-interview-prep-2026</id>
+    <published>2026-05-10T00:00:00.000Z</published>
+    <updated>2026-05-10T00:00:00.000Z</updated>
+    <author>
+      <name>Gio</name>
+      <uri>https://aimvantage.uk/press</uri>
+    </author>
+    <summary type="text">The OpenAI applied research engineer interview in 2026 — six stages, the take-home, the ML systems depth, and a 94-minute prep checklist.</summary>
+    <content type="html"><![CDATA[<p>The OpenAI applied research engineer interview in 2026 — six stages, the take-home, the ML systems depth, and a 94-minute prep checklist.</p>]]></content>
+
+  </entry>
   <entry>
     <title type="text">Why am I not getting interviews? The 7 failure modes, and a 60-second diagnostic to find yours.</title>
     <link href="https://aimvantage.uk/blog/why-am-i-not-getting-interviews-7-failure-modes" rel="alternate" type="text/html"/>

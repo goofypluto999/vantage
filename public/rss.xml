@@ -12,7 +12,7 @@
     <description>Practical, current guides on AI job preparation, CV optimisation, ATS-friendly resumes, cover letters, and interview strategy. Long-form, from a solo founder building Vantage in public.</description>
     <language>en-gb</language>
     <copyright>Vantage 2026</copyright>
-    <lastBuildDate>Sat, 09 May 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 10 May 2026 00:00:00 +0000</lastBuildDate>
     <managingEditor>noreply@aimvantage.uk (Gio)</managingEditor>
     <webMaster>noreply@aimvantage.uk (Gio)</webMaster>
     <generator>Vantage scripts/generate-feeds.mjs</generator>
@@ -24,6 +24,56 @@
       <height>630</height>
     </image>
 
+    <item>
+      <title>Stripe senior PM interview: the 2026 guide nobody writes honestly</title>
+      <link>https://aimvantage.uk/blog/stripe-senior-pm-interview-guide-2026</link>
+      <guid isPermaLink="true">https://aimvantage.uk/blog/stripe-senior-pm-interview-guide-2026</guid>
+      <pubDate>Sun, 10 May 2026 00:00:00 +0000</pubDate>
+      <dc:creator><![CDATA[Gio]]></dc:creator>
+      <description>The actual Stripe senior PM interview process in 2026 — five stages, the take-home memo, the questions, the traps, and a 94-minute prep checklist.</description>
+      <content:encoded><![CDATA[<p>The actual Stripe senior PM interview process in 2026 — five stages, the take-home memo, the questions, the traps, and a 94-minute prep checklist.</p>]]></content:encoded>
+
+    </item>
+    <item>
+      <title>Anthropic AI safety interview: real questions and the trap</title>
+      <link>https://aimvantage.uk/blog/anthropic-ai-safety-interview-questions-2026</link>
+      <guid isPermaLink="true">https://aimvantage.uk/blog/anthropic-ai-safety-interview-questions-2026</guid>
+      <pubDate>Sun, 10 May 2026 00:00:00 +0000</pubDate>
+      <dc:creator><![CDATA[Gio]]></dc:creator>
+      <description>The Anthropic AI safety interview in 2026 — six stages, the values round, the questions they actually ask, and the safety-theatre trap that takes out strong candidates.</description>
+      <content:encoded><![CDATA[<p>The Anthropic AI safety interview in 2026 — six stages, the values round, the questions they actually ask, and the safety-theatre trap that takes out strong candidates.</p>]]></content:encoded>
+
+    </item>
+    <item>
+      <title>Datadog software engineer interview: the project deep dive trap</title>
+      <link>https://aimvantage.uk/blog/datadog-software-engineer-interview-guide-2026</link>
+      <guid isPermaLink="true">https://aimvantage.uk/blog/datadog-software-engineer-interview-guide-2026</guid>
+      <pubDate>Sun, 10 May 2026 00:00:00 +0000</pubDate>
+      <dc:creator><![CDATA[Gio]]></dc:creator>
+      <description>The Datadog SWE interview in 2026 — five stages, the project deep dive, the broken-service round, the questions, and a 90-minute prep checklist.</description>
+      <content:encoded><![CDATA[<p>The Datadog SWE interview in 2026 — five stages, the project deep dive, the broken-service round, the questions, and a 90-minute prep checklist.</p>]]></content:encoded>
+
+    </item>
+    <item>
+      <title>Revolut product designer interview: the 6-stage UK loop</title>
+      <link>https://aimvantage.uk/blog/revolut-product-designer-interview-process-2026</link>
+      <guid isPermaLink="true">https://aimvantage.uk/blog/revolut-product-designer-interview-process-2026</guid>
+      <pubDate>Sun, 10 May 2026 00:00:00 +0000</pubDate>
+      <dc:creator><![CDATA[Gio]]></dc:creator>
+      <description>The Revolut product designer interview in 2026 — six stages, the live design challenge, the case study trap, and a 92-minute prep checklist.</description>
+      <content:encoded><![CDATA[<p>The Revolut product designer interview in 2026 — six stages, the live design challenge, the case study trap, and a 92-minute prep checklist.</p>]]></content:encoded>
+
+    </item>
+    <item>
+      <title>OpenAI applied research interview: the prep that actually works</title>
+      <link>https://aimvantage.uk/blog/openai-applied-research-interview-prep-2026</link>
+      <guid isPermaLink="true">https://aimvantage.uk/blog/openai-applied-research-interview-prep-2026</guid>
+      <pubDate>Sun, 10 May 2026 00:00:00 +0000</pubDate>
+      <dc:creator><![CDATA[Gio]]></dc:creator>
+      <description>The OpenAI applied research engineer interview in 2026 — six stages, the take-home, the ML systems depth, and a 94-minute prep checklist.</description>
+      <content:encoded><![CDATA[<p>The OpenAI applied research engineer interview in 2026 — six stages, the take-home, the ML systems depth, and a 94-minute prep checklist.</p>]]></content:encoded>
+
+    </item>
     <item>
       <title>Why am I not getting interviews? The 7 failure modes, and a 60-second diagnostic to find yours.</title>
       <link>https://aimvantage.uk/blog/why-am-i-not-getting-interviews-7-failure-modes</link>

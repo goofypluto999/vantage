@@ -38,17 +38,37 @@ const SITE_LANG = 'en-GB';
 // ---------- Parsers ----------
 
 function parseBlogPostsFromTs() {
-  const src = readFileSync(resolve(ROOT, 'src/data/blogPosts.ts'), 'utf-8');
+  // Read main blogPosts.ts plus any "newDrafts" companion files. The drafts
+  // pattern keeps the main 1170+ line array from sprawling further; new
+  // agent-generated batches drop into a separate `blogPosts-*Drafts.ts`.
+  // Sitemap/RSS/Atom must include both. 2026-05-10 added when the parser
+  // was missing the 5 new long-tail interview-guide posts (commit 95abfe9).
+  const FILES = [
+    'src/data/blogPosts.ts',
+    'src/data/blogPosts-newDrafts.ts',
+  ];
   const posts = [];
+  const seen = new Set();
   const re = /\{\s*slug:\s*'([^']+)',\s*title:\s*'([^']+(?:\\'[^']*)*)',\s*description:\s*'([^']+(?:\\'[^']*)*)',\s*publishedAt:\s*'([^']+)'/g;
-  let m;
-  while ((m = re.exec(src)) !== null) {
-    posts.push({
-      slug: m[1],
-      title: m[2].replace(/\\'/g, "'"),
-      description: m[3].replace(/\\'/g, "'"),
-      publishedAt: m[4],
-    });
+  for (const file of FILES) {
+    let src;
+    try {
+      src = readFileSync(resolve(ROOT, file), 'utf-8');
+    } catch {
+      // Drafts file is optional — main file is required.
+      continue;
+    }
+    let m;
+    while ((m = re.exec(src)) !== null) {
+      if (seen.has(m[1])) continue;
+      seen.add(m[1]);
+      posts.push({
+        slug: m[1],
+        title: m[2].replace(/\\'/g, "'"),
+        description: m[3].replace(/\\'/g, "'"),
+        publishedAt: m[4],
+      });
+    }
   }
   return posts;
 }
