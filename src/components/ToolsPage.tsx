@@ -96,48 +96,54 @@ export default function ToolsPage() {
       {
         '@type': 'ListItem',
         position: 13,
+        url: `${SITE_URL}/tools/offer-compare`,
+        name: 'Job Offer Comparison Calculator',
+      },
+      {
+        '@type': 'ListItem',
+        position: 14,
         url: `${SITE_URL}/tools/thank-you-note`,
         name: 'Post-Interview Thank-You Note Generator',
       },
       {
         '@type': 'ListItem',
-        position: 14,
+        position: 15,
         url: `${SITE_URL}/tools/linkedin-about`,
         name: 'LinkedIn Headline + About Rewriter',
       },
       {
         '@type': 'ListItem',
-        position: 15,
+        position: 16,
         url: `${SITE_URL}/tools/recruiter-reply`,
         name: 'Recruiter Cold-DM Reply Generator',
       },
       {
         '@type': 'ListItem',
-        position: 16,
+        position: 17,
         url: `${SITE_URL}/tools/cold-email-hiring-manager`,
         name: 'Cold Email to Hiring Manager Generator',
       },
       {
         '@type': 'ListItem',
-        position: 17,
+        position: 18,
         url: `${SITE_URL}/tools/star-story-builder`,
         name: 'STAR Story Builder',
       },
       {
         '@type': 'ListItem',
-        position: 18,
+        position: 19,
         url: `${SITE_URL}/interview-prep`,
         name: 'Interview Prep Packs by Company',
       },
       {
         '@type': 'ListItem',
-        position: 19,
+        position: 20,
         url: `${SITE_URL}/interview-questions`,
         name: 'Interview Questions by Role',
       },
       {
         '@type': 'ListItem',
-        position: 20,
+        position: 21,
         url: `${SITE_URL}/laid-off`,
         name: 'Layoff Recovery Guide (April-May 2026 cohort)',
       },
@@ -478,6 +484,25 @@ export default function ToolsPage() {
                   </p>
                 </div>
                 <MessageSquare className="w-5 h-5 text-violet-400 flex-shrink-0" />
+              </div>
+            </Link>
+            <Link
+              to="/tools/offer-compare"
+              className={`${t.glass} rounded-xl p-5 hover:border-violet-400/40 transition group block`}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <div className={`text-xs uppercase tracking-widest ${t.textMuted} font-bold`}>
+                    Free · No signup · 4-year side-by-side
+                  </div>
+                  <h3 className={`text-lg font-bold ${t.text} mt-1 group-hover:text-violet-500 transition`}>
+                    Job Offer Comparison Calculator
+                  </h3>
+                  <p className={`text-sm ${t.textSub} mt-2 leading-relaxed`}>
+                    Compare 2 offers across 4 years: base + bonus + signing + RSU + refresh + PTO + remote. Discounts public RSU for stock-price risk, private equity for illiquidity. Pure client-side. No data leaves your browser.
+                  </p>
+                </div>
+                <Calculator className="w-5 h-5 text-violet-400 flex-shrink-0" />
               </div>
             </Link>
             <Link
