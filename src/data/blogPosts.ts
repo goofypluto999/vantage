@@ -1204,7 +1204,8 @@ import { newBlogPosts27 } from './blogPosts-newDrafts27';
 import { newBlogPosts28 } from './blogPosts-newDrafts28';
 import { newBlogPosts29 } from './blogPosts-newDrafts29';
 import { newBlogPosts30 } from './blogPosts-newDrafts30';
-blogPosts.push(...newBlogPosts, ...newBlogPosts2, ...newBlogPosts3, ...newBlogPosts4, ...newBlogPosts5, ...newBlogPosts6, ...newBlogPosts7, ...newBlogPosts8, ...newBlogPosts9, ...newBlogPosts10, ...newBlogPosts11, ...newBlogPosts12, ...newBlogPosts13, ...newBlogPosts14, ...newBlogPosts15, ...newBlogPosts16, ...newBlogPosts17, ...newBlogPosts18, ...newBlogPosts19, ...newBlogPosts20, ...newBlogPosts21, ...newBlogPosts22, ...newBlogPosts23, ...newBlogPosts24, ...newBlogPosts25, ...newBlogPosts26, ...newBlogPosts27, ...newBlogPosts28, ...newBlogPosts29, ...newBlogPosts30);
+import { newBlogPosts31 } from './blogPosts-newDrafts31';
+blogPosts.push(...newBlogPosts, ...newBlogPosts2, ...newBlogPosts3, ...newBlogPosts4, ...newBlogPosts5, ...newBlogPosts6, ...newBlogPosts7, ...newBlogPosts8, ...newBlogPosts9, ...newBlogPosts10, ...newBlogPosts11, ...newBlogPosts12, ...newBlogPosts13, ...newBlogPosts14, ...newBlogPosts15, ...newBlogPosts16, ...newBlogPosts17, ...newBlogPosts18, ...newBlogPosts19, ...newBlogPosts20, ...newBlogPosts21, ...newBlogPosts22, ...newBlogPosts23, ...newBlogPosts24, ...newBlogPosts25, ...newBlogPosts26, ...newBlogPosts27, ...newBlogPosts28, ...newBlogPosts29, ...newBlogPosts30, ...newBlogPosts31);
 
 export function getPostBySlug(slug: string): BlogPost | undefined {
   return blogPosts.find((p) => p.slug === slug);

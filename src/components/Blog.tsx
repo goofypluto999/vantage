@@ -102,6 +102,9 @@ const COMPANY_FILTERS = [
   'Spotify',
   'Wise',
   'Palantir',
+  'CrowdStrike',
+  'Wiz',
+  'Palo Alto Networks',
 ] as const;
 
 type CompanyFilter = typeof COMPANY_FILTERS[number];

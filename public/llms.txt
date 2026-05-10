@@ -229,6 +229,9 @@ Each post covers a specific company's interview process: 5-stage breakdown with 
 - [Spotify software engineer interview 2026](https://aimvantage.uk/blog/spotify-software-engineer-interview-2026): Post-AI DJ + AI Playlist + audiobooks-in-Premium + Wrapped AI, recommender systems at 600M+ MAU, Squad / Tribe / Chapter / Guild model.
 - [Wise software engineer interview 2026](https://aimvantage.uk/blog/wise-software-engineer-interview-2026): Post-Mission-Roadmap + Wise Platform + Wise Business, cross-border payments + FX engine + multi-currency ledger, 50+ jurisdictions regulated register.
 - [Palantir software engineer interview 2026](https://aimvantage.uk/blog/palantir-software-engineer-interview-2026): Post-AIP + Foundry + Apollo + Gotham, distributed-data + cell-level permissions depth, forward-deployed engineer + commercial-vs-government register.
+- [CrowdStrike software engineer interview 2026](https://aimvantage.uk/blog/crowdstrike-software-engineer-interview-2026): Post-July-2024-outage + Charlotte AI + Falcon Next-Gen SIEM + Falcon Flex, endpoint-security + sensor depth, deployment-ring rigor register.
+- [Wiz software engineer interview 2026](https://aimvantage.uk/blog/wiz-software-engineer-interview-2026): Post-Google-acquisition-pending ($32B March 2025) + Code-to-Cloud + Wiz Defend, agentless Cloud Security Graph depth, CNAPP register.
+- [Palo Alto Networks software engineer interview 2026](https://aimvantage.uk/blog/palo-alto-networks-software-engineer-interview-2026): Post-Platformisation + Cortex XSIAM + Prisma + Strata + Precision AI, multi-product security-platform breadth, platform-vs-best-of-breed register.
 
 ## Blog (long-form guides)
 
