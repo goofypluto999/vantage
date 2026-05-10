@@ -129,6 +129,9 @@ const COMPANY_FILTERS = [
   'xAI',
   'Cohere',
   'Mistral AI',
+  'Rivian',
+  'Lucid',
+  'BYD',
 ] as const;
 
 type CompanyFilter = typeof COMPANY_FILTERS[number];

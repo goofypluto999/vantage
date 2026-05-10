@@ -257,6 +257,9 @@ Each post covers a specific company's interview process: 5-stage breakdown with 
 - [xAI software engineer interview 2026](https://aimvantage.uk/blog/xai-software-engineer-interview-2026): Post-Grok 4 + Colossus (200K-H100 supercomputer) + X-integration, ML scaling + Musk-led velocity register.
 - [Cohere software engineer interview 2026](https://aimvantage.uk/blog/cohere-software-engineer-interview-2026): Post-Command R + R+ + North + Embed-v4 + Aya, enterprise-AI + RAG + multilingual + regulated-deployment depth.
 - [Mistral AI software engineer interview 2026](https://aimvantage.uk/blog/mistral-software-engineer-interview-2026): Post-Mistral Large 3 + Codestral + Le Chat + Ministral, MoE architecture + European-sovereign + open-weight register.
+- [Rivian software engineer interview 2026](https://aimvantage.uk/blog/rivian-software-engineer-interview-2026): Post-R2 + Volkswagen JV ($5.8B) + R1 refresh + EDV, EV software + zonal architecture depth, cash-conscious register.
+- [Lucid software engineer interview 2026](https://aimvantage.uk/blog/lucid-software-engineer-interview-2026): Post-Gravity SUV + PIF $1B+ investment + Air refresh, luxury-EV + DreamDrive Pro + Lucid Atlas powertrain depth, Saudi PIF context.
+- [BYD software engineer interview 2026](https://aimvantage.uk/blog/byd-software-engineer-interview-2026): Post-EU-tariffs + Yangwang luxury + Megawatt Flash Charging + DiPilot 300, vertical-integration + smart-vehicle software depth, China-velocity + international-expansion register.
 
 ## Blog (long-form guides)
 
