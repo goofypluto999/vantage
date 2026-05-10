@@ -141,6 +141,11 @@ const STATIC_ROUTES = [
     description: 'Compare 2 job offers across 4 years. Base + bonus + signing + RSU + refresh + PTO + remote. Discounts public RSU for stock-price risk, private equity for illiquidity. Pure client-side. No signup.',
   },
   {
+    path: '/tools/reference-brief',
+    title: 'Free Reference Call Brief Generator — Prep Your References Before The Call | Vantage',
+    description: 'Free in-browser reference call brief generator. Add your references. Get a 1-page brief for each: strengths to anchor on, 3 stories to have ready, likely questions by relationship type, plus an email template to send 1-2 days before the call. Pure client-side. No signup.',
+  },
+  {
     path: '/tools/thank-you-note',
     title: 'Free Post-Interview Thank-You Note Generator — Tone-Calibrated | Vantage',
     description: 'Pick tone, round type, sentiment, hours since call. Get a calibrated thank-you note that anchors on specific topics from your conversation. Plus 7 sending tips. No signup.',

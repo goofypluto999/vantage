@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, ExternalLink, Star, Shield, Zap, FileSearch, MessageSquare, Target, Users, Briefcase, Calculator, Activity, ScanLine, Search, Sparkles, Calendar, GitCompareArrows, Mail, Linkedin, Inbox, Send, Layers } from 'lucide-react';
+import { ArrowRight, ExternalLink, Star, Shield, Zap, FileSearch, MessageSquare, Target, Users, Briefcase, Calculator, Activity, ScanLine, Search, Sparkles, Calendar, GitCompareArrows, Mail, Linkedin, Inbox, Send, Layers, Phone } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import SEO from './SEO';
 
@@ -102,48 +102,54 @@ export default function ToolsPage() {
       {
         '@type': 'ListItem',
         position: 14,
+        url: `${SITE_URL}/tools/reference-brief`,
+        name: 'Reference Call Brief Generator',
+      },
+      {
+        '@type': 'ListItem',
+        position: 15,
         url: `${SITE_URL}/tools/thank-you-note`,
         name: 'Post-Interview Thank-You Note Generator',
       },
       {
         '@type': 'ListItem',
-        position: 15,
+        position: 16,
         url: `${SITE_URL}/tools/linkedin-about`,
         name: 'LinkedIn Headline + About Rewriter',
       },
       {
         '@type': 'ListItem',
-        position: 16,
+        position: 17,
         url: `${SITE_URL}/tools/recruiter-reply`,
         name: 'Recruiter Cold-DM Reply Generator',
       },
       {
         '@type': 'ListItem',
-        position: 17,
+        position: 18,
         url: `${SITE_URL}/tools/cold-email-hiring-manager`,
         name: 'Cold Email to Hiring Manager Generator',
       },
       {
         '@type': 'ListItem',
-        position: 18,
+        position: 19,
         url: `${SITE_URL}/tools/star-story-builder`,
         name: 'STAR Story Builder',
       },
       {
         '@type': 'ListItem',
-        position: 19,
+        position: 20,
         url: `${SITE_URL}/interview-prep`,
         name: 'Interview Prep Packs by Company',
       },
       {
         '@type': 'ListItem',
-        position: 20,
+        position: 21,
         url: `${SITE_URL}/interview-questions`,
         name: 'Interview Questions by Role',
       },
       {
         '@type': 'ListItem',
-        position: 21,
+        position: 22,
         url: `${SITE_URL}/laid-off`,
         name: 'Layoff Recovery Guide (April-May 2026 cohort)',
       },
@@ -503,6 +509,25 @@ export default function ToolsPage() {
                   </p>
                 </div>
                 <Calculator className="w-5 h-5 text-violet-400 flex-shrink-0" />
+              </div>
+            </Link>
+            <Link
+              to="/tools/reference-brief"
+              className={`${t.glass} rounded-xl p-5 hover:border-violet-400/40 transition group block`}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <div className={`text-xs uppercase tracking-widest ${t.textMuted} font-bold`}>
+                    Free · No signup · Final-stage prep
+                  </div>
+                  <h3 className={`text-lg font-bold ${t.text} mt-1 group-hover:text-violet-500 transition`}>
+                    Reference Call Brief Generator
+                  </h3>
+                  <p className={`text-sm ${t.textSub} mt-2 leading-relaxed`}>
+                    Add your references, get a 1-page brief for each: strengths to anchor on, 3 specific stories to have ready, likely questions by relationship type (current manager / past peer / direct report / client / cross-functional), plus an email template to send 1-2 days before the call.
+                  </p>
+                </div>
+                <Phone className="w-5 h-5 text-violet-400 flex-shrink-0" />
               </div>
             </Link>
             <Link

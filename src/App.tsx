@@ -39,6 +39,7 @@ const LayoffPlaybookPage = React.lazy(() => import('./components/LayoffPlaybookP
 const CoverLetterComparePage = React.lazy(() => import('./components/CoverLetterCompareePage'));
 const NegotiationScriptPage = React.lazy(() => import('./components/NegotiationScriptPage'));
 const OfferCompareCalculatorPage = React.lazy(() => import('./components/OfferCompareCalculatorPage'));
+const ReferenceCallBriefPage = React.lazy(() => import('./components/ReferenceCallBriefPage'));
 const ThankYouNotePage = React.lazy(() => import('./components/ThankYouNotePage'));
 const LinkedInAboutPage = React.lazy(() => import('./components/LinkedInAboutPage'));
 const RecruiterReplyPage = React.lazy(() => import('./components/RecruiterReplyPage'));
@@ -494,6 +495,7 @@ function AppContent() {
             <Route path="/tools/cover-letter-compare" element={<CoverLetterComparePage />} />
             <Route path="/tools/negotiation-script" element={<NegotiationScriptPage />} />
             <Route path="/tools/offer-compare" element={<OfferCompareCalculatorPage />} />
+            <Route path="/tools/reference-brief" element={<ReferenceCallBriefPage />} />
             <Route path="/tools/thank-you-note" element={<ThankYouNotePage />} />
             <Route path="/tools/linkedin-about" element={<LinkedInAboutPage />} />
             <Route path="/tools/recruiter-reply" element={<RecruiterReplyPage />} />
