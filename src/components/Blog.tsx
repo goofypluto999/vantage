@@ -107,6 +107,26 @@ export default function Blog() {
           </span>
         </div>
 
+        {/* Flagship report callout — added 2026-05-10. /blog visitors
+            arriving from a single specific search query are unlikely to
+            scroll all 34 post cards. Surface the aggregation report as
+            a one-line callout so they have a "synthesis" path. */}
+        <div className={`mt-5 ${t.cardInner} rounded-xl p-4 border-l-4 border-violet-500`}>
+          <p className="text-xs font-bold tracking-widest uppercase text-violet-500 mb-1">
+            New · Flagship report
+          </p>
+          <Link
+            to="/state-of-2026"
+            className={`text-base font-semibold ${t.text} hover:text-violet-500 transition inline-flex items-center gap-1.5`}
+          >
+            The State of 2026 Tech Interview Hiring &mdash; data from 34 deep-dives
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+          <p className={`mt-1 text-sm ${t.textSub}`}>
+            5 findings. What changed between 2024 and 2026. Implications for prep. Free to cite.
+          </p>
+        </div>
+
         {/* Subscribe row — added 2026-05-10. The audience for these
             interview-prep posts skews tech-employed, AI-adjacent, and
             still uses RSS readers (Reeder, NetNewsWire, Feedbin). The

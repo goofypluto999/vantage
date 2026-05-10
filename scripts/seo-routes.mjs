@@ -106,6 +106,11 @@ const STATIC_ROUTES = [
     description: 'Free in-browser ATS keyword scanner. Paste your CV and a job description, see which keywords match and which gaps remain. Runs entirely in your browser. Nothing uploaded, no signup.',
   },
   {
+    path: '/state-of-2026',
+    title: 'The State of 2026 Tech Interview Hiring (Data from 34 Deep-Dives) | Vantage',
+    description: 'Findings from 34 long-form company-specific interview deep-dives published in 2026 — AI-thesis filters, values rounds, take-home patterns, and the traps that kill candidates across 9 tech verticals.',
+  },
+  {
     path: '/alternatives',
     title: 'Vantage AI Alternatives — Compared to Jobscan, Teal, Resume Worded, Final Round AI',
     description: 'Honest side-by-side comparisons of Vantage AI vs Jobscan, Teal HQ, Resume Worded, Final Round AI, Kickresume, Enhancv, Yoodli, Huntr, and Big Interview. Where each wins, where each loses.',

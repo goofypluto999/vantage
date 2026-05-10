@@ -112,6 +112,10 @@ Vendor-specific guides on how each major Applicant Tracking System parses CVs in
 - **CV Fit Score:** Match percentage plus the exact gaps to close before the interview.
 - **Presentation Outline:** A real 5-minute interview pitch, not a list of bullet points.
 
+## Flagship report (2026 hiring trends, aggregating 34 deep-dives)
+
+- [The State of 2026 Tech Interview Hiring](https://aimvantage.uk/state-of-2026): Aggregated findings from 34 long-form company-specific interview deep-dives published in 2026. Five data findings (AI-thesis filter universal, values rounds underweighted, take-homes returning, open-source signal substitutes for credentials at AI shops, layoff cohort 6-week recruiter-attention window) plus what changed between 2024 and 2026 plus implications for prep. Free to cite with attribution. Source list of 34 underlying deep-dives included.
+
 ## Company interview deep-dives (2026, with real recent hiring signals)
 
 Each post covers a specific company's interview process: 5-stage breakdown with realistic timing, 10 likely interview questions drawn from real Glassdoor/team-blog evidence, 3-5 traps that kill candidates at THAT company, and a 90-minute prep checklist.

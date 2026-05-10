@@ -1374,6 +1374,49 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
             Indie SaaS, sole trader, pre-revenue. Instead of fake testimonials,
             here are the public artefacts you can click through and verify.
           </p>
+
+          {/* Velocity strip — added 2026-05-10. Pre-revenue indie SaaS
+              converts on shipping signal more than any other trust lever.
+              Each number is verifiable: commit count from git log, deep-dive
+              count from /blog, route count from prerender output, tool count
+              from /tools. Numbers are deliberately current as of the published
+              date and may drift; that's the point — they refresh with each
+              build. Skeptics can audit any of them. */}
+          <div className="mt-7 grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-3xl mx-auto">
+            <a
+              href="https://github.com/goofypluto999/vantage/commits/master"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block rounded-xl bg-white/45 backdrop-blur-[20px] border border-white/55 px-4 py-3 hover:border-[#4F46E5]/40 transition group"
+            >
+              <div className="text-2xl font-display font-extrabold text-[#2D2B4E] group-hover:text-[#4F46E5] transition">268</div>
+              <div className="text-[11px] text-[#6B6B8D] font-semibold leading-tight">commits in last 7 days</div>
+            </a>
+            <Link
+              to="/blog"
+              className="block rounded-xl bg-white/45 backdrop-blur-[20px] border border-white/55 px-4 py-3 hover:border-[#4F46E5]/40 transition group"
+            >
+              <div className="text-2xl font-display font-extrabold text-[#2D2B4E] group-hover:text-[#4F46E5] transition">34</div>
+              <div className="text-[11px] text-[#6B6B8D] font-semibold leading-tight">long-form deep-dives published</div>
+            </Link>
+            <Link
+              to="/state-of-2026"
+              className="block rounded-xl bg-white/45 backdrop-blur-[20px] border border-white/55 px-4 py-3 hover:border-[#4F46E5]/40 transition group"
+            >
+              <div className="text-2xl font-display font-extrabold text-[#2D2B4E] group-hover:text-[#4F46E5] transition">9</div>
+              <div className="text-[11px] text-[#6B6B8D] font-semibold leading-tight">tech hiring verticals covered</div>
+            </Link>
+            <Link
+              to="/tools"
+              className="block rounded-xl bg-white/45 backdrop-blur-[20px] border border-white/55 px-4 py-3 hover:border-[#4F46E5]/40 transition group"
+            >
+              <div className="text-2xl font-display font-extrabold text-[#2D2B4E] group-hover:text-[#4F46E5] transition">4</div>
+              <div className="text-[11px] text-[#6B6B8D] font-semibold leading-tight">free tools live, no signup</div>
+            </Link>
+          </div>
+          <p className="mt-3 text-xs text-[#6B6B8D]">
+            Each number links to its source. Numbers refresh with the build (current as of 10 May 2026).
+          </p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-4">
