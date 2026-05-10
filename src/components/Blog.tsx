@@ -69,6 +69,9 @@ const COMPANY_FILTERS = [
   'DoorDash',
   'Workday',
   'Etsy',
+  'Lyft',
+  'Slack',
+  'MongoDB',
 ] as const;
 
 type CompanyFilter = typeof COMPANY_FILTERS[number];
