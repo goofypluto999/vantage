@@ -111,6 +111,11 @@ const STATIC_ROUTES = [
     description: 'Findings from 34 long-form company-specific interview deep-dives published in 2026 — AI-thesis filters, values rounds, take-home patterns, and the traps that kill candidates across 9 tech verticals.',
   },
   {
+    path: '/tools/jd-decoder',
+    title: 'Free JD Decoder — Read Between the Lines of a Job Description | Vantage',
+    description: 'Paste any job description. Get the hidden seniority signals, ghost-job risk, remote-vs-hybrid camouflage, ATS-stripping risks, scope red flags, and the interview rounds you should expect. Runs in your browser. No signup.',
+  },
+  {
     path: '/alternatives',
     title: 'Vantage AI Alternatives — Compared to Jobscan, Teal, Resume Worded, Final Round AI',
     description: 'Honest side-by-side comparisons of Vantage AI vs Jobscan, Teal HQ, Resume Worded, Final Round AI, Kickresume, Enhancv, Yoodli, Huntr, and Big Interview. Where each wins, where each loses.',
