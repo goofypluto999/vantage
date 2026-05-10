@@ -66,6 +66,9 @@ const COMPANY_FILTERS = [
   'Block',
   'Discord',
   'Pinterest',
+  'DoorDash',
+  'Workday',
+  'Etsy',
 ] as const;
 
 type CompanyFilter = typeof COMPANY_FILTERS[number];

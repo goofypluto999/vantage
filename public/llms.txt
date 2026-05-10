@@ -190,6 +190,9 @@ Each post covers a specific company's interview process: 5-stage breakdown with 
 - [Block (Square / Cash App) software engineer interview 2026](https://aimvantage.uk/blog/block-software-engineer-interview-2026): Post-2024 ecosystem-restructure, payments-systems depth, calibrated take on the Bitcoin bet, regulatory awareness (PCI-DSS / BSA / AML).
 - [Discord software engineer interview 2026](https://aimvantage.uk/blog/discord-software-engineer-interview-2026): IPO-track timeline, real-time-systems depth (Elixir/Erlang), moderator-first community-platform reasoning, AI-moderation thesis.
 - [Pinterest software engineer interview 2026](https://aimvantage.uk/blog/pinterest-software-engineer-interview-2026): Visual-ML depth (image embeddings, multimodal retrieval), Home Feed ranking, post-Bill-Ready shopping thesis.
+- [DoorDash software engineer interview 2026](https://aimvantage.uk/blog/doordash-software-engineer-interview-2026): Three-sided marketplace (consumer / merchant / dasher), real-time logistics + dispatch at city-block resolution, broader-retail (DashMart + Wolt) expansion.
+- [Workday software engineer interview 2026](https://aimvantage.uk/blog/workday-software-engineer-interview-2026): Multi-tenant enterprise platform (50% of Fortune 500), proprietary OMS, Illuminate AI strategy in regulated HR (EEOC, GDPR Article 22, NYC Local Law 144).
+- [Etsy software engineer interview 2026](https://aimvantage.uk/blog/etsy-software-engineer-interview-2026): Post-Reverb-divestiture handmade-marketplace refocus, PHP/Hack legacy + Java migration, AI-for-sellers tools, small-seller-economy framing.
 
 ## Blog (long-form guides)
 
