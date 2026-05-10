@@ -108,6 +108,9 @@ const COMPANY_FILTERS = [
   'Booking.com',
   'Instacart',
   'Tempus AI',
+  'Rippling',
+  'Gusto',
+  'Deel',
 ] as const;
 
 type CompanyFilter = typeof COMPANY_FILTERS[number];

@@ -235,6 +235,9 @@ Each post covers a specific company's interview process: 5-stage breakdown with 
 - [Booking.com software engineer interview 2026](https://aimvantage.uk/blog/booking-software-engineer-interview-2026): Post-Connected Trip + AI Trip Planner + Genius, A/B-experimentation engineering depth, Perl + Java + microservices-migration register.
 - [Instacart software engineer interview 2026](https://aimvantage.uk/blog/instacart-software-engineer-interview-2026): Post-IPO + Caper smart carts + Connected Stores + Instacart Ads, three-sided marketplace + retail-media depth, gig-worker context.
 - [Tempus AI software engineer interview 2026](https://aimvantage.uk/blog/tempus-ai-software-engineer-interview-2026): Post-IPO + Tempus Lens + Olivia + NGS panels, precision-medicine + bioinformatics + regulated-ML depth, FDA / HIPAA register.
+- [Rippling software engineer interview 2026](https://aimvantage.uk/blog/rippling-software-engineer-interview-2026): Post-Compound-Startup + Spend + Global Payroll + IT, Rippling Unity employee-graph depth, atomic cross-product cascade.
+- [Gusto software engineer interview 2026](https://aimvantage.uk/blog/gusto-software-engineer-interview-2026): Post-Embedded Payroll + Gusto AI + Wallet + International, payroll-engine + ACH + tax-filing precision, SMB-DX register.
+- [Deel software engineer interview 2026](https://aimvantage.uk/blog/deel-software-engineer-interview-2026): Post-Engage + IT + AI + Card, EOR + Contractor + Global Payroll across 150+ countries, ship-fast remote-first culture.
 
 ## Blog (long-form guides)
 
