@@ -287,6 +287,67 @@ export default function Register() {
             Built solo by Giovanni Sizino Ennes (UK independent founder). No paywalls hidden behind the signup button. Stripe-only billing.
             <Link to="/about" className="underline hover:text-white ml-1">About the operator</Link>
           </p>
+
+          {/* Verifiable trust block — added 2026-05-10. The right panel
+              previously had value-prop bullets + an operator credit but
+              no concrete trust artefacts. Each item below is verifiable
+              by clicking through, not a claim. Mirrors the built-in-public
+              block on the LandingPage but compressed for this surface. */}
+          <div className="mt-6 pt-5 border-t border-white/15">
+            <p className="text-[11px] uppercase tracking-widest font-bold text-white/65 mb-3">
+              Verifiable, not claims
+            </p>
+            <ul className="space-y-2 text-xs text-white/80">
+              <li className="flex items-start gap-2">
+                <Check className="w-3.5 h-3.5 text-white flex-shrink-0 mt-0.5" aria-hidden="true" />
+                <span>
+                  UK ICO-registered for data protection ({' '}
+                  <Link to="/privacy#ico-registration" className="underline hover:text-white">
+                    proof
+                  </Link>
+                  )
+                </span>
+              </li>
+              <li className="flex items-start gap-2">
+                <Check className="w-3.5 h-3.5 text-white flex-shrink-0 mt-0.5" aria-hidden="true" />
+                <span>
+                  Public changelog and commit graph on{' '}
+                  <a
+                    href="https://github.com/goofypluto999/vantage"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline hover:text-white"
+                  >
+                    GitHub
+                  </a>{' '}
+                  ·{' '}
+                  <Link to="/changelog" className="underline hover:text-white">
+                    changelog
+                  </Link>
+                </span>
+              </li>
+              <li className="flex items-start gap-2">
+                <Check className="w-3.5 h-3.5 text-white flex-shrink-0 mt-0.5" aria-hidden="true" />
+                <span>
+                  Open-source companion ATS scanner:{' '}
+                  <a
+                    href="https://github.com/goofypluto999/cv-mirror-mcp"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline hover:text-white"
+                  >
+                    cv-mirror-mcp
+                  </a>
+                </span>
+              </li>
+              <li className="flex items-start gap-2">
+                <Check className="w-3.5 h-3.5 text-white flex-shrink-0 mt-0.5" aria-hidden="true" />
+                <span>
+                  Cancel any time · 14-day refund window · Tokens never expire on top-ups
+                </span>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
