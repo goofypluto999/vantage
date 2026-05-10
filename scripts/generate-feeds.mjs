@@ -46,6 +46,7 @@ function parseBlogPostsFromTs() {
   const FILES = [
     'src/data/blogPosts.ts',
     'src/data/blogPosts-newDrafts.ts',
+    'src/data/blogPosts-newDrafts2.ts',
   ];
   const posts = [];
   const seen = new Set();

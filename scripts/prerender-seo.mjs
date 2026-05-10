@@ -141,23 +141,39 @@ async function loadProgrammaticRoutes() {
     return entries;
   }
 
-  // Blog posts
-  try {
-    const blogTs = await fs.readFile(
-      path.join(ROOT, 'src/data/blogPosts.ts'),
-      'utf8',
-    );
-    const entries = extractEntries(blogTs, ['slug', 'title', 'description']);
-    for (const { slug, title, description } of entries) {
-      routes.push({
-        path: `/blog/${slug}`,
-        title: `${title} | Vantage AI Blog`,
-        description: (description || '').slice(0, 200),
-        type: 'article',
-      });
+  // Blog posts — read main file + optional `*Drafts.ts` companions. Drafts
+  // pattern keeps the 1170-line main file from sprawling further; new
+  // agent-generated post batches drop into separate files. Mirrors the
+  // generate-feeds.mjs sitemap parser so prerender + sitemap stay in sync.
+  // Without this loop, new draft posts get sitemap entries but no
+  // prerendered HTML files (caught 2026-05-10 when blogPosts-newDrafts2.ts
+  // had 5 new posts but 0 prerendered routes).
+  const BLOG_FILES = [
+    'src/data/blogPosts.ts',
+    'src/data/blogPosts-newDrafts.ts',
+    'src/data/blogPosts-newDrafts2.ts',
+  ];
+  const seenSlugs = new Set();
+  for (const blogFile of BLOG_FILES) {
+    try {
+      const blogTs = await fs.readFile(path.join(ROOT, blogFile), 'utf8');
+      const entries = extractEntries(blogTs, ['slug', 'title', 'description']);
+      for (const { slug, title, description } of entries) {
+        if (seenSlugs.has(slug)) continue;
+        seenSlugs.add(slug);
+        routes.push({
+          path: `/blog/${slug}`,
+          title: `${title} | Vantage AI Blog`,
+          description: (description || '').slice(0, 200),
+          type: 'article',
+        });
+      }
+    } catch (err) {
+      // Drafts files are optional — main file is required.
+      if (blogFile === 'src/data/blogPosts.ts') {
+        console.warn('Could not parse blogPosts.ts:', err?.message);
+      }
     }
-  } catch (err) {
-    console.warn('Could not parse blogPosts.ts:', err?.message);
   }
 
   // Sample analyses
