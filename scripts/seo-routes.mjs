@@ -156,6 +156,11 @@ const STATIC_ROUTES = [
     description: 'Bypass the ATS. Pick hook (mutual connection, recent post, product use, shared history, public artefact, cold), stage (open application / after silent / after rejection). Get 2-3 calibrated email variants + 8 sending tips. Pure client-side.',
   },
   {
+    path: '/tools/star-story-builder',
+    title: 'Free STAR Story Builder — Calibrated to 16 Behavioural Principles | Vantage',
+    description: 'Plug Situation / Task / Action / Result, pick a principle (Ownership / Bias for Action / Customer Obsession / 13 more), get 3 calibrated story variants (Classic STAR, Problem-led 45s, Principle-calibrated) plus 7 rehearsal tips. Pure client-side. No signup.',
+  },
+  {
     path: '/alternatives',
     title: 'Vantage AI Alternatives — Compared to Jobscan, Teal, Resume Worded, Final Round AI',
     description: 'Honest side-by-side comparisons of Vantage AI vs Jobscan, Teal HQ, Resume Worded, Final Round AI, Kickresume, Enhancv, Yoodli, Huntr, and Big Interview. Where each wins, where each loses.',
