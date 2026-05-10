@@ -72,18 +72,42 @@ export default function ToolsPage() {
       {
         '@type': 'ListItem',
         position: 9,
+        url: `${SITE_URL}/tools/bullet-rewriter`,
+        name: 'CV Bullet Rewriter — Diagnose Weak Bullets, Get 3 Rewrites',
+      },
+      {
+        '@type': 'ListItem',
+        position: 10,
+        url: `${SITE_URL}/tools/layoff-playbook`,
+        name: '30-Day Post-Layoff Playbook Generator',
+      },
+      {
+        '@type': 'ListItem',
+        position: 11,
+        url: `${SITE_URL}/tools/cover-letter-compare`,
+        name: 'Cover Letter A/B Comparator',
+      },
+      {
+        '@type': 'ListItem',
+        position: 12,
+        url: `${SITE_URL}/tools/negotiation-script`,
+        name: 'Salary Negotiation Script Generator',
+      },
+      {
+        '@type': 'ListItem',
+        position: 13,
         url: `${SITE_URL}/interview-prep`,
         name: 'Interview Prep Packs by Company',
       },
       {
         '@type': 'ListItem',
-        position: 10,
+        position: 14,
         url: `${SITE_URL}/interview-questions`,
         name: 'Interview Questions by Role',
       },
       {
         '@type': 'ListItem',
-        position: 11,
+        position: 15,
         url: `${SITE_URL}/laid-off`,
         name: 'Layoff Recovery Guide (April-May 2026 cohort)',
       },
@@ -405,6 +429,25 @@ export default function ToolsPage() {
                   </p>
                 </div>
                 <GitCompareArrows className="w-5 h-5 text-violet-400 flex-shrink-0" />
+              </div>
+            </Link>
+            <Link
+              to="/tools/negotiation-script"
+              className={`${t.glass} rounded-xl p-5 hover:border-violet-400/40 transition group block`}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <div className={`text-xs uppercase tracking-widest ${t.textMuted} font-bold`}>
+                    Free · No signup · Highest-leverage moment
+                  </div>
+                  <h3 className={`text-lg font-bold ${t.text} mt-1 group-hover:text-violet-500 transition`}>
+                    Salary Negotiation Script
+                  </h3>
+                  <p className={`text-sm ${t.textSub} mt-2 leading-relaxed`}>
+                    Plug in offer details + target asks (base, signing, RSU). Get a personalised email or phone-call script branched on tone (collaborative / firm) plus 7 talking points that win negotiations. The 10-minute conversation that moves base salary £10k+.
+                  </p>
+                </div>
+                <MessageSquare className="w-5 h-5 text-violet-400 flex-shrink-0" />
               </div>
             </Link>
             <Link

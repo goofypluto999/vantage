@@ -303,6 +303,27 @@ function Navbar({ onStart, showLogin }: { onStart: () => void; showLogin?: () =>
                 JD decoder
               </Link>
               <Link
+                to="/tools/bullet-rewriter"
+                onClick={() => setMobileOpen(false)}
+                className="px-4 py-2.5 text-sm font-semibold text-[#3B3A5C] hover:text-[#4F46E5] rounded-xl hover:bg-white/40 transition-all"
+              >
+                CV bullet rewriter
+              </Link>
+              <Link
+                to="/tools/layoff-playbook"
+                onClick={() => setMobileOpen(false)}
+                className="px-4 py-2.5 text-sm font-semibold text-[#3B3A5C] hover:text-[#4F46E5] rounded-xl hover:bg-white/40 transition-all"
+              >
+                30-day layoff plan
+              </Link>
+              <Link
+                to="/tools/negotiation-script"
+                onClick={() => setMobileOpen(false)}
+                className="px-4 py-2.5 text-sm font-semibold text-[#3B3A5C] hover:text-[#4F46E5] rounded-xl hover:bg-white/40 transition-all"
+              >
+                Negotiation script
+              </Link>
+              <Link
                 to="/tools/jobscan-cost-calculator"
                 onClick={() => setMobileOpen(false)}
                 className="px-4 py-2.5 text-sm font-semibold text-[#3B3A5C] hover:text-[#4F46E5] rounded-xl hover:bg-white/40 transition-all"
