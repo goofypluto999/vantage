@@ -144,6 +144,9 @@ Each post covers a specific company's interview process: 5-stage breakdown with 
 - [Shopify software engineer interview 2026](https://aimvantage.uk/blog/shopify-software-engineer-interview-2026): AI-first directive (Lutke memo), Life Story round, commerce-shaped systems.
 - [Atlassian software engineer interview 2026](https://aimvantage.uk/blog/atlassian-software-engineer-interview-2026): Rovo AI agent platform, multi-product context, values round register.
 - [ServiceNow software engineer interview 2026](https://aimvantage.uk/blog/servicenow-software-engineer-interview-2026): Now Assist + regulated enterprise AI, multi-tenant platform reasoning.
+- [Cursor (Anysphere) engineer interview 2026](https://aimvantage.uk/blog/cursor-engineer-interview-2026): The interview happens IN Cursor; daily-usage filter; small-team velocity register.
+- [Replit engineer interview 2026](https://aimvantage.uk/blog/replit-engineer-interview-2026): Replit Agent pivot, multi-tenant container reasoning, agent-first workflow filter.
+- [Modal engineer interview 2026](https://aimvantage.uk/blog/modal-engineer-interview-2026): Hardcore systems shop; built-vs-used filter; billing-accuracy register; GPU bin-packing.
 
 ## Blog (long-form guides)
 

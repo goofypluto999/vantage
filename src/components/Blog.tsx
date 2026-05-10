@@ -36,6 +36,9 @@ const COMPANY_FILTERS = [
   'Shopify',
   'Atlassian',
   'ServiceNow',
+  'Cursor',
+  'Replit',
+  'Modal',
 ] as const;
 
 type CompanyFilter = typeof COMPANY_FILTERS[number];
