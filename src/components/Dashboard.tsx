@@ -13,6 +13,9 @@ import { supabase, getCreditsRemaining, hasCredits } from '../lib/supabase';
 import { analyzeJob, createStripeCheckout, syncSubscription, rewriteTone, fetchAnalysisHistory } from '../services/api';
 import AIInterviewSession from './AIInterviewSession';
 import AtsScannerSection from './AtsScannerSection';
+// Lazy-loaded — only fires for first-time dashboard visitors via the demo
+// popup. ~10KB+ of motion sequences shouldn't be in the critical chunk.
+const LiveDemoReel = React.lazy(() => import('./LiveDemoReel'));
 
 /**
  * ProcessingStages — animated pipeline indicator shown during the 60-90s
@@ -161,6 +164,13 @@ export default function Dashboard() {
   const [checkoutSuccess, setCheckoutSuccess] = useState(false);
   const [checkoutCancelled, setCheckoutCancelled] = useState(false);
   const [checkoutError, setCheckoutError] = useState(false);
+  // First-login demo popup. Shows the 22s LiveDemoReel as a modal once,
+  // for first-time users only (localStorage flag), to teach them what
+  // the dashboard does before they stare at empty upload zones. Skipped
+  // if they've already run an analysis (history.length > 0) or already
+  // dismissed (vantage-demo-shown). Per LLM-council a11y standard:
+  // ESC + click-outside + role=dialog + body-scroll lock + close button.
+  const [showDemoPopup, setShowDemoPopup] = useState(false);
 
   // Sync subscription state from Stripe on every mount, then refresh profile
   useEffect(() => {
@@ -171,6 +181,50 @@ export default function Dashboard() {
       syncSubscription().then(() => refreshProfile()).catch(() => {});
     }
   }, [user]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // First-login demo popup — fires once per browser. Skipped if user has
+  // dismissed it before, or if URL has ?success=true/cancelled=true (don't
+  // stack a popup on top of a Stripe-return banner).
+  useEffect(() => {
+    if (!user) return;
+    const seen = typeof localStorage !== 'undefined'
+      ? localStorage.getItem('vantage-demo-popup-seen')
+      : null;
+    const hasReturnFlag =
+      searchParams.get('success') === 'true' ||
+      searchParams.get('cancelled') === 'true' ||
+      searchParams.get('canceled') === 'true' ||
+      searchParams.get('checkout_error') === 'true';
+    if (!seen && !hasReturnFlag) {
+      // Slight delay so the dashboard paints first; popup is supplementary
+      // not blocking. Mirror the Suspense fallback latency.
+      const t = setTimeout(() => setShowDemoPopup(true), 800);
+      return () => clearTimeout(t);
+    }
+  }, [user]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const dismissDemoPopup = () => {
+    setShowDemoPopup(false);
+    try {
+      localStorage.setItem('vantage-demo-popup-seen', '1');
+    } catch { /* private mode — fine, popup re-shows once on next session */ }
+  };
+
+  // ESC + body-scroll lock for demo popup (matches modal-a11y pattern
+  // from commit 4dad92d). Body scroll restored on dismiss.
+  useEffect(() => {
+    if (!showDemoPopup) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') dismissDemoPopup();
+    };
+    window.addEventListener('keydown', onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [showDemoPopup]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Handle post-checkout return — sync from Stripe then refresh profile.
   // Both ?success=true and ?cancelled=true are set by api/stripe/[action].ts
@@ -460,6 +514,72 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #0d0b1e 0%, #1a1635 100%)' }}>
+      {/* First-login demo popup — 22s LiveDemoReel walkthrough so visitors
+          understand the dashboard before staring at empty fields. Fires
+          ONCE per browser (localStorage flag), skips if returning from
+          Stripe (?success/?cancelled), dismisses via ESC + click-outside
+          + close button. Body-scroll locked while open. */}
+      {showDemoPopup && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="demo-popup-title"
+          onClick={(e) => { if (e.target === e.currentTarget) dismissDemoPopup(); }}
+          className="fixed inset-0 z-[200] flex items-center justify-center p-4 md:p-8"
+          style={{ background: 'rgba(13,11,30,0.92)', backdropFilter: 'blur(16px)' }}
+        >
+          <div className="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-3xl bg-[#1a1635] border border-white/10 shadow-2xl">
+            <button
+              type="button"
+              onClick={dismissDemoPopup}
+              aria-label="Close demo"
+              className="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white/70 hover:text-white flex items-center justify-center transition-colors text-lg"
+            >
+              ✕
+            </button>
+            <div className="p-6 md:p-8 pt-12">
+              <div className="text-center mb-5">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-400 mb-2">
+                  Welcome — 22-second walkthrough
+                </p>
+                <h2 id="demo-popup-title" className="text-2xl md:text-3xl font-display font-bold text-white">
+                  Here's what Vantage does in 90 seconds.
+                </h2>
+                <p className="text-sm text-white/60 mt-2">
+                  Quick visual tour. Press ESC or click outside to skip.
+                </p>
+              </div>
+              <React.Suspense fallback={
+                <div className="aspect-[16/9] rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center">
+                  <div className="w-8 h-8 border-4 border-violet-500 border-t-transparent rounded-full animate-spin" />
+                </div>
+              }>
+                <LiveDemoReel autoplay aspectRatio="16/9" />
+              </React.Suspense>
+              <div className="mt-5 flex flex-col sm:flex-row gap-3">
+                <button
+                  type="button"
+                  onClick={dismissDemoPopup}
+                  className="flex-1 py-3 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-bold transition-colors"
+                >
+                  Got it — let me try
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    dismissDemoPopup();
+                    window.open('https://aimvantage.uk/sample/anthropic-senior-pm', '_blank', 'noopener,noreferrer');
+                  }}
+                  className="flex-1 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white/80 font-semibold transition-colors"
+                >
+                  See a full sample output
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <header className="border-b border-white/10 px-6 py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
