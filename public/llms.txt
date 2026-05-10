@@ -184,6 +184,9 @@ Each post covers a specific company's interview process: 5-stage breakdown with 
 - [Nvidia software engineer interview 2026](https://aimvantage.uk/blog/nvidia-software-engineer-interview-2026): Real CUDA / GPU-systems depth (not just PyTorch), Blackwell memory hierarchy, hardware-software co-design moat, AMD MI300X / TPU competitive context.
 - [Arm software engineer interview 2026](https://aimvantage.uk/blog/arm-software-engineer-interview-2026): Cambridge HQ, Cortex-X / Neoverse architecture, post-IPO + AI-pivot context, Apple-silicon competitive impact, licensing-business engineering trade-offs.
 - [TikTok / ByteDance software engineer interview 2026](https://aimvantage.uk/blog/tiktok-bytedance-software-engineer-interview-2026): Post-divestiture US regulatory context, recommendation-systems depth, extreme ship velocity (A/B tests in hours not weeks).
+- [Sentry software engineer interview 2026](https://aimvantage.uk/blog/sentry-software-engineer-interview-2026): Post-Codecov platform expansion, open-source-meets-commercial dual register, observability event-processing depth.
+- [Roblox software engineer interview 2026](https://aimvantage.uk/blog/roblox-software-engineer-interview-2026): UGC platform at 80M+ DAU, child-safety regulatory context (COPPA / GDPR-K / Ofcom), AI-creator pivot trade-offs.
+- [Twilio software engineer interview 2026](https://aimvantage.uk/blog/twilio-software-engineer-interview-2026): Post-Segment-divestiture AI-CX focus, carrier-integration depth across 180 countries, communications compliance (TCPA / GDPR / A2P 10DLC).
 
 ## Blog (long-form guides)
 
