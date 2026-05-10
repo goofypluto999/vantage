@@ -157,7 +157,7 @@ export default function LaidOffPage() {
             </div>
           </div>
           <p className={`mt-6 text-sm ${t.textMuted}`}>
-            That's roughly 42,000 people newly searching at the same time. The recruiters know.
+            That's roughly 43,100 people newly searching at the same time. The recruiters know.
             The ATSes are full. Your CV is competing harder than it was 6 months ago — but the
             system rejecting you is still the same dumb parser.
           </p>

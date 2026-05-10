@@ -93,7 +93,7 @@ const STATIC_ROUTES = [
   {
     path: '/laid-off',
     title: 'Just Laid Off? AI Tools for Tech Workers in the 2026 Layoff Wave | Vantage',
-    description: 'April 2026 had ~42,000 tech workers newly job-hunting. Cohort-specific layoff playbook + free AI prep tools for Oracle, Meta, ASML, Snap, Nike alumni. By a UK indie dev.',
+    description: 'April-May 2026 had ~43,100 tech workers newly job-hunting. Cohort-specific layoff playbook + free AI prep tools for Oracle, Meta, ASML, Snap, Nike, Cloudflare alumni. By a UK indie dev.',
   },
   {
     path: '/ats',

@@ -417,7 +417,7 @@ export default function ToolsPage() {
                     Layoff Recovery Playbook
                   </h3>
                   <p className={`text-sm ${t.textSub} mt-2 leading-relaxed`}>
-                    Specifically for the April 2026 wave (Oracle, Meta, ASML, Snap, Nike). What to fix on your CV first, what to do in week 1, when to apply.
+                    Specifically for the April-May 2026 wave (Oracle, Meta, ASML, Snap, Nike, Cloudflare). What to fix on your CV first, what to do in week 1, when to apply.
                   </p>
                 </div>
                 <Users className="w-5 h-5 text-violet-400 flex-shrink-0" />

@@ -278,7 +278,7 @@ function AppContent() {
                     description: 'AI-powered preparation pack for job applications: company intelligence, tailored cover letter (4 tones), mock interview questions, CV-to-role fit score, and 5-minute pitch outline. Generated in approximately 90 seconds per application.',
                     audience: {
                       '@type': 'Audience',
-                      audienceType: 'Job seekers, including those affected by recent layoffs (Oracle, Meta, ASML, Snap, Nike) in 2026',
+                      audienceType: 'Job seekers, including those affected by recent layoffs (Oracle, Meta, ASML, Snap, Nike, Cloudflare) in 2026',
                     },
                   },
                   // Organization schema — AI assistants use this to identify

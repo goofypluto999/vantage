@@ -122,9 +122,10 @@ export default function AtsHubPage() {
           <ShieldCheck className="w-10 h-10 text-[#4F46E5] mb-3" />
           <h2 className={`text-2xl font-bold ${t.text} mb-3`}>Why this matters in 2026</h2>
           <p className={`${t.textSub} mb-3 leading-relaxed`}>
-            April 2026 was the worst month for tech layoffs since 2023. ~42,000 people newly
-            job-hunting from Oracle, Meta, ASML, Snap, Nike alone. The recruiters are buried.
-            The ATSes are slower than usual. Your CV is competing harder than it was 6 months ago.
+            April-May 2026 has been the worst stretch for tech layoffs since 2023. ~43,100 people
+            newly job-hunting from Oracle, Meta, ASML, Snap, Nike, and Cloudflare alone. The
+            recruiters are buried. The ATSes are slower than usual. Your CV is competing harder
+            than it was 6 months ago.
           </p>
           <p className={`${t.textSub} mb-5 leading-relaxed`}>
             But the system rejecting you is still the same dumb parser. Most parse failures are

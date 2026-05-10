@@ -119,9 +119,9 @@ const SECTIONS: FaqSection[] = [
     icon: MessageSquare,
     entries: [
       {
-        question: 'I was laid off in the April 2026 tech wave. Will Vantage help me?',
+        question: 'I was laid off in the April-May 2026 tech wave. Will Vantage help me?',
         answer:
-          'Yes — the tool was built specifically for the April 2026 wave (Oracle 30k, Meta 8k, ASML 1.7k, Snap 1k, Nike 1.4k = ~42,000 newly job-hunting in a single month). There are cohort-specific landing pages with company-specific advice for laid-off Oracle, Meta, ASML, Snap, and Nike alumni at https://aimvantage.uk/laid-off. Each page covers the severance / COBRA / vesting timing specific to that company plus how the alumni\'s background translates to next-employer ATS systems.',
+          'Yes — the tool was built specifically for the April-May 2026 wave (Oracle 30k, Meta 8k, ASML 1.7k, Snap 1k, Nike 1.4k, Cloudflare 1.1k = ~43,100 newly job-hunting in two months). There are cohort-specific landing pages with company-specific advice for laid-off Oracle, Meta, ASML, Snap, Nike, and Cloudflare alumni at https://aimvantage.uk/laid-off. Each page covers the severance / COBRA / vesting timing specific to that company plus how the alumni\'s background translates to next-employer ATS systems.',
       },
       {
         question: 'How do I prep for an Anthropic, OpenAI, or Stripe interview specifically?',

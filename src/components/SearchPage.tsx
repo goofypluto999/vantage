@@ -47,7 +47,7 @@ const HITS: Hit[] = [
   { title: 'Changelog', url: '/changelog', description: 'Public release log including bug history. We do not retroactively edit history.', tags: ['changelog', 'release', 'updates', 'history'], type: 'reference' },
 
   // Cohort / vertical pages
-  { title: 'Just laid off? 2026 layoff playbook', url: '/laid-off', description: 'April 2026 had ~42,000 tech workers newly job-hunting. Cohort-specific layoff playbook + free AI prep tools.', tags: ['laid off', 'layoff', 'redundant', 'fired', 'recovery'], type: 'guide' },
+  { title: 'Just laid off? 2026 layoff playbook', url: '/laid-off', description: 'April-May 2026 had ~43,100 tech workers newly job-hunting (Oracle, Meta, ASML, Snap, Nike, Cloudflare). Cohort-specific layoff playbook + free AI prep tools.', tags: ['laid off', 'layoff', 'redundant', 'fired', 'recovery', 'cloudflare'], type: 'guide' },
   { title: 'ATS Vendor Guide (Workday, Greenhouse, Lever, Taleo, iCIMS)', url: '/ats', description: 'How major ATS systems parse your CV — vendor by vendor breakdown.', tags: ['ats', 'workday', 'greenhouse', 'lever', 'taleo', 'icims', 'parser'], type: 'guide' },
   { title: 'Interview Prep by Company', url: '/interview-prep', description: 'Free interview-prep packs: Google, Meta, Amazon, Stripe, OpenAI, Anthropic, and 14 more.', tags: ['interview', 'prep', 'company', 'google', 'meta', 'amazon', 'stripe', 'openai', 'anthropic'], type: 'guide' },
   { title: 'Interview Questions by Role', url: '/interview-questions', description: 'Software Engineer, PM, Data Scientist, Frontend, DevOps, Marketing Manager, and more.', tags: ['interview', 'questions', 'role', 'engineer', 'pm', 'data', 'frontend', 'devops'], type: 'guide' },
