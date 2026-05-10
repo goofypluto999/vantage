@@ -136,6 +136,9 @@ Each post covers a specific company's interview process: 5-stage breakdown with 
 - [Apple software engineer interview 2026](https://aimvantage.uk/blog/apple-software-engineer-interview-2026): Team-match phase, the silent filter, lunch-round signal weight.
 - [Microsoft product manager interview 2026](https://aimvantage.uk/blog/microsoft-product-manager-interview-2026): Copilot-everywhere thesis, enterprise PM bar, Satya-era values.
 - [Amazon SDE interview 2026](https://aimvantage.uk/blog/amazon-sde-interview-2026): Leadership principles still rule, bar-raiser veto, anti-rehearsed-STAR drill.
+- [Snowflake software engineer interview 2026](https://aimvantage.uk/blog/snowflake-software-engineer-interview-2026): Cortex AI pivot, AI-on-warehouse trade-offs, Iceberg context.
+- [Databricks software engineer interview 2026](https://aimvantage.uk/blog/databricks-software-engineer-interview-2026): Lakehouse + Mosaic AI, both-sides-of-the-debate filter, IPO-track rigour.
+- [Hugging Face ML engineer interview 2026](https://aimvantage.uk/blog/hugging-face-ml-engineer-interview-2026): Open-source-first hiring, public contribution signal as the silent filter.
 
 ## Blog (long-form guides)
 

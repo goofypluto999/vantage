@@ -1180,7 +1180,8 @@ import { newBlogPosts3 } from './blogPosts-newDrafts3';
 import { newBlogPosts4 } from './blogPosts-newDrafts4';
 import { newBlogPosts5 } from './blogPosts-newDrafts5';
 import { newBlogPosts6 } from './blogPosts-newDrafts6';
-blogPosts.push(...newBlogPosts, ...newBlogPosts2, ...newBlogPosts3, ...newBlogPosts4, ...newBlogPosts5, ...newBlogPosts6);
+import { newBlogPosts7 } from './blogPosts-newDrafts7';
+blogPosts.push(...newBlogPosts, ...newBlogPosts2, ...newBlogPosts3, ...newBlogPosts4, ...newBlogPosts5, ...newBlogPosts6, ...newBlogPosts7);
 
 export function getPostBySlug(slug: string): BlogPost | undefined {
   return blogPosts.find((p) => p.slug === slug);

@@ -30,6 +30,9 @@ const COMPANY_FILTERS = [
   'Apple',
   'Microsoft',
   'Amazon',
+  'Snowflake',
+  'Databricks',
+  'Hugging Face',
 ] as const;
 
 type CompanyFilter = typeof COMPANY_FILTERS[number];
