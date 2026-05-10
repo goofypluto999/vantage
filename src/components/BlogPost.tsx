@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useParams, Link, Navigate } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, Calendar, Clock, Star, ExternalLink, Twitter, Linkedin, Copy, Check } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
@@ -338,11 +338,69 @@ export default function BlogPost() {
           <p className={`${t.text} text-base leading-relaxed`}>{post.excerpt}</p>
         </aside>
 
-        {/* Body */}
+        {/* Body — added 2026-05-10: inject a mid-post conversion CTA
+            after the 3rd h2 heading. Long-form posts (1500+ words) need
+            a non-intrusive lift roughly 40-60% through the article;
+            top-of-post + bottom-of-post CTAs alone leave the engaged
+            mid-scroll reader without a clickable surface. The CTA uses
+            the existing callout styling so it does not jar the reading
+            flow. */}
         <div className={`mt-10 space-y-5 ${t.textSub} leading-relaxed text-base sm:text-lg`}>
-          {post.sections.map((section, i) => (
-            <RenderSection key={i} section={section} textClass={t.text} mutedClass={t.textMuted} cardClass={t.cardInner} />
-          ))}
+          {(() => {
+            // Find index of the 3rd h2 (or 2nd if there are < 3) so the
+            // injected CTA lands at a natural reading break.
+            let h2Count = 0;
+            let injectAfterIdx = -1;
+            const targetH2 = post.sections.filter((s) => s.type === 'h2').length >= 3 ? 3 : 2;
+            for (let i = 0; i < post.sections.length; i++) {
+              if (post.sections[i].type === 'h2') {
+                h2Count++;
+                if (h2Count === targetH2) {
+                  // Inject AFTER the section that follows the heading,
+                  // so the heading + first paragraph render together.
+                  injectAfterIdx = Math.min(i + 1, post.sections.length - 1);
+                  break;
+                }
+              }
+            }
+            const out: React.ReactNode[] = [];
+            post.sections.forEach((section, i) => {
+              out.push(
+                <RenderSection
+                  key={`s-${i}`}
+                  section={section}
+                  textClass={t.text}
+                  mutedClass={t.textMuted}
+                  cardClass={t.cardInner}
+                />
+              );
+              if (i === injectAfterIdx) {
+                out.push(
+                  <aside
+                    key="mid-cta"
+                    className={`my-8 ${t.glass} rounded-2xl p-6 border-l-4 border-violet-500`}
+                    aria-label="Run this prep on your real job link"
+                  >
+                    <p className={`${t.text} font-semibold text-base sm:text-lg`}>
+                      Reading this for a specific role? Run the prep on the actual job link.
+                    </p>
+                    <p className={`mt-2 text-sm ${t.textSub}`}>
+                      Vantage scrapes the job page, scores your CV against it, drafts a tailored
+                      cover letter (4 tones), and generates the likely interview questions.
+                      90 seconds. 10 free packs on signup, no card.
+                    </p>
+                    <Link
+                      to="/register"
+                      className="mt-3 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-violet-600 hover:bg-violet-500 text-white text-sm font-semibold transition"
+                    >
+                      Try it free <ArrowRight className="w-4 h-4" />
+                    </Link>
+                  </aside>
+                );
+              }
+            });
+            return out;
+          })()}
         </div>
 
         {/* CTA */}
