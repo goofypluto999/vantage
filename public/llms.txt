@@ -178,6 +178,9 @@ Each post covers a specific company's interview process: 5-stage breakdown with 
 - [IBM software engineer interview 2026](https://aimvantage.uk/blog/ibm-software-engineer-interview-2026): watsonx + Granite open-weight strategy, Red Hat heritage, regulated-industry constraints, team-specific prep.
 - [Reddit software engineer interview 2026](https://aimvantage.uk/blog/reddit-software-engineer-interview-2026): Post-IPO efficiency mandate, AI-training-data licensing strategy, community-platform reasoning.
 - [Plaid software engineer interview 2026](https://aimvantage.uk/blog/plaid-software-engineer-interview-2026): Post-Section-1033 open-finance landscape, fintech-API depth, regulatory-aware system design.
+- [Goldman Sachs Engineering interview 2026](https://aimvantage.uk/blog/goldman-sachs-engineering-interview-2026): SLANG proprietary stack heritage, Marquee API platform, post-Apple-Card GS Bank context, formal investment-bank register.
+- [Jane Street software engineer interview 2026](https://aimvantage.uk/blog/jane-street-software-engineer-interview-2026): OCaml-heavy stack, brain-teaser + probability tradition, market-making simulation, $400k+ first-year comp.
+- [Bloomberg software engineer interview 2026](https://aimvantage.uk/blog/bloomberg-software-engineer-interview-2026): Terminal platform paradigm, B-PIPE distribution at scale, AI-augmented news integration, real-time microsecond systems.
 
 ## Blog (long-form guides)
 
