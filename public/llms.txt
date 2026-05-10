@@ -251,6 +251,9 @@ Each post covers a specific company's interview process: 5-stage breakdown with 
 - [Revolut software engineer interview 2026](https://aimvantage.uk/blog/revolut-software-engineer-interview-2026): Post-UK-banking-licence + Stays + Business + 50M+ retail customers, super-app + FX engine + Sherlock fraud-detection, high-intensity register.
 - [Monzo software engineer interview 2026](https://aimvantage.uk/blog/monzo-software-engineer-interview-2026): Post-profitability + Plus + Premium + US-launch + Business, Go + Cassandra + 1500+ microservices estate, Banking Platform + Coredeposit ledger.
 - [DeepMind software engineer interview 2026](https://aimvantage.uk/blog/deepmind-software-engineer-interview-2026): Post-Gemini 2.5 Deep Think + AlphaFold 3 + Veo 3 + Genie 2, Jax + Pathways + TPU research-engineering depth, Google-DeepMind merger register.
+- [Epic Games software engineer interview 2026](https://aimvantage.uk/blog/epic-games-software-engineer-interview-2026): Post-Fortnite Ch 6 + UEFN + Verse + Unreal Engine 5.5, C++ game-engine + multiplayer-replication + creator-economy register.
+- [Unity software engineer interview 2026](https://aimvantage.uk/blog/unity-software-engineer-interview-2026): Post-Runtime-Fee reversal + Unity 6 + Muse AI + Industry, C++ engine + DOTS / ECS + URP, trust-rebuild register.
+- [Roku software engineer interview 2026](https://aimvantage.uk/blog/roku-software-engineer-interview-2026): Post-Roku OS 13 + The Roku Channel + OneView Ads + Smart Home, embedded TV-OS + CTV-ad-supported register.
 
 ## Blog (long-form guides)
 
