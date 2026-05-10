@@ -1,5 +1,25 @@
 # Vantage AI — Launch Pack, 2026-05-10
 
+> ## ⚡ UPDATED 2026-05-10 (LATER): LEAD WITH THE STATE OF 2026 REPORT
+>
+> A new flagship aggregation page is now live at **aimvantage.uk/state-of-2026**.
+> It synthesises findings from the 34 interview deep-dives into a single
+> link-bait piece. **This** is what Show HN, Indie Hackers, journalists,
+> and r/cscareerquestions actually link to — not a product page.
+>
+> All "Show HN" / "Indie Hackers" submission copy below should be
+> reframed to lead with the report. Suggested rewrites:
+>
+> - **Show HN title (NEW):** `Show HN: The State of 2026 Tech Interview Hiring — data from 34 company deep-dives`
+> - **Show HN URL:** `https://aimvantage.uk/state-of-2026` (NOT the product page)
+> - **First sentence:** "I wrote 34 long-form interview deep-dives in 2026 and aggregated the findings into a single trends report. Five things changed from 2024 that the standard interview-prep playbook does not cover."
+> - The product mention belongs in the LAST paragraph, not the first.
+>
+> The original product-led launch text below remains as backup if the
+> flagship-led version doesn't fit the channel.
+>
+> ---
+
 > Paste-ready posts and DMs Gio fires tomorrow morning to drive same-day
 > traffic. SEO compounds in weeks; this drives signups now.
 >
