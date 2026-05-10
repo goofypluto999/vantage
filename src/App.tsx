@@ -40,6 +40,7 @@ const CoverLetterComparePage = React.lazy(() => import('./components/CoverLetter
 const NegotiationScriptPage = React.lazy(() => import('./components/NegotiationScriptPage'));
 const ThankYouNotePage = React.lazy(() => import('./components/ThankYouNotePage'));
 const LinkedInAboutPage = React.lazy(() => import('./components/LinkedInAboutPage'));
+const RecruiterReplyPage = React.lazy(() => import('./components/RecruiterReplyPage'));
 const CostCalculatorPage = React.lazy(() => import('./components/CostCalculatorPage'));
 const ReceiptsPage = React.lazy(() => import('./components/ReceiptsPage'));
 const NoInterviewsDiagnostic = React.lazy(() => import('./components/NoInterviewsDiagnostic'));
@@ -489,6 +490,7 @@ function AppContent() {
             <Route path="/tools/negotiation-script" element={<NegotiationScriptPage />} />
             <Route path="/tools/thank-you-note" element={<ThankYouNotePage />} />
             <Route path="/tools/linkedin-about" element={<LinkedInAboutPage />} />
+            <Route path="/tools/recruiter-reply" element={<RecruiterReplyPage />} />
             <Route path="/tools/jobscan-cost-calculator" element={<CostCalculatorPage />} />
             <Route path="/jobscan-cost-calculator" element={<Navigate to="/tools/jobscan-cost-calculator" replace />} />
             <Route path="/job-tool-cost-calculator" element={<Navigate to="/tools/jobscan-cost-calculator" replace />} />
