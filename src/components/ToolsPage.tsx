@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, ExternalLink, Star, Shield, Zap, FileSearch, MessageSquare, Target, Users, Briefcase, Calculator, Activity, ScanLine, Search, Sparkles, Calendar, GitCompareArrows, Mail, Linkedin } from 'lucide-react';
+import { ArrowRight, ExternalLink, Star, Shield, Zap, FileSearch, MessageSquare, Target, Users, Briefcase, Calculator, Activity, ScanLine, Search, Sparkles, Calendar, GitCompareArrows, Mail, Linkedin, Inbox } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import SEO from './SEO';
 
@@ -108,18 +108,24 @@ export default function ToolsPage() {
       {
         '@type': 'ListItem',
         position: 15,
+        url: `${SITE_URL}/tools/recruiter-reply`,
+        name: 'Recruiter Cold-DM Reply Generator',
+      },
+      {
+        '@type': 'ListItem',
+        position: 16,
         url: `${SITE_URL}/interview-prep`,
         name: 'Interview Prep Packs by Company',
       },
       {
         '@type': 'ListItem',
-        position: 16,
+        position: 17,
         url: `${SITE_URL}/interview-questions`,
         name: 'Interview Questions by Role',
       },
       {
         '@type': 'ListItem',
-        position: 17,
+        position: 18,
         url: `${SITE_URL}/laid-off`,
         name: 'Layoff Recovery Guide (April-May 2026 cohort)',
       },
@@ -498,6 +504,25 @@ export default function ToolsPage() {
                   </p>
                 </div>
                 <Linkedin className="w-5 h-5 text-violet-400 flex-shrink-0" />
+              </div>
+            </Link>
+            <Link
+              to="/tools/recruiter-reply"
+              className={`${t.glass} rounded-xl p-5 hover:border-violet-400/40 transition group block`}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <div className={`text-xs uppercase tracking-widest ${t.textMuted} font-bold`}>
+                    Free · No signup · High-frequency moment
+                  </div>
+                  <h3 className={`text-lg font-bold ${t.text} mt-1 group-hover:text-violet-500 transition`}>
+                    Recruiter Cold-DM Reply
+                  </h3>
+                  <p className={`text-sm ${t.textSub} mt-2 leading-relaxed`}>
+                    A recruiter just slid into your DMs. Pick intent (interested / not now / not a fit / not sure) and seniority alignment, get calibrated reply variants plus 7 tips on what to ask back. Never burn the bridge; never reply too fast.
+                  </p>
+                </div>
+                <Inbox className="w-5 h-5 text-violet-400 flex-shrink-0" />
               </div>
             </Link>
             <Link
