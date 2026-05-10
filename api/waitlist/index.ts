@@ -1,5 +1,15 @@
 // API endpoint for waitlist signup
 // Vercel serverless function
+//
+// Security posture (added 2026-05-11 after security-sweep-2026-05-11.md):
+// - Origin/Referer allowlist on POST (prevents drive-by signups from
+//   arbitrary domains that scrape the endpoint URL)
+// - Per-IP sliding-window rate limit (best-effort, in-memory): 3 per
+//   minute + 20 per day. Mirrors the pattern from /api/roast at lower
+//   thresholds since the waitlist surface needs less throughput.
+// Persistent (Supabase-backed) rate limit deliberately NOT added — the
+// in-memory layer is sufficient to block casual abuse, and the waitlist
+// table itself has a UNIQUE(email) constraint that hard-caps duplicates.
 
 interface WaitlistBody {
   email: string;
@@ -9,6 +19,59 @@ interface WaitlistBody {
 const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || '';
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 const SUPABASE_ANON_KEY = process.env.VITE_SUPABASE_ANON_KEY || '';
+
+// ─── Origin allowlist ────────────────────────────────────────────────────
+const ALLOWED_ORIGINS = [
+  'https://aimvantage.uk',
+  'https://www.aimvantage.uk',
+  'http://localhost:3000',
+  'http://localhost:5173',
+];
+
+function isOriginAllowed(origin: string | undefined, referer: string | undefined): boolean {
+  if (origin && ALLOWED_ORIGINS.some((o) => origin === o)) return true;
+  if (referer) {
+    try {
+      const url = new URL(referer).origin;
+      if (ALLOWED_ORIGINS.some((o) => url === o)) return true;
+    } catch { /* invalid referer URL */ }
+  }
+  return false;
+}
+
+// ─── In-memory sliding-window rate limit ─────────────────────────────────
+// Keyed by IP. Per-Vercel-function-instance only — at this volume that's
+// fine. If we ever hit it from real traffic, drop in the same persistent
+// layer used by /api/roast.
+const ipHits = new Map<string, number[]>();
+const MIN_WINDOW_MS = 60_000;
+const MIN_MAX = 3; // 3 signups/min/IP
+const DAY_WINDOW_MS = 24 * 60 * 60 * 1000;
+const DAY_MAX = 20; // 20 signups/day/IP
+
+function getClientIp(req: any): string {
+  // Vercel sets x-vercel-forwarded-for (unspoofable from outside) and
+  // x-forwarded-for (spoofable). Prefer the Vercel one when present.
+  const vff = req.headers['x-vercel-forwarded-for'];
+  if (vff && typeof vff === 'string') return vff.split(',')[0].trim();
+  const xff = req.headers['x-forwarded-for'];
+  if (xff && typeof xff === 'string') return xff.split(',')[0].trim();
+  return 'unknown';
+}
+
+function checkRateLimit(ip: string, windowMs: number, max: number, keyPrefix: string): boolean {
+  const key = `${keyPrefix}:${ip}`;
+  const now = Date.now();
+  const cutoff = now - windowMs;
+  const hits = (ipHits.get(key) || []).filter((t) => t > cutoff);
+  if (hits.length >= max) {
+    ipHits.set(key, hits);
+    return false;
+  }
+  hits.push(now);
+  ipHits.set(key, hits);
+  return true;
+}
 
 async function fetchCount(table: string): Promise<number> {
   try {
@@ -56,10 +119,34 @@ export default async function handler(request: any, response: any) {
     return response.status(405).json({ success: false, error: 'Method not allowed' });
   }
 
+  // ─── Origin allowlist ─────────────────────────────────────────────────
+  // Reject requests not from aimvantage.uk (or its localhost variants).
+  // Stops scrapers + drive-by abuse where the endpoint URL is discovered
+  // but the attacker is not actually running in a browser on our domain.
+  const origin = (request.headers.origin as string) || undefined;
+  const referer = (request.headers.referer as string) || undefined;
+  if (!isOriginAllowed(origin, referer)) {
+    return response.status(403).json({ success: false, error: 'Origin not allowed' });
+  }
+
+  // ─── Per-IP rate limit ────────────────────────────────────────────────
+  const clientIp = getClientIp(request);
+  if (!checkRateLimit(clientIp, MIN_WINDOW_MS, MIN_MAX, 'min')) {
+    response.setHeader('Retry-After', '60');
+    return response.status(429).json({ success: false, error: 'Too many requests. Try again in a minute.' });
+  }
+  if (!checkRateLimit(clientIp, DAY_WINDOW_MS, DAY_MAX, 'day')) {
+    return response.status(429).json({ success: false, error: 'Daily signup limit reached. Try again tomorrow.' });
+  }
+
   const { email, name } = request.body as WaitlistBody;
 
   if (!email || !email.includes('@')) {
     return response.status(400).json({ success: false, error: 'Valid email required' });
+  }
+  // Reject obviously oversize emails to keep payload small + DB clean.
+  if (email.length > 254 || (name && name.length > 200)) {
+    return response.status(400).json({ success: false, error: 'Email or name too long' });
   }
 
   try {
