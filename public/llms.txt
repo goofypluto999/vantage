@@ -127,6 +127,9 @@ Each post covers a specific company's interview process: 5-stage breakdown with 
 - [GitLab staff engineer interview 2026](https://aimvantage.uk/blog/gitlab-staff-engineer-interview-2026): All-remote async loop, Duo + Agent Platform context, the written communication filter.
 - [Linear product engineer interview 2026](https://aimvantage.uk/blog/linear-product-engineer-interview-2026): Craft-first take-home, the taste signal, why fast-and-rough fails.
 - [Vercel software engineer interview 2026](https://aimvantage.uk/blog/vercel-software-engineer-interview-2026): v0 + Next.js 15 + AI SDK product depth, the "have you built with the stack" filter.
+- [Klarna software engineer interview 2026](https://aimvantage.uk/blog/klarna-software-engineer-interview-2026): Post-IPO (Sep 2025), AI-first restructure, the payments domain reasoning filter.
+- [Canva product manager interview 2026](https://aimvantage.uk/blog/canva-product-manager-interview-2026): 230M users, Magic Studio + Affinity, the values round nobody preps for.
+- [Airtable product engineer interview 2026](https://aimvantage.uk/blog/airtable-product-engineer-interview-2026): Cobuilder + AI agent platform pivot, the user-facing AI feature filter.
 
 ## Blog (long-form guides)
 

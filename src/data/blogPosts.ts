@@ -1177,7 +1177,8 @@ export const blogPosts: BlogPost[] = [
 import { newBlogPosts } from './blogPosts-newDrafts';
 import { newBlogPosts2 } from './blogPosts-newDrafts2';
 import { newBlogPosts3 } from './blogPosts-newDrafts3';
-blogPosts.push(...newBlogPosts, ...newBlogPosts2, ...newBlogPosts3);
+import { newBlogPosts4 } from './blogPosts-newDrafts4';
+blogPosts.push(...newBlogPosts, ...newBlogPosts2, ...newBlogPosts3, ...newBlogPosts4);
 
 export function getPostBySlug(slug: string): BlogPost | undefined {
   return blogPosts.find((p) => p.slug === slug);

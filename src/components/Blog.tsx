@@ -21,6 +21,9 @@ const COMPANY_FILTERS = [
   'GitLab',
   'Linear',
   'Vercel',
+  'Klarna',
+  'Canva',
+  'Airtable',
 ] as const;
 
 type CompanyFilter = typeof COMPANY_FILTERS[number];
