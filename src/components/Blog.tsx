@@ -39,6 +39,9 @@ const COMPANY_FILTERS = [
   'Cursor',
   'Replit',
   'Modal',
+  'Mistral',
+  'xAI',
+  'Perplexity',
 ] as const;
 
 type CompanyFilter = typeof COMPANY_FILTERS[number];

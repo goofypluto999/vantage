@@ -147,6 +147,9 @@ Each post covers a specific company's interview process: 5-stage breakdown with 
 - [Cursor (Anysphere) engineer interview 2026](https://aimvantage.uk/blog/cursor-engineer-interview-2026): The interview happens IN Cursor; daily-usage filter; small-team velocity register.
 - [Replit engineer interview 2026](https://aimvantage.uk/blog/replit-engineer-interview-2026): Replit Agent pivot, multi-tenant container reasoning, agent-first workflow filter.
 - [Modal engineer interview 2026](https://aimvantage.uk/blog/modal-engineer-interview-2026): Hardcore systems shop; built-vs-used filter; billing-accuracy register; GPU bin-packing.
+- [Mistral AI engineer interview 2026](https://aimvantage.uk/blog/mistral-ai-engineer-interview-2026): European-AI strategic context, open-vs-closed-weights register, Paris HQ.
+- [xAI engineer interview 2026](https://aimvantage.uk/blog/xai-engineer-interview-2026): Move-fast operating tempo, Colossus distributed training depth, founders round.
+- [Perplexity engineer interview 2026](https://aimvantage.uk/blog/perplexity-engineer-interview-2026): Retrieval-vs-generation joint optimisation, time-to-first-token budgets, threading model.
 
 ## Blog (long-form guides)
 

@@ -1183,7 +1183,8 @@ import { newBlogPosts6 } from './blogPosts-newDrafts6';
 import { newBlogPosts7 } from './blogPosts-newDrafts7';
 import { newBlogPosts8 } from './blogPosts-newDrafts8';
 import { newBlogPosts9 } from './blogPosts-newDrafts9';
-blogPosts.push(...newBlogPosts, ...newBlogPosts2, ...newBlogPosts3, ...newBlogPosts4, ...newBlogPosts5, ...newBlogPosts6, ...newBlogPosts7, ...newBlogPosts8, ...newBlogPosts9);
+import { newBlogPosts10 } from './blogPosts-newDrafts10';
+blogPosts.push(...newBlogPosts, ...newBlogPosts2, ...newBlogPosts3, ...newBlogPosts4, ...newBlogPosts5, ...newBlogPosts6, ...newBlogPosts7, ...newBlogPosts8, ...newBlogPosts9, ...newBlogPosts10);
 
 export function getPostBySlug(slug: string): BlogPost | undefined {
   return blogPosts.find((p) => p.slug === slug);

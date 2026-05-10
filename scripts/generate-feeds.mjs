@@ -54,6 +54,7 @@ function parseBlogPostsFromTs() {
     'src/data/blogPosts-newDrafts7.ts',
     'src/data/blogPosts-newDrafts8.ts',
     'src/data/blogPosts-newDrafts9.ts',
+    'src/data/blogPosts-newDrafts10.ts',
   ];
   const posts = [];
   const seen = new Set();
