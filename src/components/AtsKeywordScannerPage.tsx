@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, ScanLine, Star, Check, X, AlertTriangle, ShieldCheck } from 'lucide-react';
+import { ArrowRight, ScanLine, Star, Check, X, AlertTriangle, ShieldCheck, Copy } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import SEO from './SEO';
 
@@ -187,8 +187,41 @@ export default function AtsKeywordScannerPage() {
   const [cvText, setCvText] = useState('');
   const [jdText, setJdText] = useState('');
   const [result, setResult] = useState<ScanResult | null>(null);
+  const [summaryCopied, setSummaryCopied] = useState(false);
 
   const canScan = cvText.trim().length >= 100 && jdText.trim().length >= 100;
+
+  /** Build a shareable plain-text summary of the scan result. The user
+   * can paste it into Slack / X / LinkedIn / a colleague's DM. The
+   * Vantage attribution at the bottom is the lightweight distribution
+   * lever -- when readers see the summary, they see where to run their
+   * own. We do NOT include the user's CV or the JD text -- only the
+   * coverage % and the top 8 missing keywords (which leak no PII). */
+  const buildShareableSummary = (r: ScanResult, band: string): string => {
+    const topMissing = r.missingKeywords.slice(0, 8).map((k) => k.keyword).join(', ');
+    const lines = [
+      `ATS keyword coverage: ${r.scorePercent}% (${band})`,
+      `${r.matchedKeywords.length} of ${r.totalKeywords} unique JD keywords matched.`,
+    ];
+    if (topMissing) {
+      lines.push('');
+      lines.push(`Top gaps to close before applying: ${topMissing}`);
+    }
+    lines.push('');
+    lines.push('Scanned with Vantage AI free in-browser tool: aimvantage.uk/ats/scanner');
+    return lines.join('\n');
+  };
+
+  const handleCopySummary = async () => {
+    if (!result || !scoreBand) return;
+    try {
+      await navigator.clipboard.writeText(buildShareableSummary(result, scoreBand.label));
+      setSummaryCopied(true);
+      setTimeout(() => setSummaryCopied(false), 2200);
+    } catch {
+      /* clipboard unavailable; do nothing */
+    }
+  };
 
   const handleScan = () => {
     if (!canScan) return;
@@ -380,13 +413,33 @@ export default function AtsKeywordScannerPage() {
               >
                 {result.scorePercent}%
               </div>
-              <div>
+              <div className="flex-1">
                 <p className={`text-lg font-semibold ${t.text}`}>{scoreBand.label}</p>
                 <p className={`text-sm ${t.textSub} mt-1`}>
                   {result.matchedKeywords.length} of {result.totalKeywords} unique JD keywords matched.
                   {result.matchedPhrases.length > 0 && ` ${result.matchedPhrases.length} multi-word phrases matched.`}
                 </p>
               </div>
+              <button
+                type="button"
+                onClick={handleCopySummary}
+                className={`flex-shrink-0 inline-flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold border transition focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 ${
+                  summaryCopied
+                    ? 'bg-emerald-500/15 border-emerald-500/30 text-emerald-700 dark:text-emerald-300'
+                    : `${t.cardInner} ${t.textSub} hover:opacity-80 ${t.inputBorder}`
+                }`}
+                aria-live="polite"
+              >
+                {summaryCopied ? (
+                  <>
+                    <Check className="w-3.5 h-3.5" aria-hidden="true" /> Copied
+                  </>
+                ) : (
+                  <>
+                    <Copy className="w-3.5 h-3.5" aria-hidden="true" /> Copy summary
+                  </>
+                )}
+              </button>
             </div>
 
             {/* Missing keywords (top priority) */}
