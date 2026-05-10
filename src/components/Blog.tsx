@@ -1,16 +1,41 @@
+import { useMemo, useState } from 'react';
 import { motion } from 'motion/react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, Calendar, Clock, Star } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Calendar, Clock, Star, X } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { blogPosts } from '../data/blogPosts';
 
+// Companies that have a deep-dive interview guide. Order = display order
+// in the filter pill row. Tag name must match the post tags array exactly.
+const COMPANY_FILTERS = [
+  'Stripe',
+  'Anthropic',
+  'OpenAI',
+  'DeepMind',
+  'Cloudflare',
+  'Datadog',
+  'Notion',
+  'Figma',
+  'Spotify',
+  'Revolut',
+] as const;
+
+type CompanyFilter = typeof COMPANY_FILTERS[number];
+
 export default function Blog() {
   const { t } = useTheme();
+  const [activeCompany, setActiveCompany] = useState<CompanyFilter | null>(null);
 
   // Newest first
-  const posts = [...blogPosts].sort((a, b) =>
-    b.publishedAt.localeCompare(a.publishedAt)
+  const allPosts = useMemo(
+    () => [...blogPosts].sort((a, b) => b.publishedAt.localeCompare(a.publishedAt)),
+    []
   );
+
+  const posts = useMemo(() => {
+    if (!activeCompany) return allPosts;
+    return allPosts.filter((p) => p.tags.includes(activeCompany));
+  }, [allPosts, activeCompany]);
 
   return (
     <div className="min-h-screen" style={{ background: t.pageBg }}>
@@ -59,8 +84,95 @@ export default function Blog() {
         </div>
       </header>
 
+      {/* Company filter — added 2026-05-10. 10 long-tail interview-guide
+          posts ship simultaneously; visitors arriving from "<company>
+          interview" Google searches need a 1-click way to jump to their
+          target company's guide. Pill row, not a dropdown — pills are
+          higher signal in topic-cluster SEO and AEO surfaces. */}
+      <section
+        className="max-w-4xl mx-auto px-4 sm:px-6 pb-2"
+        aria-labelledby="blog-company-filter-heading"
+      >
+        <h2 id="blog-company-filter-heading" className="sr-only">
+          Filter by company
+        </h2>
+        <div
+          role="toolbar"
+          aria-label="Filter posts by company interview guide"
+          className="flex flex-wrap items-center gap-2"
+        >
+          <span
+            className={`text-xs font-medium uppercase tracking-wide ${t.textMuted} mr-1`}
+            aria-hidden="true"
+          >
+            Jump to:
+          </span>
+          {COMPANY_FILTERS.map((company) => {
+            const active = activeCompany === company;
+            return (
+              <button
+                key={company}
+                type="button"
+                onClick={() => setActiveCompany(active ? null : company)}
+                aria-pressed={active}
+                className={`text-xs sm:text-sm px-3 py-1.5 rounded-full border transition focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent ${
+                  active
+                    ? 'bg-violet-600 text-white border-violet-600'
+                    : `${t.cardInner} ${t.textSub} border-transparent hover:border-violet-400/50`
+                }`}
+              >
+                {company}
+              </button>
+            );
+          })}
+          {activeCompany && (
+            <button
+              type="button"
+              onClick={() => setActiveCompany(null)}
+              className={`inline-flex items-center gap-1 text-xs sm:text-sm px-3 py-1.5 rounded-full ${t.textSub} hover:opacity-80 underline-offset-2 hover:underline`}
+              aria-label="Clear company filter"
+            >
+              <X className="w-3.5 h-3.5" aria-hidden="true" />
+              Clear
+            </button>
+          )}
+        </div>
+        <p
+          className={`mt-3 text-sm ${t.textMuted}`}
+          aria-live="polite"
+        >
+          {activeCompany
+            ? `Showing ${posts.length} ${posts.length === 1 ? 'post' : 'posts'} tagged ${activeCompany}.`
+            : `Showing all ${allPosts.length} posts. Filter by company for a direct interview guide.`}
+        </p>
+      </section>
+
       {/* Posts */}
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 pb-24">
+      <main className="max-w-4xl mx-auto px-4 sm:px-6 pt-6 pb-24">
+        {posts.length === 0 ? (
+          <div className={`${t.glass} rounded-2xl p-8 text-center`}>
+            <p className={`${t.text} font-semibold`}>
+              No posts yet for {activeCompany}.
+            </p>
+            <p className={`mt-2 ${t.textSub}`}>
+              We're still writing this one. In the meantime, run your CV against the live job link
+              for a 90-second tailored prep pack.
+            </p>
+            <Link
+              to="/register"
+              className="mt-5 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-violet-600 hover:bg-violet-500 text-white font-semibold transition"
+            >
+              Run mine free <ArrowRight className="w-4 h-4" />
+            </Link>
+            <button
+              type="button"
+              onClick={() => setActiveCompany(null)}
+              className={`mt-4 block mx-auto text-sm ${t.textSub} underline-offset-2 hover:underline`}
+            >
+              Show all posts
+            </button>
+          </div>
+        ) : (
         <ul className="space-y-6">
           {posts.map((post) => (
             <li key={post.slug}>
@@ -106,6 +218,7 @@ export default function Blog() {
             </li>
           ))}
         </ul>
+        )}
 
         {/* CTA */}
         <div className={`mt-16 ${t.glass} rounded-2xl p-8 text-center`}>
