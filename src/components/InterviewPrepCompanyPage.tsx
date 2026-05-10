@@ -255,6 +255,41 @@ export default function InterviewPrepCompanyPage() {
           prelude={`Got the role profile, but applications aren't landing? Run the free 60-second diagnostic — it tells you whether your bottleneck is ATS / positioning / proof / market / overqualified-flag, BEFORE you spend hours tailoring for ${pack.company}. No signup, no LLM call, runs in your browser.`}
         />
 
+        {/* Long-form deep-dive cross-link — surfaces the matching 2026
+            interview-guide blog post when one exists for this company.
+            Map is small + hand-maintained because not every company pack
+            has a deep-dive (yet). Adding more companies here as posts
+            ship is a 1-line edit. Section renders only if the lookup hits. */}
+        {(() => {
+          const DEEP_DIVE_BY_SLUG: Record<string, { url: string; title: string }> = {
+            stripe: { url: '/blog/stripe-senior-pm-interview-guide-2026', title: 'Stripe senior PM interview: the 2026 guide nobody writes honestly' },
+            openai: { url: '/blog/openai-applied-research-interview-prep-2026', title: 'OpenAI applied research interview prep: 2026 edition' },
+            anthropic: { url: '/blog/anthropic-ai-safety-interview-questions-2026', title: 'Anthropic AI safety interview questions 2026' },
+            spotify: { url: '/blog/spotify-data-scientist-interview-uk-2026', title: 'Spotify data scientist interview UK 2026' },
+          };
+          const match = DEEP_DIVE_BY_SLUG[pack.slug];
+          if (!match) return null;
+          return (
+            <section className="mt-12">
+              <h3 className={`text-sm uppercase tracking-widest ${t.textMuted} mb-3`}>
+                Want the full process?
+              </h3>
+              <Link
+                to={match.url}
+                className={`block ${t.glass} rounded-xl p-5 hover:-translate-y-0.5 transition-all`}
+              >
+                <p className="text-[10px] font-bold uppercase tracking-widest text-violet-500 mb-2">2026 deep-dive · ~8 min read</p>
+                <h4 className={`font-bold text-lg ${t.text}`}>{match.title}</h4>
+                <p className={`mt-1.5 text-sm ${t.textSub}`}>
+                  Five-stage breakdown with realistic timing, 10 likely interview questions
+                  drawn from real evidence, traps that kill candidates at {pack.company}, and
+                  a 90-minute prep checklist. Read it →
+                </p>
+              </Link>
+            </section>
+          );
+        })()}
+
         <section className="mt-16">
           <h3 className={`text-sm uppercase tracking-widest ${t.textMuted} mb-4`}>
             More company prep packs

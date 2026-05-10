@@ -404,6 +404,74 @@ export default function BlogPost() {
           </div>
         </section>
 
+        {/* Company prep-pack cross-link — when this is one of the 10 long-tail
+            interview-guide posts AND there's a matching company pack at
+            /interview-prep/<slug>, surface the pack as the natural next step.
+            Pack = quick-reference 12-question card; this post = deep-dive
+            process narrative. They're complementary, not duplicates. */}
+        {(() => {
+          const PACK_BY_BLOG_SLUG: Record<string, { packSlug: string; company: string }> = {
+            'stripe-senior-pm-interview-guide-2026': { packSlug: 'stripe', company: 'Stripe' },
+            'anthropic-ai-safety-interview-questions-2026': { packSlug: 'anthropic', company: 'Anthropic' },
+            'openai-applied-research-interview-prep-2026': { packSlug: 'openai', company: 'OpenAI' },
+            'spotify-data-scientist-interview-uk-2026': { packSlug: 'spotify', company: 'Spotify' },
+          };
+          const match = PACK_BY_BLOG_SLUG[post.slug];
+          if (!match) return null;
+          return (
+            <section className="mt-16">
+              <h3 className={`text-sm uppercase tracking-widest ${t.textMuted} mb-3`}>
+                Quick-reference pack for this company
+              </h3>
+              <Link
+                to={`/interview-prep/${match.packSlug}`}
+                className={`block ${t.glass} rounded-xl p-5 hover:-translate-y-0.5 transition-all`}
+              >
+                <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-500 mb-2">Companion · 1-card cheat sheet</p>
+                <h4 className={`font-bold text-lg ${t.text}`}>{match.company} interview prep pack</h4>
+                <p className={`mt-1.5 text-sm ${t.textSub}`}>
+                  12 likely questions, 5 prep steps, common mistakes that bin candidates,
+                  and FAQ — formatted as a quick-reference card you can pull up the morning
+                  of the interview. Free, no signup. View pack →
+                </p>
+              </Link>
+            </section>
+          );
+        })()}
+
+        {/* For interview-guide posts that don't yet have a matching company
+            pack, point at the /interview-prep hub instead so the user can
+            still find related material. Soft cross-link, not pushy. */}
+        {(() => {
+          const INTERVIEW_GUIDE_NO_PACK = new Set([
+            'datadog-software-engineer-interview-guide-2026',
+            'revolut-product-designer-interview-process-2026',
+            'cloudflare-product-manager-interview-2026',
+            'figma-product-designer-interview-2026',
+            'deepmind-research-scientist-interview-2026',
+            'notion-software-engineer-interview-2026',
+          ]);
+          if (!INTERVIEW_GUIDE_NO_PACK.has(post.slug)) return null;
+          return (
+            <section className="mt-16">
+              <h3 className={`text-sm uppercase tracking-widest ${t.textMuted} mb-3`}>
+                Other company interview prep
+              </h3>
+              <Link
+                to="/interview-prep"
+                className={`block ${t.glass} rounded-xl p-5 hover:-translate-y-0.5 transition-all`}
+              >
+                <p className="text-[10px] font-bold uppercase tracking-widest text-violet-500 mb-2">Hub · 40+ companies</p>
+                <h4 className={`font-bold text-lg ${t.text}`}>Interview prep packs by company</h4>
+                <p className={`mt-1.5 text-sm ${t.textSub}`}>
+                  Quick-reference cards for 40+ companies — 12 likely questions, 5 prep steps,
+                  common mistakes per company. Free, no signup. Browse packs →
+                </p>
+              </Link>
+            </section>
+          );
+        })()}
+
         {/* Related posts */}
         {related.length > 0 && (
           <section className="mt-16">
