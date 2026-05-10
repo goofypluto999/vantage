@@ -202,6 +202,9 @@ Each post covers a specific company's interview process: 5-stage breakdown with 
 - [Cloudflare software engineer interview 2026](https://aimvantage.uk/blog/cloudflare-software-engineer-interview-2026): Edge + Workers + R2 + Workers AI + Hyperdrive dev-platform pivot, anycast + V8-isolate runtime depth, AWS-replacement thesis.
 - [HubSpot software engineer interview 2026](https://aimvantage.uk/blog/hubspot-software-engineer-interview-2026): Smart CRM unification + Breeze AI agents across 5 Hubs, SMB-product register, HEART Culture Code interview register.
 - [Atlassian software engineer interview 2026](https://aimvantage.uk/blog/atlassian-software-engineer-interview-2026): Post-Server-EOL Cloud-only + Loom integration + Rovo cross-product agents, multi-tenant + permission-boundary depth, Atlassian values.
+- [Coinbase software engineer interview 2026](https://aimvantage.uk/blog/coinbase-software-engineer-interview-2026): Post-Base L2 + onchain platform pivot, USDC + x402 agentic payments, regulated-fintech + post-SEC-litigation register.
+- [Robinhood software engineer interview 2026](https://aimvantage.uk/blog/robinhood-software-engineer-interview-2026): Post-Bitstamp + Robinhood Legend + 24/5 stocks + futures, regulated retail brokerage depth, post-meme-stock register.
+- [Plaid software engineer interview 2026](https://aimvantage.uk/blog/plaid-software-engineer-interview-2026): Post-CFPB Section 1033 open-banking pivot, 10K+ institution integration reality, Layer + Signal + Identity network thesis.
 
 ## Blog (long-form guides)
 

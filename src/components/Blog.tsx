@@ -78,6 +78,9 @@ const COMPANY_FILTERS = [
   'Cloudflare',
   'HubSpot',
   'Atlassian',
+  'Coinbase',
+  'Robinhood',
+  'Plaid',
 ] as const;
 
 type CompanyFilter = typeof COMPANY_FILTERS[number];
