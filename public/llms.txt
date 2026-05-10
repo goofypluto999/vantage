@@ -168,6 +168,9 @@ Each post covers a specific company's interview process: 5-stage breakdown with 
 - [Google software engineer interview 2026](https://aimvantage.uk/blog/google-software-engineer-interview-2026): Post-Gemini system design bar, hiring committee + team match dual gate, Googleyness rubric.
 - [Meta software engineer interview 2026](https://aimvantage.uk/blog/meta-software-engineer-interview-2026): Post-April-layoff AI pivot, IC4+ system design with AI angle, real Meta-stack reasoning expected.
 - [Salesforce engineer interview 2026](https://aimvantage.uk/blog/salesforce-engineer-interview-2026): Agentforce + multi-tenant platform reasoning at Fortune 500 scale, Ohana values round.
+- [Tesla software engineer interview 2026](https://aimvantage.uk/blog/tesla-software-engineer-interview-2026): FSD-era systems depth, real-time perception-to-planning latency budgets, founders-round directness.
+- [Netflix software engineer interview 2026](https://aimvantage.uk/blog/netflix-software-engineer-interview-2026): Senior-only hiring, Keeper Test framing, no-management-needed autonomy stories.
+- [Coinbase software engineer interview 2026](https://aimvantage.uk/blog/coinbase-software-engineer-interview-2026): Post-correction efficiency mandate, blockchain reasoning at production scale, regulatory awareness.
 
 ## Blog (long-form guides)
 

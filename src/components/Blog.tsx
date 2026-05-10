@@ -45,6 +45,9 @@ const COMPANY_FILTERS = [
   'Google',
   'Meta',
   'Salesforce',
+  'Tesla',
+  'Netflix',
+  'Coinbase',
 ] as const;
 
 type CompanyFilter = typeof COMPANY_FILTERS[number];
