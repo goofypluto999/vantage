@@ -108,48 +108,54 @@ export default function ToolsPage() {
       {
         '@type': 'ListItem',
         position: 15,
+        url: `${SITE_URL}/tools/30-60-90-plan`,
+        name: '30/60/90 Day Plan Generator',
+      },
+      {
+        '@type': 'ListItem',
+        position: 16,
         url: `${SITE_URL}/tools/thank-you-note`,
         name: 'Post-Interview Thank-You Note Generator',
       },
       {
         '@type': 'ListItem',
-        position: 16,
+        position: 17,
         url: `${SITE_URL}/tools/linkedin-about`,
         name: 'LinkedIn Headline + About Rewriter',
       },
       {
         '@type': 'ListItem',
-        position: 17,
+        position: 18,
         url: `${SITE_URL}/tools/recruiter-reply`,
         name: 'Recruiter Cold-DM Reply Generator',
       },
       {
         '@type': 'ListItem',
-        position: 18,
+        position: 19,
         url: `${SITE_URL}/tools/cold-email-hiring-manager`,
         name: 'Cold Email to Hiring Manager Generator',
       },
       {
         '@type': 'ListItem',
-        position: 19,
+        position: 20,
         url: `${SITE_URL}/tools/star-story-builder`,
         name: 'STAR Story Builder',
       },
       {
         '@type': 'ListItem',
-        position: 20,
+        position: 21,
         url: `${SITE_URL}/interview-prep`,
         name: 'Interview Prep Packs by Company',
       },
       {
         '@type': 'ListItem',
-        position: 21,
+        position: 22,
         url: `${SITE_URL}/interview-questions`,
         name: 'Interview Questions by Role',
       },
       {
         '@type': 'ListItem',
-        position: 22,
+        position: 23,
         url: `${SITE_URL}/laid-off`,
         name: 'Layoff Recovery Guide (April-May 2026 cohort)',
       },
@@ -528,6 +534,25 @@ export default function ToolsPage() {
                   </p>
                 </div>
                 <Phone className="w-5 h-5 text-violet-400 flex-shrink-0" />
+              </div>
+            </Link>
+            <Link
+              to="/tools/30-60-90-plan"
+              className={`${t.glass} rounded-xl p-5 hover:border-violet-400/40 transition group block`}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <div className={`text-xs uppercase tracking-widest ${t.textMuted} font-bold`}>
+                    Free · No signup · The "first 90 days" question
+                  </div>
+                  <h3 className={`text-lg font-bold ${t.text} mt-1 group-hover:text-violet-500 transition`}>
+                    30 / 60 / 90 Day Plan Generator
+                  </h3>
+                  <p className={`text-sm ${t.textSub} mt-2 leading-relaxed`}>
+                    Pick role type (10 options) + level + company stage. Get a calibrated 90-day plan with objectives, deliverables, success metrics, risk callout, and the closing question to ask the hiring manager. The single most common final-round prompt for senior+ roles. Templates branched per role + level + stage.
+                  </p>
+                </div>
+                <Calendar className="w-5 h-5 text-violet-400 flex-shrink-0" />
               </div>
             </Link>
             <Link

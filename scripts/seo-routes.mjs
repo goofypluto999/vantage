@@ -146,6 +146,11 @@ const STATIC_ROUTES = [
     description: 'Free in-browser reference call brief generator. Add your references. Get a 1-page brief for each: strengths to anchor on, 3 stories to have ready, likely questions by relationship type, plus an email template to send 1-2 days before the call. Pure client-side. No signup.',
   },
   {
+    path: '/tools/30-60-90-plan',
+    title: 'Free 30/60/90 Day Plan Generator — Final-Round + First-Week-On-The-Job | Vantage',
+    description: 'Free in-browser 30/60/90 day plan generator. Pick role + level + company stage + the hiring manager top priority. Get a calibrated 90-day plan with objectives, deliverables, success metrics, risk callout, and the closing question to ask. Pure client-side. No signup.',
+  },
+  {
     path: '/tools/thank-you-note',
     title: 'Free Post-Interview Thank-You Note Generator — Tone-Calibrated | Vantage',
     description: 'Pick tone, round type, sentiment, hours since call. Get a calibrated thank-you note that anchors on specific topics from your conversation. Plus 7 sending tips. No signup.',
