@@ -24,7 +24,9 @@ export default function SampleAnalysisPage() {
   const sample = slug ? getSampleAnalysis(slug) : undefined;
 
   if (!sample) {
-    return <Navigate to="/" replace />;
+    // Invalid slug → real 404 instead of silent home redirect (preserves
+    // crawler signals + tells the user their shared link is broken).
+    return <Navigate to="/404" replace />;
   }
 
   return <SampleAnalysisContent sample={sample} t={t} />;

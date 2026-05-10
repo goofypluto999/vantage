@@ -249,7 +249,7 @@ export default function Pricing({ onLogin, onRegister, onCheckout, isAuthenticat
                     <Icon className="w-5 h-5" style={{ color: plan.color }} />
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold text-white">{plan.name}</h3>
+                    <h2 className="text-xl font-bold text-white">{plan.name}</h2>
                     <p className="text-white/50 text-sm">
                       {plan.packs} prep pack{plan.packs === 1 ? '' : 's'}
                       <span className="text-white/30"> · {plan.tokens} tokens</span>

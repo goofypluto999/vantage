@@ -67,6 +67,7 @@ const CaseStudiesHub = React.lazy(() => import('./components/CaseStudiesHub'));
 const CaseStudyPage = React.lazy(() => import('./components/CaseStudyPage'));
 const SampleAnalysisPage = React.lazy(() => import('./components/SampleAnalysisPage'));
 const DemoPreviewPage = React.lazy(() => import('./components/DemoPreviewPage'));
+const NotFoundPage = React.lazy(() => import('./components/NotFoundPage'));
 import ThemeProvider from './contexts/ThemeContext';
 import { CurrencyProvider, useCurrency } from './contexts/CurrencyContext';
 
@@ -561,7 +562,11 @@ function AppContent() {
                 <Admin />
               </ProtectedRoute>
             } />
-            <Route path="*" element={<Navigate to="/" replace />} />
+            {/* Catch-all 404 — replaces the silent <Navigate to="/"> redirect.
+                A real noindex page tells crawlers the URL doesn't exist (clean
+                drop from index instead of soft-404 dilution) and gives users
+                4-5 destination links instead of dumping them on home. */}
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
           </React.Suspense>
           <CookieConsent />
