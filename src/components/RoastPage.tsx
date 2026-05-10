@@ -302,7 +302,7 @@ export default function RoastPage() {
               >
                 {loading ? (
                   <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" />
                     Roasting…
                   </>
                 ) : (
@@ -319,7 +319,7 @@ export default function RoastPage() {
         {/* Error */}
         {error && (
           <div className={`flex items-start gap-2 p-4 mb-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-700 dark:text-rose-300 text-sm`}>
-            <AlertTriangle className="w-4 h-4 mt-0.5 flex-shrink-0" />
+            <AlertTriangle className="w-4 h-4 mt-0.5 flex-shrink-0" aria-hidden="true" />
             <div>{error}</div>
           </div>
         )}
@@ -348,21 +348,21 @@ export default function RoastPage() {
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-black/90 text-white text-sm font-medium hover:opacity-90 transition-opacity"
                 type="button"
               >
-                <Twitter className="w-4 h-4" /> Share on X
+                <Twitter className="w-4 h-4" aria-hidden="true" /> Share on X
               </button>
               <button
                 onClick={shareLinkedin}
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#0A66C2] text-white text-sm font-medium hover:opacity-90 transition-opacity"
                 type="button"
               >
-                <Linkedin className="w-4 h-4" /> Share on LinkedIn
+                <Linkedin className="w-4 h-4" aria-hidden="true" /> Share on LinkedIn
               </button>
               <button
                 onClick={copyRoast}
                 className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-white/15 text-sm font-medium hover:bg-black/5 dark:hover:bg-white/5 transition-colors ${t.textSub}`}
                 type="button"
               >
-                <Copy className="w-4 h-4" /> Copy roast
+                <Copy className="w-4 h-4" aria-hidden="true" /> Copy roast
               </button>
             </div>
 
@@ -391,7 +391,7 @@ export default function RoastPage() {
                   to="/register"
                   className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-white/15 text-white/80 font-semibold hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
                 >
-                  Start fresh <ArrowRight className="w-4 h-4" />
+                  Start fresh <ArrowRight className="w-4 h-4" aria-hidden="true" />
                 </Link>
               </div>
               <p className={`text-[11px] mt-2 ${t.textMuted}`}>

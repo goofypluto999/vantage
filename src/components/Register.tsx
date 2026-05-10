@@ -55,7 +55,7 @@ export default function Register() {
       <div className="min-h-screen flex items-center justify-center p-8" style={{ background: 'linear-gradient(135deg, #0d0b1e 0%, #1a1635 100%)' }}>
         <div className="max-w-md text-center">
           <div className="w-16 h-16 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center mx-auto mb-4">
-            <Check className="w-8 h-8 text-emerald-400" />
+            <Check className="w-8 h-8 text-emerald-400" aria-hidden="true" />
           </div>
           <h2 className="text-2xl font-display font-bold text-white mb-3">Account created — almost there.</h2>
           <p className="text-white/70 mb-4">
@@ -107,12 +107,12 @@ export default function Register() {
           <div className="flex items-center justify-between mb-6">
             <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-600 to-purple-600 flex items-center justify-center">
-                <BrainCircuit className="w-5 h-5 text-white" />
+                <BrainCircuit className="w-5 h-5 text-white" aria-hidden="true" />
               </div>
               <span className="text-2xl font-display font-bold text-white">Vantage</span>
             </Link>
             <Link to="/" className="flex items-center gap-1.5 text-white/60 hover:text-white/70 text-sm transition-colors">
-              <ArrowLeft className="w-4 h-4" />
+              <ArrowLeft className="w-4 h-4" aria-hidden="true" />
               Home
             </Link>
           </div>
@@ -128,11 +128,11 @@ export default function Register() {
           <div className="lg:hidden mb-6 rounded-xl bg-white/[0.03] border border-white/10 p-4">
             <div className="text-xs uppercase tracking-wider text-white/60 mb-2 font-bold">What 10 free prep packs include</div>
             <ul className="space-y-1.5 text-white/75 text-sm">
-              <li className="flex items-start gap-2"><Check className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" /><span>Company-research write-up per role</span></li>
-              <li className="flex items-start gap-2"><Check className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" /><span>Tailored cover letter (4 tones)</span></li>
-              <li className="flex items-start gap-2"><Check className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" /><span>8–12 likely interview questions</span></li>
-              <li className="flex items-start gap-2"><Check className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" /><span>5-minute pitch outline</span></li>
-              <li className="flex items-start gap-2"><Check className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" /><span>Free ATS preview across 5 parsers</span></li>
+              <li className="flex items-start gap-2"><Check className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" aria-hidden="true" /><span>Company-research write-up per role</span></li>
+              <li className="flex items-start gap-2"><Check className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" aria-hidden="true" /><span>Tailored cover letter (4 tones)</span></li>
+              <li className="flex items-start gap-2"><Check className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" aria-hidden="true" /><span>8–12 likely interview questions</span></li>
+              <li className="flex items-start gap-2"><Check className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" aria-hidden="true" /><span>5-minute pitch outline</span></li>
+              <li className="flex items-start gap-2"><Check className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" aria-hidden="true" /><span>Free ATS preview across 5 parsers</span></li>
             </ul>
           </div>
 
@@ -151,7 +151,7 @@ export default function Register() {
             disabled={loading}
             className="w-full mb-4 py-3.5 rounded-xl bg-white text-[#2D2B4E] font-bold hover:bg-white/90 transition-colors flex items-center justify-center gap-3 disabled:opacity-50 shadow-[0_4px_16px_rgba(0,0,0,0.15)]"
           >
-            <Chrome className="w-5 h-5 text-[#4285F4]" />
+            <Chrome className="w-5 h-5 text-[#4285F4]" aria-hidden="true" />
             <span>Continue with Google</span>
           </button>
           <p className="text-center text-[11px] text-emerald-300/80 mb-5 font-medium">
@@ -171,7 +171,7 @@ export default function Register() {
             <div>
               <label htmlFor="register-name" className="block text-sm font-semibold text-white/70 mb-2">Full Name</label>
               <div className="relative">
-                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/55" />
+                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/55" aria-hidden="true" />
                 <input
                   id="register-name"
                   type="text"
@@ -190,7 +190,7 @@ export default function Register() {
             <div>
               <label htmlFor="register-email" className="block text-sm font-semibold text-white/70 mb-2">Email</label>
               <div className="relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/55" />
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/55" aria-hidden="true" />
                 <input
                   id="register-email"
                   type="email"
@@ -208,7 +208,7 @@ export default function Register() {
             <div>
               <label htmlFor="register-password" className="block text-sm font-semibold text-white/70 mb-2">Password</label>
               <div className="relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/55" />
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/55" aria-hidden="true" />
                 <input
                   id="register-password"
                   type={showPassword ? 'text' : 'password'}
@@ -226,7 +226,7 @@ export default function Register() {
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
                   className="absolute right-4 top-1/2 -translate-y-1/2 text-white/55 hover:text-white/50"
                 >
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  {showPassword ? <EyeOff className="w-5 h-5" aria-hidden="true" /> : <Eye className="w-5 h-5" aria-hidden="true" />}
                 </button>
               </div>
             </div>
@@ -235,7 +235,7 @@ export default function Register() {
                 visitors off at signup (every CTA elsewhere says "free" but the picker
                 screamed paid plans). Plan picker now lives on dashboard, post-signup. */}
             <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/[0.04] p-4 flex items-start gap-3">
-              <Check className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
+              <Check className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" aria-hidden="true" />
               <div className="text-sm">
                 <div className="text-white font-semibold">10 free tokens on us — that's 10 full prep packs.</div>
                 <div className="text-white/60 mt-0.5">
@@ -254,7 +254,7 @@ export default function Register() {
                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
               ) : (
                 <>
-                  Create Account <ArrowRight className="w-5 h-5" />
+                  Create Account <ArrowRight className="w-5 h-5" aria-hidden="true" />
                 </>
               )}
             </button>
@@ -277,11 +277,11 @@ export default function Register() {
             What 10 free prep packs get you
           </h2>
           <ul className="space-y-3 text-white/85 text-base">
-            <li className="flex items-start gap-3"><Check className="w-5 h-5 text-white flex-shrink-0 mt-0.5" /><span>One company-research write-up per role (mission, culture, recent moves)</span></li>
-            <li className="flex items-start gap-3"><Check className="w-5 h-5 text-white flex-shrink-0 mt-0.5" /><span>One tailored cover letter — switchable across 4 tones</span></li>
-            <li className="flex items-start gap-3"><Check className="w-5 h-5 text-white flex-shrink-0 mt-0.5" /><span>8–12 likely interview questions, generated from the actual JD</span></li>
-            <li className="flex items-start gap-3"><Check className="w-5 h-5 text-white flex-shrink-0 mt-0.5" /><span>A 5-minute pitch outline you can rehearse out loud</span></li>
-            <li className="flex items-start gap-3"><Check className="w-5 h-5 text-white flex-shrink-0 mt-0.5" /><span>A free ATS preview that shows whether 5 major parsers will read your CV cleanly</span></li>
+            <li className="flex items-start gap-3"><Check className="w-5 h-5 text-white flex-shrink-0 mt-0.5" aria-hidden="true" /><span>One company-research write-up per role (mission, culture, recent moves)</span></li>
+            <li className="flex items-start gap-3"><Check className="w-5 h-5 text-white flex-shrink-0 mt-0.5" aria-hidden="true" /><span>One tailored cover letter — switchable across 4 tones</span></li>
+            <li className="flex items-start gap-3"><Check className="w-5 h-5 text-white flex-shrink-0 mt-0.5" aria-hidden="true" /><span>8–12 likely interview questions, generated from the actual JD</span></li>
+            <li className="flex items-start gap-3"><Check className="w-5 h-5 text-white flex-shrink-0 mt-0.5" aria-hidden="true" /><span>A 5-minute pitch outline you can rehearse out loud</span></li>
+            <li className="flex items-start gap-3"><Check className="w-5 h-5 text-white flex-shrink-0 mt-0.5" aria-hidden="true" /><span>A free ATS preview that shows whether 5 major parsers will read your CV cleanly</span></li>
           </ul>
           <p className="text-white/60 text-sm mt-6 leading-relaxed">
             Built solo by Giovanni Sizino Ennes (UK independent founder). No paywalls hidden behind the signup button. Stripe-only billing.

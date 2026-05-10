@@ -123,7 +123,7 @@ export default function Account() {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-600 to-purple-600 flex items-center justify-center">
-              <Sparkles className="w-4 h-4 text-white" />
+              <Sparkles className="w-4 h-4 text-white" aria-hidden="true" />
             </div>
             <span className="text-lg font-display font-bold text-white">Vantage</span>
           </div>
@@ -132,7 +132,7 @@ export default function Account() {
             onClick={() => navigate('/dashboard')}
             className="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-white/5 text-white/50 hover:text-white transition-colors text-sm"
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft className="w-4 h-4" aria-hidden="true" />
             Back to Dashboard
           </button>
         </div>
@@ -148,7 +148,7 @@ export default function Account() {
 
           {error && (
             <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm flex items-center gap-2">
-              <AlertTriangle className="w-4 h-4 flex-shrink-0" />
+              <AlertTriangle className="w-4 h-4 flex-shrink-0" aria-hidden="true" />
               {error}
             </div>
           )}
@@ -156,7 +156,7 @@ export default function Account() {
           {/* Profile Info */}
           <section className="p-6 rounded-2xl bg-white/5 border border-white/10 mb-5">
             <div className="flex items-center gap-3 mb-5">
-              <User className="w-5 h-5 text-violet-400" />
+              <User className="w-5 h-5 text-violet-400" aria-hidden="true" />
               <h2 className="text-lg font-bold text-white">Profile</h2>
             </div>
 
@@ -170,13 +170,13 @@ export default function Account() {
                 />
               ) : (
                 <div className="w-14 h-14 rounded-full bg-violet-500/20 border-2 border-violet-500/30 flex items-center justify-center">
-                  <User className="w-6 h-6 text-violet-400" />
+                  <User className="w-6 h-6 text-violet-400" aria-hidden="true" />
                 </div>
               )}
               <div>
                 <p className="text-white font-semibold">{profile?.full_name || 'No name set'}</p>
                 <div className="flex items-center gap-1.5 text-white/60 text-sm">
-                  <Mail className="w-3.5 h-3.5" />
+                  <Mail className="w-3.5 h-3.5" aria-hidden="true" />
                   {user?.email || profile?.email}
                 </div>
               </div>
@@ -214,7 +214,7 @@ export default function Account() {
             ) : (
               <div className="flex items-center gap-2">
                 <span className="text-white/70 text-sm">{profile?.full_name || 'Not set'}</span>
-                {nameSuccess && <Check className="w-4 h-4 text-emerald-400" />}
+                {nameSuccess && <Check className="w-4 h-4 text-emerald-400" aria-hidden="true" />}
                 <button
                   onClick={() => { setEditingName(true); setNameValue(profile?.full_name || ''); }}
                   className="ml-auto text-violet-400 text-sm hover:text-violet-300 transition-colors"
@@ -228,7 +228,7 @@ export default function Account() {
           {/* Subscription */}
           <section className="p-6 rounded-2xl bg-white/5 border border-white/10 mb-5">
             <div className="flex items-center gap-3 mb-5">
-              <CreditCard className="w-5 h-5 text-violet-400" />
+              <CreditCard className="w-5 h-5 text-violet-400" aria-hidden="true" />
               <h2 className="text-lg font-bold text-white">Subscription</h2>
             </div>
 
@@ -306,7 +306,7 @@ export default function Account() {
                   disabled={portalLoading}
                   className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white/5 border border-white/10 text-white text-sm font-semibold hover:bg-white/10 transition-colors disabled:opacity-50"
                 >
-                  <ExternalLink className="w-4 h-4" />
+                  <ExternalLink className="w-4 h-4" aria-hidden="true" />
                   {portalLoading ? 'Opening...' : 'Manage Subscription'}
                 </button>
               ) : (
@@ -314,7 +314,7 @@ export default function Account() {
                   onClick={() => navigate('/pricing')}
                   className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-gradient-to-r from-violet-600 to-purple-600 text-white text-sm font-bold hover:from-violet-500 hover:to-purple-500 transition-all"
                 >
-                  <Zap className="w-4 h-4" />
+                  <Zap className="w-4 h-4" aria-hidden="true" />
                   Subscribe
                 </button>
               )}
@@ -322,7 +322,7 @@ export default function Account() {
                 onClick={() => navigate('/pricing')}
                 className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white/5 border border-white/10 text-white/70 text-sm font-semibold hover:bg-white/10 transition-colors"
               >
-                <Crown className="w-4 h-4" />
+                <Crown className="w-4 h-4" aria-hidden="true" />
                 {hasActiveSub ? 'Upgrade Plan' : 'View Plans'}
               </button>
             </div>
@@ -331,7 +331,7 @@ export default function Account() {
           {/* Password */}
           <section className="p-6 rounded-2xl bg-white/5 border border-white/10 mb-5">
             <div className="flex items-center gap-3 mb-5">
-              <Shield className="w-5 h-5 text-violet-400" />
+              <Shield className="w-5 h-5 text-violet-400" aria-hidden="true" />
               <h2 className="text-lg font-bold text-white">Password</h2>
             </div>
 
@@ -355,7 +355,7 @@ export default function Account() {
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-2.5 top-1/2 -translate-y-1/2 text-white/55 hover:text-white/60 transition-colors"
                   >
-                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    {showPassword ? <EyeOff className="w-4 h-4" aria-hidden="true" /> : <Eye className="w-4 h-4" aria-hidden="true" />}
                   </button>
                 </div>
               </div>
@@ -377,14 +377,14 @@ export default function Account() {
 
             {passwordError && (
               <div className="mb-3 text-red-400 text-sm flex items-center gap-1.5">
-                <AlertTriangle className="w-3.5 h-3.5" />
+                <AlertTriangle className="w-3.5 h-3.5" aria-hidden="true" />
                 {passwordError}
               </div>
             )}
 
             {passwordSuccess && (
               <div className="mb-3 text-emerald-400 text-sm flex items-center gap-1.5">
-                <Check className="w-3.5 h-3.5" />
+                <Check className="w-3.5 h-3.5" aria-hidden="true" />
                 Password updated successfully
               </div>
             )}
@@ -394,7 +394,7 @@ export default function Account() {
               disabled={passwordSaving || !newPassword || !confirmPassword}
               className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-violet-600 text-white text-sm font-semibold hover:bg-violet-500 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
             >
-              <Lock className="w-4 h-4" />
+              <Lock className="w-4 h-4" aria-hidden="true" />
               {passwordSaving ? 'Updating...' : 'Change Password'}
             </button>
           </section>
@@ -402,7 +402,7 @@ export default function Account() {
           {/* Danger Zone */}
           <section className="p-6 rounded-2xl bg-red-500/5 border border-red-500/15 mb-5">
             <div className="flex items-center gap-3 mb-4">
-              <LogOut className="w-5 h-5 text-red-400" />
+              <LogOut className="w-5 h-5 text-red-400" aria-hidden="true" />
               <h2 className="text-lg font-bold text-white">Danger Zone</h2>
             </div>
             <p className="text-white/60 text-sm mb-4">Sign out of your account on this device.</p>
@@ -410,7 +410,7 @@ export default function Account() {
               onClick={handleSignOut}
               className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm font-semibold hover:bg-red-500/20 transition-colors"
             >
-              <LogOut className="w-4 h-4" />
+              <LogOut className="w-4 h-4" aria-hidden="true" />
               Sign Out
             </button>
           </section>

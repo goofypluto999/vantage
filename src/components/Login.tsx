@@ -47,12 +47,12 @@ export default function Login() {
           <div className="flex items-center justify-between mb-8">
             <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-600 to-purple-600 flex items-center justify-center">
-                <BrainCircuit className="w-5 h-5 text-white" />
+                <BrainCircuit className="w-5 h-5 text-white" aria-hidden="true" />
               </div>
               <span className="text-2xl font-display font-bold text-white">Vantage</span>
             </Link>
             <Link to="/" className="flex items-center gap-1.5 text-white/60 hover:text-white/70 text-sm transition-colors">
-              <ArrowLeft className="w-4 h-4" />
+              <ArrowLeft className="w-4 h-4" aria-hidden="true" />
               Home
             </Link>
           </div>
@@ -109,7 +109,7 @@ export default function Login() {
             disabled={loading}
             className="w-full mb-5 py-3.5 rounded-xl bg-white text-[#2D2B4E] font-bold hover:bg-white/90 transition-colors flex items-center justify-center gap-3 disabled:opacity-50 shadow-[0_4px_16px_rgba(0,0,0,0.15)]"
           >
-            <Chrome className="w-5 h-5 text-[#4285F4]" />
+            <Chrome className="w-5 h-5 text-[#4285F4]" aria-hidden="true" />
             <span>Continue with Google</span>
           </button>
 
@@ -126,7 +126,7 @@ export default function Login() {
             <div>
               <label htmlFor="login-email" className="block text-sm font-semibold text-white/70 mb-2">Email</label>
               <div className="relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/55" />
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/55" aria-hidden="true" />
                 <input
                   id="login-email"
                   type="email"
@@ -150,7 +150,7 @@ export default function Login() {
                 </Link>
               </div>
               <div className="relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/55" />
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/55" aria-hidden="true" />
                 <input
                   id="login-password"
                   type={showPassword ? 'text' : 'password'}
@@ -167,7 +167,7 @@ export default function Login() {
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
                   className="absolute right-4 top-1/2 -translate-y-1/2 text-white/55 hover:text-white/50"
                 >
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  {showPassword ? <EyeOff className="w-5 h-5" aria-hidden="true" /> : <Eye className="w-5 h-5" aria-hidden="true" />}
                 </button>
               </div>
             </div>
@@ -181,7 +181,7 @@ export default function Login() {
                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
               ) : (
                 <>
-                  Sign In <ArrowRight className="w-5 h-5" />
+                  Sign In <ArrowRight className="w-5 h-5" aria-hidden="true" />
                 </>
               )}
             </button>

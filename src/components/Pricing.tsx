@@ -127,7 +127,7 @@ export default function Pricing({ onLogin, onRegister, onCheckout, isAuthenticat
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <a href="/" className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-600 to-purple-600 flex items-center justify-center">
-              <Star className="w-4 h-4 text-white" />
+              <Star className="w-4 h-4 text-white" aria-hidden="true" />
             </div>
             <span className="text-lg font-display font-bold text-white">Vantage</span>
           </a>
@@ -269,7 +269,7 @@ export default function Pricing({ onLogin, onRegister, onCheckout, isAuthenticat
                 <ul className="space-y-3 mb-8">
                   {plan.features.map((feature, i) => (
                     <li key={i} className="flex items-start gap-3">
-                      <Check className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
+                      <Check className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" aria-hidden="true" />
                       <span className="text-white/70">{feature}</span>
                     </li>
                   ))}
@@ -285,7 +285,7 @@ export default function Pricing({ onLogin, onRegister, onCheckout, isAuthenticat
                 >
                   {isAuthenticated
                     ? (plan.isTopup ? `Buy ${plan.packs} prep packs` : `Subscribe to ${plan.name}`)
-                    : 'Start free first'} <ArrowRight className="w-5 h-5" />
+                    : 'Start free first'} <ArrowRight className="w-5 h-5" aria-hidden="true" />
                 </button>
               </div>
             );

@@ -193,7 +193,7 @@ export default function GhostJobCheckPage() {
               disabled={loading || jobDescription.length < 100}
               className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] text-white font-semibold hover:opacity-95 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? <><Loader2 className="w-4 h-4 animate-spin" /> Checking…</> : <>Check it <ArrowRight className="w-4 h-4" /></>}
+              {loading ? <><Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" /> Checking…</> : <>Check it <ArrowRight className="w-4 h-4" aria-hidden="true" /></>}
             </button>
             {/* Sample loaders — added 2026-05-08. Three realistic JDs
                 spanning ghost / mixed / real shapes so visitors can see
@@ -227,7 +227,7 @@ export default function GhostJobCheckPage() {
 
         {error && (
           <div className="flex items-start gap-2 p-4 mb-6 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-700 dark:text-rose-300 text-sm">
-            <AlertTriangle className="w-4 h-4 mt-0.5 flex-shrink-0" />
+            <AlertTriangle className="w-4 h-4 mt-0.5 flex-shrink-0" aria-hidden="true" />
             <div>{error}</div>
           </div>
         )}
@@ -236,7 +236,7 @@ export default function GhostJobCheckPage() {
           <div className={`${t.glass} rounded-2xl p-6 md:p-8 mb-8`}>
             <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
               <div className={`flex items-center gap-2 text-xs uppercase tracking-wider ${t.textMuted}`}>
-                <Ghost className="w-3.5 h-3.5" /> Ghost-job check
+                <Ghost className="w-3.5 h-3.5" aria-hidden="true" /> Ghost-job check
               </div>
               <span className={`inline-flex px-3 py-1 rounded-full text-xs font-medium border ${probColor(result.ghostProbability)}`}>
                 {result.ghostProbability}% ghost probability
@@ -278,7 +278,7 @@ export default function GhostJobCheckPage() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-black/90 text-white text-xs font-medium hover:opacity-90 transition-opacity"
               >
-                <Twitter className="w-3.5 h-3.5" /> Share on X
+                <Twitter className="w-3.5 h-3.5" aria-hidden="true" /> Share on X
               </a>
               <a
                 href={liUrl}
@@ -286,14 +286,14 @@ export default function GhostJobCheckPage() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#0A66C2] text-white text-xs font-medium hover:opacity-90 transition-opacity"
               >
-                <Linkedin className="w-3.5 h-3.5" /> LinkedIn
+                <Linkedin className="w-3.5 h-3.5" aria-hidden="true" /> LinkedIn
               </a>
               <button
                 type="button"
                 onClick={copyResult}
                 className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-white/15 text-xs font-medium hover:bg-black/5 dark:hover:bg-white/5 transition-colors ${t.textSub}`}
               >
-                {copied ? <><Check className="w-3.5 h-3.5" /> Copied</> : <><Copy className="w-3.5 h-3.5" /> Copy result</>}
+                {copied ? <><Check className="w-3.5 h-3.5" aria-hidden="true" /> Copied</> : <><Copy className="w-3.5 h-3.5" aria-hidden="true" /> Copy result</>}
               </button>
             </div>
 
@@ -306,7 +306,7 @@ export default function GhostJobCheckPage() {
                 to="/register"
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] text-white font-semibold hover:opacity-95 transition-opacity"
               >
-                Run my prep pack free <ArrowRight className="w-4 h-4" />
+                Run my prep pack free <ArrowRight className="w-4 h-4" aria-hidden="true" />
               </Link>
             </div>
           </div>

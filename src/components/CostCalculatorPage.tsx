@@ -175,7 +175,7 @@ export default function CostCalculatorPage() {
 
         <div className="flex items-center gap-3 mb-4">
           <span className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-500 text-white">
-            <Calculator className="w-6 h-6" />
+            <Calculator className="w-6 h-6" aria-hidden="true" />
           </span>
           <div>
             <div className={`text-xs uppercase tracking-wider ${t.textMuted}`}>Free · no signup</div>
@@ -327,7 +327,7 @@ export default function CostCalculatorPage() {
               'Downloadable .txt prep pack to reference offline',
             ].map((feature) => (
               <li key={feature} className="flex items-start gap-2 text-sm">
-                <Check className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                <Check className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" aria-hidden="true" />
                 <span className={t.textSub}>{feature}</span>
               </li>
             ))}
@@ -345,7 +345,7 @@ export default function CostCalculatorPage() {
             to="/register"
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] text-white font-semibold hover:opacity-95 transition-opacity"
           >
-            Start with 10 free prep packs <ArrowRight className="w-4 h-4" />
+            Start with 10 free prep packs <ArrowRight className="w-4 h-4" aria-hidden="true" />
           </Link>
         </div>
 

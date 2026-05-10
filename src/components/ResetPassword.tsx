@@ -65,12 +65,12 @@ export default function ResetPassword() {
           <div className="flex items-center justify-between mb-8">
             <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-600 to-purple-600 flex items-center justify-center">
-                <BrainCircuit className="w-5 h-5 text-white" />
+                <BrainCircuit className="w-5 h-5 text-white" aria-hidden="true" />
               </div>
               <span className="text-2xl font-display font-bold text-white">Vantage</span>
             </Link>
             <Link to="/" className="flex items-center gap-1.5 text-white/60 hover:text-white/70 text-sm transition-colors">
-              <ArrowLeft className="w-4 h-4" />
+              <ArrowLeft className="w-4 h-4" aria-hidden="true" />
               Home
             </Link>
           </div>
@@ -78,7 +78,7 @@ export default function ResetPassword() {
           {success ? (
             <div className="text-center">
               <div className="w-16 h-16 rounded-full bg-green-500/10 border border-green-500/20 flex items-center justify-center mx-auto mb-6">
-                <CheckCircle className="w-8 h-8 text-green-400" />
+                <CheckCircle className="w-8 h-8 text-green-400" aria-hidden="true" />
               </div>
               <h1 className="text-3xl font-display font-bold text-white mb-2">Password updated!</h1>
               <p className="text-white/50">Redirecting to login...</p>
@@ -114,7 +114,7 @@ export default function ResetPassword() {
                 <div>
                   <label htmlFor="reset-new-password" className="block text-sm font-semibold text-white/70 mb-2">New password</label>
                   <div className="relative">
-                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/55" />
+                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/55" aria-hidden="true" />
                     <input
                       id="reset-new-password"
                       type={showPassword ? 'text' : 'password'}
@@ -132,7 +132,7 @@ export default function ResetPassword() {
                       aria-label={showPassword ? 'Hide password' : 'Show password'}
                       className="absolute right-4 top-1/2 -translate-y-1/2 text-white/55 hover:text-white/50"
                     >
-                      {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                      {showPassword ? <EyeOff className="w-5 h-5" aria-hidden="true" /> : <Eye className="w-5 h-5" aria-hidden="true" />}
                     </button>
                   </div>
                 </div>
@@ -140,7 +140,7 @@ export default function ResetPassword() {
                 <div>
                   <label htmlFor="reset-confirm-password" className="block text-sm font-semibold text-white/70 mb-2">Confirm password</label>
                   <div className="relative">
-                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/55" />
+                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/55" aria-hidden="true" />
                     <input
                       id="reset-confirm-password"
                       type={showConfirm ? 'text' : 'password'}
@@ -157,7 +157,7 @@ export default function ResetPassword() {
                       aria-label={showConfirm ? 'Hide confirm password' : 'Show confirm password'}
                       className="absolute right-4 top-1/2 -translate-y-1/2 text-white/55 hover:text-white/50"
                     >
-                      {showConfirm ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                      {showConfirm ? <EyeOff className="w-5 h-5" aria-hidden="true" /> : <Eye className="w-5 h-5" aria-hidden="true" />}
                     </button>
                   </div>
                 </div>

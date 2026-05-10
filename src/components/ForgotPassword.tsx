@@ -36,12 +36,12 @@ export default function ForgotPassword() {
           <div className="flex items-center justify-between mb-8">
             <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-600 to-purple-600 flex items-center justify-center">
-                <BrainCircuit className="w-5 h-5 text-white" />
+                <BrainCircuit className="w-5 h-5 text-white" aria-hidden="true" />
               </div>
               <span className="text-2xl font-display font-bold text-white">Vantage</span>
             </Link>
             <Link to="/" className="flex items-center gap-1.5 text-white/60 hover:text-white/70 text-sm transition-colors">
-              <ArrowLeft className="w-4 h-4" />
+              <ArrowLeft className="w-4 h-4" aria-hidden="true" />
               Home
             </Link>
           </div>
@@ -49,7 +49,7 @@ export default function ForgotPassword() {
           {sent ? (
             <div className="text-center">
               <div className="w-16 h-16 rounded-full bg-green-500/10 border border-green-500/20 flex items-center justify-center mx-auto mb-6">
-                <CheckCircle className="w-8 h-8 text-green-400" />
+                <CheckCircle className="w-8 h-8 text-green-400" aria-hidden="true" />
               </div>
               <h1 className="text-3xl font-display font-bold text-white mb-2">Check your email</h1>
               <p className="text-white/60 mb-5">
@@ -73,7 +73,7 @@ export default function ForgotPassword() {
                 to="/login"
                 className="inline-flex items-center gap-2 text-violet-400 hover:text-violet-300 font-semibold transition-colors"
               >
-                <ArrowLeft className="w-4 h-4" />
+                <ArrowLeft className="w-4 h-4" aria-hidden="true" />
                 Back to login
               </Link>
             </div>
@@ -92,7 +92,7 @@ export default function ForgotPassword() {
                 <div>
                   <label htmlFor="forgot-email" className="block text-sm font-semibold text-white/70 mb-2">Email</label>
                   <div className="relative">
-                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/55" />
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/55" aria-hidden="true" />
                     <input
                       id="forgot-email"
                       type="email"
@@ -126,7 +126,7 @@ export default function ForgotPassword() {
                   to="/login"
                   className="inline-flex items-center gap-2 text-violet-400 hover:text-violet-300 font-semibold transition-colors"
                 >
-                  <ArrowLeft className="w-4 h-4" />
+                  <ArrowLeft className="w-4 h-4" aria-hidden="true" />
                   Back to login
                 </Link>
               </p>
