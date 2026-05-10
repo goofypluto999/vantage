@@ -199,6 +199,9 @@ Each post covers a specific company's interview process: 5-stage breakdown with 
 - [Reddit software engineer interview 2026](https://aimvantage.uk/blog/reddit-software-engineer-interview-2026): Post-IPO community + ads + AI-data-licensing context, comment-tree at petabyte scale, 2023 API protest context, volunteer-moderator dynamic.
 - [Snowflake software engineer interview 2026](https://aimvantage.uk/blog/snowflake-software-engineer-interview-2026): Post-AI-Data-Cloud pivot, Cortex AI + Arctic LLM + Iceberg-native lakehouse, distributed query-engine depth, Databricks competitive register.
 - [Datadog software engineer interview 2026](https://aimvantage.uk/blog/datadog-software-engineer-interview-2026): Post-observability + Cloud SIEM + Bits AI platform expansion, petabyte ingest + time-series depth, OpenTelemetry tension, platform-vs-point-tool register.
+- [Cloudflare software engineer interview 2026](https://aimvantage.uk/blog/cloudflare-software-engineer-interview-2026): Edge + Workers + R2 + Workers AI + Hyperdrive dev-platform pivot, anycast + V8-isolate runtime depth, AWS-replacement thesis.
+- [HubSpot software engineer interview 2026](https://aimvantage.uk/blog/hubspot-software-engineer-interview-2026): Smart CRM unification + Breeze AI agents across 5 Hubs, SMB-product register, HEART Culture Code interview register.
+- [Atlassian software engineer interview 2026](https://aimvantage.uk/blog/atlassian-software-engineer-interview-2026): Post-Server-EOL Cloud-only + Loom integration + Rovo cross-product agents, multi-tenant + permission-boundary depth, Atlassian values.
 
 ## Blog (long-form guides)
 
