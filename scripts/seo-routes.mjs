@@ -116,6 +116,11 @@ const STATIC_ROUTES = [
     description: 'Paste any job description. Get the hidden seniority signals, ghost-job risk, remote-vs-hybrid camouflage, ATS-stripping risks, scope red flags, and the interview rounds you should expect. Runs in your browser. No signup.',
   },
   {
+    path: '/tools/bullet-rewriter',
+    title: 'Free CV Bullet Rewriter — Diagnose Weak Bullets, Get 3 Rewrites | Vantage',
+    description: 'Paste a CV bullet. Get a diagnosis (weak verbs, missing metrics, filler phrases, "responsible for" framing) plus 3 stronger rewrites with templates. Runs in your browser. No signup.',
+  },
+  {
     path: '/alternatives',
     title: 'Vantage AI Alternatives — Compared to Jobscan, Teal, Resume Worded, Final Round AI',
     description: 'Honest side-by-side comparisons of Vantage AI vs Jobscan, Teal HQ, Resume Worded, Final Round AI, Kickresume, Enhancv, Yoodli, Huntr, and Big Interview. Where each wins, where each loses.',
