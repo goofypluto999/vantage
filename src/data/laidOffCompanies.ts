@@ -180,6 +180,39 @@ export const laidOffCompanies: LaidOffCompany[] = [
     likelyNextATSes: ['Workday', 'iCIMS', 'SuccessFactors'],
     relatedCompanies: ['oracle', 'meta', 'snap'],
   },
+  {
+    slug: 'cloudflare',
+    name: 'Cloudflare',
+    legalName: 'Cloudflare, Inc.',
+    affectedCount: '1,100',
+    announcedDate: 'May 8, 2026',
+    context: 'Cloudflare announced a 20% headcount reduction (~1,100 roles) on May 8, 2026, while reporting record Q1 revenue of $639.8M (+34% YoY). Matthew Prince framed it as a structural pivot: by 2027, AI agents will hit Cloudflare\'s network more than humans, and the company is restructuring around that thesis. Internal AI tool usage was up 600% in three months.',
+    commonRoles: ['Software Engineer', 'Product Manager', 'Customer Success Manager', 'Sales', 'Marketing', 'Designer', 'Engineering Manager', 'Solutions Architect'],
+    specificAdvice: [
+      {
+        title: 'The Cloudflare badge is signal — use it in week 1',
+        body: 'Cloudflare engineering has a strong reputation for shipping at speed and operating at edge-network scale. Recruiters at infrastructure-adjacent shops (Vercel, Fastly, Netlify, Akamai, AWS Edge, Cloudflare-customer companies like Shopify and DoorDash) will respond fast for the first 4-6 weeks. Apply at level +0 or +1 — not below.',
+      },
+      {
+        title: 'Cloudflare-specific stack reframes for non-CF employers',
+        body: 'Workers, Durable Objects, Workers AI, R2, Hyperdrive, Vectorize — these read as proprietary jargon to non-CF recruiters. Translate: "edge serverless functions (Cloudflare Workers, equivalent to AWS Lambda@Edge)", "object storage (R2, equivalent to S3)", "vector database (Vectorize, equivalent to Pinecone/Weaviate)". Make every CF-specific term legible to outside readers.',
+      },
+      {
+        title: 'The agent-era pivot context is your reframe story',
+        body: 'When asked "why are you leaving Cloudflare?" -- the right answer is the company\'s own framing, not yours. "Cloudflare announced a structural restructure around AI-agent traffic; my role was scoped under the prior model." Crisp, factual, no defensive energy. Then pivot to what you want to do next.',
+      },
+      {
+        title: 'AWS, Vercel, Fastly are hiring CF alumni explicitly',
+        body: 'After every Cloudflare cut, infrastructure peers run targeted recruiting against the LinkedIn cohort. Reach out to recruiters at AWS Edge, Vercel platform team, Fastly, and Akamai before the inbound queue saturates -- which it does within ~2 weeks of an announcement.',
+      },
+      {
+        title: 'Severance is reportedly 16 weeks + RSU vest acceleration',
+        body: 'Per public reporting, Cloudflare\'s May 2026 severance package includes 16 weeks of base salary plus accelerated RSU vesting through end of Q2. Confirm specifics in your offer letter; do not sign anything that waives statutory protections (UK redundancy law, US WARN Act notice) without reading it.',
+      },
+    ],
+    likelyNextATSes: ['Greenhouse', 'Lever', 'Ashby'],
+    relatedCompanies: ['meta', 'oracle', 'snap'],
+  },
 ];
 
 export function getCompanyBySlug(slug: string): LaidOffCompany | undefined {

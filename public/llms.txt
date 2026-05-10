@@ -89,6 +89,7 @@ Real percentile data sourced from BLS, ONS, ITJobsWatch, and Levels.fyi. No payw
 - [From ASML (~1.7k)](https://aimvantage.uk/laid-off/from/asml): ASML alumni — semiconductor expertise framing, UK redundancy specifics, EU work eligibility leverage, Workday at next employer.
 - [From Snap (~1k)](https://aimvantage.uk/laid-off/from/snap): Snap alumni — AR/Lens experience targeting, Gen Z user research framing, equity vesting checks, Greenhouse/Lever at next employer.
 - [From Nike (~1.4k)](https://aimvantage.uk/laid-off/from/nike): Nike alumni — brand experience portability, athlete/sponsorship transferable skills, Portland market reality, Workday in retail/CPG.
+- [From Cloudflare (~1.1k, May 8 2026)](https://aimvantage.uk/laid-off/from/cloudflare): Cloudflare alumni — agent-era pivot context, CF stack reframes for non-CF employers, severance specifics (16 weeks + RSU acceleration), Greenhouse/Lever/Ashby at next employer.
 
 ## ATS Parser Guide
 
