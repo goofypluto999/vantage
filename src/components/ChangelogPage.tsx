@@ -38,6 +38,54 @@ const KIND_COLOR: Record<EntryKind, string> = {
 
 const ENTRIES: ChangelogEntry[] = [
   {
+    date: '2026-05-10',
+    kind: 'content',
+    title: 'Flagship report: The State of 2026 Tech Interview Hiring',
+    body: 'Aggregated findings from 34 long-form company-specific interview deep-dives published in 2026 into a single report. Five data findings (AI-thesis filter universal, values rounds underweighted, take-homes returning, open-source signal substitutes for credentials at AI shops, layoff cohort 6-week recruiter-attention window) plus what changed between 2024 and 2026. Citation block included; free to cite with attribution.',
+    links: [
+      { label: '/state-of-2026', href: '/state-of-2026' },
+      { label: 'Source: 34 deep-dives', href: '/blog' },
+    ],
+  },
+  {
+    date: '2026-05-10',
+    kind: 'content',
+    title: 'Long-form interview deep-dive surface grew to 34 across 9 verticals',
+    body: 'Shipped 24 new long-form deep-dives this week to bring the surface to 34 total: GitLab, Linear, Vercel, Klarna, Canva, Airtable, Monzo, Wise, Octopus Energy, Apple, Microsoft, Amazon, Snowflake, Databricks, Hugging Face, Shopify, Atlassian, ServiceNow, Cursor, Replit, Modal, Mistral, xAI, Perplexity. Each post: five-stage loop breakdown, 10 likely questions, four traps, and a 75-90 minute prep checklist.',
+    links: [
+      { label: '/blog (all 34)', href: '/blog' },
+    ],
+  },
+  {
+    date: '2026-05-10',
+    kind: 'feature',
+    title: 'Free in-browser ATS keyword scanner at /ats/scanner',
+    body: 'Client-side ATS keyword scanner. Paste your CV and a job description, see matched and missing keywords with a real (not invented) coverage percentage. Runs entirely in your browser; nothing uploaded, no signup. Adds a fourth free tool to the surface and converts the previously misleading "Free scanner included" line on /ats into actual truth.',
+    links: [
+      { label: '/ats/scanner', href: '/ats/scanner' },
+      { label: 'All 4 free tools', href: '/tools' },
+    ],
+  },
+  {
+    date: '2026-05-10',
+    kind: 'feature',
+    title: 'Cloudflare added to layoff cohort programmatic pages',
+    body: 'Cloudflare announced ~1,100 cuts on 8 May 2026 (20% of headcount). Added /laid-off/from/cloudflare with cohort-specific advice: stack reframes for non-CF employers (Workers, R2, Vectorize), the agent-era pivot framing as the "why are you leaving" answer, AWS/Vercel/Fastly/Akamai recruiter-saturation window timing, and severance specifics (16 weeks + RSU acceleration through Q2).',
+    links: [
+      { label: '/laid-off/from/cloudflare', href: '/laid-off/from/cloudflare' },
+    ],
+  },
+  {
+    date: '2026-05-10',
+    kind: 'feature',
+    title: 'Conversion improvements: pricing anchor, register trust block, mid-post CTA',
+    body: 'Three /pricing improvements (sample anchor card, time-value frame at GBP 0.20 per application, currency-aware via useCurrency context). Verifiable trust block on /register right panel with four clickable proof artefacts (ICO, GitHub, cv-mirror-mcp, refund window). Auto-injected mid-post CTA on every blog post after the third h2 heading so engaged mid-scroll readers have a clickable register surface.',
+    links: [
+      { label: '/pricing', href: '/pricing' },
+      { label: '/register', href: '/register' },
+    ],
+  },
+  {
     date: '2026-05-01',
     kind: 'content',
     title: 'ATS Guide expanded to 7 vendors',
