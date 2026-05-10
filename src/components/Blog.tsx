@@ -126,6 +126,9 @@ const COMPANY_FILTERS = [
   'Epic Games',
   'Unity',
   'Roku',
+  'xAI',
+  'Cohere',
+  'Mistral AI',
 ] as const;
 
 type CompanyFilter = typeof COMPANY_FILTERS[number];

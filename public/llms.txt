@@ -254,6 +254,9 @@ Each post covers a specific company's interview process: 5-stage breakdown with 
 - [Epic Games software engineer interview 2026](https://aimvantage.uk/blog/epic-games-software-engineer-interview-2026): Post-Fortnite Ch 6 + UEFN + Verse + Unreal Engine 5.5, C++ game-engine + multiplayer-replication + creator-economy register.
 - [Unity software engineer interview 2026](https://aimvantage.uk/blog/unity-software-engineer-interview-2026): Post-Runtime-Fee reversal + Unity 6 + Muse AI + Industry, C++ engine + DOTS / ECS + URP, trust-rebuild register.
 - [Roku software engineer interview 2026](https://aimvantage.uk/blog/roku-software-engineer-interview-2026): Post-Roku OS 13 + The Roku Channel + OneView Ads + Smart Home, embedded TV-OS + CTV-ad-supported register.
+- [xAI software engineer interview 2026](https://aimvantage.uk/blog/xai-software-engineer-interview-2026): Post-Grok 4 + Colossus (200K-H100 supercomputer) + X-integration, ML scaling + Musk-led velocity register.
+- [Cohere software engineer interview 2026](https://aimvantage.uk/blog/cohere-software-engineer-interview-2026): Post-Command R + R+ + North + Embed-v4 + Aya, enterprise-AI + RAG + multilingual + regulated-deployment depth.
+- [Mistral AI software engineer interview 2026](https://aimvantage.uk/blog/mistral-software-engineer-interview-2026): Post-Mistral Large 3 + Codestral + Le Chat + Ministral, MoE architecture + European-sovereign + open-weight register.
 
 ## Blog (long-form guides)
 
