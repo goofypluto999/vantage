@@ -216,15 +216,23 @@ export default function BlogPost() {
         <header>
           <div className={`flex flex-wrap items-center gap-3 text-xs ${t.textMuted} mb-4`}>
             <span className="inline-flex items-center gap-1">
-              <Calendar className="w-3.5 h-3.5" />
-              {formatDate(post.publishedAt)}
+              <Calendar className="w-3.5 h-3.5" aria-hidden="true" />
+              <span>Published <time dateTime={post.publishedAt}>{formatDate(post.publishedAt)}</time></span>
             </span>
-            <span>·</span>
+            {post.updatedAt && post.updatedAt !== post.publishedAt && (
+              <>
+                <span aria-hidden="true">·</span>
+                <span className="inline-flex items-center gap-1 text-emerald-500/80">
+                  Updated <time dateTime={post.updatedAt}>{formatDate(post.updatedAt)}</time>
+                </span>
+              </>
+            )}
+            <span aria-hidden="true">·</span>
             <span className="inline-flex items-center gap-1">
-              <Clock className="w-3.5 h-3.5" />
+              <Clock className="w-3.5 h-3.5" aria-hidden="true" />
               {post.readingTime}
             </span>
-            <span>·</span>
+            <span aria-hidden="true">·</span>
             <span>{post.author}</span>
           </div>
           <h1 className={`text-4xl sm:text-5xl font-extrabold tracking-tight ${t.text}`}>

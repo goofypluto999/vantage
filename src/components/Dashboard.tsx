@@ -5,7 +5,7 @@ import {
   Upload, Link as LinkIcon, FileText, Loader2, Sparkles, ChevronRight,
   LogOut, CreditCard, Zap, Crown, Star, Settings, Check,
   Mic, BookOpen, Lock, RefreshCw, ClipboardPaste, Type,
-  Twitter, Linkedin, Copy
+  Twitter, Linkedin, Copy, AlertTriangle
 } from 'lucide-react';
 import { useAuth } from '../App';
 import { useCurrency } from '../contexts/CurrencyContext';
@@ -160,6 +160,7 @@ export default function Dashboard() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [checkoutSuccess, setCheckoutSuccess] = useState(false);
   const [checkoutCancelled, setCheckoutCancelled] = useState(false);
+  const [checkoutError, setCheckoutError] = useState(false);
 
   // Sync subscription state from Stripe on every mount, then refresh profile
   useEffect(() => {
@@ -188,6 +189,10 @@ export default function Dashboard() {
     }
     if (searchParams.get('cancelled') === 'true' || searchParams.get('canceled') === 'true') {
       setCheckoutCancelled(true);
+      setSearchParams({}, { replace: true });
+    }
+    if (searchParams.get('checkout_error') === 'true') {
+      setCheckoutError(true);
       setSearchParams({}, { replace: true });
     }
   }, []);
@@ -539,6 +544,40 @@ export default function Dashboard() {
               </div>
             </div>
             <button onClick={() => setCheckoutSuccess(false)} className="text-emerald-400/50 hover:text-emerald-400 text-sm flex-shrink-0">
+              Dismiss
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Checkout Error Banner — fires when api/stripe/checkout creation
+          itself failed before Stripe took over (network error, missing
+          price ID, Stripe API hiccup). Previously the user was redirected
+          to /dashboard?checkout_error=true but the dashboard had no handler,
+          so they saw a silent dashboard load with no acknowledgement. Now
+          a red banner with email-Gio fallback. */}
+      {checkoutError && (
+        <div className="max-w-5xl mx-auto px-6 pt-6">
+          <div role="alert" className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 flex items-start justify-between gap-3 flex-wrap">
+            <div className="flex items-start gap-3 flex-1 min-w-[260px]">
+              <div className="w-8 h-8 rounded-full bg-red-500/20 flex items-center justify-center flex-shrink-0">
+                <AlertTriangle className="w-4 h-4 text-red-400" aria-hidden="true" />
+              </div>
+              <div>
+                <p className="text-red-300 font-semibold">Checkout couldn't start.</p>
+                <p className="text-red-200/80 text-sm mt-0.5">
+                  No charge to your card. Try again, or{' '}
+                  <a
+                    href="mailto:hello@aimvantage.uk?subject=Stripe%20checkout%20error"
+                    className="underline text-red-200 hover:text-red-100"
+                  >
+                    email Gio
+                  </a>
+                  {' '}— he replies within a few hours.
+                </p>
+              </div>
+            </div>
+            <button onClick={() => setCheckoutError(false)} className="text-red-400/60 hover:text-red-300 text-sm flex-shrink-0">
               Dismiss
             </button>
           </div>

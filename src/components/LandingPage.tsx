@@ -1475,7 +1475,7 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
                   aria-label={`Featured on ${d.name}`}
                 >
                   {d.badgeUrl ? (
-                    <img src={d.badgeUrl} alt={`Featured on ${d.name}`} className="h-9 rounded" loading="lazy" />
+                    <img src={d.badgeUrl} alt={`Featured on ${d.name}`} width={120} height={36} className="h-9 w-auto rounded" loading="lazy" />
                   ) : (
                     <span className="font-semibold">{d.name}</span>
                   )}

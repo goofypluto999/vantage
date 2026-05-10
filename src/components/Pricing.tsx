@@ -194,19 +194,23 @@ export default function Pricing({ onLogin, onRegister, onCheckout, isAuthenticat
               row before they scroll past the cards. */}
           <div className="mt-8 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs font-semibold text-white/65">
             <span className="inline-flex items-center gap-1.5">
-              <Lock className="w-3.5 h-3.5 text-emerald-400" /> Stripe-secured checkout
+              <Lock className="w-3.5 h-3.5 text-emerald-400" aria-hidden="true" /> Stripe-secured checkout
             </span>
-            <span className="text-white/20">·</span>
+            <span className="text-white/20" aria-hidden="true">·</span>
             <span className="inline-flex items-center gap-1.5">
-              <Check className="w-3.5 h-3.5 text-emerald-400" /> Cancel any time
+              <Check className="w-3.5 h-3.5 text-emerald-400" aria-hidden="true" /> Cancel any time
             </span>
-            <span className="text-white/20">·</span>
+            <span className="text-white/20" aria-hidden="true">·</span>
             <span className="inline-flex items-center gap-1.5">
-              <Check className="w-3.5 h-3.5 text-emerald-400" /> Top-up tokens never expire
+              <Check className="w-3.5 h-3.5 text-emerald-400" aria-hidden="true" /> Top-up tokens never expire
             </span>
-            <span className="text-white/20">·</span>
+            <span className="text-white/20" aria-hidden="true">·</span>
             <span className="inline-flex items-center gap-1.5">
-              <Check className="w-3.5 h-3.5 text-emerald-400" /> No hidden fees
+              <Check className="w-3.5 h-3.5 text-emerald-400" aria-hidden="true" /> 14-day refund window
+            </span>
+            <span className="text-white/20" aria-hidden="true">·</span>
+            <span className="inline-flex items-center gap-1.5">
+              <Check className="w-3.5 h-3.5 text-emerald-400" aria-hidden="true" /> No hidden fees
             </span>
           </div>
         </div>
