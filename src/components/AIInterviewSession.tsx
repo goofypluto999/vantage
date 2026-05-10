@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useFocusTrap } from '../lib/useFocusTrap';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   X,
@@ -428,9 +429,17 @@ export default function AIInterviewSession({ roleContext, onClose }: AIInterview
   const topStrengths = [...new Set(allStrengths)].slice(0, 3);
   const topImprovements = [...new Set(allImprovements)].slice(0, 3);
 
+  // Focus trap — keyboard users get tab-cycled inside the dialog. Especially
+  // important here because the modal contains long flows (timer choice, mic
+  // recording, answer review) where a stray Tab could escape into the
+  // dashboard underneath and lose interview state on accidental click.
+  const dialogRef = useRef<HTMLDivElement>(null);
+  useFocusTrap(true, dialogRef);
+
   // ── Render ────────────────────────────────────────────────────────────────
   return (
     <div
+      ref={dialogRef}
       role="dialog"
       aria-modal="true"
       aria-labelledby="ai-interview-title"

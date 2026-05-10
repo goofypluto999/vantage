@@ -13,6 +13,7 @@ import { supabase, getCreditsRemaining, hasCredits } from '../lib/supabase';
 import { analyzeJob, createStripeCheckout, syncSubscription, rewriteTone, fetchAnalysisHistory } from '../services/api';
 import AIInterviewSession from './AIInterviewSession';
 import AtsScannerSection from './AtsScannerSection';
+import { useFocusTrap } from '../lib/useFocusTrap';
 // Lazy-loaded — only fires for first-time dashboard visitors via the demo
 // popup. ~10KB+ of motion sequences shouldn't be in the critical chunk.
 const LiveDemoReel = React.lazy(() => import('./LiveDemoReel'));
@@ -209,6 +210,12 @@ export default function Dashboard() {
       localStorage.setItem('vantage-demo-popup-seen', '1');
     } catch { /* private mode — fine, popup re-shows once on next session */ }
   };
+
+  // Focus trap on the demo popup — keyboard users get tab-cycled inside
+  // the dialog (close button + Got-it + See-sample). Restores previously-
+  // focused element on dismiss.
+  const demoDialogRef = useRef<HTMLDivElement>(null);
+  useFocusTrap(showDemoPopup, demoDialogRef);
 
   // ESC + body-scroll lock for demo popup (matches modal-a11y pattern
   // from commit 4dad92d). Body scroll restored on dismiss.
@@ -521,6 +528,7 @@ export default function Dashboard() {
           + close button. Body-scroll locked while open. */}
       {showDemoPopup && (
         <div
+          ref={demoDialogRef}
           role="dialog"
           aria-modal="true"
           aria-labelledby="demo-popup-title"

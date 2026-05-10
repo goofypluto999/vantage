@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { gsap } from 'gsap';
 import { Upload, Link as LinkIcon, FileText, Check, ChevronRight, X, Sparkles, Play, Pause } from 'lucide-react';
+import { useFocusTrap } from '../lib/useFocusTrap';
 
 interface DemoWalkthroughProps {
   onClose?: () => void;
@@ -52,6 +53,10 @@ export default function DemoWalkthrough({ onClose, onStartReal }: DemoWalkthroug
   const [autoAdvance, setAutoAdvance] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
   const stepRef = useRef<HTMLDivElement>(null);
+
+  // Focus trap — same pattern as HowItWorksModal. Tab/Shift+Tab cycles
+  // inside the dialog; previously-focused element restored on close.
+  useFocusTrap(true, containerRef);
 
   // ESC + body-scroll lock — same pattern as HowItWorksModal. Pressing ESC
   // closes the demo, body scroll locked while open.

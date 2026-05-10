@@ -1,4 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
+import { useFocusTrap } from '../lib/useFocusTrap';
 import { Link } from 'react-router-dom';
 import { motion, useScroll, useTransform, AnimatePresence } from 'motion/react';
 import {
@@ -330,6 +331,12 @@ function Navbar({ onStart, showLogin }: { onStart: () => void; showLogin?: () =>
 // HOW IT WORKS MODAL
 // ============================================================================
 function HowItWorksModal({ onClose, onStart }: { onClose: () => void; onStart: () => void }) {
+  // Focus trap — keyboard users get tab-cycled inside the dialog. Stores
+  // previously-focused element on open + restores on close. Combined with
+  // role='dialog' + aria-modal + ESC handler below = WCAG 2.4.3 compliant.
+  const dialogRef = useRef<HTMLDivElement>(null);
+  useFocusTrap(true, dialogRef);
+
   // ESC + body-scroll lock for modal a11y. Pressing ESC closes the modal
   // (standard expectation, was missing). Body-scroll lock prevents the
   // background scrolling while the modal is open. Cleanup on unmount.
@@ -396,6 +403,7 @@ function HowItWorksModal({ onClose, onStart }: { onClose: () => void; onStart: (
 
   return (
     <div
+      ref={dialogRef}
       role="dialog"
       aria-modal="true"
       aria-labelledby="hiw-title"
