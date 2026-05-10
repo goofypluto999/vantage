@@ -45,15 +45,38 @@ export default function BlogPost() {
     .filter((p) => p.slug !== post.slug)
     .slice(0, 2);
 
+  // AEO 2026: enrich author with sameAs links so AI engines can resolve
+  // identity + verify expertise. This is the strongest non-content E-E-A-T
+  // signal per current AEO research — bare author name without sameAs is
+  // a wasted slot. When the post lists Gio as author, hydrate the full
+  // Person schema; otherwise fall back to the plain name string.
+  const isGioAuthor = /giovanni|gio|sizino|ennes/i.test(post.author);
+  const authorSchema = isGioAuthor
+    ? {
+        '@type': 'Person',
+        name: 'Giovanni Sizino Ennes',
+        alternateName: 'Gio',
+        url: `${SITE_URL}/about`,
+        jobTitle: 'Independent founder · Vantage AI',
+        sameAs: [
+          'https://dev.to/goofypluto999',
+          'https://github.com/goofypluto999',
+          'https://aimvantage.uk',
+          'https://cv-mirror-web.vercel.app/',
+          'https://www.youtube.com/channel/UCuZxrV6LaJfGHsEvztsaB4Q',
+        ],
+      }
+    : {
+        '@type': 'Person',
+        name: post.author,
+      };
+
   const articleSchema = {
     '@context': 'https://schema.org',
     '@type': 'Article',
     headline: post.title,
     description: post.description,
-    author: {
-      '@type': 'Person',
-      name: post.author,
-    },
+    author: authorSchema,
     datePublished: post.publishedAt,
     dateModified: post.updatedAt || post.publishedAt,
     mainEntityOfPage: {

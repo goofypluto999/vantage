@@ -230,8 +230,21 @@ function AppContent() {
                     creator: {
                       '@type': 'Person',
                       name: 'Giovanni Sizino Ennes',
-                      url: 'https://aimvantage.uk/press',
+                      alternateName: 'Gio',
+                      url: 'https://aimvantage.uk/about',
                       jobTitle: 'Independent founder',
+                      nationality: 'United Kingdom',
+                      // AEO: sameAs is the strongest non-content E-E-A-T
+                      // signal for AI-engine identity resolution. Each link
+                      // is verifiable from the landing page (rel='me' on
+                      // /about) so AI crawlers can confirm the cross-link.
+                      sameAs: [
+                        'https://dev.to/goofypluto999',
+                        'https://github.com/goofypluto999',
+                        'https://cv-mirror-web.vercel.app/',
+                        'https://www.youtube.com/channel/UCuZxrV6LaJfGHsEvztsaB4Q',
+                        'https://aimvantage.uk/about',
+                      ],
                     },
                   },
                   {
@@ -242,8 +255,17 @@ function AppContent() {
                     provider: {
                       '@type': 'Person',
                       name: 'Giovanni Sizino Ennes',
-                      url: 'https://aimvantage.uk/press',
+                      alternateName: 'Gio',
+                      url: 'https://aimvantage.uk/about',
                       jobTitle: 'Independent founder',
+                      nationality: 'United Kingdom',
+                      sameAs: [
+                        'https://dev.to/goofypluto999',
+                        'https://github.com/goofypluto999',
+                        'https://cv-mirror-web.vercel.app/',
+                        'https://www.youtube.com/channel/UCuZxrV6LaJfGHsEvztsaB4Q',
+                        'https://aimvantage.uk/about',
+                      ],
                     },
                     areaServed: {
                       '@type': 'Place',
