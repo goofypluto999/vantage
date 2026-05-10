@@ -10,7 +10,7 @@ import {
 import Waitlist from './Waitlist';
 import DemoWalkthrough from './DemoWalkthrough';
 import { useCurrency } from '../contexts/CurrencyContext';
-import { track } from '../lib/track';
+import { track, ctaClick } from '../lib/track';
 // getPublicStats was used for the old "Live Transparency" counter section.
 // That section now shows static build-in-public credibility metrics instead,
 // so the live-DB hit is no longer needed and the import is removed.
@@ -245,7 +245,7 @@ function Navbar({ onStart, showLogin }: { onStart: () => void; showLogin?: () =>
             Log In
           </button>
           <button
-            onClick={onStart}
+            onClick={() => { ctaClick('landing-nav-cta'); onStart(); }}
             className="px-5 py-2.5 bg-[#4F46E5] text-white text-sm font-bold rounded-full hover:bg-[#6366F1] hover:-translate-y-px hover:shadow-[0_8px_20px_rgba(79,70,229,0.35)] active:scale-95 transition-all"
           >
             Get Started →
@@ -374,7 +374,7 @@ function Navbar({ onStart, showLogin }: { onStart: () => void; showLogin?: () =>
                 Receipts (trust audit) →
               </Link>
               <button
-                onClick={() => { setMobileOpen(false); onStart(); }}
+                onClick={() => { ctaClick('landing-mobile-drawer'); setMobileOpen(false); onStart(); }}
                 className="mt-2 px-5 py-3 bg-[#4F46E5] text-white text-sm font-bold rounded-full hover:bg-[#6366F1] transition-all"
               >
                 Get 10 free prep packs →
@@ -490,7 +490,7 @@ function HowItWorksModal({ onClose, onStart }: { onClose: () => void; onStart: (
         </div>
         <div className="flex items-center gap-3">
           <button
-            onClick={onStart}
+            onClick={() => { ctaClick('how-it-works-modal-header'); onStart(); }}
             className="px-6 py-2.5 bg-[#4F46E5] text-white text-sm font-bold rounded-full hover:bg-[#6366F1] transition-all hover:shadow-[0_4px_20px_rgba(79,70,229,0.5)] hover:-translate-y-px"
           >
             Try It Free →
@@ -591,7 +591,7 @@ function HowItWorksModal({ onClose, onStart }: { onClose: () => void; onStart: (
             className="mt-6 text-center"
           >
             <button
-              onClick={onStart}
+              onClick={() => { ctaClick('how-it-works-modal-body'); onStart(); }}
               className="inline-flex items-center gap-3 px-10 py-4 bg-[#4F46E5] text-white rounded-full font-bold text-base hover:-translate-y-1 hover:shadow-[0_12px_32px_rgba(79,70,229,0.5)] active:scale-95 transition-all"
             >
               Start For Free <ChevronRight className="w-4 h-4" />
@@ -1196,7 +1196,7 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
           className="mt-14 text-center"
         >
           <button
-            onClick={onStart}
+            onClick={() => { ctaClick('landing-post-how-it-works'); onStart(); }}
             className="inline-flex items-center gap-2 px-9 py-4 bg-[#4F46E5] text-white rounded-full font-bold text-base hover:-translate-y-1 hover:shadow-[0_12px_32px_rgba(79,70,229,0.45)] active:scale-95 transition-all"
           >
             Try it free — 10 prep packs, no card <ChevronRight className="w-4 h-4" />
@@ -1339,7 +1339,7 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
           className="mt-14 text-center"
         >
           <button
-            onClick={onStart}
+            onClick={() => { ctaClick('landing-post-sample'); onStart(); }}
             className="inline-flex items-center gap-2 px-9 py-4 bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] text-white rounded-full font-bold text-base hover:-translate-y-1 hover:shadow-[0_12px_32px_rgba(79,70,229,0.45)] active:scale-95 transition-all"
           >
             Get this for your next job — free <ChevronRight className="w-4 h-4" />
@@ -1375,7 +1375,7 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
               <li className="flex gap-3"><CheckCircle className="w-4 h-4 text-[#A8E6CF] flex-shrink-0 mt-0.5" /> Interview Pack with Flashcards</li>
               <li className="flex gap-3"><CheckCircle className="w-4 h-4 text-[#A8E6CF] flex-shrink-0 mt-0.5" /> No subscription &middot; tokens never expire</li>
             </ul>
-            <button onClick={onStart} className="w-full py-3.5 mt-8 rounded-full bg-white/50 hover:bg-white text-[#4F46E5] font-bold border border-white hover:shadow-md transition-all">
+            <button onClick={() => { ctaClick('landing-pricing-starter'); onStart(); }} className="w-full py-3.5 mt-8 rounded-full bg-white/50 hover:bg-white text-[#4F46E5] font-bold border border-white hover:shadow-md transition-all">
               Get Started
             </button>
           </GlassCard>
@@ -1397,7 +1397,7 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
               <li className="flex gap-3"><CheckCircle className="w-4 h-4 text-[#A8E6CF] flex-shrink-0 mt-0.5" /> STAR Interview Stories</li>
               <li className="flex gap-3"><CheckCircle className="w-4 h-4 text-[#A8E6CF] flex-shrink-0 mt-0.5" /> Timed Practice Sessions</li>
             </ul>
-            <button onClick={onStart} className="w-full py-3.5 mt-8 rounded-full bg-[#4F46E5] text-white font-bold hover:bg-[#6366F1] shadow-[0_8px_20px_rgba(79,70,229,0.35)] hover:-translate-y-1 transition-all">
+            <button onClick={() => { ctaClick('landing-pricing-pro'); onStart(); }} className="w-full py-3.5 mt-8 rounded-full bg-[#4F46E5] text-white font-bold hover:bg-[#6366F1] shadow-[0_8px_20px_rgba(79,70,229,0.35)] hover:-translate-y-1 transition-all">
               Upgrade to Pro
             </button>
           </GlassCard>
@@ -1417,7 +1417,7 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
               <li className="flex gap-3"><CheckCircle className="w-4 h-4 text-[#A8E6CF] flex-shrink-0 mt-0.5" /> Priority Processing</li>
               <li className="flex gap-3"><CheckCircle className="w-4 h-4 text-[#A8E6CF] flex-shrink-0 mt-0.5" /> Beta Features Early Access</li>
             </ul>
-            <button onClick={onStart} className="w-full py-3.5 mt-8 rounded-full bg-white/50 hover:bg-white text-[#4F46E5] font-bold border border-white hover:shadow-md transition-all">
+            <button onClick={() => { ctaClick('landing-pricing-premium'); onStart(); }} className="w-full py-3.5 mt-8 rounded-full bg-white/50 hover:bg-white text-[#4F46E5] font-bold border border-white hover:shadow-md transition-all">
               Go Premium
             </button>
           </GlassCard>
@@ -1691,7 +1691,7 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
               Stop sending generic applications. Start sending strategic proposals.
             </p>
             <button
-              onClick={onStart}
+              onClick={() => { ctaClick('landing-final-cta'); onStart(); }}
               className="mt-10 relative z-10 inline-flex items-center gap-3 px-12 py-5 bg-[#4F46E5] text-white rounded-full font-bold text-lg hover:-translate-y-1 hover:shadow-[0_12px_32px_rgba(79,70,229,0.45)] active:scale-95 transition-all"
             >
               Initialize Vantage <ChevronRight className="w-5 h-5" />
@@ -1833,7 +1833,7 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
         >
           <div className="flex items-center gap-2 pl-5 pr-2 py-2 rounded-full bg-[#4F46E5] text-white shadow-[0_12px_32px_rgba(79,70,229,0.45)] hover:shadow-[0_16px_40px_rgba(79,70,229,0.55)] transition-shadow">
             <button
-              onClick={onStart}
+              onClick={() => { ctaClick('landing-sticky-bottom-pill'); onStart(); }}
               className="flex items-center gap-2 font-bold text-sm pr-3"
               aria-label="Try Vantage free — ten prep packs, no card"
             >
