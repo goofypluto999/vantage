@@ -96,6 +96,9 @@ const COMPANY_FILTERS = [
   'Adobe',
   'Figma',
   'Notion',
+  'GitLab',
+  'Vercel',
+  'HashiCorp',
 ] as const;
 
 type CompanyFilter = typeof COMPANY_FILTERS[number];
