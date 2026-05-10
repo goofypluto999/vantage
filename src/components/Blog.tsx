@@ -42,6 +42,9 @@ const COMPANY_FILTERS = [
   'Mistral',
   'xAI',
   'Perplexity',
+  'Google',
+  'Meta',
+  'Salesforce',
 ] as const;
 
 type CompanyFilter = typeof COMPANY_FILTERS[number];

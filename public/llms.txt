@@ -165,6 +165,9 @@ Each post covers a specific company's interview process: 5-stage breakdown with 
 - [Mistral AI engineer interview 2026](https://aimvantage.uk/blog/mistral-ai-engineer-interview-2026): European-AI strategic context, open-vs-closed-weights register, Paris HQ.
 - [xAI engineer interview 2026](https://aimvantage.uk/blog/xai-engineer-interview-2026): Move-fast operating tempo, Colossus distributed training depth, founders round.
 - [Perplexity engineer interview 2026](https://aimvantage.uk/blog/perplexity-engineer-interview-2026): Retrieval-vs-generation joint optimisation, time-to-first-token budgets, threading model.
+- [Google software engineer interview 2026](https://aimvantage.uk/blog/google-software-engineer-interview-2026): Post-Gemini system design bar, hiring committee + team match dual gate, Googleyness rubric.
+- [Meta software engineer interview 2026](https://aimvantage.uk/blog/meta-software-engineer-interview-2026): Post-April-layoff AI pivot, IC4+ system design with AI angle, real Meta-stack reasoning expected.
+- [Salesforce engineer interview 2026](https://aimvantage.uk/blog/salesforce-engineer-interview-2026): Agentforce + multi-tenant platform reasoning at Fortune 500 scale, Ohana values round.
 
 ## Blog (long-form guides)
 
