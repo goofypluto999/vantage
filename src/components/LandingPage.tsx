@@ -150,7 +150,31 @@ function Navbar({ onStart, showLogin }: { onStart: () => void; showLogin?: () =>
     return () => window.removeEventListener('scroll', handler);
   }, []);
 
-  const links = ['Features', 'How It Works', 'Pricing', 'FAQ'];
+  // Explicit map — string-mangling via `.replace(' ', '-')` only replaces
+  // the FIRST space, so "How It Works" → "how-it works" (broken anchor).
+  // Be explicit instead. Each entry maps the visible label to the actual
+  // section id elsewhere in this file.
+  const links: { label: string; hash: string }[] = [
+    { label: 'Features', hash: 'features' },
+    { label: 'How It Works', hash: 'how-it-works' },
+    { label: 'Pricing', hash: 'pricing' },
+    { label: 'FAQ', hash: 'faq' },
+  ];
+
+  // Fixed-nav offset — the header is fixed at top-9/10 (~36-40px) with
+  // h-16 (~64px) below it = ~104px. Default anchor jumps land the section
+  // BEHIND the fixed nav so the section title is hidden + the click looks
+  // like it did nothing. Custom scroller offsets by that amount.
+  const scrollToHash = (hash: string) => {
+    const el = document.getElementById(hash);
+    if (!el) return;
+    const offset = 110;
+    const y = el.getBoundingClientRect().top + window.scrollY - offset;
+    window.scrollTo({ top: y, behavior: 'smooth' });
+    // Update the URL so back-button + share-link both still work, but
+    // without triggering the browser's own (unoffset) anchor jump.
+    if (history.replaceState) history.replaceState(null, '', `#${hash}`);
+  };
 
   return (
     <header
@@ -186,11 +210,15 @@ function Navbar({ onStart, showLogin }: { onStart: () => void; showLogin?: () =>
         <nav className="hidden md:flex items-center gap-1">
           {links.map((link) => (
             <a
-              key={link}
-              href={`#${link.toLowerCase().replace(' ', '-')}`}
+              key={link.hash}
+              href={`#${link.hash}`}
+              onClick={(e) => {
+                e.preventDefault();
+                scrollToHash(link.hash);
+              }}
               className="px-4 py-2 text-sm font-semibold text-[#3B3A5C] hover:text-[#4F46E5] hover:bg-white/30 rounded-full transition-all"
             >
-              {link}
+              {link.label}
             </a>
           ))}
         </nav>
@@ -246,12 +274,20 @@ function Navbar({ onStart, showLogin }: { onStart: () => void; showLogin?: () =>
             <div className="flex flex-col gap-1 pt-4">
               {links.map((link) => (
                 <a
-                  key={link}
-                  href={`#${link.toLowerCase().replace(' ', '-')}`}
-                  onClick={() => setMobileOpen(false)}
+                  key={link.hash}
+                  href={`#${link.hash}`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setMobileOpen(false);
+                    // Wait one frame for the mobile drawer's exit animation to
+                    // start, then scroll. Otherwise the drawer collapse changes
+                    // page layout while the smooth-scroll is in flight + the
+                    // final scroll position lands wrong.
+                    requestAnimationFrame(() => scrollToHash(link.hash));
+                  }}
                   className="px-4 py-3 text-sm font-semibold text-[#3B3A5C] hover:text-[#4F46E5] rounded-xl hover:bg-white/40 transition-all"
                 >
-                  {link}
+                  {link.label}
                 </a>
               ))}
               {/* Free-tool routes — desktop users get the chip cluster in
@@ -698,7 +734,7 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
       {/* ================================================================
           HERO — dot-matrix globe behind the headline
       ================================================================ */}
-      <section id="features" className="relative h-screen flex flex-col items-center justify-center overflow-hidden grain-overlay">
+      <section className="relative h-screen flex flex-col items-center justify-center overflow-hidden grain-overlay">
         {/* 3D canvas — desktop + non-reduced-motion only. On mobile or when
             the user prefers reduced motion, we show the static bg-[#A8A5E6]
             gradient instead and skip the ~1MB three.js chunk download. The
@@ -1174,7 +1210,7 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
       {/* ================================================================
           BENEFITS
       ================================================================ */}
-      <section className="py-12 px-6 max-w-6xl mx-auto relative z-20">
+      <section id="features" className="py-12 px-6 max-w-6xl mx-auto relative z-20">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-16">
           <p className="text-xs font-bold text-[#4F46E5] uppercase tracking-widest mb-3">Why Vantage</p>
           <h2 className="text-4xl lg:text-5xl font-display font-bold text-[#2D2B4E]">Why You'll Love It</h2>
