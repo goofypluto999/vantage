@@ -84,6 +84,9 @@ const COMPANY_FILTERS = [
   'OpenAI',
   'Anthropic',
   'Databricks',
+  'Salesforce',
+  'ServiceNow',
+  'Zoom',
 ] as const;
 
 type CompanyFilter = typeof COMPANY_FILTERS[number];

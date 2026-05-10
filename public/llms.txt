@@ -209,6 +209,9 @@ Each post covers a specific company's interview process: 5-stage breakdown with 
 - [OpenAI software engineer interview 2026](https://aimvantage.uk/blog/openai-software-engineer-interview-2026): Post-GPT-5 + Agents SDK + Sora-2, inference at planetary scale (KV-cache, speculative decoding), safety / commercial-product register.
 - [Anthropic software engineer interview 2026](https://aimvantage.uk/blog/anthropic-software-engineer-interview-2026): Post-Claude-4 + Computer Use + MCP + Claude Code, Constitutional AI + Responsible Scaling Policy register, multi-region inference.
 - [Databricks software engineer interview 2026](https://aimvantage.uk/blog/databricks-software-engineer-interview-2026): Post-MosaicML + Unity Catalog + Genie lakehouse-AI thesis, Photon + Delta + DBRX, Snowflake competitive register.
+- [Salesforce software engineer interview 2026](https://aimvantage.uk/blog/salesforce-software-engineer-interview-2026): Post-Agentforce + Data Cloud + Einstein, multi-tenant Apex + governor limits + Hyperforce, AppExchange platform thesis, Ohana culture register.
+- [ServiceNow software engineer interview 2026](https://aimvantage.uk/blog/servicenow-software-engineer-interview-2026): Post-Now Assist + AI Agents + Workflow Data Fabric, Now Platform multi-tenant runtime, Fortune-500 enterprise-trust register.
+- [Zoom software engineer interview 2026](https://aimvantage.uk/blog/zoom-software-engineer-interview-2026): Post-AI Companion + Workplace + Workvivo + Phone pivot, SFU + simulcast + SVC real-time media depth, post-pandemic AI-first thesis.
 
 ## Blog (long-form guides)
 
