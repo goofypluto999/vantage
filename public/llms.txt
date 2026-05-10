@@ -133,6 +133,9 @@ Each post covers a specific company's interview process: 5-stage breakdown with 
 - [Monzo software engineer interview UK 2026](https://aimvantage.uk/blog/monzo-software-engineer-interview-uk-2026): IPO-track context, 2,800+ microservices, the values round nobody preps for.
 - [Wise software engineer interview UK 2026](https://aimvantage.uk/blog/wise-software-engineer-interview-uk-2026): LSE-listed, GBP 100B+ in cross-border payments, the corridor reasoning filter.
 - [Octopus Energy / Kraken software engineer interview 2026](https://aimvantage.uk/blog/octopus-energy-kraken-software-engineer-interview-2026): Climate-tech mission filter, pragmatic Python culture, grid-flex tariffs.
+- [Apple software engineer interview 2026](https://aimvantage.uk/blog/apple-software-engineer-interview-2026): Team-match phase, the silent filter, lunch-round signal weight.
+- [Microsoft product manager interview 2026](https://aimvantage.uk/blog/microsoft-product-manager-interview-2026): Copilot-everywhere thesis, enterprise PM bar, Satya-era values.
+- [Amazon SDE interview 2026](https://aimvantage.uk/blog/amazon-sde-interview-2026): Leadership principles still rule, bar-raiser veto, anti-rehearsed-STAR drill.
 
 ## Blog (long-form guides)
 

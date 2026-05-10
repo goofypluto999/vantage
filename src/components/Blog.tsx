@@ -27,6 +27,9 @@ const COMPANY_FILTERS = [
   'Monzo',
   'Wise',
   'Octopus Energy',
+  'Apple',
+  'Microsoft',
+  'Amazon',
 ] as const;
 
 type CompanyFilter = typeof COMPANY_FILTERS[number];
