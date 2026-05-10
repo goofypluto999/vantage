@@ -289,6 +289,13 @@ function Navbar({ onStart, showLogin }: { onStart: () => void; showLogin?: () =>
                 Is this a ghost job?
               </Link>
               <Link
+                to="/ats/scanner"
+                onClick={() => setMobileOpen(false)}
+                className="px-4 py-2.5 text-sm font-semibold text-[#3B3A5C] hover:text-[#4F46E5] rounded-xl hover:bg-white/40 transition-all"
+              >
+                ATS keyword scanner
+              </Link>
+              <Link
                 to="/tools/jobscan-cost-calculator"
                 onClick={() => setMobileOpen(false)}
                 className="px-4 py-2.5 text-sm font-semibold text-[#3B3A5C] hover:text-[#4F46E5] rounded-xl hover:bg-white/40 transition-all"
@@ -786,6 +793,12 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/45 backdrop-blur-[20px] border border-white/55 text-[#2D2B4E] text-xs font-semibold hover:bg-white/65 transition-all"
               >
                 Is this a ghost job?
+              </Link>
+              <Link
+                to="/ats/scanner"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/45 backdrop-blur-[20px] border border-white/55 text-[#2D2B4E] text-xs font-semibold hover:bg-white/65 transition-all"
+              >
+                ATS keyword scanner
               </Link>
               <Link
                 to="/tools/jobscan-cost-calculator"
@@ -1603,6 +1616,7 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
                 <Link to="/roast" className="hover:text-[#4F46E5] transition-colors">Cover letter roast</Link>
                 <Link to="/decode-rejection" className="hover:text-[#4F46E5] transition-colors">Decode rejection email</Link>
                 <Link to="/ghost-job-check" className="hover:text-[#4F46E5] transition-colors">Ghost-job detector</Link>
+                <Link to="/ats/scanner" className="hover:text-[#4F46E5] transition-colors">ATS keyword scanner</Link>
                 <a href="https://cv-mirror-web.vercel.app/" target="_blank" rel="noopener noreferrer" className="hover:text-[#4F46E5] transition-colors">
                   CV Mirror →
                 </a>

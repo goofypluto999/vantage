@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, ExternalLink, Star, Shield, Zap, FileSearch, MessageSquare, Target, Users, Briefcase, Calculator, Activity } from 'lucide-react';
+import { ArrowRight, ExternalLink, Star, Shield, Zap, FileSearch, MessageSquare, Target, Users, Briefcase, Calculator, Activity, ScanLine } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import SEO from './SEO';
 
@@ -48,30 +48,36 @@ export default function ToolsPage() {
       {
         '@type': 'ListItem',
         position: 5,
+        url: `${SITE_URL}/ats/scanner`,
+        name: 'Free ATS Keyword Scanner — In-Browser, No Signup',
+      },
+      {
+        '@type': 'ListItem',
+        position: 6,
         url: `${SITE_URL}/tools/no-interviews-diagnostic`,
         name: 'No Interviews Diagnostic — Free 60-Second Verdict',
       },
       {
         '@type': 'ListItem',
-        position: 6,
+        position: 7,
         url: `${SITE_URL}/tools/jobscan-cost-calculator`,
         name: 'Job Tool Cost Calculator — Jobscan vs Vantage',
       },
       {
         '@type': 'ListItem',
-        position: 7,
+        position: 8,
         url: `${SITE_URL}/interview-prep`,
         name: 'Interview Prep Packs by Company',
       },
       {
         '@type': 'ListItem',
-        position: 8,
+        position: 9,
         url: `${SITE_URL}/interview-questions`,
         name: 'Interview Questions by Role',
       },
       {
         '@type': 'ListItem',
-        position: 9,
+        position: 10,
         url: `${SITE_URL}/laid-off`,
         name: 'Layoff Recovery Guide (April 2026 cohort)',
       },
@@ -298,6 +304,25 @@ export default function ToolsPage() {
                   </p>
                 </div>
                 <Target className="w-5 h-5 text-violet-400 flex-shrink-0" />
+              </div>
+            </Link>
+            <Link
+              to="/ats/scanner"
+              className={`${t.glass} rounded-xl p-5 hover:border-violet-400/40 transition group block`}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <div className={`text-xs uppercase tracking-widest ${t.textMuted} font-bold`}>
+                    Free · No signup · In-browser
+                  </div>
+                  <h3 className={`text-lg font-bold ${t.text} mt-1 group-hover:text-violet-500 transition`}>
+                    ATS Keyword Scanner
+                  </h3>
+                  <p className={`text-sm ${t.textSub} mt-2 leading-relaxed`}>
+                    Paste your CV and a job description — see matched and missing keywords, with a real (not invented) coverage percentage. Runs entirely in your browser. Nothing uploaded.
+                  </p>
+                </div>
+                <ScanLine className="w-5 h-5 text-violet-400 flex-shrink-0" />
               </div>
             </Link>
             <Link
