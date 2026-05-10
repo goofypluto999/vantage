@@ -1209,7 +1209,8 @@ import { newBlogPosts32 } from './blogPosts-newDrafts32';
 import { newBlogPosts33 } from './blogPosts-newDrafts33';
 import { newBlogPosts34 } from './blogPosts-newDrafts34';
 import { newBlogPosts35 } from './blogPosts-newDrafts35';
-blogPosts.push(...newBlogPosts, ...newBlogPosts2, ...newBlogPosts3, ...newBlogPosts4, ...newBlogPosts5, ...newBlogPosts6, ...newBlogPosts7, ...newBlogPosts8, ...newBlogPosts9, ...newBlogPosts10, ...newBlogPosts11, ...newBlogPosts12, ...newBlogPosts13, ...newBlogPosts14, ...newBlogPosts15, ...newBlogPosts16, ...newBlogPosts17, ...newBlogPosts18, ...newBlogPosts19, ...newBlogPosts20, ...newBlogPosts21, ...newBlogPosts22, ...newBlogPosts23, ...newBlogPosts24, ...newBlogPosts25, ...newBlogPosts26, ...newBlogPosts27, ...newBlogPosts28, ...newBlogPosts29, ...newBlogPosts30, ...newBlogPosts31, ...newBlogPosts32, ...newBlogPosts33, ...newBlogPosts34, ...newBlogPosts35);
+import { newBlogPosts36 } from './blogPosts-newDrafts36';
+blogPosts.push(...newBlogPosts, ...newBlogPosts2, ...newBlogPosts3, ...newBlogPosts4, ...newBlogPosts5, ...newBlogPosts6, ...newBlogPosts7, ...newBlogPosts8, ...newBlogPosts9, ...newBlogPosts10, ...newBlogPosts11, ...newBlogPosts12, ...newBlogPosts13, ...newBlogPosts14, ...newBlogPosts15, ...newBlogPosts16, ...newBlogPosts17, ...newBlogPosts18, ...newBlogPosts19, ...newBlogPosts20, ...newBlogPosts21, ...newBlogPosts22, ...newBlogPosts23, ...newBlogPosts24, ...newBlogPosts25, ...newBlogPosts26, ...newBlogPosts27, ...newBlogPosts28, ...newBlogPosts29, ...newBlogPosts30, ...newBlogPosts31, ...newBlogPosts32, ...newBlogPosts33, ...newBlogPosts34, ...newBlogPosts35, ...newBlogPosts36);
 
 export function getPostBySlug(slug: string): BlogPost | undefined {
   return blogPosts.find((p) => p.slug === slug);

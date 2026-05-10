@@ -117,6 +117,9 @@ const COMPANY_FILTERS = [
   'ASML',
   'TSMC',
   'Qualcomm',
+  'Tesla',
+  'SpaceX',
+  'Uber',
 ] as const;
 
 type CompanyFilter = typeof COMPANY_FILTERS[number];

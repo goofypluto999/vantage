@@ -245,6 +245,9 @@ Each post covers a specific company's interview process: 5-stage breakdown with 
 - [ASML software engineer interview 2026](https://aimvantage.uk/blog/asml-software-engineer-interview-2026): Post-High-NA EUV (EXE) + Tachyon applications software + China-export-restriction, multi-discipline control-systems depth, Dutch engineering-led culture.
 - [TSMC software engineer interview 2026](https://aimvantage.uk/blog/tsmc-software-engineer-interview-2026): Post-N2 (2nm) ramp + Arizona Fab 21 + JASM Japan + Dresden Europe, CIM + manufacturing software + multi-region coordination depth.
 - [Qualcomm software engineer interview 2026](https://aimvantage.uk/blog/qualcomm-software-engineer-interview-2026): Post-Snapdragon X Elite (PC) + Digital Chassis (Auto) + 5G/6G modem, chip-software + modem stack depth, post-Apple-mobile diversification register.
+- [Tesla software engineer interview 2026](https://aimvantage.uk/blog/tesla-software-engineer-interview-2026): Post-FSD v13 + Optimus + Robotaxi + Cybercab, end-to-end neural net + Dojo training infra, first-principles + vision-only register.
+- [SpaceX software engineer interview 2026](https://aimvantage.uk/blog/spacex-software-engineer-interview-2026): Post-Starship + Starlink (8M+ subs) + Falcon weekly cadence + Polaris, avionics + GNC + LEO depth, ITAR / US-person register.
+- [Uber software engineer interview 2026](https://aimvantage.uk/blog/uber-software-engineer-interview-2026): Post-Waymo + WeRide + Wayve + Hyundai AV partnerships + Uber One + Freight, multi-sided marketplace + matching depth, AV-orchestrator pivot.
 
 ## Blog (long-form guides)
 
