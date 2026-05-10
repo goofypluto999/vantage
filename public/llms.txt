@@ -248,6 +248,9 @@ Each post covers a specific company's interview process: 5-stage breakdown with 
 - [Tesla software engineer interview 2026](https://aimvantage.uk/blog/tesla-software-engineer-interview-2026): Post-FSD v13 + Optimus + Robotaxi + Cybercab, end-to-end neural net + Dojo training infra, first-principles + vision-only register.
 - [SpaceX software engineer interview 2026](https://aimvantage.uk/blog/spacex-software-engineer-interview-2026): Post-Starship + Starlink (8M+ subs) + Falcon weekly cadence + Polaris, avionics + GNC + LEO depth, ITAR / US-person register.
 - [Uber software engineer interview 2026](https://aimvantage.uk/blog/uber-software-engineer-interview-2026): Post-Waymo + WeRide + Wayve + Hyundai AV partnerships + Uber One + Freight, multi-sided marketplace + matching depth, AV-orchestrator pivot.
+- [Revolut software engineer interview 2026](https://aimvantage.uk/blog/revolut-software-engineer-interview-2026): Post-UK-banking-licence + Stays + Business + 50M+ retail customers, super-app + FX engine + Sherlock fraud-detection, high-intensity register.
+- [Monzo software engineer interview 2026](https://aimvantage.uk/blog/monzo-software-engineer-interview-2026): Post-profitability + Plus + Premium + US-launch + Business, Go + Cassandra + 1500+ microservices estate, Banking Platform + Coredeposit ledger.
+- [DeepMind software engineer interview 2026](https://aimvantage.uk/blog/deepmind-software-engineer-interview-2026): Post-Gemini 2.5 Deep Think + AlphaFold 3 + Veo 3 + Genie 2, Jax + Pathways + TPU research-engineering depth, Google-DeepMind merger register.
 
 ## Blog (long-form guides)
 

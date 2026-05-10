@@ -12,7 +12,7 @@
     <description>Practical, current guides on AI job preparation, CV optimisation, ATS-friendly resumes, cover letters, and interview strategy. Long-form, from a solo founder building Vantage in public.</description>
     <language>en-gb</language>
     <copyright>Vantage 2026</copyright>
-    <lastBuildDate>Sun, 10 May 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 11 May 2026 00:00:00 +0000</lastBuildDate>
     <managingEditor>noreply@aimvantage.uk (Gio)</managingEditor>
     <webMaster>noreply@aimvantage.uk (Gio)</webMaster>
     <generator>Vantage scripts/generate-feeds.mjs</generator>
@@ -24,6 +24,36 @@
       <height>630</height>
     </image>
 
+    <item>
+      <title>Revolut software engineer interview: the post-UK-banking-licence + Stays + Business 2026 loop</title>
+      <link>https://aimvantage.uk/blog/revolut-software-engineer-interview-2026</link>
+      <guid isPermaLink="true">https://aimvantage.uk/blog/revolut-software-engineer-interview-2026</guid>
+      <pubDate>Mon, 11 May 2026 00:00:00 +0000</pubDate>
+      <dc:creator><![CDATA[Gio]]></dc:creator>
+      <description>The Revolut software engineer interview in 2026 -- five stages, the post-UK banking licence (with restrictions, July 2024) + Revolut Stays + Revolut Business + the super-app expansion context, real questions, four traps, and an 80-minute prep checklist.</description>
+      <content:encoded><![CDATA[<p>The Revolut software engineer interview in 2026 -- five stages, the post-UK banking licence (with restrictions, July 2024) + Revolut Stays + Revolut Business + the super-app expansion context, real questions, four traps, and an 80-minute prep checklist.</p>]]></content:encoded>
+
+    </item>
+    <item>
+      <title>Monzo software engineer interview: the post-Plus + Premium + US-launch + Business 2026 loop</title>
+      <link>https://aimvantage.uk/blog/monzo-software-engineer-interview-2026</link>
+      <guid isPermaLink="true">https://aimvantage.uk/blog/monzo-software-engineer-interview-2026</guid>
+      <pubDate>Mon, 11 May 2026 00:00:00 +0000</pubDate>
+      <dc:creator><![CDATA[Gio]]></dc:creator>
+      <description>The Monzo software engineer interview in 2026 -- five stages, the post-Plus + Premium + US-launch + Business + Investments context, real questions, four traps, and an 80-minute prep checklist.</description>
+      <content:encoded><![CDATA[<p>The Monzo software engineer interview in 2026 -- five stages, the post-Plus + Premium + US-launch + Business + Investments context, real questions, four traps, and an 80-minute prep checklist.</p>]]></content:encoded>
+
+    </item>
+    <item>
+      <title>DeepMind software engineer interview: the post-Gemini + AlphaFold + Veo + Genie 2026 loop</title>
+      <link>https://aimvantage.uk/blog/deepmind-software-engineer-interview-2026</link>
+      <guid isPermaLink="true">https://aimvantage.uk/blog/deepmind-software-engineer-interview-2026</guid>
+      <pubDate>Mon, 11 May 2026 00:00:00 +0000</pubDate>
+      <dc:creator><![CDATA[Gio]]></dc:creator>
+      <description>The DeepMind software engineer interview in 2026 -- five stages, the post-Gemini + AlphaFold 3 + Veo 3 + Genie 2 + AlphaProteo context, real questions, four traps, and a 90-minute prep checklist.</description>
+      <content:encoded><![CDATA[<p>The DeepMind software engineer interview in 2026 -- five stages, the post-Gemini + AlphaFold 3 + Veo 3 + Genie 2 + AlphaProteo context, real questions, four traps, and a 90-minute prep checklist.</p>]]></content:encoded>
+
+    </item>
     <item>
       <title>Stripe senior PM interview: the 2026 guide nobody writes honestly</title>
       <link>https://aimvantage.uk/blog/stripe-senior-pm-interview-guide-2026</link>
