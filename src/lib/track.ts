@@ -38,21 +38,50 @@ function safeClarity(): ClarityFn | null {
 }
 
 /**
+ * Dynamic-import Vercel Analytics's track() so the parallel-forward is
+ * fully optional. If the package is removed or fails to load (ad-block,
+ * privacy extension), Clarity tracking still works. Lazy-loaded so the
+ * first call pays the resolution cost, never the initial bundle.
+ */
+let vercelTrackPromise: Promise<((event: string, props?: Record<string, string | number | boolean | null>) => void) | null> | null = null;
+function getVercelTrack(): Promise<((event: string, props?: Record<string, string | number | boolean | null>) => void) | null> {
+  if (!vercelTrackPromise) {
+    vercelTrackPromise = import('@vercel/analytics')
+      .then((m) => (m && typeof m.track === 'function' ? m.track : null))
+      .catch(() => null);
+  }
+  return vercelTrackPromise;
+}
+
+/**
  * Fire a Clarity custom event. Use for action verbs (button clicks,
  * task starts/completes, exits).
  */
 export function track(eventName: string, attrs?: Record<string, string | number | boolean>): void {
+  // Clarity (custom event + session-tag dimensioning) — primary surface
+  // for funnel + replay analysis.
   const c = safeClarity();
-  if (!c) return;
-  try {
-    c('event', eventName);
-    if (attrs) {
-      for (const [k, v] of Object.entries(attrs)) {
-        // Clarity 'set' takes string keys + string values — coerce safely.
-        c('set', k, String(v));
+  if (c) {
+    try {
+      c('event', eventName);
+      if (attrs) {
+        for (const [k, v] of Object.entries(attrs)) {
+          c('set', k, String(v));
+        }
       }
-    }
-  } catch { /* swallow — analytics never crash the app */ }
+    } catch { /* swallow — analytics never crash the app */ }
+  }
+
+  // Vercel Analytics custom event — secondary surface for the Vercel
+  // dashboard's Events tab (good for aggregate funnel + which page +
+  // which UTM source drove the action). Lazy-loaded; no-op if package
+  // resolution fails.
+  getVercelTrack().then((vtrack) => {
+    if (!vtrack) return;
+    try {
+      vtrack(eventName, attrs ?? undefined);
+    } catch { /* swallow */ }
+  });
 }
 
 /**
@@ -140,4 +169,34 @@ export function recordTaskCompletion(route: string, taskType: string): void {
       window.dispatchEvent(new CustomEvent('vantage:task_completed', { detail: { route, taskType } }));
     } catch { /* ignore */ }
   }
+}
+
+/**
+ * CTA-click attribution. Call from any clickable that leads toward
+ * registration / signup / a hard conversion. The `source` describes
+ * WHERE the click happened ("blog-post-top", "blog-post-mid",
+ * "blog-post-bottom", "tools-page-hero", "landing-hero", "tools-card-X").
+ * The `props` carry the WHAT (post slug, tool slug, plan tier, etc.).
+ *
+ * Fires:
+ *   - cta_click event in Clarity + Vercel Analytics
+ *   - cta_source session-tag in Clarity (for replay dimensioning)
+ *
+ * Designed so a single line at the click site (or onClick={() => ctaClick(...)})
+ * is enough — no per-call setup. PII rules from track() apply.
+ */
+export function ctaClick(source: string, props?: Record<string, string | number | boolean>): void {
+  track('cta_click', { source, ...(props ?? {}) });
+  // Promote source to a session-level tag so subsequent recordings
+  // are dimensioned by which CTA the user came from.
+  tag('last_cta_source', source);
+}
+
+/**
+ * Content-share attribution. Call from share buttons (X, LinkedIn,
+ * copy-link) so the dashboard can see which posts get shared + via
+ * which channel. Free distribution intelligence.
+ */
+export function contentShare(channel: 'x' | 'linkedin' | 'copy-link', slug: string): void {
+  track('content_share', { channel, slug });
 }

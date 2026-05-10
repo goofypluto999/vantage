@@ -5,6 +5,7 @@ import { useTheme } from '../contexts/ThemeContext';
 import { getPostBySlug, blogPosts, type BlogSection } from '../data/blogPosts';
 import { getCrossLinks } from '../data/blogCrossLinks';
 import SEO from './SEO';
+import { ctaClick, contentShare } from '../lib/track';
 
 const SITE_URL = 'https://aimvantage.uk';
 
@@ -19,6 +20,7 @@ export default function BlogPost() {
 
   const postUrl = `${SITE_URL}/blog/${post.slug}?utm_source=share&utm_medium=blog&utm_content=${post.slug}`;
   const shareTwitter = () => {
+    contentShare('x', post.slug);
     const text = `${post.title} — ${post.excerpt.slice(0, 140)}`;
     window.open(
       `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(postUrl)}`,
@@ -27,6 +29,7 @@ export default function BlogPost() {
     );
   };
   const shareLinkedin = () => {
+    contentShare('linkedin', post.slug);
     window.open(
       `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(postUrl)}`,
       '_blank',
@@ -34,6 +37,7 @@ export default function BlogPost() {
     );
   };
   const copyLink = async () => {
+    contentShare('copy-link', post.slug);
     try {
       await navigator.clipboard.writeText(postUrl);
       setCopied(true);
@@ -288,6 +292,7 @@ export default function BlogPost() {
           <div className="mt-6 flex flex-wrap items-center gap-3 text-sm">
             <Link
               to="/register"
+              onClick={() => ctaClick('blog-post-top', { slug: post.slug })}
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] text-white font-semibold hover:opacity-95 transition-opacity"
             >
               Run mine free <ArrowRight className="w-4 h-4" />
@@ -391,6 +396,7 @@ export default function BlogPost() {
                     </p>
                     <Link
                       to="/register"
+                      onClick={() => ctaClick('blog-post-mid', { slug: post.slug })}
                       className="mt-3 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-violet-600 hover:bg-violet-500 text-white text-sm font-semibold transition"
                     >
                       Try it free <ArrowRight className="w-4 h-4" />
@@ -411,6 +417,7 @@ export default function BlogPost() {
           </p>
           <Link
             to="/register"
+            onClick={() => ctaClick('blog-post-bottom', { slug: post.slug })}
             className="mt-5 inline-flex items-center gap-2 px-6 py-3 rounded-full bg-violet-600 hover:bg-violet-500 text-white font-semibold transition"
           >
             Try it free <ArrowRight className="w-4 h-4" />
