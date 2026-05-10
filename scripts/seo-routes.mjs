@@ -136,6 +136,11 @@ const STATIC_ROUTES = [
     description: 'Plug in your offer + target asks (base, signing, RSU). Get a personalised salary negotiation script in email or phone format, plus the 7 talking points that win negotiations. Pure client-side. No signup.',
   },
   {
+    path: '/tools/thank-you-note',
+    title: 'Free Post-Interview Thank-You Note Generator — Tone-Calibrated | Vantage',
+    description: 'Pick tone, round type, sentiment, hours since call. Get a calibrated thank-you note that anchors on specific topics from your conversation. Plus 7 sending tips. No signup.',
+  },
+  {
     path: '/alternatives',
     title: 'Vantage AI Alternatives — Compared to Jobscan, Teal, Resume Worded, Final Round AI',
     description: 'Honest side-by-side comparisons of Vantage AI vs Jobscan, Teal HQ, Resume Worded, Final Round AI, Kickresume, Enhancv, Yoodli, Huntr, and Big Interview. Where each wins, where each loses.',
