@@ -1334,6 +1334,101 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
       </section>
 
       {/* ================================================================
+          BUILT-IN-PUBLIC TRUST BLOCK
+          ----------------------------------------------------------------
+          Pre-revenue indie SaaS = no real customer testimonials. The 2026
+          AEO-research finding ("named-customer claim +22% lift") doesn't
+          help when there are zero named customers. Substitute: builder-
+          credibility signals — verifiable public artefacts that prove the
+          operator is real, ships fast, and isn't a fly-by-night.
+          Each item links out to the actual artefact so visitors can verify.
+      ================================================================ */}
+      <section id="built-in-public" className="py-20 px-6 max-w-5xl mx-auto relative z-20">
+        <div className="text-center mb-12">
+          <p className="text-xs font-bold tracking-widest uppercase text-[#4F46E5] mb-3">Built in public · Verifiable</p>
+          <h2 className="text-3xl md:text-4xl font-display font-bold text-[#2D2B4E] tracking-tight">
+            No big logos. <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#4F46E5] to-[#7C3AED]">Real receipts instead.</span>
+          </h2>
+          <p className="mt-4 text-base text-[#3B3A5C] max-w-2xl mx-auto leading-relaxed">
+            Indie SaaS, sole trader, pre-revenue. Instead of fake testimonials,
+            here are the public artefacts you can click through and verify.
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-4">
+          <a
+            href="https://github.com/goofypluto999/cv-mirror-mcp"
+            target="_blank"
+            rel="me noopener noreferrer"
+            className="bg-white/45 backdrop-blur-[20px] border border-white/55 shadow-[0_4px_16px_rgba(0,0,0,0.06)] rounded-2xl p-5 hover:-translate-y-0.5 transition-all"
+          >
+            <div className="text-[10px] font-bold uppercase tracking-widest text-emerald-600 mb-2">● Open source</div>
+            <p className="text-base font-display font-bold text-[#2D2B4E]">Companion ATS scanner</p>
+            <p className="text-xs text-[#6B6B8D] mt-1.5 leading-relaxed">CV Mirror — fully client-side, never uploads your CV. Source code on GitHub.</p>
+            <p className="text-[11px] text-[#4F46E5] mt-3 font-semibold">github.com/goofypluto999/cv-mirror-mcp →</p>
+          </a>
+
+          <Link
+            to="/changelog"
+            className="bg-white/45 backdrop-blur-[20px] border border-white/55 shadow-[0_4px_16px_rgba(0,0,0,0.06)] rounded-2xl p-5 hover:-translate-y-0.5 transition-all"
+          >
+            <div className="text-[10px] font-bold uppercase tracking-widest text-violet-600 mb-2">● Public changelog</div>
+            <p className="text-base font-display font-bold text-[#2D2B4E]">Shipped 50+ fixes this week</p>
+            <p className="text-xs text-[#6B6B8D] mt-1.5 leading-relaxed">Live changelog updated every commit. Read what shipped + what failed.</p>
+            <p className="text-[11px] text-[#4F46E5] mt-3 font-semibold">/changelog →</p>
+          </Link>
+
+          <Link
+            to="/receipts"
+            className="bg-white/45 backdrop-blur-[20px] border border-white/55 shadow-[0_4px_16px_rgba(0,0,0,0.06)] rounded-2xl p-5 hover:-translate-y-0.5 transition-all"
+          >
+            <div className="text-[10px] font-bold uppercase tracking-widest text-amber-600 mb-2">● Trust audit</div>
+            <p className="text-base font-display font-bold text-[#2D2B4E]">Receipts page</p>
+            <p className="text-xs text-[#6B6B8D] mt-1.5 leading-relaxed">Operator name, ICO registration, refund policy, real numbers — all linked.</p>
+            <p className="text-[11px] text-[#4F46E5] mt-3 font-semibold">/receipts →</p>
+          </Link>
+
+          <a
+            href="https://dev.to/goofypluto999"
+            target="_blank"
+            rel="me noopener noreferrer"
+            className="bg-white/45 backdrop-blur-[20px] border border-white/55 shadow-[0_4px_16px_rgba(0,0,0,0.06)] rounded-2xl p-5 hover:-translate-y-0.5 transition-all"
+          >
+            <div className="text-[10px] font-bold uppercase tracking-widest text-rose-600 mb-2">● Engineering writeups</div>
+            <p className="text-base font-display font-bold text-[#2D2B4E]">DEV.to articles</p>
+            <p className="text-xs text-[#6B6B8D] mt-1.5 leading-relaxed">Real engineering notes — ATS parser quirks, Gemini structured outputs.</p>
+            <p className="text-[11px] text-[#4F46E5] mt-3 font-semibold">dev.to/goofypluto999 →</p>
+          </a>
+
+          <Link
+            to="/about"
+            className="bg-white/45 backdrop-blur-[20px] border border-white/55 shadow-[0_4px_16px_rgba(0,0,0,0.06)] rounded-2xl p-5 hover:-translate-y-0.5 transition-all"
+          >
+            <div className="text-[10px] font-bold uppercase tracking-widest text-emerald-600 mb-2">● Real human</div>
+            <p className="text-base font-display font-bold text-[#2D2B4E]">Operator: Giovanni Sizino Ennes</p>
+            <p className="text-xs text-[#6B6B8D] mt-1.5 leading-relaxed">UK sole trader. Real name, real contact, ICO data-protection registered.</p>
+            <p className="text-[11px] text-[#4F46E5] mt-3 font-semibold">/about →</p>
+          </Link>
+
+          <Link
+            to="/sample/anthropic-senior-pm"
+            className="bg-white/45 backdrop-blur-[20px] border border-white/55 shadow-[0_4px_16px_rgba(0,0,0,0.06)] rounded-2xl p-5 hover:-translate-y-0.5 transition-all"
+          >
+            <div className="text-[10px] font-bold uppercase tracking-widest text-violet-600 mb-2">● Full sample output</div>
+            <p className="text-base font-display font-bold text-[#2D2B4E]">See exactly what you get</p>
+            <p className="text-xs text-[#6B6B8D] mt-1.5 leading-relaxed">Complete prep-pack output for a real role. No signup, no card.</p>
+            <p className="text-[11px] text-[#4F46E5] mt-3 font-semibold">/sample/anthropic-senior-pm →</p>
+          </Link>
+        </div>
+
+        <p className="text-center text-xs text-[#6B6B8D] mt-8 max-w-xl mx-auto">
+          Every link above is a public artefact. If anything looks off, email{' '}
+          <a href="mailto:hello@aimvantage.uk" className="underline hover:text-[#4F46E5]">hello@aimvantage.uk</a>{' '}
+          and we'll fix or refund.
+        </p>
+      </section>
+
+      {/* ================================================================
           FAQ
       ================================================================ */}
       <section id="faq" className="py-16 px-6 max-w-3xl mx-auto relative z-20">
