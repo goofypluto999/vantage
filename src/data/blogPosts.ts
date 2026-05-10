@@ -1176,7 +1176,8 @@ export const blogPosts: BlogPost[] = [
 // agents can drop new draft batches in without rebasing this 1000-line array.
 import { newBlogPosts } from './blogPosts-newDrafts';
 import { newBlogPosts2 } from './blogPosts-newDrafts2';
-blogPosts.push(...newBlogPosts, ...newBlogPosts2);
+import { newBlogPosts3 } from './blogPosts-newDrafts3';
+blogPosts.push(...newBlogPosts, ...newBlogPosts2, ...newBlogPosts3);
 
 export function getPostBySlug(slug: string): BlogPost | undefined {
   return blogPosts.find((p) => p.slug === slug);

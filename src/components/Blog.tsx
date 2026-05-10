@@ -18,6 +18,9 @@ const COMPANY_FILTERS = [
   'Figma',
   'Spotify',
   'Revolut',
+  'GitLab',
+  'Linear',
+  'Vercel',
 ] as const;
 
 type CompanyFilter = typeof COMPANY_FILTERS[number];

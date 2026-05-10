@@ -124,6 +124,9 @@ Each post covers a specific company's interview process: 5-stage breakdown with 
 - [DeepMind research scientist interview 2026](https://aimvantage.uk/blog/deepmind-research-scientist-interview-2026): UK union vote, Pentagon contract context, Gemini Safety hiring.
 - [Notion software engineer interview 2026](https://aimvantage.uk/blog/notion-software-engineer-interview-2026): Notion 3.0 Agents era, $11B valuation, the systems round.
 - [Spotify data scientist interview UK 2026](https://aimvantage.uk/blog/spotify-data-scientist-interview-uk-2026): London office hiring, summer cohort, the experiment-design test.
+- [GitLab staff engineer interview 2026](https://aimvantage.uk/blog/gitlab-staff-engineer-interview-2026): All-remote async loop, Duo + Agent Platform context, the written communication filter.
+- [Linear product engineer interview 2026](https://aimvantage.uk/blog/linear-product-engineer-interview-2026): Craft-first take-home, the taste signal, why fast-and-rough fails.
+- [Vercel software engineer interview 2026](https://aimvantage.uk/blog/vercel-software-engineer-interview-2026): v0 + Next.js 15 + AI SDK product depth, the "have you built with the stack" filter.
 
 ## Blog (long-form guides)
 
