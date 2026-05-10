@@ -187,6 +187,51 @@ export default function Pricing({ onLogin, onRegister, onCheckout, isAuthenticat
             first — 5 questions, no signup, tells you which of 7 failure modes is yours.
           </p>
 
+          {/* Sample anchor — added 2026-05-10. /pricing visitors who have
+              not seen what 1 prep pack actually outputs have no anchor for
+              "is GBP 5 worth it." Surfacing the real Anthropic Senior PM
+              sample here closes that loop without forcing them to bounce. */}
+          <div className="mt-6 max-w-2xl mx-auto">
+            <Link
+              to="/sample/anthropic-senior-pm?utm_source=pricing&utm_medium=anchor"
+              onClick={() => track('pricing_sample_click', {})}
+              className="block rounded-xl bg-white/5 border border-white/10 hover:border-violet-400/40 hover:bg-white/10 transition px-5 py-4 text-left"
+            >
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-widest text-violet-300 mb-1">
+                    Want to see one first?
+                  </p>
+                  <p className="text-sm text-white font-semibold">
+                    Read a complete real prep pack: Anthropic Senior PM
+                  </p>
+                  <p className="text-xs text-white/55 mt-1">
+                    Company brief, fit score, cover letter (4 tones), interview Qs, 5-min pitch.
+                    No signup. Same output you get on every run.
+                  </p>
+                </div>
+                <ArrowRight className="w-5 h-5 text-violet-300 flex-shrink-0" />
+              </div>
+            </Link>
+          </div>
+
+          {/* Value frame — added 2026-05-10. Visitors anchor on the price
+              number ("GBP 12") not the value delivered. A concrete time
+              comparison closes the gap: tailoring 1 application by hand
+              (research + cover letter + interview prep) is 55-60 minutes
+              for most engineers/PMs/designers. Vantage: 90 seconds. The
+              ratio matters more than the absolute price. */}
+          <div className="mt-6 max-w-2xl mx-auto rounded-xl bg-emerald-500/10 border border-emerald-500/30 px-5 py-4">
+            <p className="text-sm text-white/80">
+              <span className="font-bold text-emerald-300">1 prep pack</span> = the company
+              research, fit scoring, cover letter, and interview-question prep that takes most
+              applicants 55-60 minutes by hand. Vantage runs it in about 90 seconds. At the Pro
+              rate, a daily applicant pays roughly{' '}
+              <span className="font-bold text-white">{symbol === '£' ? '20p' : '$0.25'} per application</span> for the
+              tailoring work.
+            </p>
+          </div>
+
           {/* Trust strip — added 2026-05-08. /pricing visitors are deeper in
               the funnel than landing visitors but still bounce at this gate.
               Common buyer hesitations: 'is this safe?', 'can I cancel?',
