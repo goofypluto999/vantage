@@ -196,6 +196,9 @@ Each post covers a specific company's interview process: 5-stage breakdown with 
 - [Lyft software engineer interview 2026](https://aimvantage.uk/blog/lyft-software-engineer-interview-2026): Post-Uber-divergence US-only rideshare + bikes/scooters refocus, marketplace + real-time-dispatch depth, AV partnership stance (killed L5 in 2021), focus-not-scope strategy.
 - [Slack software engineer interview 2026](https://aimvantage.uk/blog/slack-software-engineer-interview-2026): Salesforce-subsidiary register, real-time messaging at scale, Slack-AI + Agentforce integration, enterprise-grid + compliance scope, post-acquisition platform expectations.
 - [MongoDB software engineer interview 2026](https://aimvantage.uk/blog/mongodb-software-engineer-interview-2026): Document-database + Atlas (multi-cloud DBaaS), vector-search + RAG positioning, distributed-systems depth (replica sets, sharding), C++/Go internals vs Atlas control plane.
+- [Reddit software engineer interview 2026](https://aimvantage.uk/blog/reddit-software-engineer-interview-2026): Post-IPO community + ads + AI-data-licensing context, comment-tree at petabyte scale, 2023 API protest context, volunteer-moderator dynamic.
+- [Snowflake software engineer interview 2026](https://aimvantage.uk/blog/snowflake-software-engineer-interview-2026): Post-AI-Data-Cloud pivot, Cortex AI + Arctic LLM + Iceberg-native lakehouse, distributed query-engine depth, Databricks competitive register.
+- [Datadog software engineer interview 2026](https://aimvantage.uk/blog/datadog-software-engineer-interview-2026): Post-observability + Cloud SIEM + Bits AI platform expansion, petabyte ingest + time-series depth, OpenTelemetry tension, platform-vs-point-tool register.
 
 ## Blog (long-form guides)
 

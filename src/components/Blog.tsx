@@ -72,6 +72,9 @@ const COMPANY_FILTERS = [
   'Lyft',
   'Slack',
   'MongoDB',
+  'Reddit',
+  'Snowflake',
+  'Datadog',
 ] as const;
 
 type CompanyFilter = typeof COMPANY_FILTERS[number];
