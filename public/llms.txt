@@ -141,6 +141,9 @@ Each post covers a specific company's interview process: 5-stage breakdown with 
 - [Snowflake software engineer interview 2026](https://aimvantage.uk/blog/snowflake-software-engineer-interview-2026): Cortex AI pivot, AI-on-warehouse trade-offs, Iceberg context.
 - [Databricks software engineer interview 2026](https://aimvantage.uk/blog/databricks-software-engineer-interview-2026): Lakehouse + Mosaic AI, both-sides-of-the-debate filter, IPO-track rigour.
 - [Hugging Face ML engineer interview 2026](https://aimvantage.uk/blog/hugging-face-ml-engineer-interview-2026): Open-source-first hiring, public contribution signal as the silent filter.
+- [Shopify software engineer interview 2026](https://aimvantage.uk/blog/shopify-software-engineer-interview-2026): AI-first directive (Lutke memo), Life Story round, commerce-shaped systems.
+- [Atlassian software engineer interview 2026](https://aimvantage.uk/blog/atlassian-software-engineer-interview-2026): Rovo AI agent platform, multi-product context, values round register.
+- [ServiceNow software engineer interview 2026](https://aimvantage.uk/blog/servicenow-software-engineer-interview-2026): Now Assist + regulated enterprise AI, multi-tenant platform reasoning.
 
 ## Blog (long-form guides)
 
