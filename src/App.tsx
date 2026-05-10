@@ -35,6 +35,7 @@ const ToolsPage = React.lazy(() => import('./components/ToolsPage'));
 const StateOf2026Page = React.lazy(() => import('./components/StateOf2026Page'));
 const JdDecoderPage = React.lazy(() => import('./components/JdDecoderPage'));
 const BulletRewriterPage = React.lazy(() => import('./components/BulletRewriterPage'));
+const LayoffPlaybookPage = React.lazy(() => import('./components/LayoffPlaybookPage'));
 const CostCalculatorPage = React.lazy(() => import('./components/CostCalculatorPage'));
 const ReceiptsPage = React.lazy(() => import('./components/ReceiptsPage'));
 const NoInterviewsDiagnostic = React.lazy(() => import('./components/NoInterviewsDiagnostic'));
@@ -479,6 +480,7 @@ function AppContent() {
             <Route path="/state-of-2026" element={<StateOf2026Page />} />
             <Route path="/tools/jd-decoder" element={<JdDecoderPage />} />
             <Route path="/tools/bullet-rewriter" element={<BulletRewriterPage />} />
+            <Route path="/tools/layoff-playbook" element={<LayoffPlaybookPage />} />
             <Route path="/tools/jobscan-cost-calculator" element={<CostCalculatorPage />} />
             <Route path="/jobscan-cost-calculator" element={<Navigate to="/tools/jobscan-cost-calculator" replace />} />
             <Route path="/job-tool-cost-calculator" element={<Navigate to="/tools/jobscan-cost-calculator" replace />} />

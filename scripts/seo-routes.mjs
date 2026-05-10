@@ -121,6 +121,11 @@ const STATIC_ROUTES = [
     description: 'Paste a CV bullet. Get a diagnosis (weak verbs, missing metrics, filler phrases, "responsible for" framing) plus 3 stronger rewrites with templates. Runs in your browser. No signup.',
   },
   {
+    path: '/tools/layoff-playbook',
+    title: 'Free 30-Day Post-Layoff Playbook Generator — Personalised Day-by-Day Plan | Vantage',
+    description: 'Pick your role, country, severance, visa status — get a personalised 30-day post-layoff plan with the right specific action for each day. Markdown export. Runs in your browser. No signup.',
+  },
+  {
     path: '/alternatives',
     title: 'Vantage AI Alternatives — Compared to Jobscan, Teal, Resume Worded, Final Round AI',
     description: 'Honest side-by-side comparisons of Vantage AI vs Jobscan, Teal HQ, Resume Worded, Final Round AI, Kickresume, Enhancv, Yoodli, Huntr, and Big Interview. Where each wins, where each loses.',
