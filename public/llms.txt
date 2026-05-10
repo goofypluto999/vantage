@@ -187,6 +187,9 @@ Each post covers a specific company's interview process: 5-stage breakdown with 
 - [Sentry software engineer interview 2026](https://aimvantage.uk/blog/sentry-software-engineer-interview-2026): Post-Codecov platform expansion, open-source-meets-commercial dual register, observability event-processing depth.
 - [Roblox software engineer interview 2026](https://aimvantage.uk/blog/roblox-software-engineer-interview-2026): UGC platform at 80M+ DAU, child-safety regulatory context (COPPA / GDPR-K / Ofcom), AI-creator pivot trade-offs.
 - [Twilio software engineer interview 2026](https://aimvantage.uk/blog/twilio-software-engineer-interview-2026): Post-Segment-divestiture AI-CX focus, carrier-integration depth across 180 countries, communications compliance (TCPA / GDPR / A2P 10DLC).
+- [Block (Square / Cash App) software engineer interview 2026](https://aimvantage.uk/blog/block-software-engineer-interview-2026): Post-2024 ecosystem-restructure, payments-systems depth, calibrated take on the Bitcoin bet, regulatory awareness (PCI-DSS / BSA / AML).
+- [Discord software engineer interview 2026](https://aimvantage.uk/blog/discord-software-engineer-interview-2026): IPO-track timeline, real-time-systems depth (Elixir/Erlang), moderator-first community-platform reasoning, AI-moderation thesis.
+- [Pinterest software engineer interview 2026](https://aimvantage.uk/blog/pinterest-software-engineer-interview-2026): Visual-ML depth (image embeddings, multimodal retrieval), Home Feed ranking, post-Bill-Ready shopping thesis.
 
 ## Blog (long-form guides)
 

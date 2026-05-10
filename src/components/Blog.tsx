@@ -63,6 +63,9 @@ const COMPANY_FILTERS = [
   'Sentry',
   'Roblox',
   'Twilio',
+  'Block',
+  'Discord',
+  'Pinterest',
 ] as const;
 
 type CompanyFilter = typeof COMPANY_FILTERS[number];
