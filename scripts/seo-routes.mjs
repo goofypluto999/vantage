@@ -151,6 +151,11 @@ const STATIC_ROUTES = [
     description: 'A recruiter just slid into your DMs. Pick intent (interested / not now / not a fit / not sure) and seniority alignment, get calibrated reply variants plus 7 tips on what to ask back. Pure client-side. No signup.',
   },
   {
+    path: '/tools/cold-email-hiring-manager',
+    title: 'Free Cold Email to Hiring Manager Generator — ATS-Bypass Templates | Vantage',
+    description: 'Bypass the ATS. Pick hook (mutual connection, recent post, product use, shared history, public artefact, cold), stage (open application / after silent / after rejection). Get 2-3 calibrated email variants + 8 sending tips. Pure client-side.',
+  },
+  {
     path: '/alternatives',
     title: 'Vantage AI Alternatives — Compared to Jobscan, Teal, Resume Worded, Final Round AI',
     description: 'Honest side-by-side comparisons of Vantage AI vs Jobscan, Teal HQ, Resume Worded, Final Round AI, Kickresume, Enhancv, Yoodli, Huntr, and Big Interview. Where each wins, where each loses.',
