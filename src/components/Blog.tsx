@@ -90,6 +90,9 @@ const COMPANY_FILTERS = [
   'AMD',
   'Intel',
   'Cisco',
+  'Shopify',
+  'Klaviyo',
+  'Toast',
 ] as const;
 
 type CompanyFilter = typeof COMPANY_FILTERS[number];
