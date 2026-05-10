@@ -46,6 +46,7 @@ const InterviewPrepCompanySeniorityPage = React.lazy(() => import('./components/
 const LaidOffPage = React.lazy(() => import('./components/LaidOffPage'));
 const AtsHubPage = React.lazy(() => import('./components/AtsHubPage'));
 const AtsVendorPage = React.lazy(() => import('./components/AtsVendorPage'));
+const AtsKeywordScannerPage = React.lazy(() => import('./components/AtsKeywordScannerPage'));
 const PressPage = React.lazy(() => import('./components/PressPage'));
 const AboutPage = React.lazy(() => import('./components/AboutPage'));
 const PressReleasePage = React.lazy(() => import('./components/PressReleasesPage'));
@@ -494,6 +495,7 @@ function AppContent() {
             <Route path="/laid-off-2026" element={<Navigate to="/laid-off" replace />} />
             <Route path="/laid-off/from/:company" element={<LaidOffFromCompanyPage />} />
             <Route path="/ats" element={<AtsHubPage />} />
+            <Route path="/ats/scanner" element={<AtsKeywordScannerPage />} />
             <Route path="/ats/:vendor" element={<AtsVendorPage />} />
             <Route path="/press" element={<PressPage />} />
             <Route path="/press-releases" element={<PressReleasesHub />} />

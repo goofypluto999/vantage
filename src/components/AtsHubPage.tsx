@@ -28,8 +28,8 @@ export default function AtsHubPage() {
   return (
     <div className="min-h-screen" style={{ background: t.pageBg }}>
       <SEO
-        title="ATS Parser Guide: How Workday, Greenhouse, Lever, Taleo, and iCIMS Read Your CV"
-        description="Specific parse behavior for each major ATS in 2026. How Workday handles multi-column CVs, why Greenhouse strips emoji, what Lever does with PDF headers, and more. Free scanner included."
+        title="ATS Parser Guide + Free ATS Keyword Scanner — Workday, Greenhouse, Lever, Taleo, iCIMS"
+        description="Specific parse behavior for each major ATS in 2026 plus a free in-browser ATS keyword scanner. How Workday handles multi-column CVs, why Greenhouse strips emoji, what Lever does with PDF headers, and more. Free, no signup, runs in your browser."
         path="/ats"
       />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
@@ -65,14 +65,22 @@ export default function AtsHubPage() {
           Different parsers extract different fields. Here's the per-vendor truth — Workday,
           Greenhouse, Lever, Taleo, and iCIMS — and the specific fixes for each.
         </p>
-        <a
-          href="https://cv-mirror-web.vercel.app?utm_source=vantage-ats&utm_medium=hub"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 px-6 py-3 bg-[#4F46E5] text-white rounded-full font-semibold hover:-translate-y-0.5 transition-all"
-        >
-          Test your CV against all 5 (free, 60s) <ArrowRight className="w-4 h-4" />
-        </a>
+        <div className="flex flex-wrap items-center justify-center gap-3">
+          <Link
+            to="/ats/scanner"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-[#4F46E5] text-white rounded-full font-semibold hover:-translate-y-0.5 transition-all"
+          >
+            Free ATS keyword scanner <ArrowRight className="w-4 h-4" />
+          </Link>
+          <a
+            href="https://cv-mirror-web.vercel.app?utm_source=vantage-ats&utm_medium=hub"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-semibold border transition ${t.textSub} hover:opacity-80 ${t.inputBorder}`}
+          >
+            Multi-parser test (cv-mirror) <ExternalLink className="w-4 h-4" />
+          </a>
+        </div>
 
         <div className="max-w-2xl mx-auto mt-10 text-left">
           <DiagnosticCallout

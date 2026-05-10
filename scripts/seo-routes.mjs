@@ -101,6 +101,11 @@ const STATIC_ROUTES = [
     description: 'Side-by-side guide to the 5 major ATS systems used in 2026. Each vendor has documented quirks. Vantage shows you what each one drops, what each one keeps, and how to format your CV to pass all 5.',
   },
   {
+    path: '/ats/scanner',
+    title: 'Free ATS Keyword Scanner — Paste Your CV and the JD, Runs in Your Browser | Vantage',
+    description: 'Free in-browser ATS keyword scanner. Paste your CV and a job description, see which keywords match and which gaps remain. Runs entirely in your browser. Nothing uploaded, no signup.',
+  },
+  {
     path: '/alternatives',
     title: 'Vantage AI Alternatives — Compared to Jobscan, Teal, Resume Worded, Final Round AI',
     description: 'Honest side-by-side comparisons of Vantage AI vs Jobscan, Teal HQ, Resume Worded, Final Round AI, Kickresume, Enhancv, Yoodli, Huntr, and Big Interview. Where each wins, where each loses.',
