@@ -81,6 +81,9 @@ const COMPANY_FILTERS = [
   'Coinbase',
   'Robinhood',
   'Plaid',
+  'OpenAI',
+  'Anthropic',
+  'Databricks',
 ] as const;
 
 type CompanyFilter = typeof COMPANY_FILTERS[number];

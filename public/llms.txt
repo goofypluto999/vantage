@@ -205,6 +205,9 @@ Each post covers a specific company's interview process: 5-stage breakdown with 
 - [Coinbase software engineer interview 2026](https://aimvantage.uk/blog/coinbase-software-engineer-interview-2026): Post-Base L2 + onchain platform pivot, USDC + x402 agentic payments, regulated-fintech + post-SEC-litigation register.
 - [Robinhood software engineer interview 2026](https://aimvantage.uk/blog/robinhood-software-engineer-interview-2026): Post-Bitstamp + Robinhood Legend + 24/5 stocks + futures, regulated retail brokerage depth, post-meme-stock register.
 - [Plaid software engineer interview 2026](https://aimvantage.uk/blog/plaid-software-engineer-interview-2026): Post-CFPB Section 1033 open-banking pivot, 10K+ institution integration reality, Layer + Signal + Identity network thesis.
+- [OpenAI software engineer interview 2026](https://aimvantage.uk/blog/openai-software-engineer-interview-2026): Post-GPT-5 + Agents SDK + Sora-2, inference at planetary scale (KV-cache, speculative decoding), safety / commercial-product register.
+- [Anthropic software engineer interview 2026](https://aimvantage.uk/blog/anthropic-software-engineer-interview-2026): Post-Claude-4 + Computer Use + MCP + Claude Code, Constitutional AI + Responsible Scaling Policy register, multi-region inference.
+- [Databricks software engineer interview 2026](https://aimvantage.uk/blog/databricks-software-engineer-interview-2026): Post-MosaicML + Unity Catalog + Genie lakehouse-AI thesis, Photon + Delta + DBRX, Snowflake competitive register.
 
 ## Blog (long-form guides)
 

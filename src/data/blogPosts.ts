@@ -1197,7 +1197,8 @@ import { newBlogPosts20 } from './blogPosts-newDrafts20';
 import { newBlogPosts21 } from './blogPosts-newDrafts21';
 import { newBlogPosts22 } from './blogPosts-newDrafts22';
 import { newBlogPosts23 } from './blogPosts-newDrafts23';
-blogPosts.push(...newBlogPosts, ...newBlogPosts2, ...newBlogPosts3, ...newBlogPosts4, ...newBlogPosts5, ...newBlogPosts6, ...newBlogPosts7, ...newBlogPosts8, ...newBlogPosts9, ...newBlogPosts10, ...newBlogPosts11, ...newBlogPosts12, ...newBlogPosts13, ...newBlogPosts14, ...newBlogPosts15, ...newBlogPosts16, ...newBlogPosts17, ...newBlogPosts18, ...newBlogPosts19, ...newBlogPosts20, ...newBlogPosts21, ...newBlogPosts22, ...newBlogPosts23);
+import { newBlogPosts24 } from './blogPosts-newDrafts24';
+blogPosts.push(...newBlogPosts, ...newBlogPosts2, ...newBlogPosts3, ...newBlogPosts4, ...newBlogPosts5, ...newBlogPosts6, ...newBlogPosts7, ...newBlogPosts8, ...newBlogPosts9, ...newBlogPosts10, ...newBlogPosts11, ...newBlogPosts12, ...newBlogPosts13, ...newBlogPosts14, ...newBlogPosts15, ...newBlogPosts16, ...newBlogPosts17, ...newBlogPosts18, ...newBlogPosts19, ...newBlogPosts20, ...newBlogPosts21, ...newBlogPosts22, ...newBlogPosts23, ...newBlogPosts24);
 
 export function getPostBySlug(slug: string): BlogPost | undefined {
   return blogPosts.find((p) => p.slug === slug);
