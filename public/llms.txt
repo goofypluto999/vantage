@@ -130,6 +130,9 @@ Each post covers a specific company's interview process: 5-stage breakdown with 
 - [Klarna software engineer interview 2026](https://aimvantage.uk/blog/klarna-software-engineer-interview-2026): Post-IPO (Sep 2025), AI-first restructure, the payments domain reasoning filter.
 - [Canva product manager interview 2026](https://aimvantage.uk/blog/canva-product-manager-interview-2026): 230M users, Magic Studio + Affinity, the values round nobody preps for.
 - [Airtable product engineer interview 2026](https://aimvantage.uk/blog/airtable-product-engineer-interview-2026): Cobuilder + AI agent platform pivot, the user-facing AI feature filter.
+- [Monzo software engineer interview UK 2026](https://aimvantage.uk/blog/monzo-software-engineer-interview-uk-2026): IPO-track context, 2,800+ microservices, the values round nobody preps for.
+- [Wise software engineer interview UK 2026](https://aimvantage.uk/blog/wise-software-engineer-interview-uk-2026): LSE-listed, GBP 100B+ in cross-border payments, the corridor reasoning filter.
+- [Octopus Energy / Kraken software engineer interview 2026](https://aimvantage.uk/blog/octopus-energy-kraken-software-engineer-interview-2026): Climate-tech mission filter, pragmatic Python culture, grid-flex tariffs.
 
 ## Blog (long-form guides)
 

@@ -24,6 +24,9 @@ const COMPANY_FILTERS = [
   'Klarna',
   'Canva',
   'Airtable',
+  'Monzo',
+  'Wise',
+  'Octopus Energy',
 ] as const;
 
 type CompanyFilter = typeof COMPANY_FILTERS[number];

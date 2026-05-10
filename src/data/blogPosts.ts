@@ -1178,7 +1178,8 @@ import { newBlogPosts } from './blogPosts-newDrafts';
 import { newBlogPosts2 } from './blogPosts-newDrafts2';
 import { newBlogPosts3 } from './blogPosts-newDrafts3';
 import { newBlogPosts4 } from './blogPosts-newDrafts4';
-blogPosts.push(...newBlogPosts, ...newBlogPosts2, ...newBlogPosts3, ...newBlogPosts4);
+import { newBlogPosts5 } from './blogPosts-newDrafts5';
+blogPosts.push(...newBlogPosts, ...newBlogPosts2, ...newBlogPosts3, ...newBlogPosts4, ...newBlogPosts5);
 
 export function getPostBySlug(slug: string): BlogPost | undefined {
   return blogPosts.find((p) => p.slug === slug);
