@@ -494,6 +494,57 @@ function SampleAnalysisContent({ sample, t }: { sample: SampleAnalysis; t: any }
           </div>
         </div>
 
+        {/* Company deep-dives — added 2026-05-10. Visitors who reached the
+            bottom of a sample have already evaluated the format. Surface
+            6 of the 28 long-form interview deep-dives so they can read
+            the company-specific equivalent for THEIR target before
+            registering. Different format from the sample (5-stage
+            walkthrough vs full prep-pack output) but parallel intent. */}
+        <div className={`mt-10 ${t.glass} rounded-2xl p-6 md:p-8`}>
+          <p className={`text-xs uppercase tracking-widest font-semibold mb-3 ${t.textMuted}`}>
+            Targeting a different company?
+          </p>
+          <h3 className={`text-xl md:text-2xl font-bold mb-3 ${t.text}`}>
+            Read the deep-dive for your target.
+          </h3>
+          <p className={`text-sm mb-5 ${t.textSub}`}>
+            We've published 28 long-form interview guides for specific companies in 2026 — the
+            actual loop, the questions that come up, the traps, the prep checklist. Free, no
+            signup.
+          </p>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {[
+              { company: 'Stripe', role: 'Senior PM', slug: 'stripe-senior-pm-interview-guide-2026' },
+              { company: 'Anthropic', role: 'AI Safety', slug: 'anthropic-ai-safety-interview-questions-2026' },
+              { company: 'OpenAI', role: 'Applied Research', slug: 'openai-applied-research-interview-prep-2026' },
+              { company: 'Apple', role: 'Software Engineer', slug: 'apple-software-engineer-interview-2026' },
+              { company: 'Microsoft', role: 'PM', slug: 'microsoft-product-manager-interview-2026' },
+              { company: 'Amazon', role: 'SDE', slug: 'amazon-sde-interview-2026' },
+            ].map((g) => (
+              <Link
+                key={g.slug}
+                to={`/blog/${g.slug}`}
+                className={`block rounded-xl p-4 ${t.cardInner} hover:border-violet-400/40 border border-transparent transition group`}
+              >
+                <div className={`text-xs font-bold uppercase tracking-wide text-violet-500 mb-1`}>
+                  {g.company}
+                </div>
+                <div className={`text-sm font-semibold ${t.text} group-hover:text-violet-500 transition`}>
+                  {g.role}, 2026
+                </div>
+              </Link>
+            ))}
+          </div>
+          <div className="mt-5 text-center">
+            <Link
+              to="/blog"
+              className={`inline-flex items-center gap-2 text-sm font-semibold text-violet-500 hover:opacity-80 transition`}
+            >
+              See all 28 deep-dives <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
+
         {/* Cross-links to other proof surfaces */}
         <div className={`mt-10 ${t.cardInner} rounded-2xl p-6 md:p-8`}>
           <p className={`text-xs uppercase tracking-widest font-semibold mb-3 ${t.textMuted}`}>
