@@ -114,6 +114,9 @@ const COMPANY_FILTERS = [
   'Waymo',
   'Anduril',
   'Figure AI',
+  'ASML',
+  'TSMC',
+  'Qualcomm',
 ] as const;
 
 type CompanyFilter = typeof COMPANY_FILTERS[number];
