@@ -105,6 +105,9 @@ const COMPANY_FILTERS = [
   'CrowdStrike',
   'Wiz',
   'Palo Alto Networks',
+  'Booking.com',
+  'Instacart',
+  'Tempus AI',
 ] as const;
 
 type CompanyFilter = typeof COMPANY_FILTERS[number];
