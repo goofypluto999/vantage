@@ -11,7 +11,10 @@ import Register from './components/Register';
 import ForgotPassword from './components/ForgotPassword';
 import ResetPassword from './components/ResetPassword';
 import Dashboard from './components/Dashboard';
-import Pricing from './components/Pricing';
+// Pricing was eager-loaded but isn't on the auth happy path on first
+// visit — lazy-load it so it doesn't bloat the home/login chunk.
+// LLM-council gap audit P2 fix.
+const Pricing = React.lazy(() => import('./components/Pricing'));
 import CookieConsent from './components/CookieConsent';
 import Account from './components/Account';
 import SEO from './components/SEO';

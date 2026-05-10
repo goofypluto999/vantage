@@ -40,7 +40,7 @@ export default function ForgotPassword() {
               </div>
               <span className="text-2xl font-display font-bold text-white">Vantage</span>
             </Link>
-            <Link to="/" className="flex items-center gap-1.5 text-white/40 hover:text-white/70 text-sm transition-colors">
+            <Link to="/" className="flex items-center gap-1.5 text-white/60 hover:text-white/70 text-sm transition-colors">
               <ArrowLeft className="w-4 h-4" />
               Home
             </Link>
@@ -92,7 +92,7 @@ export default function ForgotPassword() {
                 <div>
                   <label htmlFor="forgot-email" className="block text-sm font-semibold text-white/70 mb-2">Email</label>
                   <div className="relative">
-                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/30" />
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/55" />
                     <input
                       id="forgot-email"
                       type="email"

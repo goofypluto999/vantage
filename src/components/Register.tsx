@@ -71,7 +71,7 @@ export default function Register() {
           <p className="text-white/70 text-sm">
             Email <a href="mailto:hello@aimvantage.uk" className="text-violet-400 underline hover:text-violet-300">hello@aimvantage.uk</a> and Gio (the operator) will manually confirm your account within a few hours.
           </p>
-          <p className="text-white/40 text-xs mt-6">
+          <p className="text-white/60 text-xs mt-6">
             Already confirmed? <Link to="/login" className="text-violet-400 underline hover:text-violet-300">Sign in</Link>
           </p>
 
@@ -83,7 +83,7 @@ export default function Register() {
               needed (already done), no friction, returns a verdict that
               tells them what to focus on once they're in. */}
           <div className="mt-8 pt-6 border-t border-white/10 text-left">
-            <div className="text-xs uppercase tracking-wider text-white/40 mb-2">While you wait for the email</div>
+            <div className="text-xs uppercase tracking-wider text-white/60 mb-2">While you wait for the email</div>
             <p className="text-white/70 text-sm mb-3">
               Run the free 60-second diagnostic — it pinpoints which of 7 failure modes is killing your interview rate (ATS / positioning / proof / market / etc.). When you confirm your email and land on the dashboard, you'll know exactly which prep pack to run first.
             </p>
@@ -111,7 +111,7 @@ export default function Register() {
               </div>
               <span className="text-2xl font-display font-bold text-white">Vantage</span>
             </Link>
-            <Link to="/" className="flex items-center gap-1.5 text-white/40 hover:text-white/70 text-sm transition-colors">
+            <Link to="/" className="flex items-center gap-1.5 text-white/60 hover:text-white/70 text-sm transition-colors">
               <ArrowLeft className="w-4 h-4" />
               Home
             </Link>
@@ -126,7 +126,7 @@ export default function Register() {
               entirely. Surface them here on small screens, identical
               content, hidden on lg+ where the right panel takes over. */}
           <div className="lg:hidden mb-6 rounded-xl bg-white/[0.03] border border-white/10 p-4">
-            <div className="text-xs uppercase tracking-wider text-white/40 mb-2 font-bold">What 10 free prep packs include</div>
+            <div className="text-xs uppercase tracking-wider text-white/60 mb-2 font-bold">What 10 free prep packs include</div>
             <ul className="space-y-1.5 text-white/75 text-sm">
               <li className="flex items-start gap-2"><Check className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" /><span>Company-research write-up per role</span></li>
               <li className="flex items-start gap-2"><Check className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" /><span>Tailored cover letter (4 tones)</span></li>
@@ -163,7 +163,7 @@ export default function Register() {
               <div className="w-full border-t border-white/10" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-[#1a1635] text-white/30">or use email</span>
+              <span className="px-4 bg-[#1a1635] text-white/55">or use email</span>
             </div>
           </div>
 
@@ -171,7 +171,7 @@ export default function Register() {
             <div>
               <label htmlFor="register-name" className="block text-sm font-semibold text-white/70 mb-2">Full Name</label>
               <div className="relative">
-                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/30" />
+                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/55" />
                 <input
                   id="register-name"
                   type="text"
@@ -190,7 +190,7 @@ export default function Register() {
             <div>
               <label htmlFor="register-email" className="block text-sm font-semibold text-white/70 mb-2">Email</label>
               <div className="relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/30" />
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/55" />
                 <input
                   id="register-email"
                   type="email"
@@ -208,7 +208,7 @@ export default function Register() {
             <div>
               <label htmlFor="register-password" className="block text-sm font-semibold text-white/70 mb-2">Password</label>
               <div className="relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/30" />
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/55" />
                 <input
                   id="register-password"
                   type={showPassword ? 'text' : 'password'}
@@ -224,7 +224,7 @@ export default function Register() {
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/50"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-white/55 hover:text-white/50"
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>

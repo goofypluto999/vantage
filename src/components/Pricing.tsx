@@ -252,7 +252,7 @@ export default function Pricing({ onLogin, onRegister, onCheckout, isAuthenticat
                     <h2 className="text-xl font-bold text-white">{plan.name}</h2>
                     <p className="text-white/50 text-sm">
                       {plan.packs} prep pack{plan.packs === 1 ? '' : 's'}
-                      <span className="text-white/30"> · {plan.tokens} tokens</span>
+                      <span className="text-white/55"> · {plan.tokens} tokens</span>
                     </p>
                   </div>
                 </div>
@@ -261,7 +261,7 @@ export default function Pricing({ onLogin, onRegister, onCheckout, isAuthenticat
                   <span className="text-4xl font-bold text-white">{symbol}{currency === 'usd' ? plan.usd : plan.gbp}</span>
                   <span className="text-white/50">{plan.isTopup ? ' one-time' : '/month'}</span>
                 </div>
-                <p className="text-xs text-white/40 mb-6">
+                <p className="text-xs text-white/60 mb-6">
                   ~{symbol}{(((currency === 'usd' ? plan.usd : plan.gbp) / plan.packs)).toFixed(2)} per prep pack
                   {plan.isTopup ? ' — never expires.' : ' (vs Jobscan $49.95/mo).'}
                 </p>
@@ -293,7 +293,7 @@ export default function Pricing({ onLogin, onRegister, onCheckout, isAuthenticat
         </div>
 
         <div className="mt-16 text-center">
-          <p className="text-white/40 text-sm">
+          <p className="text-white/60 text-sm">
             All plans include access to our demo walkthrough and starter features.
             <br />
             No hidden fees. Cancel anytime.
@@ -338,7 +338,7 @@ export default function Pricing({ onLogin, onRegister, onCheckout, isAuthenticat
               );
             })}
           </div>
-          <p className="text-center text-xs text-white/40 mt-8">
+          <p className="text-center text-xs text-white/60 mt-8">
             Still have questions? Email{' '}
             <a href="mailto:hello@aimvantage.uk" className="underline hover:text-white/60">hello@aimvantage.uk</a>{' '}
             — we reply within 24 hours.

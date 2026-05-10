@@ -69,7 +69,7 @@ export default function ResetPassword() {
               </div>
               <span className="text-2xl font-display font-bold text-white">Vantage</span>
             </Link>
-            <Link to="/" className="flex items-center gap-1.5 text-white/40 hover:text-white/70 text-sm transition-colors">
+            <Link to="/" className="flex items-center gap-1.5 text-white/60 hover:text-white/70 text-sm transition-colors">
               <ArrowLeft className="w-4 h-4" />
               Home
             </Link>
@@ -114,7 +114,7 @@ export default function ResetPassword() {
                 <div>
                   <label htmlFor="reset-new-password" className="block text-sm font-semibold text-white/70 mb-2">New password</label>
                   <div className="relative">
-                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/30" />
+                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/55" />
                     <input
                       id="reset-new-password"
                       type={showPassword ? 'text' : 'password'}
@@ -130,7 +130,7 @@ export default function ResetPassword() {
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
                       aria-label={showPassword ? 'Hide password' : 'Show password'}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/50"
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-white/55 hover:text-white/50"
                     >
                       {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                     </button>
@@ -140,7 +140,7 @@ export default function ResetPassword() {
                 <div>
                   <label htmlFor="reset-confirm-password" className="block text-sm font-semibold text-white/70 mb-2">Confirm password</label>
                   <div className="relative">
-                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/30" />
+                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/55" />
                     <input
                       id="reset-confirm-password"
                       type={showConfirm ? 'text' : 'password'}
@@ -155,7 +155,7 @@ export default function ResetPassword() {
                       type="button"
                       onClick={() => setShowConfirm(!showConfirm)}
                       aria-label={showConfirm ? 'Hide confirm password' : 'Show confirm password'}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/50"
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-white/55 hover:text-white/50"
                     >
                       {showConfirm ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                     </button>
