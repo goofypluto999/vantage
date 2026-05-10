@@ -212,6 +212,9 @@ Each post covers a specific company's interview process: 5-stage breakdown with 
 - [Salesforce software engineer interview 2026](https://aimvantage.uk/blog/salesforce-software-engineer-interview-2026): Post-Agentforce + Data Cloud + Einstein, multi-tenant Apex + governor limits + Hyperforce, AppExchange platform thesis, Ohana culture register.
 - [ServiceNow software engineer interview 2026](https://aimvantage.uk/blog/servicenow-software-engineer-interview-2026): Post-Now Assist + AI Agents + Workflow Data Fabric, Now Platform multi-tenant runtime, Fortune-500 enterprise-trust register.
 - [Zoom software engineer interview 2026](https://aimvantage.uk/blog/zoom-software-engineer-interview-2026): Post-AI Companion + Workplace + Workvivo + Phone pivot, SFU + simulcast + SVC real-time media depth, post-pandemic AI-first thesis.
+- [AMD software engineer interview 2026](https://aimvantage.uk/blog/amd-software-engineer-interview-2026): Post-MI300X + ROCm 7 + Pensando + Xilinx, GPU + compiler depth, open-source ROCm-vs-CUDA register, Nvidia-competitive thesis.
+- [Intel software engineer interview 2026](https://aimvantage.uk/blog/intel-software-engineer-interview-2026): Post-Gaudi 3 + Lunar Lake + IDM 2.0 + Foundry, x86 + Gaudi + oneAPI + NPU depth, post-Gelsinger restructure register.
+- [Cisco software engineer interview 2026](https://aimvantage.uk/blog/cisco-software-engineer-interview-2026): Post-Splunk acquisition + AI Networking + Hypershield, Silicon One + NX-OS + IOS XR networking depth, enterprise-customer register.
 
 ## Blog (long-form guides)
 

@@ -1317,6 +1317,60 @@
       "language": "en-GB"
     },
     {
+      "id": "https://aimvantage.uk/blog/amd-software-engineer-interview-2026",
+      "url": "https://aimvantage.uk/blog/amd-software-engineer-interview-2026",
+      "title": "AMD software engineer interview: the post-MI300X + ROCm + Pensando 2026 loop",
+      "summary": "The AMD software engineer interview in 2026 -- five stages, the post-MI300X + ROCm 7 + Pensando + Xilinx context, real questions, four traps, and an 80-minute prep checklist.",
+      "content_html": "<p>The AMD software engineer interview in 2026 -- five stages, the post-MI300X + ROCm 7 + Pensando + Xilinx context, real questions, four traps, and an 80-minute prep checklist.</p>",
+      "content_text": "The AMD software engineer interview in 2026 -- five stages, the post-MI300X + ROCm 7 + Pensando + Xilinx context, real questions, four traps, and an 80-minute prep checklist.",
+      "date_published": "2026-05-10T00:00:00.000Z",
+      "date_modified": "2026-05-10T00:00:00.000Z",
+      "tags": [],
+      "authors": [
+        {
+          "name": "Gio",
+          "url": "https://aimvantage.uk/press"
+        }
+      ],
+      "language": "en-GB"
+    },
+    {
+      "id": "https://aimvantage.uk/blog/intel-software-engineer-interview-2026",
+      "url": "https://aimvantage.uk/blog/intel-software-engineer-interview-2026",
+      "title": "Intel software engineer interview: the post-Gaudi + IDM 2.0 + Foundry 2026 loop",
+      "summary": "The Intel software engineer interview in 2026 -- five stages, the post-Gaudi 3 + Lunar Lake + IDM 2.0 + Foundry context, real questions, four traps, and an 80-minute prep checklist.",
+      "content_html": "<p>The Intel software engineer interview in 2026 -- five stages, the post-Gaudi 3 + Lunar Lake + IDM 2.0 + Foundry context, real questions, four traps, and an 80-minute prep checklist.</p>",
+      "content_text": "The Intel software engineer interview in 2026 -- five stages, the post-Gaudi 3 + Lunar Lake + IDM 2.0 + Foundry context, real questions, four traps, and an 80-minute prep checklist.",
+      "date_published": "2026-05-10T00:00:00.000Z",
+      "date_modified": "2026-05-10T00:00:00.000Z",
+      "tags": [],
+      "authors": [
+        {
+          "name": "Gio",
+          "url": "https://aimvantage.uk/press"
+        }
+      ],
+      "language": "en-GB"
+    },
+    {
+      "id": "https://aimvantage.uk/blog/cisco-software-engineer-interview-2026",
+      "url": "https://aimvantage.uk/blog/cisco-software-engineer-interview-2026",
+      "title": "Cisco software engineer interview: the post-Splunk + AI Networking 2026 loop",
+      "summary": "The Cisco software engineer interview in 2026 -- five stages, the post-Splunk integration + AI Networking + Hypershield context, real questions, four traps, and an 80-minute prep checklist.",
+      "content_html": "<p>The Cisco software engineer interview in 2026 -- five stages, the post-Splunk integration + AI Networking + Hypershield context, real questions, four traps, and an 80-minute prep checklist.</p>",
+      "content_text": "The Cisco software engineer interview in 2026 -- five stages, the post-Splunk integration + AI Networking + Hypershield context, real questions, four traps, and an 80-minute prep checklist.",
+      "date_published": "2026-05-10T00:00:00.000Z",
+      "date_modified": "2026-05-10T00:00:00.000Z",
+      "tags": [],
+      "authors": [
+        {
+          "name": "Gio",
+          "url": "https://aimvantage.uk/press"
+        }
+      ],
+      "language": "en-GB"
+    },
+    {
       "id": "https://aimvantage.uk/blog/why-am-i-not-getting-interviews-7-failure-modes",
       "url": "https://aimvantage.uk/blog/why-am-i-not-getting-interviews-7-failure-modes",
       "title": "Why am I not getting interviews? The 7 failure modes, and a 60-second diagnostic to find yours.",

@@ -87,6 +87,9 @@ const COMPANY_FILTERS = [
   'Salesforce',
   'ServiceNow',
   'Zoom',
+  'AMD',
+  'Intel',
+  'Cisco',
 ] as const;
 
 type CompanyFilter = typeof COMPANY_FILTERS[number];
