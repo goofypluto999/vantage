@@ -110,6 +110,21 @@ Vendor-specific guides on how each major Applicant Tracking System parses CVs in
 - **CV Fit Score:** Match percentage plus the exact gaps to close before the interview.
 - **Presentation Outline:** A real 5-minute interview pitch, not a list of bullet points.
 
+## Company interview deep-dives (2026, with real recent hiring signals)
+
+Each post covers a specific company's interview process: 5-stage breakdown with realistic timing, 10 likely interview questions drawn from real Glassdoor/team-blog evidence, 3-5 traps that kill candidates at THAT company, and a 90-minute prep checklist.
+
+- [Stripe senior PM interview process 2026](https://aimvantage.uk/blog/stripe-senior-pm-interview-guide-2026): The take-home memo, the writing test, the four traps. Post-Series F AI-first PM hiring shift.
+- [Anthropic AI safety interview questions 2026](https://aimvantage.uk/blog/anthropic-ai-safety-interview-questions-2026): Post-Series F + GPT-5 hiring. Safety theatre vs concrete examples — the failure mode that kills strong candidates.
+- [Datadog software engineer interview guide 2026](https://aimvantage.uk/blog/datadog-software-engineer-interview-guide-2026): 5-stage process at $3bn ARR, the live-coding bar, the system-design rubric.
+- [Revolut product designer interview process 2026](https://aimvantage.uk/blog/revolut-product-designer-interview-process-2026): UK banking-licence era, the design challenge, the bar-raiser interview.
+- [OpenAI applied research interview prep 2026](https://aimvantage.uk/blog/openai-applied-research-interview-prep-2026): Post-GPT-5, the model-eval test, the alignment grilling.
+- [Cloudflare product manager interview 2026](https://aimvantage.uk/blog/cloudflare-product-manager-interview-2026): Q1 $639.8M earnings, x402 agent-era pivot, the 1100-layoff aftermath.
+- [Figma product designer interview 2026](https://aimvantage.uk/blog/figma-product-designer-interview-2026): Post-IPO ($1.056B revenue), Make/Weave/Buzz launches, the portfolio narrative trap.
+- [DeepMind research scientist interview 2026](https://aimvantage.uk/blog/deepmind-research-scientist-interview-2026): UK union vote, Pentagon contract context, Gemini Safety hiring.
+- [Notion software engineer interview 2026](https://aimvantage.uk/blog/notion-software-engineer-interview-2026): Notion 3.0 Agents era, $11B valuation, the systems round.
+- [Spotify data scientist interview UK 2026](https://aimvantage.uk/blog/spotify-data-scientist-interview-uk-2026): London office hiring, summer cohort, the experiment-design test.
+
 ## Blog (long-form guides)
 
 - [Just laid off in April 2026? The 3 things to fix in your CV before you apply](https://aimvantage.uk/blog/just-laid-off-april-2026-cv-fix): Specific advice for tech employees laid off in the April 2026 wave. ATS parser checks, formatting strip-down, exact-match keyword tuning.
