@@ -184,6 +184,18 @@ function AppContent() {
       <BrowserRouter>
         <CurrencyProvider>
         <ThemeProvider>
+          {/* Skip-to-main-content link for keyboard + screen reader users.
+              Hidden visually until focused, then jumps the user past the
+              navbar/announcement-bar to the page's main content. Pages that
+              wrap their primary content in <main id="main"> get the benefit;
+              pages without it just won't reveal the link's target — graceful
+              degradation. WCAG 2.4.1 (Bypass Blocks). */}
+          <a
+            href="#main"
+            className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:px-4 focus:py-2 focus:bg-violet-600 focus:text-white focus:font-bold focus:rounded-lg focus:shadow-lg"
+          >
+            Skip to main content
+          </a>
           {/* Suspense boundary for the lazy-loaded marketing/blog/cohort routes
               declared at the top of this file. Critical-path routes (landing,
               auth, dashboard, account, pricing) are eagerly imported and don't

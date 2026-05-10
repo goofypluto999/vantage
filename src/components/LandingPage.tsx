@@ -646,6 +646,12 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
 
       <Navbar onStart={onStart} showLogin={showLogin} />
 
+      {/* Skip-link target — invisible anchor for keyboard users using the
+          'Skip to main content' link in App.tsx. tabIndex={-1} so the link
+          can programmatically focus the main region without making the
+          anchor itself a tab stop. WCAG 2.4.1. */}
+      <div id="main" tabIndex={-1} className="outline-none" />
+
       {/* ================================================================
           HERO — dot-matrix globe behind the headline
       ================================================================ */}
@@ -719,9 +725,9 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
               <Link
                 to="/tools/no-interviews-diagnostic?source=hero"
                 onClick={() => track('hero_cta_click', { cta: 'diagnostic_low_friction' })}
-                className="inline-flex items-center gap-1.5 font-semibold text-emerald-700 hover:text-emerald-800 underline decoration-emerald-500/40 underline-offset-4 hover:decoration-emerald-700 transition-all"
+                className="inline-flex items-center gap-1.5 font-semibold text-emerald-700 hover:text-emerald-800 underline decoration-emerald-500/40 underline-offset-4 hover:decoration-emerald-700 transition-all min-h-[44px] px-2 py-2"
               >
-                Or try the free 60-sec diagnostic <ChevronRight className="w-3.5 h-3.5" />
+                Or try the free 60-sec diagnostic <ChevronRight className="w-3.5 h-3.5" aria-hidden="true" />
               </Link>
               <button
                 onClick={() => {
@@ -731,9 +737,9 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
                     block: 'center',
                   });
                 }}
-                className="inline-flex items-center gap-1.5 font-semibold text-[#3B3A5C] hover:text-[#4F46E5] transition-colors"
+                className="inline-flex items-center gap-1.5 font-semibold text-[#3B3A5C] hover:text-[#4F46E5] transition-colors min-h-[44px] px-2 py-2"
               >
-                <Play className="w-3.5 h-3.5" /> See it work (22s)
+                <Play className="w-3.5 h-3.5" aria-hidden="true" /> See it work (22s)
               </button>
             </div>
             <Link
@@ -1346,8 +1352,8 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
             { q: "How do tokens work?",               a: "1 token = 1 full prep pack (company intel + cover letter + interview pack + fit score + pitch). Cover letter tone rewrites cost 1 extra token each. Starter tokens are a one-time top-up and never expire. Pro and Premium tokens refresh each month with your subscription." },
             { q: "What if the output is not right?",  a: "You can regenerate or refine with additional context. Tokens are only consumed on successful generations — if the AI fails, we refund them automatically." },
             { q: "Can I cancel anytime?",  a: "Yes. Subscriptions cancel from the Account → Billing portal in one click — managed via Stripe so it's instant. No retention emails, no friction. Tokens you already paid for never expire even after cancelling." },
-          ].map(({ q, a }) => (
-            <FaqItem key={q} question={q} answer={a} />
+          ].map(({ q, a }, i) => (
+            <FaqItem key={q} index={i} question={q} answer={a} />
           ))}
         </div>
       </section>
@@ -1549,11 +1555,12 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
 // ============================================================================
 // FAQ ACCORDION
 // ============================================================================
-function FaqItem({ question, answer }: { question: string; answer: string }) {
+function FaqItem({ question, answer, index = 0 }: { question: string; answer: string; index?: number }) {
   const [open, setOpen] = useState(false);
-  // Stable id for aria-controls — derived from the question so it survives
-  // re-renders and works for SSR/prerendered pages.
-  const panelId = `faq-${question.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 40)}`;
+  // Stable id for aria-controls. Index prefix prevents duplicate IDs when two
+  // FAQs share the same first 40 alphanum chars (LLM-council caught this:
+  // duplicate aria-controls + invalid HTML).
+  const panelId = `faq-${index}-${question.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 40)}`;
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}

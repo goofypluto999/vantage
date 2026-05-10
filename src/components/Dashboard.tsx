@@ -825,18 +825,21 @@ export default function Dashboard() {
                 // 0 tokens) are user-fixable, not failures — render as amber
                 // notice. API / network errors render as red with a reassurance
                 // about token refund + retry hint.
+                // role='alert' + aria-live='assertive' so screen readers
+                // announce the error the moment it appears (it's a dynamic
+                // post-submit state, otherwise silent for SR users).
                 const isValidation =
                   /please upload|please add|too large|too long|0 tokens|don't have/i.test(error) ||
                   /Top up below/i.test(error);
                 if (isValidation) {
                   return (
-                    <div className="mb-6 p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-200 text-sm">
+                    <div role="alert" aria-live="polite" className="mb-6 p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-200 text-sm">
                       {error}
                     </div>
                   );
                 }
                 return (
-                  <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+                  <div role="alert" aria-live="assertive" className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
                     <p>{error}</p>
                     <p className="text-red-300/70 text-xs mt-2 leading-relaxed">
                       Tokens are only consumed on successful analyses. If the AI failed before completing, your balance was automatically refunded — you can try again at no cost. If the same error repeats, paste the JD into Step 2 directly (some sites block automated reading).
