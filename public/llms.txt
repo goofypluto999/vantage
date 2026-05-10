@@ -219,6 +219,9 @@ Each post covers a specific company's interview process: 5-stage breakdown with 
 - [Shopify software engineer interview 2026](https://aimvantage.uk/blog/shopify-software-engineer-interview-2026): Post-Sidekick AI + Shop App + Enterprise + Hydrogen, Rails modular-monolith depth, shop-table sharding + Pods, merchant-first register.
 - [Klaviyo software engineer interview 2026](https://aimvantage.uk/blog/klaviyo-software-engineer-interview-2026): Post-IPO + AI predictive + B2C CRM rebrand, events ingestion + segmentation + deliverability depth, Shopify-ecosystem dependency.
 - [Toast software engineer interview 2026](https://aimvantage.uk/blog/toast-software-engineer-interview-2026): Post-Toast Capital + Sous Chef AI + International + Retail, POS offline-tolerance + payments precision + Capital underwriting, vertical-SaaS expansion thesis.
+- [Adobe software engineer interview 2026](https://aimvantage.uk/blog/adobe-software-engineer-interview-2026): Post-Firefly 3+4 + GenStudio + Workfront, media-systems + ML depth, commercially-safe-Firefly thesis, post-Figma-deal pivot.
+- [Figma software engineer interview 2026](https://aimvantage.uk/blog/figma-software-engineer-interview-2026): Post-Adobe-deal + Figma AI + Slides + Sites + Make + IPO, multiplayer canvas + WebGL + WASM depth, AI-in-design thesis.
+- [Notion software engineer interview 2026](https://aimvantage.uk/blog/notion-software-engineer-interview-2026): Post-Notion AI + Calendar + Mail + Sites, block-model + real-time sync depth, workspace-everything thesis.
 
 ## Blog (long-form guides)
 

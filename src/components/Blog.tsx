@@ -93,6 +93,9 @@ const COMPANY_FILTERS = [
   'Shopify',
   'Klaviyo',
   'Toast',
+  'Adobe',
+  'Figma',
+  'Notion',
 ] as const;
 
 type CompanyFilter = typeof COMPANY_FILTERS[number];
