@@ -49,7 +49,7 @@ export default function LaidOffPage() {
         name: 'Is the job market in 2026 actually broken?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'No. April 2026 has been the worst month for tech layoffs since 2023, with ~42,000 people newly job-hunting from Oracle, Meta, ASML, Snap, and Nike alone. The market is congested but not broken. The reason most laid-off employees feel "ghosted" after sending 100 applications is usually silent ATS parse failures, not a broken hiring market.',
+          text: 'No. The April-May 2026 wave has been the worst tech layoff stretch since 2023, with ~43,100 people newly job-hunting from Oracle, Meta, ASML, Snap, Nike, and Cloudflare alone. The market is congested but not broken. The reason most laid-off employees feel "ghosted" after sending 100 applications is usually silent ATS parse failures, not a broken hiring market.',
         },
       },
       {
@@ -67,7 +67,7 @@ export default function LaidOffPage() {
     <div className="min-h-screen" style={{ background: t.pageBg }}>
       <SEO
         title="Just laid off? Read this before you apply to a single job."
-        description="Practical advice for tech employees laid off in April 2026 (Oracle, Meta, ASML, Snap, Nike). Free ATS scanner, 90-second job application prep, and the 3 things to fix on your CV before you apply."
+        description="Practical advice for tech employees laid off in April-May 2026 (Oracle, Meta, Cloudflare, ASML, Snap, Nike). Free ATS scanner, 90-second job application prep, and the 3 things to fix on your CV before you apply."
         path="/laid-off"
       />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
@@ -89,7 +89,7 @@ export default function LaidOffPage() {
       {/* Hero */}
       <section className="max-w-4xl mx-auto px-6 py-20 text-center">
         <p className="text-xs font-bold tracking-widest uppercase text-[#4F46E5] mb-4">
-          April 2026 layoff wave · Read this first
+          April-May 2026 layoff wave · Read this first
         </p>
         <h1 className={`text-5xl md:text-6xl font-bold tracking-tight ${t.text} leading-[1.05] mb-6`}>
           Just laid off?
@@ -99,19 +99,17 @@ export default function LaidOffPage() {
           </span>
         </h1>
         <p className={`text-lg md:text-xl ${t.textSub} max-w-2xl mx-auto leading-relaxed mb-10`}>
-          ~42,000 tech employees were laid off in April 2026. Oracle, Meta, ASML, Snap, Nike.
-          You're not alone. And the system that's about to filter your applications is dumber
-          than you think.
+          ~43,100 tech employees were cut in the April-May 2026 wave. Oracle, Meta, ASML, Snap,
+          Nike, and Cloudflare. You're not alone. And the system that's about to filter your
+          applications is dumber than you think.
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <a
-            href="https://cv-mirror-web.vercel.app?utm_source=vantage-laidoff&utm_medium=hero"
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            to="/ats/scanner?utm_source=laidoff&utm_medium=hero"
             className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-[#4F46E5] text-white rounded-full font-bold hover:-translate-y-0.5 transition-all"
           >
             Run free ATS scan (60 sec) <ArrowRight className="w-4 h-4" />
-          </a>
+          </Link>
           <Link
             to="/register"
             className={`inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full font-semibold border-2 border-[#4F46E5]/30 ${t.text} hover:bg-[#4F46E5]/10 transition-all`}
@@ -128,10 +126,10 @@ export default function LaidOffPage() {
       <section className="max-w-5xl mx-auto px-6 py-10">
         <div className={`${t.glass} rounded-2xl p-8 md:p-10`}>
           <h2 className={`text-2xl font-bold ${t.text} mb-4`}>
-            What actually happened in April 2026
+            What actually happened in April-May 2026
           </h2>
           <p className={`${t.textSub} mb-6`}>
-            April 2026 has been the worst month for tech layoffs since the 2023 correction. The
+            April-May 2026 has been the worst stretch for tech layoffs since the 2023 correction. The
             numbers are public — click through for company-specific advice for each cohort:
           </p>
           <div className="grid md:grid-cols-2 gap-4">
