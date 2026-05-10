@@ -163,6 +163,7 @@ async function loadProgrammaticRoutes() {
     'src/data/blogPosts-newDrafts11.ts',
     'src/data/blogPosts-newDrafts12.ts',
     'src/data/blogPosts-newDrafts13.ts',
+    'src/data/blogPosts-newDrafts14.ts',
   ];
   const seenSlugs = new Set();
   for (const blogFile of BLOG_FILES) {
