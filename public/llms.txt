@@ -181,6 +181,9 @@ Each post covers a specific company's interview process: 5-stage breakdown with 
 - [Goldman Sachs Engineering interview 2026](https://aimvantage.uk/blog/goldman-sachs-engineering-interview-2026): SLANG proprietary stack heritage, Marquee API platform, post-Apple-Card GS Bank context, formal investment-bank register.
 - [Jane Street software engineer interview 2026](https://aimvantage.uk/blog/jane-street-software-engineer-interview-2026): OCaml-heavy stack, brain-teaser + probability tradition, market-making simulation, $400k+ first-year comp.
 - [Bloomberg software engineer interview 2026](https://aimvantage.uk/blog/bloomberg-software-engineer-interview-2026): Terminal platform paradigm, B-PIPE distribution at scale, AI-augmented news integration, real-time microsecond systems.
+- [Nvidia software engineer interview 2026](https://aimvantage.uk/blog/nvidia-software-engineer-interview-2026): Real CUDA / GPU-systems depth (not just PyTorch), Blackwell memory hierarchy, hardware-software co-design moat, AMD MI300X / TPU competitive context.
+- [Arm software engineer interview 2026](https://aimvantage.uk/blog/arm-software-engineer-interview-2026): Cambridge HQ, Cortex-X / Neoverse architecture, post-IPO + AI-pivot context, Apple-silicon competitive impact, licensing-business engineering trade-offs.
+- [TikTok / ByteDance software engineer interview 2026](https://aimvantage.uk/blog/tiktok-bytedance-software-engineer-interview-2026): Post-divestiture US regulatory context, recommendation-systems depth, extreme ship velocity (A/B tests in hours not weeks).
 
 ## Blog (long-form guides)
 
