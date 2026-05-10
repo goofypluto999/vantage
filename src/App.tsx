@@ -44,6 +44,7 @@ const RecruiterReplyPage = React.lazy(() => import('./components/RecruiterReplyP
 const HiringManagerEmailPage = React.lazy(() => import('./components/HiringManagerEmailPage'));
 const StarStoryBuilderPage = React.lazy(() => import('./components/StarStoryBuilderPage'));
 const GlassdoorDecoderPage = React.lazy(() => import('./components/GlassdoorDecoderPage'));
+const CareerRiskIndexPage = React.lazy(() => import('./components/CareerRiskIndexPage'));
 const CostCalculatorPage = React.lazy(() => import('./components/CostCalculatorPage'));
 const ReceiptsPage = React.lazy(() => import('./components/ReceiptsPage'));
 const NoInterviewsDiagnostic = React.lazy(() => import('./components/NoInterviewsDiagnostic'));
@@ -497,6 +498,7 @@ function AppContent() {
             <Route path="/tools/cold-email-hiring-manager" element={<HiringManagerEmailPage />} />
             <Route path="/tools/star-story-builder" element={<StarStoryBuilderPage />} />
             <Route path="/tools/glassdoor-decoder" element={<GlassdoorDecoderPage />} />
+            <Route path="/tools/career-risk-index" element={<CareerRiskIndexPage />} />
             <Route path="/tools/jobscan-cost-calculator" element={<CostCalculatorPage />} />
             <Route path="/jobscan-cost-calculator" element={<Navigate to="/tools/jobscan-cost-calculator" replace />} />
             <Route path="/job-tool-cost-calculator" element={<Navigate to="/tools/jobscan-cost-calculator" replace />} />

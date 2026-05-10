@@ -166,6 +166,11 @@ const STATIC_ROUTES = [
     description: 'Paste 5-10 Glassdoor reviews. Get pattern-matched flags across 11 categories: burnout, fast-paced warning, micromanagement, bad leadership, high turnover, comp below market, layoff history, toxic culture, no DEI, plus positive signals (learning culture, genuine flexibility, reasonable comp). Pure client-side. No signup.',
   },
   {
+    path: '/tools/career-risk-index',
+    title: 'Free Career Risk Index — 6-Axis Honest Score, No Invented Number | Vantage',
+    description: 'Honest 6-axis weighted career-risk score: tenure stability (15%), runway buffer (30%), sector risk (15%), visa exposure (15%), AI exposure (15%), domain demand (10%). Plus specific 30-day actions for your situation. Each axis has a documented weight. Pure client-side. No signup.',
+  },
+  {
     path: '/alternatives',
     title: 'Vantage AI Alternatives — Compared to Jobscan, Teal, Resume Worded, Final Round AI',
     description: 'Honest side-by-side comparisons of Vantage AI vs Jobscan, Teal HQ, Resume Worded, Final Round AI, Kickresume, Enhancv, Yoodli, Huntr, and Big Interview. Where each wins, where each loses.',
