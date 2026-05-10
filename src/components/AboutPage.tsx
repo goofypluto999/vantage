@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Mail, ShieldCheck, Github, Globe, ExternalLink, AlertTriangle, FileCheck2 } from 'lucide-react';
+import { Mail, ShieldCheck, Github, Globe, ExternalLink, AlertTriangle, FileCheck2, BookOpen } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import SEO from './SEO';
 
@@ -184,7 +184,19 @@ export default function AboutPage() {
             <li className="flex items-start gap-3">
               <Globe className={`w-4 h-4 mt-0.5 ${t.textMuted}`} />
               <div>
-                <p className={t.text}>Free companion ATS scanner (live)</p>
+                <p className={t.text}>Free in-browser ATS keyword scanner (on-domain)</p>
+                <Link
+                  to="/ats/scanner"
+                  className="text-violet-400 hover:text-violet-300 underline text-xs inline-flex items-center gap-1"
+                >
+                  aimvantage.uk/ats/scanner
+                </Link>
+              </div>
+            </li>
+            <li className="flex items-start gap-3">
+              <Globe className={`w-4 h-4 mt-0.5 ${t.textMuted}`} />
+              <div>
+                <p className={t.text}>Free multi-parser ATS scan (companion site)</p>
                 <a
                   href="https://cv-mirror-web.vercel.app/"
                   target="_blank"
@@ -193,6 +205,18 @@ export default function AboutPage() {
                 >
                   cv-mirror-web.vercel.app <ExternalLink className="w-3 h-3" />
                 </a>
+              </div>
+            </li>
+            <li className="flex items-start gap-3">
+              <BookOpen className={`w-4 h-4 mt-0.5 ${t.textMuted}`} />
+              <div>
+                <p className={t.text}>31 long-form interview-prep deep-dives published in 2026</p>
+                <Link
+                  to="/blog"
+                  className="text-violet-400 hover:text-violet-300 underline text-xs inline-flex items-center gap-1"
+                >
+                  aimvantage.uk/blog
+                </Link>
               </div>
             </li>
             <li className="flex items-start gap-3">
