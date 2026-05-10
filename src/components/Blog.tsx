@@ -111,6 +111,9 @@ const COMPANY_FILTERS = [
   'Rippling',
   'Gusto',
   'Deel',
+  'Waymo',
+  'Anduril',
+  'Figure AI',
 ] as const;
 
 type CompanyFilter = typeof COMPANY_FILTERS[number];

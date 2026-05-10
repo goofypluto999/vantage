@@ -238,6 +238,9 @@ Each post covers a specific company's interview process: 5-stage breakdown with 
 - [Rippling software engineer interview 2026](https://aimvantage.uk/blog/rippling-software-engineer-interview-2026): Post-Compound-Startup + Spend + Global Payroll + IT, Rippling Unity employee-graph depth, atomic cross-product cascade.
 - [Gusto software engineer interview 2026](https://aimvantage.uk/blog/gusto-software-engineer-interview-2026): Post-Embedded Payroll + Gusto AI + Wallet + International, payroll-engine + ACH + tax-filing precision, SMB-DX register.
 - [Deel software engineer interview 2026](https://aimvantage.uk/blog/deel-software-engineer-interview-2026): Post-Engage + IT + AI + Card, EOR + Contractor + Global Payroll across 150+ countries, ship-fast remote-first culture.
+- [Waymo software engineer interview 2026](https://aimvantage.uk/blog/waymo-software-engineer-interview-2026): Post-Waymo-One-scale + Uber + Hyundai partnerships, AV stack (perception, prediction, planning, control) + sim + safety case, Tesla-FSD competitive register.
+- [Anduril software engineer interview 2026](https://aimvantage.uk/blog/anduril-software-engineer-interview-2026): Post-Lattice + Roadrunner + Bolt + Fury + CCA Increment 1, defense-software + autonomous-systems + safety-critical depth, mission-led culture.
+- [Figure AI software engineer interview 2026](https://aimvantage.uk/blog/figure-ai-software-engineer-interview-2026): Post-Figure 02 + Helix VLA + BMW Spartanburg deployment + OpenAI-divorce, embodied-AI + humanoid robotics depth, ~$40B private valuation.
 
 ## Blog (long-form guides)
 
