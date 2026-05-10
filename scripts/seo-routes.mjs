@@ -151,6 +151,11 @@ const STATIC_ROUTES = [
     description: 'Free in-browser 30/60/90 day plan generator. Pick role + level + company stage + the hiring manager top priority. Get a calibrated 90-day plan with objectives, deliverables, success metrics, risk callout, and the closing question to ask. Pure client-side. No signup.',
   },
   {
+    path: '/tools/why-leaving-framer',
+    title: 'Free "Why Are You Leaving?" Answer Framer — 3 Variants Per Reason | Vantage',
+    description: 'Free in-browser framer for the universal interview question "Why are you leaving your current job?". Pick reason (9 categories), tenure, register (formal / direct / warm). Get 3 framings + what-to-never-say + likely follow-ups with calibrated answers. Pure client-side. No signup.',
+  },
+  {
     path: '/tools/thank-you-note',
     title: 'Free Post-Interview Thank-You Note Generator — Tone-Calibrated | Vantage',
     description: 'Pick tone, round type, sentiment, hours since call. Get a calibrated thank-you note that anchors on specific topics from your conversation. Plus 7 sending tips. No signup.',

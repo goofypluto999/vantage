@@ -114,48 +114,54 @@ export default function ToolsPage() {
       {
         '@type': 'ListItem',
         position: 16,
+        url: `${SITE_URL}/tools/why-leaving-framer`,
+        name: '"Why Are You Leaving?" Answer Framer',
+      },
+      {
+        '@type': 'ListItem',
+        position: 17,
         url: `${SITE_URL}/tools/thank-you-note`,
         name: 'Post-Interview Thank-You Note Generator',
       },
       {
         '@type': 'ListItem',
-        position: 17,
+        position: 18,
         url: `${SITE_URL}/tools/linkedin-about`,
         name: 'LinkedIn Headline + About Rewriter',
       },
       {
         '@type': 'ListItem',
-        position: 18,
+        position: 19,
         url: `${SITE_URL}/tools/recruiter-reply`,
         name: 'Recruiter Cold-DM Reply Generator',
       },
       {
         '@type': 'ListItem',
-        position: 19,
+        position: 20,
         url: `${SITE_URL}/tools/cold-email-hiring-manager`,
         name: 'Cold Email to Hiring Manager Generator',
       },
       {
         '@type': 'ListItem',
-        position: 20,
+        position: 21,
         url: `${SITE_URL}/tools/star-story-builder`,
         name: 'STAR Story Builder',
       },
       {
         '@type': 'ListItem',
-        position: 21,
+        position: 22,
         url: `${SITE_URL}/interview-prep`,
         name: 'Interview Prep Packs by Company',
       },
       {
         '@type': 'ListItem',
-        position: 22,
+        position: 23,
         url: `${SITE_URL}/interview-questions`,
         name: 'Interview Questions by Role',
       },
       {
         '@type': 'ListItem',
-        position: 23,
+        position: 24,
         url: `${SITE_URL}/laid-off`,
         name: 'Layoff Recovery Guide (April-May 2026 cohort)',
       },
@@ -553,6 +559,25 @@ export default function ToolsPage() {
                   </p>
                 </div>
                 <Calendar className="w-5 h-5 text-violet-400 flex-shrink-0" />
+              </div>
+            </Link>
+            <Link
+              to="/tools/why-leaving-framer"
+              className={`${t.glass} rounded-xl p-5 hover:border-violet-400/40 transition group block`}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <div className={`text-xs uppercase tracking-widest ${t.textMuted} font-bold`}>
+                    Free · No signup · Universal interview question
+                  </div>
+                  <h3 className={`text-lg font-bold ${t.text} mt-1 group-hover:text-violet-500 transition`}>
+                    "Why Are You Leaving?" Framer
+                  </h3>
+                  <p className={`text-sm ${t.textSub} mt-2 leading-relaxed`}>
+                    Every interview asks it. Most candidates trash their employer (red flag) or say "looking for new challenges" (signal-less). Pick reason (9 categories), tenure, register. Get 3 calibrated framings + what-to-never-say + likely follow-ups with answers.
+                  </p>
+                </div>
+                <MessageSquare className="w-5 h-5 text-violet-400 flex-shrink-0" />
               </div>
             </Link>
             <Link
