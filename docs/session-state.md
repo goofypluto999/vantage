@@ -1,80 +1,167 @@
 # Session State — Resume Point for Future Claude Sessions
 
-> Read this file FIRST in any new session. It captures everything in flight,
-> where the rollback points are, and what the next concrete steps are.
-> Updated whenever a significant milestone is reached or a feature is paused.
-> Last updated: 2026-05-11, after the 22-file ship + 5/5 smoke verification.
+> Read this file FIRST in any new session. It captures everything in
+> flight, where the rollback points are, what's shipped vs pending vs
+> deferred, and what the next concrete steps are.
+> Last updated: 2026-05-11, end-of-session wrap before next major
+> milestone ("big-ticket feature — tool → service" per user).
 
 ---
 
-## TL;DR — where we are right now
+## TL;DR — current production state
 
-**Live in production (`https://aimvantage.uk`):**
-- All previously-live features (followup, ATS PDF, waitlist hardening,
-  blog filters, landing-page tracking, BlogPost CTA, nav fix).
-- **Salary Negotiation Brief** (`/api/interview/negotiation`, 2 tokens) —
-  live at commit `5227644`. Verified: POST anon → 401, GET → 405.
-  Returns emailSubject + emailBody + phoneScript + talkingPoints + warnings.
-  Multi-agent reviewed (server: 13 findings, modal: 7 HIGH + 3 MED + 6
-  LOW; all HIGH + MED fixed pre-ship).
-- **Codex audit fixes shipped 2026-05-11** — see
-  `docs/audit-fixes-2026-05-11.md`. Verified live: stale `/assets/*` →
-  404 (was HTML 200), salary/case-study/press-release canonicals now
-  per-route (was homepage), `vantage-geo` cookie has `Secure`,
-  `/assets/*` cache `public, max-age=31536000, immutable`,
-  ghost-job-check + decode-rejection parsers hardened against
-  `parse_failure` (now graceful 200 fallback with `degraded:true`),
-  Roast/Decode/Ghost UIs have 30s client timeout + recoverable
-  errors via shared `src/lib/fetchWithTimeout.ts`.
-- **Local persistence layer** — see
-  `docs/local-persistence-features-2026-05-11.md`. Form-draft
-  auto-save on Negotiation + Followup (user-scoped, `Secure` localStorage,
-  swept on logout). Last-5 result history on Roast + Decode + GhostJob
-  with click-to-reload (no AI cost).
+**Live at `https://aimvantage.uk` (verified 2026-05-11):**
 
-**Built but NOT live:** nothing currently. Worktree is clean.
+| Endpoint / page | Result | Meaning |
+|---|---|---|
+| `GET /` | 200 | Homepage healthy |
+| `POST /api/interview/followup` (anon) | 401 | Auth-gated, healthy |
+| `POST /api/interview/negotiation` (anon) | 401 | Auth-gated, **new feature live** |
+| `GET /api/interview/negotiation` | 405 | Method guard active |
+| `POST /api/ghost-job-check` (empty) | 400 | Validation healthy |
+| `GET /salary/software-engineer` | 200 + correct self-canonical | SEO fix verified |
+| `GET /case-studies/building-vantage-…` | 200 + correct self-canonical | SEO fix verified |
+| `GET /assets/<stale-hash>.js` | 404 | Routing fix verified (was HTML 200) |
+| `GET /assets/<real-hash>.js` cache | `max-age=31536000, immutable` | Cache fix verified |
+| `Set-Cookie: vantage-geo` | has `Secure` | Cookie hardening verified |
 
-**Safety infrastructure (live + committed):**
-- `npm run preflight` — pre-deploy script that catches: function-count overage, vercel.json drift, duplicate routes, heavy frontend deps in api/, undocumented env vars, type errors, build failures
-- `docs/deploy-safety-playbook.md` — codified 9-step pre-push checklist + failure modes table + "don't repeat history" log
-- `docs/multi-agent-review-process.md` — three-Agent() review pattern (security / type+edge / UX+prompt) for non-trivial features
-- Stable rollback git tag: `stable-2026-05-11-pre-followup` (last known good before this whole work stream)
+**Features shipped + live (since 2026-05-11 start):**
+
+1. **Salary Negotiation Brief** (`/api/interview/negotiation`, 2 tokens):
+   - Server: multi-agent reviewed handler in `api/interview/[action].ts`
+     with 13 review findings applied (NaN validation, email-structure
+     anti-pattern fix, JSON quote-escape repair, prompt-injection
+     guard, fmtMoney for legitimate-zero handling). Recipient fields
+     (`recipientName`, `recipientRole`) now correctly destructured +
+     validated + threaded into the prompt.
+   - Client: `src/components/NegotiationComposer.tsx` modal with 7
+     HIGH + 3 MED multi-agent UX findings applied (double-click race
+     guard via `inFlightRef`, degraded-fallback banner, aria-live
+     result region + focus management, 17 missing htmlFor/id label
+     pairs added, error retry button, mobile-first grid).
+   - Wired into Dashboard between Follow-up Email block and upgrade
+     nudge. Lazy-loaded.
+
+2. **Codex production audit reliability fixes** (see `docs/audit-fixes-2026-05-11.md`):
+   - `extractJsonObject()` hardened in both `/api/ghost-job-check` and
+     `/api/decode-rejection` (markdown-fence strip, smart-quote norm,
+     trailing-comma repair, stray-newline escape). 1-retry + graceful
+     200 fallback (`degraded:true`) on terminal parse failure —
+     `parse_failure` 500s can no longer reach the client.
+   - New `src/lib/fetchWithTimeout.ts` shared helper: 30s
+     AbortController-backed timeout + uniform `classifyAiToolError()`.
+     Wired into Roast / Decode / GhostJob — no more stuck
+     "Roasting…" / "Decoding…" UI.
+   - `vercel.json`: SPA-fallback rewrite negative-lookahead excludes
+     `/assets/`, `/frames/`, `/blog/`, `/markdown/`, `/postman/`.
+     Missing hashed assets now return real 404. `/assets/*` gets
+     immutable 1-year cache.
+   - `scripts/prerender-seo.mjs` extended for `caseStudies` +
+     `pressReleases` + `salaryData` — 15 audit-flagged pages now have
+     per-route self-canonicals.
+   - `middleware.ts`: `vantage-geo` cookie has `Secure` flag.
+   - Stale external links cleaned up.
+
+3. **Local persistence layer** (see `docs/local-persistence-features-2026-05-11.md`):
+   - `src/lib/useFormDraft.ts`: 500ms debounced localStorage with
+     user-scope key segregation, suppressNextWriteRef to defeat the
+     clear-then-resave race, cross-tab `storage` event sync,
+     `sweepDraftsForUser()` called on logout.
+   - `src/lib/useResultHistory.ts`: ring buffer (5 entries, 30-day
+     TTL) with 64KB/entry + 256KB/key byte caps and quota-error retry.
+   - NegotiationComposer + FollowupComposer get auto-save + "Restore
+     draft / Start fresh" prompts (with `aria-live`).
+   - RoastPage + DecodeRejectionPage + GhostJobCheckPage get
+     "Past results (N saved on this device)" panel with Clear all,
+     defensive entry rendering, ISO date labels.
+   - `Dashboard.handleSignOut` sweeps both stores via `userScope`
+     before `signOut()` returns.
 
 ---
 
-## What to do next (immediate)
+## On master, NOT YET LIVE (Vercel rate-limited)
 
-### Iteration N (the next one, where N is whatever loop fires)
-**Build the NegotiationComposer frontend modal.** Mirror the pattern in `src/components/FollowupComposer.tsx`. Differences:
-- Form inputs include all the fields the API expects: currency dropdown, baseOffered/baseTarget, signOffered/signTarget, rsuOffered/rsuTarget, bonusPctOffered/bonusPctTarget, ptoOffered/ptoTarget, remotePolicyOffered/Target, hasCompetingOffer + competingCompany + competingOfferContext, yearsExperience, levelTitle, preferredChannel (email/phone), tone (collaborative/firm), additionalContext
-- Result panel: 5 surfaces (subject + body + phoneScript + talkingPoints array + warnings array) with copy buttons per surface
-- Calls `generateNegotiationBrief()` from `src/services/api.ts` — does not exist yet, must be added (the wrapper for `/api/interview/negotiation`)
-- Lazy-loaded chunk (`React.lazy()` + `React.Suspense`), same as FollowupComposer
-- Modal pattern: `role="dialog"`, ESC close, click-outside close, body-scroll lock
+**Commit `49999c3` — `feat(tools): Download (.md) on Roast + Decode + Ghost-Job result panels`:**
 
-### Iteration N+1
-**Run UX-focused multi-agent review on the modal.** Use `docs/multi-agent-review-process.md` Agent 3 briefing template (UX + a11y). Apply findings.
+- New `src/lib/exportMarkdown.ts` (framework-agnostic utility).
+- `Download (.md)` button on each of the 3 public AI tool result panels.
+- Pure client-side: Blob URL download, no server transit, no AI cost.
+- Multi-agent security + UX review caught **2 HIGH + 5 MED + 3 LOW**;
+  ALL fixed before push:
+  - HIGH: HTML-escape `<` `>` `&` (XSS via raw HTML in Obsidian/
+    GitHub/VS Code renderers)
+  - HIGH: neuter `javascript:` / `data:` / `vbscript:` scheme links
+  - MED: `aria-label`, `Download` icon, clearer "Download (.md)" copy
+  - MED: `mdSection` helper — heading omitted when body empty
+  - MED: filename fallback consistency
+  - LOW: Windows reserved basenames (CON/PRN/NUL/...), Unicode RTL-
+    override + zero-width strip (`.md.exe` masquerade vector)
+  - LOW: list-item embedded-newline continuation
 
-### Iteration N+2
-**Wire NegotiationComposer into Dashboard.tsx** between the Follow-up Email block and the upgrade-prompt block. Pre-fill `defaultCompanyName` from `results?.companySnapshot?.name` + `defaultUserName` from `profile?.full_name`. Add the section title "Salary Negotiation Brief (2 tokens)" with a "New" badge.
+**Status:** Vercel returned `Deployment rate limited — retry in 24
+hours` (hit the 100/day Hobby tier cap from today's many ship +
+ratelimit + retry + fix cycle). **Live unaffected** — Vercel keeps
+previous successful deployment (`5227644` / `10d7f4e`) serving traffic.
 
-### Iteration N+3
-**Run `npm run preflight` (full).** Confirm 12/12 functions still + type-check + build clean. Write `docs/negotiation-feature-test-plan-2026-05-11.md` (mirror the followup test plan).
-
-### Iteration N+4
-**Single commit. Single push.** Verify deploy status via `gh api ... /status`. Smoke-test live: `curl POST /api/interview/negotiation` returns 401 anon, 405 GET. Update this `session-state.md` to mark feature complete.
+**When rate limit clears**, the next push (or Vercel's auto-retry on
+the next commit) will deploy `49999c3` + anything stacked on top.
+**No manual action needed** — this is normal Vercel behaviour.
 
 ---
 
-## Constraints — DO NOT FORGET
+## Deferred — indexed for V2 (not blocking)
+
+These items were either flagged by Codex audit or surfaced in multi-
+agent reviews but deferred with explicit rationale. **None block ship.**
+
+| Item | Severity | Why deferred | Where logged |
+|---|---|---|---|
+| CSP `script-src 'unsafe-inline'` removal | P2 | Needs Vite-wide nonce migration (build hook or edge middleware). Style-src 'unsafe-inline' breaks Tailwind v4 + React + Vite font tooling. | `docs/audit-fixes-2026-05-11.md` |
+| Unknown SPA routes return HTTP 200 (soft-404) | P1 | SPA inherent. `NotFoundPage` already emits `noindex` via SEO component, so JS-executing crawlers won't index. True HTTP-404 status needs SSR or per-route build-time enumeration. | `docs/audit-fixes-2026-05-11.md` |
+| Three.js + blog corpus bundle weight (~1MB decoded) | P2 | Known. Route-level code-splitting plan filed. | `docs/audit-fixes-2026-05-11.md` |
+| Mobile homepage clipping (390x844) | P3 | Codex couldn't confirm intentional vs accidental; needs live visual review. | `docs/audit-fixes-2026-05-11.md` |
+| Login-protected external links (Workday/OpenAI/Teal) | P3 | Bot-blocked, not broken. Left in place. | `docs/audit-fixes-2026-05-11.md` |
+| Refund-not-atomic across handler kill | Type-review #7 | Architectural. Every Gemini endpoint has this. Project-wide fix needs `pending_charges` reconciliation queue. | `docs/negotiation-feature-review-2026-05-11.md` |
+| Concurrent double-submit shows 403 not friendly msg | Type-review #8 | UX polish. Not blocking. | `docs/negotiation-feature-review-2026-05-11.md` |
+| Enum-source-of-truth refactor (NegotiationComposer local types) | LOW | Import from `services/api.ts` instead of redeclaring. Polish. | UX review log |
+| `degraded` flag not rendered in GhostJob result panel | LOW | Already rendered in NegotiationComposer; bring same banner to GhostJob result panel. | UX review log |
+| `additionalContext` free-text PII warning | LOW | Hook comment now truthful; consider a one-line UI hint next to the textarea. | UX review log |
+| Failure-mode E2E test for AI tools (Playwright across 200/400/429/500/network/timeout) | suggested in audit | Time investment; multi-agent review provides equivalent coverage for now. | `docs/audit-fixes-2026-05-11.md` |
+
+## Strategic / open questions (still unanswered)
+
+These are the questions from `docs/product-expansion-plan-2026-05-11-review.md`
+that the user has not answered yet. Surface them before each major
+direction decision:
+
+1. **Customer archetype** — grad/early-career, career-changer, or
+   senior layoff cohort? Affects every feature priority.
+2. **ChatGPT-vs-Vantage output quality test** — has user run this yet?
+   If outputs aren't visibly better than free ChatGPT, future work
+   should be prompt-engineering not new features.
+3. **Free tier rebalance** — 10 tokens, cut to 3, or bundle tokens
+   with more actions per token? (Diagnosed as likely conversion issue.)
+4. **Token-cost philosophy** — per-action (current) or bundle
+   ("1 token = analysis + ATS-CV + 2 rewrites + 1 follow-up")?
+
+---
+
+## Constraints to remember
 
 1. **Vercel Hobby tier limits:**
-   - 12 serverless functions per deployment (currently at 12/12 — adding a 13th breaks deploy)
-   - 100 deploys per day
+   - 12 serverless functions per deployment (**currently at 12/12**;
+     any new endpoint must consolidate into existing `[action].ts`
+     dispatchers like `api/interview/[action].ts` or `api/admin/[action].ts`)
+   - **100 deploys per day** (hit this 2026-05-11; auto-clears in 24h)
    - 50MB compressed per function
-2. **No Vercel Pro** — Gio explicitly said no.
-3. **`feedback_key_hygiene` memory** — never ask for API keys to be pasted in chat. Gemini key is only in Vercel prod env, not locally.
-4. **One feature at a time, fully reviewed before push** — Gio's explicit ask 2026-05-11.
+2. **No Vercel Pro** — user explicitly said no.
+3. **`feedback_key_hygiene` memory** — never ask for API keys in chat.
+4. **One feature at a time, fully reviewed before push** — generally
+   true, but 2026-05-11 bundled three streams in one commit due to
+   cross-file overlap. Future: try to keep streams separate when
+   possible.
+5. **Multi-agent review required** for non-trivial features. Pattern
+   in `docs/multi-agent-review-process.md`.
 
 ---
 
@@ -83,77 +170,67 @@
 1. `docs/session-state.md` (this file) — start here
 2. `docs/deploy-safety-playbook.md` — the rules
 3. `docs/multi-agent-review-process.md` — how to use Agent() for review
-4. `docs/product-expansion-plan-2026-05-11.md` — the V1 plan
-5. `docs/product-expansion-plan-2026-05-11-review.md` — V2 (adversarial review of V1)
-6. `docs/negotiation-feature-review-2026-05-11.md` — what the 3 review agents found on the current feature
-7. `docs/followup-feature-test-plan-2026-05-11.md` — pattern for the next feature's test plan
-8. `docs/analytics-events-index-2026-05-11.md` — every custom event the site fires
-
----
-
-## How to rebuild context if this session dies
-
-If a future Claude session starts cold:
-
-```bash
-# 1. Verify the negotiation handler work is still intact:
-git log --oneline -10
-git show 7207fbe --stat   # confirms the in-progress commit exists
-
-# 2. Verify the safety net is in place:
-npm run preflight
-
-# 3. Read this doc + the 7 referenced docs above. That rebuilds full context.
-
-# 4. To resume: check what iteration N is supposed to do (above), and start.
-```
-
-If `7207fbe` is missing locally but the feature branch exists:
-```bash
-git fetch origin
-git checkout master
-git reset --hard origin/feature/negotiation-in-progress
-# Now you're at the savepoint and can continue.
-```
-
-If everything is broken and we need to restart cleanly:
-```bash
-git reset --hard stable-2026-05-11-pre-followup
-git push -f origin master
-# Rolls back to last known-good. Lose the follow-up + negotiation work.
-# Use only as absolute last resort.
-```
-
----
-
-## Open strategic questions (deferred decisions)
-
-These are unresolved questions from `product-expansion-plan-2026-05-11-review.md` that Gio hasn't answered yet. Future sessions should ask if relevant:
-
-1. **Customer archetype** — grad/early-career, career-changer, or senior layoff cohort? Affects every feature priority decision.
-2. **ChatGPT-vs-Vantage output quality test** — has Gio run this yet? If Vantage outputs aren't visibly better than free ChatGPT, future work should be prompt-engineering not new features.
-3. **Free tier rebalance** — keep 10 tokens, cut to 3, or bundle 10 tokens with more actions per token? (May 6 diagnosis flagged this as a likely conversion issue.)
-4. **Token-cost philosophy** — per-action (current) or bundle ("1 token = analysis + ATS-CV + 2 rewrites + 1 follow-up")? Bundle would make "10 free prep packs" marketing actually accurate.
+4. `docs/audit-fixes-2026-05-11.md` — Codex audit findings + fixes
+5. `docs/negotiation-feature-review-2026-05-11.md` — review log
+6. `docs/local-persistence-features-2026-05-11.md` — feature + review log
+7. `docs/product-expansion-plan-2026-05-11.md` — the V1 plan
+8. `docs/product-expansion-plan-2026-05-11-review.md` — adversarial review
+9. `docs/followup-feature-test-plan-2026-05-11.md` — pattern for test plans
+10. `docs/analytics-events-index-2026-05-11.md` — every custom event
 
 ---
 
 ## Commit log (recent — most recent first)
 
-| SHA | Pushed? | What |
+| SHA | Live? | What |
 |---|---|---|
-| `5227644` | **yes (live)** | fix(vercel): drop `(?:...)` non-capturing-group header rule that broke deploy |
-| `ff60235` | yes (deploy failed) | Bundled 22-file ship: audit fixes + negotiation feature + local persistence. Deploy failed on invalid vercel.json header pattern (5227644 fixed). |
-| `07fed20` | yes (live) | docs: session-state.md cold-start recovery |
-| `7207fbe` | yes (live, superseded by ff60235) | Negotiation API handler v1 (recipient drop bug, fixed in ff60235) |
+| `49999c3` | **pending (Vercel rate-limited)** | feat(tools): Download (.md) on Roast + Decode + GhostJob result panels — multi-agent reviewed |
+| `10d7f4e` | yes (live) | docs: session-state reflects shipped + verified live state |
+| `5227644` | yes (live, current head) | fix(vercel): drop `(?:...)` non-capturing-group header rule |
+| `ff60235` | yes (superseded by 5227644) | Bundled 22-file ship (deploy initially failed on vercel.json regex) |
+| `07fed20` | yes (live) | docs: session-state cold-start recovery |
+| `7207fbe` | yes (superseded by ff60235) | Negotiation API handler v1 (recipient-drop bug, fixed) |
 | `abf7a85` | yes (live) | Preflight + deploy-safety-playbook + multi-agent-review-process docs |
-| `87077f6` | yes (live) | Followup consolidation into /api/interview/[action] (fixed 13-function deploy fail) |
-| `399e309` | yes (FAILED deploy) | First followup attempt — caused the 13-function fail. Code lives in the consolidated version now. |
-| `c2d3d42` | yes (live) | PDF support for ATS scanner + blog chip dedup/multi-select + product expansion docs |
-| `b5faf2b` | yes (live) | LandingPage 11-CTA tracking |
-| `7c5f2e2` | yes (live) | Waitlist endpoint hardening (rate-limit + origin allowlist) |
-| `e33e2f5` | yes (live) | Nav fix (Features + How It Works buttons scroll properly) |
-| `0368989` | yes (live) | BlogPost CTA + share tracking |
 | **`stable-2026-05-11-pre-followup`** | tag | **Rollback point.** |
+
+---
+
+## Loop state
+
+Session loop **stopped** by user request at end-of-session. No
+ScheduleWakeup armed. One in-flight wakeup may still fire (last
+scheduled before stop request); if it does, it's safe to ignore — no
+work to continue, just acknowledge and exit.
+
+---
+
+## How to resume cleanly
+
+```bash
+# 1. Verify live state still matches the smoke table above:
+curl -s -o /dev/null -w "%{http_code}\n" https://aimvantage.uk/
+curl -s -X POST -o /dev/null -w "%{http_code}\n" -H "Content-Type: application/json" -d '{}' https://aimvantage.uk/api/interview/negotiation
+
+# 2. Check whether the rate-limited deploy cleared:
+gh api repos/goofypluto999/vantage/commits/49999c3/status --jq '.state'
+# If "success" — the Download (.md) feature is now live too.
+# If still "failure" with "rate limited" — wait, no action needed.
+
+# 3. Run local preflight to confirm worktree integrity:
+npm run preflight   # expect 6/6 pass
+
+# 4. Read this doc + the 10 referenced docs above. Full context rebuilt.
+```
+
+## Hard rollback (last resort)
+
+```bash
+git reset --hard stable-2026-05-11-pre-followup
+git push -f origin master
+# Reverts EVERYTHING shipped 2026-05-11. Loses negotiation feature,
+# audit fixes, persistence, markdown export. Use only if a deployed
+# regression is unfixable in-place.
+```
 
 ---
 
