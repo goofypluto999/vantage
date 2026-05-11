@@ -1,5 +1,14 @@
 # Session State — Resume Point for Future Claude Sessions
 
+> **2026-05-11 INCIDENT RECORD (added end-of-session):**
+> Commit `106a0bf` (AI Job Search feature MVP) BUILT clean + preflight 6/6 + multi-agent reviewed, but **broke production at runtime**: all `/api/interview/*` endpoints returned 500 (followup + negotiation + questions + evaluate down for ~4 min).
+> **Root cause hypothesis (not confirmed via logs):** the new `handleJobSearch` imported from `../../lib/jobSources` — a top-level `lib/` directory OUTSIDE `api/`. Vercel's serverless function bundler likely did NOT include `lib/jobSources.ts` in the function bundle, so at runtime the require of the missing module crashed the entire `/api/interview/[action].ts` dispatcher module on first load. All five actions in the dispatcher (including pre-existing followup/negotiation) failed because the module itself wouldn't load.
+> **Recovery:** `git revert 106a0bf` → `6e00cbf` deployed and live healthy.
+> **Plan for redo:** put source-adapter code INSIDE `api/_lib/` (Vercel-convention for non-function modules) OR inline directly into `api/interview/[action].ts`. Will also need to teach preflight to ignore `_`-prefixed dirs so the file-count check passes.
+> **Lesson:** preflight passes a local build but does NOT test the Vercel bundling pipeline. Need a "deploy to preview branch first" step before merging to master for changes that introduce cross-directory imports into `api/*`.
+
+
+
 > Read this file FIRST in any new session. It captures everything in
 > flight, where the rollback points are, what's shipped vs pending vs
 > deferred, and what the next concrete steps are.
