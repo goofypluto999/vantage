@@ -1226,6 +1226,16 @@ async function handleJobSearch(request: any, response: any) {
       }
     }
 
+    // Pre-compute next-free-scan timestamp for response payloads.
+    // If we're about to consume a free scan (freeAvailable=true), the column will be set
+    // to "now" below, so next free unlocks at now + window.
+    // If we're charging (freeAvailable=false), the most recent free was lastFreeForMessage,
+    // and that timestamp + window is the next unlock moment.
+    const nextFreeAtMs = freeAvailable
+      ? Date.now() + JOBSEARCH_FREE_WINDOW_MS
+      : (lastFreeForMessage > 0 ? lastFreeForMessage + JOBSEARCH_FREE_WINDOW_MS : Date.now() + JOBSEARCH_FREE_WINDOW_MS);
+    const nextFreeAt = new Date(nextFreeAtMs).toISOString();
+
     let didCharge = false;
     let newBalance = typeof profile.token_balance === 'number' ? profile.token_balance : 0;
     if (!freeAvailable) {
@@ -1270,7 +1280,8 @@ async function handleJobSearch(request: any, response: any) {
         : "Adzuna isn't configured on this deploy yet. Showing global remote results only.";
       return response.status(200).json({
         jobs: [], sources: fetchResult.perSourceCounts, source_report: fetchResult.perSourceReport,
-        fetched: fetchResult.fetched, deduped: 0, token_balance: newBalance, was_free: !didCharge, message,
+        fetched: fetchResult.fetched, deduped: 0, token_balance: newBalance, was_free: !didCharge,
+        next_free_at: nextFreeAt, message,
       });
     }
 
@@ -1377,6 +1388,7 @@ Penalize ghost-tells heavily. NEVER invent skills/companies not in CV/JD. STRICT
       return response.status(200).json({
         jobs: [], sources: fetchResult.perSourceCounts, source_report: fetchResult.perSourceReport,
         fetched: fetchResult.fetched, deduped: fetchResult.deduped, token_balance: newBalance, was_free: !didCharge,
+        next_free_at: nextFreeAt,
         message: 'AI scoring returned no valid mappings. Tokens were not consumed.',
       });
     }
@@ -1406,6 +1418,7 @@ Penalize ghost-tells heavily. NEVER invent skills/companies not in CV/JD. STRICT
       deduped: fetchResult.deduped,
       token_balance: newBalance,
       was_free: !didCharge,
+      next_free_at: nextFreeAt,
     });
   } catch (error: any) {
     console.error('Interview jobsearch error:', error?.message || 'Unknown error');

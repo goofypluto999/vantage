@@ -415,6 +415,7 @@ export interface JobSearchResponse {
   deduped?: number;
   token_balance?: number;
   was_free?: boolean;
+  next_free_at?: string; // ISO timestamp when the next free scan unlocks
   needsTopUp?: boolean;
   hoursToFreeReset?: number;
   message?: string;

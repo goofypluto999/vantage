@@ -92,6 +92,21 @@ function safeHref(url: string | undefined): string | undefined {
   } catch { return undefined; }
 }
 
+/** Human-readable "in Xh" / "in Xm" string from an ISO timestamp.
+ * Returns null if the timestamp is invalid, in the past, or somehow >30 days out. */
+function formatNextFree(iso: string | undefined): string | null {
+  if (!iso) return null;
+  const ms = Date.parse(iso);
+  if (!Number.isFinite(ms)) return null;
+  const diff = ms - Date.now();
+  if (diff <= 0) return 'now';
+  if (diff > 30 * 24 * 60 * 60 * 1000) return null;
+  const hours = Math.floor(diff / (60 * 60 * 1000));
+  if (hours >= 1) return `${hours}h`;
+  const minutes = Math.max(1, Math.ceil(diff / (60 * 1000)));
+  return `${minutes}m`;
+}
+
 interface Props {
   /** When true, render in compact embedded mode (Dashboard section) —
    * skips the big hero header. When false, render as a full page. */
@@ -126,6 +141,7 @@ export default function JobSearchSection({ embedded = false, className = '' }: P
     deduped?: number;
     was_free?: boolean;
     tokenBalance?: number;
+    nextFreeAt?: string;
   }>({});
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const inFlightRef = useRef(false);
@@ -193,6 +209,7 @@ export default function JobSearchSection({ embedded = false, className = '' }: P
         sources: res.sources, sourceReport: res.source_report,
         fetched: res.fetched, deduped: res.deduped,
         was_free: res.was_free, tokenBalance: res.token_balance,
+        nextFreeAt: res.next_free_at,
       });
       if (res.jobs.length === 0 && res.message) setError(res.message);
     } catch (err: any) {
@@ -375,6 +392,15 @@ export default function JobSearchSection({ embedded = false, className = '' }: P
             </p>
             <p className="text-white/50">
               {meta.was_free ? <span className="text-emerald-400 font-semibold">Free scan used</span> : <span>1 token spent · {meta.tokenBalance ?? 0} left</span>}
+              {(() => {
+                const next = formatNextFree(meta.nextFreeAt);
+                if (!next) return null;
+                return (
+                  <span className="text-white/40">
+                    {' · '}Next free scan {next === 'now' ? 'available now' : `in ${next}`}
+                  </span>
+                );
+              })()}
             </p>
           </div>
           {visibleResults.length === 0 ? (
