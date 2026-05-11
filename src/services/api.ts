@@ -275,7 +275,10 @@ export interface FollowupResponse {
 }
 
 export async function generateFollowupEmail(req: FollowupRequest): Promise<FollowupResponse> {
-  const response = await fetchWithAuth('/followup', {
+  // Routed through /api/interview/followup (consolidated with the interview
+  // questions + evaluate endpoints) to stay under the Vercel-Hobby
+  // 12-function-limit. Internal-only URL detail — no user-facing surface.
+  const response = await fetchWithAuth('/interview/followup', {
     method: 'POST',
     body: JSON.stringify(req),
   });

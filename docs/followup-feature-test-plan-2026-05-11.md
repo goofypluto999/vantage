@@ -1,13 +1,13 @@
 # Follow-up Email Feature — Test Plan
 
-> Manual test checklist for /api/followup + FollowupComposer modal.
+> Manual test checklist for /api/interview/followup + FollowupComposer modal.
 > Run after deploy lands. Mark each box as you verify on live.
 
 ## Pre-flight (no auth required)
 
-- [ ] `curl -X POST https://aimvantage.uk/api/followup` → returns 401 with `{"error":"Authentication required"}`. Auth gate works.
-- [ ] `curl -X POST https://aimvantage.uk/api/followup -H "Authorization: Bearer fake"` → returns 401 with `{"error":"Invalid token"}`. JWT validation works.
-- [ ] `curl https://aimvantage.uk/api/followup` (GET) → returns 405. Method gate works.
+- [ ] `curl -X POST https://aimvantage.uk/api/interview/followup` → returns 401 with `{"error":"Authentication required"}`. Auth gate works.
+- [ ] `curl -X POST https://aimvantage.uk/api/interview/followup -H "Authorization: Bearer fake"` → returns 401 with `{"error":"Invalid token"}`. JWT validation works.
+- [ ] `curl https://aimvantage.uk/api/interview/followup` (GET) → returns 405. Method gate works.
 
 ## Happy path (test account with tokens)
 
@@ -86,7 +86,7 @@ For the same stage (e.g., post-application), generate at 3 urgencies + verify:
 
 After running 3 generations on the test account:
 - [ ] Token balance dropped by exactly 3 (assuming no failures)
-- [ ] Admin dashboard (`/admin`) shows 3 new rows in `api_usage` or equivalent table with endpoint `/api/followup`
+- [ ] Admin dashboard (`/admin`) shows 3 new rows in `api_usage` or equivalent table with endpoint `/api/interview/followup`
 - [ ] No 5XX errors in Vercel function logs
 
 ## Regression sanity
