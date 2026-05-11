@@ -85,6 +85,36 @@ function walk(dir, filter = () => true, acc = []) {
   return acc;
 }
 
+/** Files under api/ that count as serverless functions. Excludes files
+ * inside `_`-prefixed directories — Vercel convention for non-function
+ * helper modules that ARE bundled with adjacent functions but don't
+ * become routes themselves. Added 2026-05-11 after the 106a0bf incident
+ * where importing from a top-level `lib/` failed at runtime; switching
+ * to `api/_lib/` is the safe pattern. */
+function listApiFunctionFiles() {
+  const apiDir = join(ROOT, 'api');
+  if (!existsSync(apiDir)) return [];
+  const allTs = walk(apiDir, (p) => p.endsWith('.ts') || p.endsWith('.js'));
+  return allTs.filter((p) => {
+    const rel = relative(apiDir, p).replace(/\\/g, '/');
+    // Exclude anything inside a path segment starting with `_`.
+    return !rel.split('/').some((seg) => seg.startsWith('_'));
+  });
+}
+
+/** Files under api/ that are NOT functions but ARE bundled with them
+ * (helper modules in `_`-prefixed dirs). For diagnostics + the
+ * import-escape check below. */
+function listApiHelperFiles() {
+  const apiDir = join(ROOT, 'api');
+  if (!existsSync(apiDir)) return [];
+  const allTs = walk(apiDir, (p) => p.endsWith('.ts') || p.endsWith('.js'));
+  return allTs.filter((p) => {
+    const rel = relative(apiDir, p).replace(/\\/g, '/');
+    return rel.split('/').some((seg) => seg.startsWith('_'));
+  });
+}
+
 // ── Check 1: serverless function count under Vercel Hobby cap ────────────
 function checkFunctionCount() {
   const apiDir = join(ROOT, 'api');
@@ -92,14 +122,18 @@ function checkFunctionCount() {
     warn('serverless-function-count', 'No api/ directory found. Skipping.');
     return;
   }
-  const files = walk(apiDir, (p) => p.endsWith('.ts') || p.endsWith('.js'));
   // Each .ts/.js file inside api/ is a serverless function in Vercel's
   // routing model — including bracketed dynamic-segment files like
-  // [action].ts. The exception is files inside a deeper directory that
-  // are imported BY another api file as a module rather than being a
-  // route; we don't have any of those in this repo, so 1:1 mapping.
+  // [action].ts. EXCEPTION: files inside `_`-prefixed directories
+  // (e.g. api/_lib/foo.ts) are helper modules, NOT functions — they
+  // get bundled with the adjacent functions that import them.
+  const files = listApiFunctionFiles();
+  const helpers = listApiHelperFiles();
   const fnCount = files.length;
   const overage = fnCount - VERCEL_FUNCTION_LIMIT;
+  const helperNote = helpers.length > 0
+    ? ` (+${helpers.length} helper module${helpers.length === 1 ? '' : 's'} in _ dirs, not counted as functions)`
+    : '';
   if (overage > 0) {
     const fileList = files.map((f) => '  - ' + relative(ROOT, f)).join('\n');
     fail(
@@ -109,10 +143,10 @@ function checkFunctionCount() {
   } else if (fnCount === VERCEL_FUNCTION_LIMIT) {
     warn(
       'serverless-function-count',
-      `${fnCount}/${VERCEL_FUNCTION_LIMIT} functions — at the Vercel Hobby ceiling. Adding ONE more function will fail deployment. Plan consolidation BEFORE adding a new endpoint.`
+      `${fnCount}/${VERCEL_FUNCTION_LIMIT} functions${helperNote} — at the Vercel Hobby ceiling. Adding ONE more function will fail deployment. Plan consolidation BEFORE adding a new endpoint.`
     );
   } else {
-    pass('serverless-function-count', `${fnCount}/${VERCEL_FUNCTION_LIMIT} functions`);
+    pass('serverless-function-count', `${fnCount}/${VERCEL_FUNCTION_LIMIT} functions${helperNote}`);
   }
 }
 
@@ -210,7 +244,9 @@ function checkEnvVarReferences() {
 
 // ── Check 6: no duplicate api routes (two files claiming same path) ─────
 function checkDuplicateRoutes() {
-  const apiFiles = walk(join(ROOT, 'api'), (p) => p.endsWith('.ts'));
+  // Use the helper that already filters out `_`-prefixed (non-function)
+  // dirs — those are bundled helpers, not routes.
+  const apiFiles = listApiFunctionFiles();
   const routes = new Map();
   for (const f of apiFiles) {
     const rel = relative(join(ROOT, 'api'), f);
@@ -274,6 +310,70 @@ function checkApiImports() {
   }
 }
 
+// ── Check 9: api/* must NOT import from outside api/ (Vercel-bundling
+//    safety) — added 2026-05-11 after the 106a0bf incident. Vercel
+//    bundles each serverless function with its TRANSITIVE imports,
+//    but the bundler is path-sensitive: relative imports escaping
+//    api/ (../../lib/foo, ../../src/bar) sometimes succeed in local
+//    `vite build` but fail at runtime in the deployed function with
+//    "Cannot find module …". This check catches that BEFORE push.
+//
+//    Allowed:
+//    - Bare package imports (from 'package-name')          — bundled via npm
+//    - Relative imports STAYING inside api/                 — same bundle
+//    - Imports from api/_lib/ helper dirs                   — same bundle
+//    Forbidden:
+//    - `../` chains that escape api/ (e.g. `../../lib/`)    — RUNTIME FAIL RISK
+//
+//    Skips files inside api/_<x>/ dirs themselves (helper modules can
+//    import from each other but follow the same rule).
+function checkApiNoEscapingImports() {
+  const apiDir = join(ROOT, 'api');
+  if (!existsSync(apiDir)) {
+    pass('api-no-escaping-imports', 'no api/ dir');
+    return;
+  }
+  const allFiles = walk(apiDir, (p) => p.endsWith('.ts') || p.endsWith('.js'));
+  // Match: `from '../something/...'` OR `from "../something/..."` OR
+  //        `require('../something/...')` etc.
+  // Then check whether resolving the relative path against the file's
+  // dir escapes the api/ directory.
+  const offenders = [];
+  for (const file of allFiles) {
+    const src = readFileSync(file, 'utf-8');
+    const importRe = /(?:from\s+|require\s*\(\s*)['"]([^'"]+)['"]/g;
+    let m;
+    while ((m = importRe.exec(src)) !== null) {
+      const spec = m[1];
+      // Skip bare package imports — those don't have a leading dot.
+      if (!spec.startsWith('.')) continue;
+      // Resolve against the file's directory + the api root.
+      const fileDir = relative(apiDir, file).replace(/\\/g, '/').split('/').slice(0, -1).join('/');
+      const targetParts = fileDir ? fileDir.split('/') : [];
+      for (const seg of spec.split('/')) {
+        if (seg === '..') {
+          targetParts.pop();
+          if (targetParts.length === 0 && spec.split('/').filter((s) => s === '..').length > (fileDir ? fileDir.split('/').length : 0)) {
+            // We've gone above api/ root. Mark this import as escaping.
+            offenders.push(`${relative(ROOT, file)}  →  ${spec}`);
+            break;
+          }
+        } else if (seg !== '.') {
+          targetParts.push(seg);
+        }
+      }
+    }
+  }
+  if (offenders.length > 0) {
+    fail(
+      'api-no-escaping-imports',
+      `api/ files importing from OUTSIDE api/ (Vercel may not bundle — runtime crash risk; root cause of 106a0bf incident):\n${offenders.map((s) => '  - ' + s).join('\n')}\nFix: move the shared module into api/_lib/ and re-import.`,
+    );
+  } else {
+    pass('api-no-escaping-imports', 'all api/ imports stay inside api/ or use bare packages');
+  }
+}
+
 // ── Main ────────────────────────────────────────────────────────────────
 function main() {
   if (!JSON_MODE) {
@@ -285,6 +385,7 @@ function main() {
   checkDuplicateRoutes();
   checkFunctionSize();
   checkApiImports();
+  checkApiNoEscapingImports();
   checkEnvVarReferences();
   checkTypeScript();
   checkBuild();
