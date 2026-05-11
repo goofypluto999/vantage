@@ -92,6 +92,13 @@ function safeHref(url: string | undefined): string | undefined {
   } catch { return undefined; }
 }
 
+/** User-facing source labels (keys match perSourceReport keys returned by the API). */
+const SOURCE_DISPLAY_NAMES: Record<string, string> = {
+  adzuna: 'Adzuna',
+  remotive: 'Remotive',
+  mock: 'Test source',
+};
+
 /** Human-readable "in Xh" / "in Xm" string from an ISO timestamp.
  * Returns null if the timestamp is invalid, in the past, or somehow >30 days out. */
 function formatNextFree(iso: string | undefined): string | null {
@@ -382,6 +389,23 @@ export default function JobSearchSection({ embedded = false, className = '' }: P
           <p>Multi-country search (Adzuna) is not configured. Showing global remote results only.</p>
         </div>
       )}
+
+      {(() => {
+        if (!meta.sourceReport) return null;
+        const erroredSources = Object.entries(meta.sourceReport)
+          .filter(([, r]) => r?.state === 'errored')
+          .map(([name]) => SOURCE_DISPLAY_NAMES[name] ?? name);
+        if (erroredSources.length === 0) return null;
+        const list = erroredSources.length === 1
+          ? erroredSources[0]
+          : `${erroredSources.slice(0, -1).join(', ')} and ${erroredSources[erroredSources.length - 1]}`;
+        return (
+          <div className="mb-5 p-3 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-200 text-xs flex items-start gap-2">
+            <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" aria-hidden="true" />
+            <p>{list} {erroredSources.length === 1 ? 'had an error' : 'had errors'} fetching results. You may see fewer matches than usual — try again in a minute.</p>
+          </div>
+        );
+      })()}
 
       {visibleResults && !loading && (
         <section aria-label="Search results">
