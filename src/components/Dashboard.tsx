@@ -5,7 +5,7 @@ import {
   Upload, Link as LinkIcon, FileText, Loader2, Sparkles, ChevronRight,
   LogOut, CreditCard, Zap, Crown, Star, Settings, Check,
   Mic, BookOpen, Lock, RefreshCw, ClipboardPaste, Type,
-  Twitter, Linkedin, Copy, AlertTriangle, Mail, DollarSign,
+  Twitter, Linkedin, Copy, AlertTriangle, Mail, DollarSign, Download,
 } from 'lucide-react';
 import { useAuth } from '../App';
 import { useCurrency } from '../contexts/CurrencyContext';
@@ -14,6 +14,7 @@ import { analyzeJob, createStripeCheckout, syncSubscription, rewriteTone, fetchA
 import { sweepDraftsForUser } from '../lib/useFormDraft';
 import { sweepHistoryForUser } from '../lib/useResultHistory';
 import { sweepTrackerForUser } from '../lib/useApplicationTracker';
+import { buildAnalysisMarkdown, downloadMarkdown } from '../lib/exportMarkdown';
 import AIInterviewSession from './AIInterviewSession';
 import AtsScannerSection from './AtsScannerSection';
 import { useFocusTrap } from '../lib/useFocusTrap';
@@ -1393,9 +1394,47 @@ export default function Dashboard() {
                       URL.revokeObjectURL(url);
                     }}
                     className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-white/5 text-white/70 font-semibold text-sm hover:bg-white/10"
+                    aria-label="Download prep pack as plain text file"
                     title="Download the whole prep pack as a .txt file"
                   >
                     <FileText className="w-4 h-4" /> Download .txt
+                  </button>
+                  {/* Download .md — same data, Markdown-formatted with
+                      headings + lists for clean paste into Notion /
+                      Obsidian / interview prep notes. Same shared helper
+                      as the public AI tools' export. Added 2026-05-11. */}
+                  <button
+                    onClick={() => {
+                      const company = results.companySnapshot?.name || 'company';
+                      const ts = new Date().toISOString().slice(0, 10);
+                      // Fallback to 'company' if slug collapses to empty
+                      // (e.g. company name with only non-alphanumeric
+                      // chars — review LOW #3).
+                      const rawSlug = company.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+                      const slug = rawSlug || 'company';
+                      const filename = `vantage-prep-${slug}-${ts}.md`;
+                      const md = buildAnalysisMarkdown({
+                        companySnapshot: results.companySnapshot,
+                        cvFitScore: results.cvFitScore,
+                        cvFitSummary: results.cvFitSummary,
+                        cvMatchPoints: results.cvMatchPoints,
+                        keyRequirements: results.keyRequirements,
+                        strategicBrief: results.strategicBrief,
+                        coverLetter: results.coverLetter,
+                        presentation: results.presentation,
+                        displayedCoverLetter: displayLetter,
+                        coverLetterTone: activeTone,
+                      });
+                      downloadMarkdown(filename, md);
+                    }}
+                    className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-white/5 text-white/70 font-semibold text-sm hover:bg-white/10"
+                    aria-label="Download prep pack as Markdown file for Notion or Obsidian"
+                    title="Save for Notion / Obsidian / archive — Markdown file"
+                  >
+                    {/* Different icon than the .txt button so the two
+                        choices are visually distinguishable for low-
+                        vision users without screen reader. */}
+                    <Download className="w-4 h-4" /> Download .md
                   </button>
                   {/* "Same CV, new job" — preserves the uploaded CV so users
                       applying to multiple roles don't have to re-drop the

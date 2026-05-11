@@ -86,7 +86,25 @@ function mdList(items: string[], ordered = false): string {
 function mdMetaBlock(rows: Array<[string, string | number | undefined | null]>): string {
   const cleaned = rows.filter(([, v]) => v !== undefined && v !== null && v !== '');
   if (cleaned.length === 0) return '';
-  return cleaned.map(([k, v]) => `**${k}:** ${v}`).join('  \n') + '\n';
+  // Defense-in-depth: escape values even though current callers only
+  // pass timestamps + numbers. Helper is reusable + may take user
+  // strings in future (review LOW).
+  return cleaned.map(([k, v]) => `**${mdEscape(k)}:** ${mdEscape(String(v))}`).join('  \n') + '\n';
+}
+
+/**
+ * Normalize AI-emitted prose so paragraph breaks survive Markdown
+ * rendering. The Gemini cover-letter + strategic-brief outputs use
+ * single `\n` between paragraphs, which CommonMark renders as a soft
+ * wrap (fused paragraph). We convert lone newlines between non-empty
+ * lines into `\n\n` so each paragraph breaks cleanly in Obsidian /
+ * Notion / GitHub previews. (Review MED #2.)
+ */
+function paragraphize(text: string): string {
+  if (typeof text !== 'string') return '';
+  // Already-double newlines stay. Single newline between two non-
+  // newline chars → upgrade to double.
+  return text.replace(/([^\n])\n([^\n])/g, '$1\n\n$2');
 }
 
 // ─── Roast ─────────────────────────────────────────────────────────────
@@ -200,6 +218,132 @@ export function buildGhostMarkdown(g: GhostForExport): string {
     mdSection('Summary', mdEscape(g.summary || ''), 2),
     tellsList ? mdSection('Tells', tellsList, 2) : '',
     mdSection('Your move', mdEscape(g.yourMove || ''), 2),
+    APP_FOOTER,
+  ].filter(Boolean).join('\n');
+}
+
+// ─── Full Analysis (Dashboard prep pack) ───────────────────────────────
+// The "big" export — the full /analyze result the user paid 3 tokens
+// for. Until 2026-05-11 the only export option was a plain-text dump;
+// this adds a properly-structured Markdown version with headings,
+// lists, and an italicized footer so it pastes cleanly into Notion /
+// Obsidian / interview prep notes.
+
+export interface CompanySnapshotForExport {
+  name?: string;
+  industry?: string;
+  founded?: string;
+  size?: string;
+  mission?: string;
+  cultureSignals?: string[];
+  recentHighlights?: string[];
+}
+
+export interface PresentationSlideForExport {
+  title?: string;
+  content?: string;
+}
+
+export interface AnalysisForExport {
+  companySnapshot?: CompanySnapshotForExport;
+  cvFitScore?: number;
+  cvFitSummary?: string;
+  cvMatchPoints?: string[];
+  keyRequirements?: string[];
+  strategicBrief?: string;
+  coverLetter?: string;
+  presentation?: PresentationSlideForExport[];
+  /** Optional: when the user has switched cover-letter tone, pass the
+   * displayed letter + a tone label so the export reflects what they
+   * see on screen rather than the original Formal tone. */
+  displayedCoverLetter?: string;
+  coverLetterTone?: string;
+}
+
+export function buildAnalysisMarkdown(a: AnalysisForExport): string {
+  const companyName = a.companySnapshot?.name || 'Your role';
+  const sc = a.companySnapshot;
+
+  // Company snapshot details — concatenate the available facts into
+  // a short paragraph so we don't emit a heading for an empty field.
+  const companyFacts: string[] = [];
+  if (sc?.industry) companyFacts.push(`**Industry:** ${mdEscape(sc.industry)}`);
+  if (sc?.founded) companyFacts.push(`**Founded:** ${mdEscape(sc.founded)}`);
+  if (sc?.size) companyFacts.push(`**Size:** ${mdEscape(sc.size)}`);
+  const companyMetaLine = companyFacts.length > 0 ? companyFacts.join('  •  ') : '';
+
+  // Mission, culture signals, recent highlights — each its own
+  // sub-heading INSIDE the Company section, so missing fields don't
+  // produce dangling headings.
+  const companyBodyParts: string[] = [];
+  if (companyMetaLine) companyBodyParts.push(companyMetaLine);
+  if (sc?.mission) {
+    companyBodyParts.push(`### Mission\n${mdEscape(sc.mission)}`);
+  }
+  if (sc?.cultureSignals && sc.cultureSignals.length > 0) {
+    companyBodyParts.push(`### Culture signals\n${mdList(sc.cultureSignals.map(mdEscape))}`);
+  }
+  if (sc?.recentHighlights && sc.recentHighlights.length > 0) {
+    companyBodyParts.push(`### Recent highlights\n${mdList(sc.recentHighlights.map(mdEscape))}`);
+  }
+  const companySection = companyBodyParts.length > 0
+    ? `${mdHeading('Company intelligence', 2)}\n${companyBodyParts.join('\n\n')}\n`
+    : '';
+
+  // Presentation slides — numbered with sub-headings. Skip slides
+  // with NO title AND NO content (review MED #1 — was producing
+  // dangling `### N. Slide N` headings with empty bodies). Numbering
+  // is preserved from the original index, so a missing slide-3 in
+  // the middle still shows slides 1, 2, 4, 5 with correct numbers.
+  let presentationSection = '';
+  if (a.presentation && a.presentation.length > 0) {
+    const slides = a.presentation
+      .map((slide, i) => {
+        const rawTitle = (slide?.title || '').trim();
+        const rawContent = (slide?.content || '').trim();
+        if (!rawTitle && !rawContent) return null;
+        const title = mdEscape(rawTitle || `Slide ${i + 1}`);
+        const content = paragraphize(mdEscape(rawContent));
+        return content
+          ? `### ${i + 1}. ${title}\n${content}`
+          : `### ${i + 1}. ${title}\n_(no content)_`;
+      })
+      .filter((s): s is string => !!s)
+      .join('\n\n');
+    if (slides) {
+      presentationSection = `${mdHeading('5-min pitch outline', 2)}\n${slides}\n`;
+    }
+  }
+
+  // Cover letter — use the displayed (tone-switched) version if
+  // present, else fall back to the original. Heading clarifies whether
+  // the export is the rewritten or original copy (review LOW #5).
+  const letter = a.displayedCoverLetter || a.coverLetter || '';
+  const isRewritten = !!a.coverLetterTone && a.coverLetterTone.toLowerCase() !== 'original';
+  const letterHeading = isRewritten
+    ? `Cover letter (rewritten in ${mdEscape(a.coverLetterTone!)} tone)`
+    : 'Cover letter';
+
+  return [
+    // Escape the H1 company name — defensive even though Gemini
+    // grounding rarely emits HTML in names (review LOW #11).
+    mdHeading(`Vantage AI prep pack — ${mdEscape(companyName)}`, 1),
+    mdMetaBlock([
+      ['Generated', new Date().toISOString()],
+      ['Fit score', a.cvFitScore != null ? `${a.cvFitScore}/100` : undefined],
+    ]),
+    '',
+    companySection,
+    a.keyRequirements && a.keyRequirements.length > 0
+      ? mdSection('Key requirements', mdList(a.keyRequirements.map(mdEscape)), 2)
+      : '',
+    a.cvMatchPoints && a.cvMatchPoints.length > 0
+      ? mdSection('CV match points', mdList(a.cvMatchPoints.map(mdEscape)), 2)
+      : '',
+    mdSection('Fit summary', paragraphize(mdEscape(a.cvFitSummary || '')), 2),
+    mdSection('Strategic brief', paragraphize(mdEscape(a.strategicBrief || '')), 2),
+    letter ? mdSection(letterHeading, paragraphize(mdEscape(letter)), 2) : '',
+    presentationSection,
     APP_FOOTER,
   ].filter(Boolean).join('\n');
 }
