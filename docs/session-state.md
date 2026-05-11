@@ -1,5 +1,31 @@
 # Session State — Resume Point for Future Claude Sessions
 
+> **2026-05-11 — AI JOB SEARCH MILESTONE LIVE (c46bdbb):**
+>
+> Third attempt succeeded after two prior runtime crashes (`106a0bf`, `7594121`).
+> Both prior attempts used external helper files (`/lib/jobSources.ts`, `/api/_lib/jobSources.ts`) that Vercel's `@vercel/node` bundler did NOT include in the function bundle, taking down all 5 actions in `api/interview/[action].ts` on module load.
+> Fix: **inlined ALL source-adapter code directly into `[action].ts`**. File is now ~70KB but bundling is no longer a question. No external imports from `api/interview/[action].ts` except npm packages + Node builtins.
+>
+> Live verified (`https://aimvantage.uk/`):
+> - `POST /api/interview/jobsearch` anon → 401 ✓ (auth-gated, new feature live)
+> - `GET /api/interview/jobsearch` → 405 ✓ (method guard)
+> - `POST /api/interview/{negotiation,followup,questions,evaluate}` anon → 401 ✓ (NO regression from new code)
+> - `GET /jobs` → 200 ✓ (route renders)
+> - `POST /api/{roast,decode-rejection,ghost-job-check}` empty → 400 ✓
+> - `POST /api/{analyze,rewrite-tone}` anon → 401 ✓
+> - `vantage-geo` cookie has `Secure` ✓
+> - Salary canonical = self ✓
+> - Stale `/assets/X.js` → 404 ✓
+>
+> User prerequisites complete:
+> - Adzuna API keys in Vercel env (`ADZUNA_APP_ID`, `ADZUNA_APP_KEY`)
+> - Supabase migration RUN (`last_free_jobsearch_at` + `cv_summary` + `REVOKE UPDATE`)
+>
+> Pricing: 1 free curated pack per 24h per user (server-tracked, refresh-proof). 1 token per subsequent pack. Anonymous redirected to /register.
+> Sources: Adzuna (20 countries) + Remotive (global remote). LLM: Gemini 2.5 Flash (single batched call, ~£0.002-0.005 per scan).
+>
+> ---
+
 > **2026-05-11 QUEUE STATE (continuously updated):**
 >
 > **Live healthy** (verified just now): homepage 200, negotiation 401, ghost-job 400 on empty body, all previously-shipped features intact.
