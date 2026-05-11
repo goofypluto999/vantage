@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Mail, AlertTriangle, ArrowRight, Copy, Check, Twitter, Linkedin, Loader2,
+  Mail, AlertTriangle, ArrowRight, Copy, Check, Twitter, Linkedin, Loader2, Download,
 } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import SEO from './SEO';
 import { fetchWithTimeout, classifyAiToolError } from '../lib/fetchWithTimeout';
 import { useResultHistory } from '../lib/useResultHistory';
+import { buildDecodeMarkdown, downloadMarkdown } from '../lib/exportMarkdown';
 
 const SITE_URL = 'https://aimvantage.uk';
 
@@ -121,6 +122,13 @@ export default function DecodeRejectionPage() {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch { /* noop */ }
+  };
+
+  const exportResult = () => {
+    if (!result) return;
+    const v = result.verdict || 'decoded';
+    const ts = new Date().toISOString().slice(0, 19).replace(/[T:]/g, '-');
+    downloadMarkdown(`vantage-decode-${v}-${ts}.md`, buildDecodeMarkdown(result));
   };
 
   const breadcrumbSchema = {
@@ -380,6 +388,15 @@ export default function DecodeRejectionPage() {
                 className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-white/15 text-xs font-medium hover:bg-black/5 dark:hover:bg-white/5 transition-colors ${t.textSub}`}
               >
                 {copied ? <><Check className="w-3.5 h-3.5" aria-hidden="true" /> Copied</> : <><Copy className="w-3.5 h-3.5" aria-hidden="true" /> Copy decode</>}
+              </button>
+              <button
+                type="button"
+                onClick={exportResult}
+                aria-label="Download this decode as a Markdown file for Notion or Obsidian"
+                title="Save for Notion / Obsidian / archive — Markdown file"
+                className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-white/15 text-xs font-medium hover:bg-black/5 dark:hover:bg-white/5 transition-colors ${t.textSub}`}
+              >
+                <Download className="w-3.5 h-3.5" aria-hidden="true" /> Download (.md)
               </button>
             </div>
 

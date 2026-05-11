@@ -1,11 +1,12 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Flame, Twitter, Linkedin, Copy, ArrowRight, Loader2, AlertTriangle, Wand2 } from 'lucide-react';
+import { Flame, Twitter, Linkedin, Copy, ArrowRight, Loader2, AlertTriangle, Wand2, Download } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import SEO from './SEO';
 import { taskStarted, recordTaskCompletion, armExitFastDetector, track } from '../lib/track';
 import { fetchWithTimeout, classifyAiToolError } from '../lib/fetchWithTimeout';
 import { useResultHistory } from '../lib/useResultHistory';
+import { buildRoastMarkdown, downloadMarkdown } from '../lib/exportMarkdown';
 
 const SITE_URL = 'https://aimvantage.uk';
 const API_BASE = import.meta.env.VITE_API_URL || '/api';
@@ -178,6 +179,13 @@ export default function RoastPage() {
     const url = `${SITE_URL}/roast`;
     const liUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`;
     window.open(liUrl, '_blank', 'noopener,noreferrer');
+  }
+
+  function exportRoast() {
+    if (!roast) return;
+    const sev = typeof roast.severityScore === 'number' ? `sev${roast.severityScore}` : 'sev-unknown';
+    const ts = new Date().toISOString().slice(0, 19).replace(/[T:]/g, '-');
+    downloadMarkdown(`vantage-roast-${sev}-${ts}.md`, buildRoastMarkdown(roast));
   }
 
   // GOLDEN GOSPEL Tactic 3 (2026-05-08): the roast itself doesn't convert
@@ -423,6 +431,15 @@ export default function RoastPage() {
                 type="button"
               >
                 <Copy className="w-4 h-4" aria-hidden="true" /> Copy roast
+              </button>
+              <button
+                onClick={exportRoast}
+                className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-white/15 text-sm font-medium hover:bg-black/5 dark:hover:bg-white/5 transition-colors ${t.textSub}`}
+                type="button"
+                aria-label="Download this roast as a Markdown file for Notion or Obsidian"
+                title="Save for Notion / Obsidian / archive — Markdown file"
+              >
+                <Download className="w-4 h-4" aria-hidden="true" /> Download (.md)
               </button>
             </div>
 
