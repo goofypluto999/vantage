@@ -319,6 +319,23 @@ export default function GhostJobCheckPage() {
               </span>
             </div>
 
+            {/* Degraded-fallback banner — surfaces when the server hit
+                its hardened-parser graceful 200 fallback path. Tells
+                the user the brief is conservative, not bespoke. Parity
+                with NegotiationComposer (was an indexed LOW from prior
+                review — completed 2026-05-11). */}
+            {result.degraded && (
+              <div role="status" className="rounded-lg bg-amber-500/10 border border-amber-500/30 p-3 mb-4">
+                <div className="flex items-center gap-2 mb-1">
+                  <AlertTriangle className="w-4 h-4 text-amber-400" aria-hidden="true" />
+                  <p className="text-xs font-bold uppercase tracking-widest text-amber-300">Limited result</p>
+                </div>
+                <p className="text-sm text-amber-100/90">
+                  The AI couldn't fully parse this listing and returned a conservative neutral verdict. Try pasting just the role description + requirements (skip company boilerplate, footer text, and benefits lists) and run the check again.
+                </p>
+              </div>
+            )}
+
             <div className={`text-xs uppercase tracking-widest font-semibold ${t.textMuted} mb-2`}>Verdict</div>
             <h2 className={`text-2xl font-bold mb-5 ${t.text}`}>
               {VERDICT_LABEL[result.verdict] || result.verdict}
