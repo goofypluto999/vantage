@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   Upload, Link as LinkIcon, FileText, Loader2, Sparkles, ChevronRight,
@@ -295,9 +295,20 @@ export default function Dashboard() {
   // a job page, App.tsx stored the URL in sessionStorage. Pre-fill it once,
   // then clear so we don't keep re-using stale state on revisit.
   const [jobUrl, setJobUrl] = useState(() => {
+    // Strict scheme guard via new URL() instead of regex.
+    const isHttpsOrHttp = (raw: string): boolean => {
+      try {
+        const u = new URL(raw);
+        return u.protocol === 'http:' || u.protocol === 'https:';
+      } catch { return false; }
+    };
     try {
+      // Job-search handoff: /jobs sends users here via ?prefillUrl=…
+      const qs = new URLSearchParams(window.location.search);
+      const fromQuery = qs.get('prefillUrl');
+      if (fromQuery && isHttpsOrHttp(fromQuery)) return fromQuery;
       const pending = sessionStorage.getItem('vantage:pendingJob');
-      if (pending && /^https?:\/\//i.test(pending)) {
+      if (pending && isHttpsOrHttp(pending)) {
         sessionStorage.removeItem('vantage:pendingJob');
         return pending;
       }
@@ -360,6 +371,11 @@ export default function Dashboard() {
   // loaded so the modal + its form code don't bloat the initial Dashboard
   // bundle until the user actually wants to compose a follow-up.
   const [showFollowup, setShowFollowup] = useState(false);
+  // AI Job Search handoff banner.
+  const location = useLocation();
+  const prefilledFromJobSearch = (location.state as any)?.prefilledFromJobSearch as
+    | { title: string; company: string } | undefined;
+  const [showPrefillBanner, setShowPrefillBanner] = useState(!!prefilledFromJobSearch);
   // Salary negotiation brief composer (post-analysis tool, added 2026-05-11).
   // 2 tokens. Returns email + phone script + talking points + warnings.
   // Lazy-loaded so its bundle only arrives if the user opens the modal.
@@ -907,6 +923,18 @@ export default function Dashboard() {
 
       {/* Main Content */}
       <main className="max-w-5xl mx-auto p-6">
+        {showPrefillBanner && prefilledFromJobSearch && (
+          <div role="status" aria-live="polite"
+            className="mb-4 p-3 rounded-lg bg-violet-500/10 border border-violet-500/30 text-violet-200 text-sm flex items-center gap-3 flex-wrap">
+            <Sparkles className="w-4 h-4 flex-shrink-0 text-violet-300" aria-hidden="true" />
+            <p className="flex-1">
+              Pre-filled from your AI Job Search: <strong>{prefilledFromJobSearch.title}</strong> at <strong>{prefilledFromJobSearch.company}</strong>. Add your CV and run the full prep analysis below.
+            </p>
+            <button type="button" onClick={() => setShowPrefillBanner(false)}
+              className="px-3 py-1 rounded text-xs font-semibold text-violet-200/80 hover:text-white hover:bg-white/5 transition"
+              aria-label="Dismiss prefill banner">Dismiss</button>
+          </div>
+        )}
         <AnimatePresence mode="wait">
           {step === 'input' && (
             // initial={false} — skip entrance animation (mirrors Pricing/Auth

@@ -369,6 +369,76 @@ export async function generateNegotiationBrief(req: NegotiationRequest): Promise
   return response.json();
 }
 
+// ─── AI Job Search ──────────────────────────────────────────────────────
+export type JobSearchCountry =
+  | 'gb' | 'us' | 'ca' | 'au' | 'de' | 'fr' | 'es' | 'it'
+  | 'nl' | 'pl' | 'sg' | 'in' | 'br' | 'mx' | 'ru' | 'za'
+  | 'nz' | 'ch' | 'at' | 'be';
+export type JobSearchWorkMode = 'remote' | 'hybrid' | 'on-site' | 'any';
+export type JobSearchPostedWithin = 1 | 3 | 7 | 14 | 30 | 90;
+export type JobAtsLikelihood = 'high' | 'medium' | 'low';
+export type JobSourceState = 'configured' | 'not-configured' | 'errored';
+
+export interface JobSourceReport { count: number; state: JobSourceState; }
+
+export interface JobSearchRequest {
+  keywords: string;
+  location: string;
+  country: JobSearchCountry;
+  workMode: JobSearchWorkMode;
+  salaryMin?: number;
+  postedWithin: JobSearchPostedWithin;
+}
+
+export interface ScoredJob {
+  id: string; title: string; company: string; location: string;
+  url: string; description: string; postedAt: string;
+  salaryMin?: number; salaryMax?: number; salaryCurrency?: string;
+  source: 'adzuna' | 'remotive' | 'mock';
+  workMode?: JobSearchWorkMode;
+  matchScore: number;
+  fitOneLiner: string;
+  skillMatches: string[];
+  skillGaps: string[];
+  salaryEstimate: string | null;
+  ghostProbability: number;
+  timeToApply: string;
+  atsPassLikelihood: JobAtsLikelihood;
+}
+
+export interface JobSearchResponse {
+  success: boolean;
+  jobs?: ScoredJob[];
+  sources?: Record<string, number>;
+  source_report?: Record<string, JobSourceReport>;
+  fetched?: number;
+  deduped?: number;
+  token_balance?: number;
+  was_free?: boolean;
+  needsTopUp?: boolean;
+  hoursToFreeReset?: number;
+  message?: string;
+  error?: string;
+}
+
+export async function searchJobs(req: JobSearchRequest): Promise<JobSearchResponse> {
+  const response = await fetchWithAuth('/interview/jobsearch', {
+    method: 'POST',
+    body: JSON.stringify(req),
+  });
+  if (!response.ok) {
+    const error = await safeJson(response);
+    return {
+      success: false,
+      error: error.error || 'Failed to search jobs',
+      needsTopUp: !!error.needsTopUp,
+      hoursToFreeReset: typeof error.hoursToFreeReset === 'number' ? error.hoursToFreeReset : undefined,
+    };
+  }
+  const data = await response.json();
+  return { success: true, ...data };
+}
+
 export async function evaluateAnswer(
   roleContext: string,
   question: string,
