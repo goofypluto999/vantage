@@ -56,6 +56,7 @@ const PLANS = [
     features: [
       '20 full prep packs (per upload + job link)',
       'Tokens never expire — pay once, use any time',
+      'AI Job Search (20+ countries, CV-scored, 1 free scan/day)',
       'Company intelligence + strategic brief',
       'Tailored cover letter (4 tone variants)',
       'Mock interview questions with live AI grading',
