@@ -1,5 +1,21 @@
 # Session State — Resume Point for Future Claude Sessions
 
+> **2026-05-11 QUEUE STATE (continuously updated):**
+>
+> **Live healthy** (verified just now): homepage 200, negotiation 401, ghost-job 400 on empty body, all previously-shipped features intact.
+>
+> **3 commits queued, waiting:**
+>
+> | SHA | What | Status |
+> |---|---|---|
+> | `903122e` | infra(preflight): two new checks closing the 106a0bf incident gap | **Pushed**, Vercel returns `Deployment rate limited — retry in 24 hours`. Will auto-deploy when window clears. Script-only — no live runtime impact. |
+> | `b98736a` | feat(dashboard): Download (.md) on analysis results + review polish | **Local only**, NOT pushed. Multi-agent reviewed (0 HIGH, 3 polish + 5 LOW applied). Preflight 7/7. Held for explicit ship approval. |
+> | `860a4d4` | fix(ghost-job): degraded:true fallback banner (parity with negotiation) | **Local only**, NOT pushed. Pure UI add, ~15 lines. Closes a LOW from prior review. Preflight 7/7. Held for explicit ship approval. |
+>
+> **To ship the queue:** say "ship queue" → I push both local commits in one Vercel build (rate-limit permitting) and smoke the result.
+>
+> ---
+
 > **2026-05-11 INCIDENT RECORD (added end-of-session):**
 > Commit `106a0bf` (AI Job Search feature MVP) BUILT clean + preflight 6/6 + multi-agent reviewed, but **broke production at runtime**: all `/api/interview/*` endpoints returned 500 (followup + negotiation + questions + evaluate down for ~4 min).
 > **Root cause hypothesis (not confirmed via logs):** the new `handleJobSearch` imported from `../../lib/jobSources` — a top-level `lib/` directory OUTSIDE `api/`. Vercel's serverless function bundler likely did NOT include `lib/jobSources.ts` in the function bundle, so at runtime the require of the missing module crashed the entire `/api/interview/[action].ts` dispatcher module on first load. All five actions in the dispatcher (including pre-existing followup/negotiation) failed because the module itself wouldn't load.
