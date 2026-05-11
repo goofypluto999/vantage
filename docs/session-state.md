@@ -3,25 +3,36 @@
 > Read this file FIRST in any new session. It captures everything in flight,
 > where the rollback points are, and what the next concrete steps are.
 > Updated whenever a significant milestone is reached or a feature is paused.
-> Last updated: 2026-05-11, after negotiation API handler review pass.
+> Last updated: 2026-05-11, after the 22-file ship + 5/5 smoke verification.
 
 ---
 
 ## TL;DR — where we are right now
 
 **Live in production (`https://aimvantage.uk`):**
-- Nav fix (Features + How It Works buttons scroll correctly)
-- Waitlist endpoint hardened (origin allowlist + per-IP rate limit)
-- BlogPost CTA + share tracking (Clarity + Vercel custom events)
-- LandingPage 11-CTA tracking (per-source attribution)
-- ATS scanner supports PDF (lazy pdfjs-dist worker)
-- Blog filter chips: deduped, multi-select, auto-derived from real post tags
-- Follow-up email composer (`/api/interview/followup` + Dashboard modal). 1 token, 5 stages, 3 urgency tones. Live + verified working with smoke tests.
+- All previously-live features (followup, ATS PDF, waitlist hardening,
+  blog filters, landing-page tracking, BlogPost CTA, nav fix).
+- **Salary Negotiation Brief** (`/api/interview/negotiation`, 2 tokens) —
+  live at commit `5227644`. Verified: POST anon → 401, GET → 405.
+  Returns emailSubject + emailBody + phoneScript + talkingPoints + warnings.
+  Multi-agent reviewed (server: 13 findings, modal: 7 HIGH + 3 MED + 6
+  LOW; all HIGH + MED fixed pre-ship).
+- **Codex audit fixes shipped 2026-05-11** — see
+  `docs/audit-fixes-2026-05-11.md`. Verified live: stale `/assets/*` →
+  404 (was HTML 200), salary/case-study/press-release canonicals now
+  per-route (was homepage), `vantage-geo` cookie has `Secure`,
+  `/assets/*` cache `public, max-age=31536000, immutable`,
+  ghost-job-check + decode-rejection parsers hardened against
+  `parse_failure` (now graceful 200 fallback with `degraded:true`),
+  Roast/Decode/Ghost UIs have 30s client timeout + recoverable
+  errors via shared `src/lib/fetchWithTimeout.ts`.
+- **Local persistence layer** — see
+  `docs/local-persistence-features-2026-05-11.md`. Form-draft
+  auto-save on Negotiation + Followup (user-scoped, `Secure` localStorage,
+  swept on logout). Last-5 result history on Roast + Decode + GhostJob
+  with click-to-reload (no AI cost).
 
-**Built but NOT live (work-in-progress):**
-- Salary negotiation brief API handler at `/api/interview/negotiation`. Lives in `api/interview/[action].ts`. Multi-agent-reviewed, 13 findings applied (1 CRITICAL, 6 HIGH, 4 MED, 2 LOW). Costs 2 tokens. Returns emailSubject + emailBody + phoneScript + talkingPoints[] + warnings[].
-- Local master is at commit `7207fbe` (one commit ahead of remote master at `abf7a85`).
-- Same content also preserved on remote branch `feature/negotiation-in-progress` for disaster recovery.
+**Built but NOT live:** nothing currently. Worktree is clean.
 
 **Safety infrastructure (live + committed):**
 - `npm run preflight` — pre-deploy script that catches: function-count overage, vercel.json drift, duplicate routes, heavy frontend deps in api/, undocumented env vars, type errors, build failures
@@ -130,7 +141,10 @@ These are unresolved questions from `product-expansion-plan-2026-05-11-review.md
 
 | SHA | Pushed? | What |
 |---|---|---|
-| `7207fbe` | local + feature branch | Negotiation API handler + multi-agent review (LOCAL ONLY on master, also on `feature/negotiation-in-progress`) |
+| `5227644` | **yes (live)** | fix(vercel): drop `(?:...)` non-capturing-group header rule that broke deploy |
+| `ff60235` | yes (deploy failed) | Bundled 22-file ship: audit fixes + negotiation feature + local persistence. Deploy failed on invalid vercel.json header pattern (5227644 fixed). |
+| `07fed20` | yes (live) | docs: session-state.md cold-start recovery |
+| `7207fbe` | yes (live, superseded by ff60235) | Negotiation API handler v1 (recipient drop bug, fixed in ff60235) |
 | `abf7a85` | yes (live) | Preflight + deploy-safety-playbook + multi-agent-review-process docs |
 | `87077f6` | yes (live) | Followup consolidation into /api/interview/[action] (fixed 13-function deploy fail) |
 | `399e309` | yes (FAILED deploy) | First followup attempt — caused the 13-function fail. Code lives in the consolidated version now. |
