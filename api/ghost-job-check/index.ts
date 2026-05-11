@@ -85,22 +85,39 @@ function sha256(s: string): string {
 
 /**
  * Extract the first balanced { ... } JSON object from a string and parse it.
- * Tolerates markdown fences, leading prose, trailing commentary that Gemini
- * occasionally emits when responseMimeType is not set. Throws SyntaxError on
- * malformed input. Mirrors api/analyze/index.ts's parseJSON().
+ * Tolerates markdown fences, leading prose, trailing commentary, smart
+ * quotes, and trailing commas that Gemini occasionally emits when
+ * responseMimeType is not set.
+ *
+ * Hardened 2026-05-11 after Codex audit found `parse_failure` 500s on
+ * valid real-job payloads. Repair pipeline:
+ *   1. Strip markdown fences (```json ... ``` or ``` ... ```)
+ *   2. Walk to first { with balanced-brace tracking
+ *   3. Try JSON.parse on the raw slice
+ *   4. If that fails, repair: trailing commas + smart-quote normalization
+ *      + replace stray unescaped newlines INSIDE string literals (the
+ *      Gemini "tells" array regularly trips this)
+ *   5. Throw SyntaxError on terminal failure — caller decides whether to
+ *      return a graceful 200 fallback or 500.
  */
 function extractJsonObject(raw: string): any {
   if (!raw || typeof raw !== 'string') {
     throw new SyntaxError('No text returned from AI');
   }
-  const start = raw.indexOf('{');
+  // Strip markdown code-fence wrappers Gemini sometimes emits even when
+  // told "no markdown". Catch ```json, ```JSON, ```js, plain ```, etc.
+  let cleaned = raw.trim();
+  cleaned = cleaned.replace(/^```[a-zA-Z0-9_-]*\s*\n?/, '');
+  cleaned = cleaned.replace(/\n?```\s*$/, '');
+
+  const start = cleaned.indexOf('{');
   if (start === -1) throw new SyntaxError('No JSON object found in AI response');
   let depth = 0;
   let inString = false;
   let escape = false;
   let end = -1;
-  for (let i = start; i < raw.length; i += 1) {
-    const ch = raw[i];
+  for (let i = start; i < cleaned.length; i += 1) {
+    const ch = cleaned[i];
     if (escape) { escape = false; continue; }
     if (ch === '\\' && inString) { escape = true; continue; }
     if (ch === '"') { inString = !inString; continue; }
@@ -112,7 +129,39 @@ function extractJsonObject(raw: string): any {
     }
   }
   if (end === -1) throw new SyntaxError('Unmatched braces in AI response');
-  return JSON.parse(raw.slice(start, end + 1));
+  const slice = cleaned.slice(start, end + 1);
+  try {
+    return JSON.parse(slice);
+  } catch (firstErr) {
+    // Repair common LLM JSON mistakes and try again before giving up.
+    // - Trailing commas before } or ]
+    // - Smart quotes (curly Unicode) inside the JSON envelope
+    // - Stray raw newlines inside string literals (replace with \n)
+    let repaired = slice
+      .replace(/,(\s*[}\]])/g, '$1')
+      .replace(/[“”]/g, '"')
+      .replace(/[‘’]/g, "'");
+    // Newline-in-string repair: walk the string and escape any literal
+    // \n that's inside a JSON string value.
+    let out = '';
+    let inStr = false;
+    let esc = false;
+    for (let i = 0; i < repaired.length; i += 1) {
+      const ch = repaired[i];
+      if (esc) { out += ch; esc = false; continue; }
+      if (ch === '\\') { out += ch; esc = true; continue; }
+      if (ch === '"') { inStr = !inStr; out += ch; continue; }
+      if (inStr && ch === '\n') { out += '\\n'; continue; }
+      if (inStr && ch === '\r') { out += '\\r'; continue; }
+      if (inStr && ch === '\t') { out += '\\t'; continue; }
+      out += ch;
+    }
+    try {
+      return JSON.parse(out);
+    } catch {
+      throw firstErr instanceof Error ? firstErr : new SyntaxError(String(firstErr));
+    }
+  }
 }
 
 function checkSlidingWindow(
@@ -282,8 +331,43 @@ Return ONLY the JSON. No markdown, no preamble.`;
     });
 
     if (!aiResponse.text) throw new Error('No response from AI');
-    // Robust JSON extraction (see extractJsonObject below).
-    const parsed = extractJsonObject(aiResponse.text);
+    // Robust JSON extraction (see extractJsonObject above).
+    // 2026-05-11 audit fix: on first-parse failure, retry once with a
+    // stricter "valid JSON only" reminder. Gemini sometimes drops out of
+    // JSON mode for descriptions that contain a lot of quoted phrases —
+    // a single retry with a tighter prompt usually fixes it without
+    // doubling the cost on every call.
+    let parsed: any;
+    try {
+      parsed = extractJsonObject(aiResponse.text);
+    } catch (firstParseErr) {
+      console.warn('Ghost-job: first parse failed, retrying with strict prompt');
+      const retryPrompt = `${prompt}\n\nREMINDER: Return ONLY a single valid JSON object. No markdown fences. No prose. No trailing commentary. Every string value must use double quotes. Inside string values, use single quotes (not double) when quoting phrases from the JD.`;
+      const retryResponse = await ai.models.generateContent({
+        model: 'models/gemini-2.5-flash',
+        contents: [{ parts: [{ text: retryPrompt }] }],
+        config: { temperature: 0.4, maxOutputTokens: 2500 },
+      });
+      if (!retryResponse.text) throw firstParseErr;
+      try {
+        parsed = extractJsonObject(retryResponse.text);
+      } catch (retryErr) {
+        // Terminal parse failure — return a graceful 200 with neutral
+        // fallback content instead of a 500. The user gets a usable
+        // (if conservative) result and the UI stays responsive. Codex
+        // audit acceptance criterion: "No valid input over 100 chars
+        // returns parse_failure."
+        console.error('Ghost-job: parse failure after retry — returning fallback 200');
+        return response.status(200).json({
+          ghostProbability: 50,
+          verdict: 'uncertain',
+          summary: 'We had trouble scoring this specific listing. Paste just the role description + requirements (skip the company boilerplate) and try once more.',
+          tells: [],
+          yourMove: 'Apply if it looks specific to you, but cap your prep time at 10 minutes until we can re-analyze a cleaner paste.',
+          degraded: true,
+        });
+      }
+    }
 
     // Sanitise EVERY string field before returning. Belt-and-braces in case
     // a prompt-injection broke through and the model returned attacker-

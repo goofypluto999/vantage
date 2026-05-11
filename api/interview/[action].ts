@@ -549,6 +549,11 @@ async function handleNegotiation(request: any, response: any) {
       hasCompetingOffer, competingCompany, competingOfferContext,
       yearsExperience, levelTitle,
       preferredChannel, tone,
+      // Multi-agent review 2026-05-11 found these two were destructured
+      // nowhere in handleNegotiation. The UI collected them, the API type
+      // declared them, the server silently dropped them. Now read +
+      // validated + threaded into the prompt as RECIPIENT block.
+      recipientName, recipientRole,
       additionalContext,
     } = body;
 
@@ -619,6 +624,16 @@ async function handleNegotiation(request: any, response: any) {
     }
     if (remotePolicyOffered && (typeof remotePolicyOffered !== 'string' || remotePolicyOffered.length > 60)) {
       return response.status(400).json({ error: 'remotePolicyOffered too long' });
+    }
+    // Multi-agent review 2026-05-11: recipient fields had no validation
+    // (and were also being dropped before this fix). Mirror the Followup
+    // handler's pattern + reuse FU_VALID_RECIPIENT_ROLES so the two
+    // endpoints share the same enum surface.
+    if (recipientName && (typeof recipientName !== 'string' || recipientName.length > 80)) {
+      return response.status(400).json({ error: 'recipientName too long (max 80 chars)' });
+    }
+    if (recipientRole && !FU_VALID_RECIPIENT_ROLES.includes(recipientRole)) {
+      return response.status(400).json({ error: `Invalid recipientRole. Must be one of: ${FU_VALID_RECIPIENT_ROLES.join(', ')}` });
     }
     if (remotePolicyTarget && (typeof remotePolicyTarget !== 'string' || remotePolicyTarget.length > 60)) {
       return response.status(400).json({ error: 'remotePolicyTarget too long' });
@@ -772,6 +787,7 @@ async function handleNegotiation(request: any, response: any) {
 CANDIDATE: ${userName} (sign-off uses first name "${firstName}")
 ROLE: ${roleName} at ${companyName}${levelTitle ? ` (${levelTitle})` : ''}
 ${yearsExperience ? `YEARS EXPERIENCE: ${yearsExperience}` : 'YEARS EXPERIENCE: not stated'}
+RECIPIENT: ${recipientName ? recipientName : '(name not stated — address email by role, e.g. "Hi recruiting team,")'}${recipientRole ? ` — role: ${recipientRole}` : ''}
 PREFERRED CHANNEL: ${preferredChannel}
 TONE: ${tone}
 ASK COUNT: ${askCount}

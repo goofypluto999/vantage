@@ -41,7 +41,7 @@ const PRICING_TABLE = [
     monthly: 19,
     currency: 'USD',
     coverage: 'CV scoring + LinkedIn review',
-    sourceUrl: 'https://resumeworded.com/pricing',
+    sourceUrl: 'https://resumeworded.com/',
   },
   {
     name: 'Final Round AI Premium',
@@ -62,7 +62,7 @@ const PRICING_TABLE = [
     monthly: 24.95,
     currency: 'USD',
     coverage: 'CV builder + cover letter templates',
-    sourceUrl: 'https://www.livecareer.com/pricing',
+    sourceUrl: 'https://www.livecareer.com/',
   },
 ];
 

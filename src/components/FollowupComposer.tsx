@@ -22,6 +22,7 @@ import {
   type FollowupUrgency,
   type FollowupRecipientRole,
 } from '../services/api';
+import { useFormDraft } from '../lib/useFormDraft';
 
 interface Props {
   // Context auto-filled from the parent analysis result.
@@ -33,6 +34,9 @@ interface Props {
   // Disable the Generate button if the user is out of tokens; parent
   // controls this since it owns the profile.
   hasTokens: boolean;
+  // Authenticated user id — scopes the draft localStorage key so user
+  // B can't read user A's data on a shared device. Optional in signature.
+  userScope?: string;
 }
 
 const STAGE_LABELS: { value: FollowupStage; label: string; hint: string }[] = [
@@ -56,7 +60,7 @@ const RECIPIENT_ROLE_LABELS: { value: FollowupRecipientRole; label: string }[] =
   { value: 'engineering-manager', label: 'Engineering Manager' },
 ];
 
-export default function FollowupComposer({ defaultCompanyName, defaultRoleName, defaultUserName, onClose, hasTokens }: Props) {
+export default function FollowupComposer({ defaultCompanyName, defaultRoleName, defaultUserName, onClose, hasTokens, userScope }: Props) {
   // Form state
   const [companyName, setCompanyName] = useState(defaultCompanyName || '');
   const [roleName, setRoleName] = useState(defaultRoleName || '');
@@ -76,7 +80,20 @@ export default function FollowupComposer({ defaultCompanyName, defaultRoleName, 
   const [copiedField, setCopiedField] = useState<'subject' | 'body' | 'full' | null>(null);
   const [returnedBalance, setReturnedBalance] = useState<number | undefined>(undefined);
 
+  // Draft persistence — same pattern as NegotiationComposer.
+  const [draftPromptShown, setDraftPromptShown] = useState(false);
+  const [draftDecisionMade, setDraftDecisionMade] = useState(false);
+  const draftPayload = {
+    companyName, roleName, userName, recipientName, recipientRole,
+    daysSinceLast, stage, urgencyTone, keyTalkingPoint, additionalContext,
+  };
+  const { loadDraft, clearDraft } = useFormDraft('vantage-followup-draft-v1', draftPayload, { userScope });
+
   const dialogRef = useRef<HTMLDivElement>(null);
+  // Double-click race guard — checked + set synchronously at the top
+  // of handleGenerate before any state-driven re-render. Same pattern
+  // as NegotiationComposer (multi-agent review caught the gap here).
+  const inFlightRef = useRef(false);
 
   // ESC to close + body scroll lock (matches existing modal pattern)
   useEffect(() => {
@@ -90,10 +107,54 @@ export default function FollowupComposer({ defaultCompanyName, defaultRoleName, 
     };
   }, [onClose, returnedBalance]);
 
+  // Surface restore prompt on open when a saved draft exists.
+  useEffect(() => {
+    const saved = loadDraft();
+    if (saved && !draftDecisionMade) setDraftPromptShown(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  function restoreDraft() {
+    const saved = loadDraft();
+    if (!saved) { setDraftPromptShown(false); setDraftDecisionMade(true); return; }
+    if (typeof saved.companyName === 'string') setCompanyName(saved.companyName);
+    if (typeof saved.roleName === 'string') setRoleName(saved.roleName);
+    if (typeof saved.userName === 'string') setUserName(saved.userName);
+    if (typeof saved.recipientName === 'string') setRecipientName(saved.recipientName);
+    if (
+      saved.recipientRole === 'recruiter' || saved.recipientRole === 'hiring-manager' ||
+      saved.recipientRole === 'founder' || saved.recipientRole === 'engineering-manager' ||
+      saved.recipientRole === ''
+    ) setRecipientRole(saved.recipientRole);
+    if (typeof saved.daysSinceLast === 'number' && saved.daysSinceLast >= 1 && saved.daysSinceLast <= 90) {
+      setDaysSinceLast(saved.daysSinceLast);
+    }
+    if (
+      saved.stage === 'post-application' || saved.stage === 'post-phone-screen' ||
+      saved.stage === 'post-onsite' || saved.stage === 'post-final-round' ||
+      saved.stage === 'after-offer-received'
+    ) setStage(saved.stage);
+    if (saved.urgencyTone === 'patient' || saved.urgencyTone === 'polite-nudge' || saved.urgencyTone === 'time-sensitive') {
+      setUrgencyTone(saved.urgencyTone);
+    }
+    if (typeof saved.keyTalkingPoint === 'string') setKeyTalkingPoint(saved.keyTalkingPoint);
+    if (typeof saved.additionalContext === 'string') setAdditionalContext(saved.additionalContext);
+    setDraftPromptShown(false);
+    setDraftDecisionMade(true);
+  }
+
+  function dismissDraft() {
+    clearDraft();
+    setDraftPromptShown(false);
+    setDraftDecisionMade(true);
+  }
+
   const canGenerate = !loading && hasTokens && companyName.trim().length > 0 && roleName.trim().length > 0 && userName.trim().length > 0 && daysSinceLast >= 1 && daysSinceLast <= 90;
 
   async function handleGenerate() {
+    if (inFlightRef.current) return;
     if (!canGenerate) return;
+    inFlightRef.current = true;
     setLoading(true);
     setError(null);
     setResult(null);
@@ -116,10 +177,19 @@ export default function FollowupComposer({ defaultCompanyName, defaultRoleName, 
       }
       setResult({ subject: res.subject, body: res.body, balance: res.token_balance ?? 0 });
       setReturnedBalance(res.token_balance);
+      clearDraft();
     } catch (e: any) {
-      setError(e?.message || 'Network error. Please try again.');
+      const raw = String(e?.message || '').toLowerCase();
+      if (raw.includes('failed to fetch') || raw.includes('network')) {
+        setError('Network error — check your connection and try again.');
+      } else if (raw.includes('timeout') || raw.includes('aborted')) {
+        setError('This is taking too long. The AI service may be busy — try again.');
+      } else {
+        setError('Generation failed. If tokens were deducted, they have been refunded.');
+      }
     } finally {
       setLoading(false);
+      inFlightRef.current = false;
     }
   }
 
@@ -224,8 +294,37 @@ export default function FollowupComposer({ defaultCompanyName, defaultRoleName, 
           {/* Form panel — only when no result yet */}
           {!result && (
             <>
+              {/* Draft restore prompt — same pattern as NegotiationComposer. */}
+              {draftPromptShown && !draftDecisionMade && (
+                <div
+                  role="status"
+                  aria-live="polite"
+                  className="rounded-lg bg-violet-500/10 border border-violet-500/30 p-3 flex flex-wrap items-center gap-3 justify-between"
+                >
+                  <p className="text-sm text-violet-200 flex-1 min-w-[200px]">
+                    Found an unfinished follow-up draft on this browser. Restore your inputs?
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={restoreDraft}
+                      className="px-3 py-1.5 rounded-md text-xs font-semibold bg-violet-600 hover:bg-violet-500 text-white transition focus:outline-none focus:ring-2 focus:ring-violet-400"
+                    >
+                      Restore draft
+                    </button>
+                    <button
+                      type="button"
+                      onClick={dismissDraft}
+                      className="px-3 py-1.5 rounded-md text-xs font-semibold bg-white/5 hover:bg-white/10 text-white/80 transition focus:outline-none focus:ring-2 focus:ring-white/30"
+                    >
+                      Start fresh
+                    </button>
+                  </div>
+                </div>
+              )}
+
               {error && (
-                <div className="flex items-start gap-2 p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-300 text-sm">
+                <div role="alert" className="flex items-start gap-2 p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-300 text-sm">
                   <AlertTriangle className="w-4 h-4 flex-shrink-0 mt-0.5" aria-hidden="true" />
                   <p>{error}</p>
                 </div>

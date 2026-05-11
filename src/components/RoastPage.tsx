@@ -4,6 +4,8 @@ import { Flame, Twitter, Linkedin, Copy, ArrowRight, Loader2, AlertTriangle, Wan
 import { useTheme } from '../contexts/ThemeContext';
 import SEO from './SEO';
 import { taskStarted, recordTaskCompletion, armExitFastDetector, track } from '../lib/track';
+import { fetchWithTimeout, classifyAiToolError } from '../lib/fetchWithTimeout';
+import { useResultHistory } from '../lib/useResultHistory';
 
 const SITE_URL = 'https://aimvantage.uk';
 const API_BASE = import.meta.env.VITE_API_URL || '/api';
@@ -62,6 +64,12 @@ export default function RoastPage() {
   const [roast, setRoast] = useState<RoastResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const resultRef = useRef<HTMLDivElement | null>(null);
+  // Recent results — last 5 in localStorage, 30-day TTL. Lets users
+  // revisit a roast without re-running and re-spending the rate-limit
+  // budget. Added 2026-05-11 for user value (history is free, the API
+  // call isn't). See src/lib/useResultHistory.ts.
+  const { entries: history, push: pushHistory, remove: removeHistory, clear: clearHistory } =
+    useResultHistory<RoastResponse>('vantage-roast-history-v1');
 
   const charCount = letter.length;
   const charCountColor =
@@ -100,38 +108,45 @@ export default function RoastPage() {
     }
     setLoading(true);
     taskStarted('/roast', 'roast_request_submitted');
+    let res: Response | null = null;
+    let json: RoastResponse | null = null;
     try {
-      const res = await fetch(`${API_BASE}/roast`, {
+      // 30s hard timeout — server maxDuration is 20s, gives 10s headroom
+      // for slow networks before we cut the request and ask the user to
+      // retry. Added 2026-05-11 after Codex audit found stuck-loading UI.
+      res = await fetchWithTimeout(`${API_BASE}/roast`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ coverLetter: letter }),
+        timeoutMs: 30_000,
       });
-      const json: RoastResponse = await res.json();
-      if (!res.ok) {
-        // 429s ship a retryAfterMs payload (per /api/roast). Combine it with
-        // the user-facing error so people know exactly when they can retry,
-        // and a Retry-After header is also set on the response.
-        const headerRetry = res.headers.get('Retry-After');
-        const headerRetryMs = headerRetry ? parseInt(headerRetry, 10) * 1000 : 0;
-        const retryMs = json.retryAfterMs || headerRetryMs;
-        const baseMsg = json.error || 'Roast generation failed.';
-        if (res.status === 429 && retryMs > 0) {
-          const seconds = Math.ceil(retryMs / 1000);
-          const human =
-            seconds < 60
-              ? `${seconds}s`
-              : seconds < 3600
-              ? `${Math.ceil(seconds / 60)}m`
-              : `${Math.ceil(seconds / 3600)}h`;
-          setError(`${baseMsg} Try again in ${human}.`);
-        } else {
-          setError(baseMsg);
-        }
+      try {
+        json = (await res.json()) as RoastResponse;
+      } catch {
+        json = null;
+      }
+      if (!res.ok || !json) {
+        const info = classifyAiToolError(undefined, res, json);
+        setError(info.retryHint ? `${info.message} ${info.retryHint}` : info.message);
       } else {
         setRoast(json);
+        // Persist this successful result so the user can revisit.
+        // ID = hash of severity + timestamp; label is the user-facing
+        // line shown in the Past Results list. We never persist the
+        // user's raw cover letter — only the AI output.
+        // ISO-style date for unambiguous labels (review MED). Seconds
+        // included so two saves in the same minute don't collide.
+        const now = new Date();
+        const label = `Severity ${json.severityScore ?? '?'}/5 — ${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+        pushHistory({
+          id: `roast-${now.getTime()}-${json.severityScore ?? 0}`,
+          label,
+          result: json,
+        });
       }
     } catch (err) {
-      setError('Network error — try again.');
+      const info = classifyAiToolError(err, res, json);
+      setError(info.retryHint ? `${info.message} ${info.retryHint}` : info.message);
     } finally {
       setLoading(false);
     }
@@ -321,6 +336,51 @@ export default function RoastPage() {
           <div className={`flex items-start gap-2 p-4 mb-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-700 dark:text-rose-300 text-sm`}>
             <AlertTriangle className="w-4 h-4 mt-0.5 flex-shrink-0" aria-hidden="true" />
             <div>{error}</div>
+          </div>
+        )}
+
+        {/* Past results — show only when at least one saved entry AND
+            no current roast on screen. Lets users revisit recent runs
+            without paying a new rate-limit slot. Drop-in click restores
+            into the same `roast` state. Clear button per-entry. */}
+        {history.length > 0 && !roast && !loading && (
+          <div className={`${t.glass} rounded-2xl p-5 md:p-6 mb-6`}>
+            <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
+              <p className={`text-sm font-semibold ${t.text}`}>
+                Past roasts <span className={`text-xs font-normal ${t.textMuted}`}>({history.length} saved on this device)</span>
+              </p>
+              <div className="flex items-center gap-3">
+                <p className={`text-xs ${t.textMuted}`}>Tap to reload — no AI cost.</p>
+                <button
+                  type="button"
+                  onClick={clearHistory}
+                  className={`text-xs underline ${t.textSub} hover:opacity-80 transition focus:outline-none focus:ring-2 focus:ring-rose-400/50 rounded`}
+                >
+                  Clear all
+                </button>
+              </div>
+            </div>
+            <ul className="space-y-2">
+              {history.map((entry) => (
+                <li key={entry.id} className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => entry.result && typeof entry.result === 'object' ? setRoast(entry.result) : removeHistory(entry.id)}
+                    className={`flex-1 text-left px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-sm ${t.text} transition focus:outline-none focus:ring-2 focus:ring-violet-400/50`}
+                  >
+                    {entry.label}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => removeHistory(entry.id)}
+                    aria-label={`Remove past roast: ${entry.label}`}
+                    className={`px-2.5 py-2 rounded-lg text-sm ${t.textSub} hover:bg-rose-500/15 hover:text-rose-400 transition focus:outline-none focus:ring-2 focus:ring-rose-400/50`}
+                  >
+                    ✕
+                  </button>
+                </li>
+              ))}
+            </ul>
           </div>
         )}
 

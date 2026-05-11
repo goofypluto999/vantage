@@ -319,7 +319,7 @@ Best,
     job: {
       company: 'Stripe',
       role: 'Staff Product Manager, Billing Platform',
-      url: 'https://stripe.com/jobs/listing/staff-product-manager-billing-platform',
+      url: 'https://stripe.com/jobs',
       location: 'San Francisco / Seattle / NYC / Hybrid',
     },
 

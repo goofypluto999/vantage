@@ -365,6 +365,65 @@ async function loadProgrammaticRoutes() {
     console.warn('Could not parse interviewQuestions.ts:', err?.message);
   }
 
+  // Case studies — fixes Codex audit 2026-05-11 finding that
+  // /case-studies/<slug> URLs were canonicalizing to the homepage.
+  try {
+    const csTs = await fs.readFile(
+      path.join(ROOT, 'src/data/caseStudies.ts'),
+      'utf8',
+    );
+    const entries = extractEntries(csTs, ['slug', 'title', 'subtitle']);
+    for (const { slug, title, subtitle } of entries) {
+      routes.push({
+        path: `/case-studies/${slug}`,
+        title: `${title} | Vantage AI case study`,
+        description: (subtitle || '').slice(0, 200),
+        type: 'article',
+      });
+    }
+  } catch (err) {
+    console.warn('Could not parse caseStudies.ts:', err?.message);
+  }
+
+  // Press releases — same audit finding. Pull title + description from
+  // the data file so the prerendered HTML stops echoing homepage meta.
+  try {
+    const prTs = await fs.readFile(
+      path.join(ROOT, 'src/data/pressReleases.ts'),
+      'utf8',
+    );
+    const entries = extractEntries(prTs, ['slug', 'title', 'description']);
+    for (const { slug, title, description } of entries) {
+      routes.push({
+        path: `/press-releases/${slug}`,
+        title: `${title} — Vantage AI press release`,
+        description: (description || '').slice(0, 200),
+        type: 'article',
+      });
+    }
+  } catch (err) {
+    console.warn('Could not parse pressReleases.ts:', err?.message);
+  }
+
+  // Salary pages — 13 affected per Codex audit. Use the role + description
+  // from salaryData.ts so each /salary/<role> gets its own canonical/title.
+  try {
+    const salTs = await fs.readFile(
+      path.join(ROOT, 'src/data/salaryData.ts'),
+      'utf8',
+    );
+    const entries = extractEntries(salTs, ['slug', 'role', 'description']);
+    for (const { slug, role, description } of entries) {
+      routes.push({
+        path: `/salary/${slug}`,
+        title: `${role} Salary (UK + US, 2026) | Vantage AI`,
+        description: (description || `Sourced ${role} salary band — median, percentiles, factors that move pay, negotiation traps. Free guide, no signup.`).slice(0, 200),
+      });
+    }
+  } catch (err) {
+    console.warn('Could not parse salaryData.ts:', err?.message);
+  }
+
   return routes;
 }
 

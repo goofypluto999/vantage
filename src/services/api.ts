@@ -289,6 +289,86 @@ export async function generateFollowupEmail(req: FollowupRequest): Promise<Follo
   return response.json();
 }
 
+// ─── Salary negotiation brief ───────────────────────────────────────────
+// Costs 2 tokens. Server validates inputs + atomically deducts + refunds
+// on AI failure. Mirror of handleNegotiation in api/interview/[action].ts.
+// 5 surfaces returned: emailSubject + emailBody + phoneScript +
+// talkingPoints[] + warnings[]. Enums must stay in lock-step with the
+// server's NEG_VALID_* arrays.
+
+export type NegotiationCurrency = 'gbp' | 'usd' | 'eur';
+export type NegotiationChannel = 'email' | 'phone';
+export type NegotiationTone = 'collaborative' | 'firm';
+export type NegotiationRecipientRole =
+  | 'recruiter'
+  | 'hiring-manager'
+  | 'founder'
+  | 'engineering-manager';
+
+export interface NegotiationRequest {
+  // Required
+  companyName: string;
+  roleName: string;
+  userName: string;
+  currency: NegotiationCurrency;
+  baseOffered: number;
+  baseTarget: number;
+  preferredChannel: NegotiationChannel;
+  tone: NegotiationTone;
+  // Optional comp components — provide only what's relevant
+  signOffered?: number;
+  signTarget?: number;
+  rsuOffered?: number;
+  rsuTarget?: number;
+  bonusPctOffered?: number;
+  bonusPctTarget?: number;
+  ptoOffered?: number;
+  ptoTarget?: number;
+  remotePolicyOffered?: string;
+  remotePolicyTarget?: string;
+  // Competing offer leverage
+  hasCompetingOffer?: boolean;
+  competingCompany?: string;
+  competingOfferContext?: string;
+  // Candidate context (helps the AI calibrate warnings to seniority)
+  yearsExperience?: number;
+  levelTitle?: string;
+  // Recipient + extras
+  recipientName?: string;
+  recipientRole?: NegotiationRecipientRole;
+  additionalContext?: string;
+}
+
+export interface NegotiationResponse {
+  success: boolean;
+  emailSubject?: string;
+  emailBody?: string;
+  phoneScript?: string;
+  talkingPoints?: string[];
+  warnings?: string[];
+  token_balance?: number;
+  error?: string;
+  /** Server sets degraded=true when it returned the neutral
+   * parse-failure fallback (after retry). UI should surface a
+   * "limited result" hint so users know the brief is conservative. */
+  degraded?: boolean;
+}
+
+export async function generateNegotiationBrief(req: NegotiationRequest): Promise<NegotiationResponse> {
+  // Routed through /api/interview/negotiation (consolidated into the
+  // multi-action [action].ts dispatcher to stay under Vercel-Hobby's
+  // 12-function ceiling — adding a 13th function would fail deploy).
+  const response = await fetchWithAuth('/interview/negotiation', {
+    method: 'POST',
+    body: JSON.stringify(req),
+  });
+  if (!response.ok) {
+    const error = await safeJson(response);
+    return { success: false, error: error.error || 'Failed to generate negotiation brief' };
+  }
+  return response.json();
+}
+
 export async function evaluateAnswer(
   roleContext: string,
   question: string,

@@ -32,7 +32,7 @@ const SOURCES: SourceEntry[] = [
   { vendor: 'Taleo', slug: 'taleo', category: 'docs', title: 'Oracle Talent Acquisition Cloud Documentation', url: 'https://docs.oracle.com/en/cloud/saas/talent-management/', notes: 'Taleo is part of Oracle Talent Management Cloud. Resume parsing config + customer-tenant variability documented here.', lastVerified: '2026-05-01' },
 
   // iCIMS
-  { vendor: 'iCIMS', slug: 'icims', category: 'docs', title: 'iCIMS Talent Cloud Documentation', url: 'https://www.icims.com/customer-resources/', notes: 'Customer-facing documentation hub. Resume parser is highly configurable per tenant.', lastVerified: '2026-05-01' },
+  { vendor: 'iCIMS', slug: 'icims', category: 'docs', title: 'iCIMS Talent Cloud Documentation', url: 'https://www.icims.com/products/talent-cloud/', notes: 'Customer-facing documentation hub. Resume parser is highly configurable per tenant.', lastVerified: '2026-05-11' },
 
   // Wikipedia anchors
   { vendor: 'General', slug: 'general', category: 'wiki', title: 'Wikipedia: Applicant Tracking System', url: 'https://en.wikipedia.org/wiki/Applicant_tracking_system', notes: 'Encyclopaedic overview of ATS history, market, and parsing approaches. Useful as a top-level citation.', lastVerified: '2026-05-01' },

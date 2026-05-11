@@ -57,13 +57,25 @@
       "headers": [
         { "key": "X-Robots-Tag", "value": "noindex, nofollow" }
       ]
+    },
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    },
+    {
+      "source": "/(.*)\\.(?:js|mjs|css|woff|woff2|ttf|eot|otf|png|jpe?g|gif|svg|webp|avif|ico|map)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
     }
   ],
   "rewrites": [
     { "source": "/api/credits", "destination": "/api/user?endpoint=credits" },
     { "source": "/api/analyses", "destination": "/api/user?endpoint=analyses" },
     {
-      "source": "/((?!api/|\\.env|\\.git/|\\.aws/|\\.ssh/|\\.htaccess|\\.htpasswd|\\.DS_Store|wp-admin|wp-includes|wp-login|wp-config|phpmyadmin|xmlrpc\\.php|vendor/|backup/|backups/|sql/|database/|db/|config\\.|setup\\.|install\\.|admin\\.).*)",
+      "source": "/((?!api/|assets/|frames/|blog/|markdown/|postman/|\\.env|\\.git/|\\.aws/|\\.ssh/|\\.htaccess|\\.htpasswd|\\.DS_Store|wp-admin|wp-includes|wp-login|wp-config|phpmyadmin|xmlrpc\\.php|vendor/|backup/|backups/|sql/|database/|db/|config\\.|setup\\.|install\\.|admin\\.).*)",
       "destination": "/"
     }
   ]

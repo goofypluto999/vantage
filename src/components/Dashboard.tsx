@@ -5,12 +5,14 @@ import {
   Upload, Link as LinkIcon, FileText, Loader2, Sparkles, ChevronRight,
   LogOut, CreditCard, Zap, Crown, Star, Settings, Check,
   Mic, BookOpen, Lock, RefreshCw, ClipboardPaste, Type,
-  Twitter, Linkedin, Copy, AlertTriangle, Mail,
+  Twitter, Linkedin, Copy, AlertTriangle, Mail, DollarSign,
 } from 'lucide-react';
 import { useAuth } from '../App';
 import { useCurrency } from '../contexts/CurrencyContext';
 import { supabase, getCreditsRemaining, hasCredits } from '../lib/supabase';
 import { analyzeJob, createStripeCheckout, syncSubscription, rewriteTone, fetchAnalysisHistory } from '../services/api';
+import { sweepDraftsForUser } from '../lib/useFormDraft';
+import { sweepHistoryForUser } from '../lib/useResultHistory';
 import AIInterviewSession from './AIInterviewSession';
 import AtsScannerSection from './AtsScannerSection';
 import { useFocusTrap } from '../lib/useFocusTrap';
@@ -21,6 +23,7 @@ const LiveDemoReel = React.lazy(() => import('./LiveDemoReel'));
 // "Generate follow-up email" button on the results section. Its form +
 // validation logic don't touch the initial Dashboard bundle.
 const FollowupComposer = React.lazy(() => import('./FollowupComposer'));
+const NegotiationComposer = React.lazy(() => import('./NegotiationComposer'));
 
 /**
  * ProcessingStages — animated pipeline indicator shown during the 60-90s
@@ -354,6 +357,10 @@ export default function Dashboard() {
   // loaded so the modal + its form code don't bloat the initial Dashboard
   // bundle until the user actually wants to compose a follow-up.
   const [showFollowup, setShowFollowup] = useState(false);
+  // Salary negotiation brief composer (post-analysis tool, added 2026-05-11).
+  // 2 tokens. Returns email + phone script + talking points + warnings.
+  // Lazy-loaded so its bundle only arrives if the user opens the modal.
+  const [showNegotiation, setShowNegotiation] = useState(false);
 
   const creditsRemaining = profile ? getCreditsRemaining(profile) : 0;
   const canAnalyze = hasCredits(profile, 3);
@@ -476,6 +483,12 @@ export default function Dashboard() {
   };
 
   const handleSignOut = async () => {
+    // Sweep this user's drafts + result history from localStorage
+    // BEFORE the auth context clears, so we still have the user.id.
+    // Critical for shared-device privacy (multi-agent review HIGH).
+    const userId = user?.id;
+    sweepDraftsForUser(userId);
+    sweepHistoryForUser(userId);
     await signOut();
     navigate('/');
   };
@@ -1808,6 +1821,34 @@ export default function Dashboard() {
                 </p>
               </div>
 
+              {/* Salary Negotiation Brief — post-analysis tool added 2026-05-11.
+                  This is the highest-leverage moment in a job search and most
+                  candidates wing it or accept first offers. 2 tokens, returns
+                  email + phone script + 5–7 in-conversation talking points +
+                  risk warnings about the asks. Multi-agent reviewed before
+                  ship. Not Pro-gated — every offer deserves a real strategy. */}
+              <div className="p-6 rounded-2xl bg-white/5 border border-white/10">
+                <div className="flex items-center justify-between flex-wrap gap-3">
+                  <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                    <DollarSign className="w-5 h-5 text-emerald-400" />
+                    Salary Negotiation Brief
+                    <span className="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 text-xs font-bold ml-2">New</span>
+                  </h3>
+                  <button
+                    onClick={() => setShowNegotiation(true)}
+                    disabled={!hasCredits(profile, 2)}
+                    className="px-4 py-2 rounded-lg bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-semibold text-sm hover:from-emerald-500 hover:to-teal-500 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
+                    aria-label="Open salary negotiation brief composer"
+                  >
+                    <DollarSign className="w-4 h-4" />
+                    Build negotiation brief (2 tokens)
+                  </button>
+                </div>
+                <p className="text-white/60 text-sm mt-2">
+                  Got an offer? Don't wing it. Enter what they offered + what you want (base, signing, RSU, bonus %, PTO, remote policy). Returns: a calibrated email back to the recruiter, a 60–90 second phone script, 5–7 in-conversation talking points, and warnings if any of your asks look risky for your level.
+                </p>
+              </div>
+
               {/* Post-analysis upgrade nudge — added 2026-05-07. Shown to
                   unpaid users after they've burned at least one analysis
                   worth of tokens. Concrete: 'you have X left = N more
@@ -1873,11 +1914,31 @@ export default function Dashboard() {
               // a single short field they remember from the job URL).
               defaultRoleName={''}
               defaultUserName={profile?.full_name || ''}
+              userScope={user?.id}
               hasTokens={hasCredits(profile, 1)}
               onClose={(_newBalance) => {
                 setShowFollowup(false);
                 // Always refresh after close — server may have deducted +
                 // refunded which we can't model client-side perfectly.
+                refreshProfile();
+              }}
+            />
+          </React.Suspense>
+        )}
+
+        {/* Negotiation Composer Modal — lazy-loaded. Same close-and-refresh
+            pattern as Followup. 2-token cost; server handles atomic deduct
+            + refund-on-failure so client-side balance can drift briefly. */}
+        {showNegotiation && (
+          <React.Suspense fallback={null}>
+            <NegotiationComposer
+              defaultCompanyName={results?.companySnapshot?.name || ''}
+              defaultRoleName={''}
+              defaultUserName={profile?.full_name || ''}
+              userScope={user?.id}
+              hasTokens={hasCredits(profile, 2)}
+              onClose={(_newBalance) => {
+                setShowNegotiation(false);
                 refreshProfile();
               }}
             />

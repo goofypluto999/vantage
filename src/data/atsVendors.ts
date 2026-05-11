@@ -264,7 +264,7 @@ export const atsVendors: ATSVendor[] = [
       },
     ],
     sources: [
-      { name: 'iCIMS Talent Cloud Documentation', url: 'https://www.icims.com/customer-resources/' },
+      { name: 'iCIMS Talent Cloud Documentation', url: 'https://www.icims.com/products/talent-cloud/' },
     ],
   },
   {

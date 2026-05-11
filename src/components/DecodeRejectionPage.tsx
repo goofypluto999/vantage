@@ -5,6 +5,8 @@ import {
 } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import SEO from './SEO';
+import { fetchWithTimeout, classifyAiToolError } from '../lib/fetchWithTimeout';
+import { useResultHistory } from '../lib/useResultHistory';
 
 const SITE_URL = 'https://aimvantage.uk';
 
@@ -53,6 +55,9 @@ export default function DecodeRejectionPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [copied, setCopied] = useState(false);
+  // Last 5 decoded rejections, 30-day TTL. Same pattern as RoastPage.
+  const { entries: history, push: pushHistory, remove: removeHistory, clear: clearHistory } =
+    useResultHistory<DecodeResult>('vantage-decode-history-v1');
 
   const handleDecode = async () => {
     setError('');
@@ -62,20 +67,39 @@ export default function DecodeRejectionPage() {
     }
     setLoading(true);
     setResult(null);
+    let res: Response | null = null;
+    let data: any = null;
     try {
-      const res = await fetch('/api/decode-rejection', {
+      // 30s client timeout. Server maxDuration is 20s — 10s headroom for
+      // slow networks. Added 2026-05-11 to prevent stuck-loading UI.
+      res = await fetchWithTimeout('/api/decode-rejection', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ rejectionEmail: rejectionEmail.trim() }),
+        timeoutMs: 30_000,
       });
-      const data = await res.json();
-      if (!res.ok) {
-        setError(data.error || 'Decode failed. Try again.');
-      } else {
-        setResult(data as DecodeResult);
+      try {
+        data = await res.json();
+      } catch {
+        data = null;
       }
-    } catch (err: any) {
-      setError(err.message || 'Network error');
+      if (!res.ok || !data) {
+        const info = classifyAiToolError(undefined, res, data);
+        setError(info.retryHint ? `${info.message} ${info.retryHint}` : info.message);
+      } else {
+        const decoded = data as DecodeResult;
+        setResult(decoded);
+        const now = new Date();
+        const label = `${decoded.verdict || 'decoded'} — sev ${decoded.severity ?? '?'}/5 — ${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+        pushHistory({
+          id: `decode-${now.getTime()}-${decoded.verdict || 'x'}`,
+          label,
+          result: decoded,
+        });
+      }
+    } catch (err) {
+      const info = classifyAiToolError(err, res, data);
+      setError(info.retryHint ? `${info.message} ${info.retryHint}` : info.message);
     } finally {
       setLoading(false);
     }
@@ -245,6 +269,49 @@ export default function DecodeRejectionPage() {
           <div className="flex items-start gap-2 p-4 mb-6 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-700 dark:text-rose-300 text-sm">
             <AlertTriangle className="w-4 h-4 mt-0.5 flex-shrink-0" aria-hidden="true" />
             <div>{error}</div>
+          </div>
+        )}
+
+        {/* Past results — same UX pattern as RoastPage. localStorage only,
+            30-day TTL, last 5. Click to restore — no AI cost. */}
+        {history.length > 0 && !result && !loading && (
+          <div className={`${t.glass} rounded-2xl p-5 md:p-6 mb-6`}>
+            <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
+              <p className={`text-sm font-semibold ${t.text}`}>
+                Past decodes <span className={`text-xs font-normal ${t.textMuted}`}>({history.length} saved on this device)</span>
+              </p>
+              <div className="flex items-center gap-3">
+                <p className={`text-xs ${t.textMuted}`}>Tap to reload — no AI cost.</p>
+                <button
+                  type="button"
+                  onClick={clearHistory}
+                  className={`text-xs underline ${t.textSub} hover:opacity-80 transition focus:outline-none focus:ring-2 focus:ring-rose-400/50 rounded`}
+                >
+                  Clear all
+                </button>
+              </div>
+            </div>
+            <ul className="space-y-2">
+              {history.map((entry) => (
+                <li key={entry.id} className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => entry.result && typeof entry.result === 'object' ? setResult(entry.result) : removeHistory(entry.id)}
+                    className={`flex-1 text-left px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-sm ${t.text} transition focus:outline-none focus:ring-2 focus:ring-violet-400/50`}
+                  >
+                    {entry.label}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => removeHistory(entry.id)}
+                    aria-label={`Remove past decode: ${entry.label}`}
+                    className={`px-2.5 py-2 rounded-lg text-sm ${t.textSub} hover:bg-rose-500/15 hover:text-rose-400 transition focus:outline-none focus:ring-2 focus:ring-rose-400/50`}
+                  >
+                    ✕
+                  </button>
+                </li>
+              ))}
+            </ul>
           </div>
         )}
 

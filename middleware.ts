@@ -45,10 +45,15 @@ function geoCookieResponse(request: Request): Response {
   const country = request.headers.get('x-vercel-ip-country') || '';
   const response = next();
   if (country) {
-    // 30-day cookie, readable by client JS so CurrencyContext can use it
+    // 30-day cookie, readable by client JS so CurrencyContext can use it.
+    // Secure flag added 2026-05-11 (Codex audit P2 finding). HttpOnly is
+    // intentionally NOT set — CurrencyContext reads this cookie in the
+    // browser to default currency. The cookie is non-authenticating and
+    // contains only an ISO country code, so JS readability is acceptable
+    // (see SECURITY-AUDIT.md).
     response.headers.append(
       'Set-Cookie',
-      `vantage-geo=${country}; Path=/; Max-Age=2592000; SameSite=Lax`
+      `vantage-geo=${country}; Path=/; Max-Age=2592000; SameSite=Lax; Secure`
     );
   }
   return response;
