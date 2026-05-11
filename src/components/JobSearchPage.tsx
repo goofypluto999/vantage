@@ -1,229 +1,49 @@
-// JobSearchPage — AI Job Search ("tool → service" milestone).
-// Built 2026-05-11. Third attempt. Server is fully inlined in
-// api/interview/[action].ts (no external helper modules — eliminates
-// the bundling failure mode of the prior two attempts).
+// JobSearchPage — thin Dashboard-themed wrapper around JobSearchSection.
 //
-// All multi-agent-review fixes baked in: anon redirect with distinct
-// loading copy, match-score role=meter, ghost color tier, 44×44 touch
-// targets, tracker-derived isSaved, prefillUrl handoff via location.state,
-// loading-stages-complete-on-result, dynamic CTA token preflight,
-// hours-to-free-reset surfaced, source-not-configured banner, work-mode
-// aria-pressed (no radiogroup mismatch), aria-controls on expand.
+// The Dashboard.tsx page is the PRIMARY surface for the job search
+// (user explicit feedback: "should be a dropdown in the dashboard,
+// not a separate section"). This /jobs route exists for deep-link +
+// SEO compatibility, and renders the same JobSearchSection component
+// against the SAME hardcoded dark gradient the Dashboard uses, so
+// users hitting /jobs get the same visual treatment as the in-Dashboard
+// section.
+//
+// Previous version used `t.pageBg` which on the light Vantage landing
+// theme rendered the dark-themed form text invisibly ("nothing loads").
+// Fixed by hardcoding the dark gradient matching Dashboard.tsx exactly.
 
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'motion/react';
-import {
-  Briefcase, Search, MapPin, Filter, Loader2, ExternalLink, Bookmark,
-  Sparkles, AlertTriangle, ChevronDown, ChevronUp, Ghost, Clock, Target,
-} from 'lucide-react';
-import { useTheme } from '../contexts/ThemeContext';
+import { Loader2, ArrowLeft } from 'lucide-react';
 import { useAuth } from '../App';
 import SEO from './SEO';
-import {
-  searchJobs,
-  type ScoredJob,
-  type JobSearchCountry,
-  type JobSearchWorkMode,
-  type JobSearchPostedWithin,
-  type JobSearchResponse,
-  type JobSourceReport,
-} from '../services/api';
-import { useApplicationTracker } from '../lib/useApplicationTracker';
-
-const COUNTRIES: { code: JobSearchCountry; label: string; flag: string }[] = [
-  { code: 'gb', label: 'United Kingdom', flag: '🇬🇧' },
-  { code: 'us', label: 'United States', flag: '🇺🇸' },
-  { code: 'ca', label: 'Canada', flag: '🇨🇦' },
-  { code: 'au', label: 'Australia', flag: '🇦🇺' },
-  { code: 'de', label: 'Germany', flag: '🇩🇪' },
-  { code: 'fr', label: 'France', flag: '🇫🇷' },
-  { code: 'es', label: 'Spain', flag: '🇪🇸' },
-  { code: 'it', label: 'Italy', flag: '🇮🇹' },
-  { code: 'nl', label: 'Netherlands', flag: '🇳🇱' },
-  { code: 'pl', label: 'Poland', flag: '🇵🇱' },
-  { code: 'sg', label: 'Singapore', flag: '🇸🇬' },
-  { code: 'in', label: 'India', flag: '🇮🇳' },
-  { code: 'br', label: 'Brazil', flag: '🇧🇷' },
-  { code: 'mx', label: 'Mexico', flag: '🇲🇽' },
-  { code: 'nz', label: 'New Zealand', flag: '🇳🇿' },
-  { code: 'ch', label: 'Switzerland', flag: '🇨🇭' },
-  { code: 'at', label: 'Austria', flag: '🇦🇹' },
-  { code: 'be', label: 'Belgium', flag: '🇧🇪' },
-  { code: 'za', label: 'South Africa', flag: '🇿🇦' },
-  { code: 'ru', label: 'Russia', flag: '🇷🇺' },
-];
-
-const WORK_MODES: { value: JobSearchWorkMode; label: string }[] = [
-  { value: 'any', label: 'Any' },
-  { value: 'remote', label: 'Remote' },
-  { value: 'hybrid', label: 'Hybrid' },
-  { value: 'on-site', label: 'On-site' },
-];
-
-const POSTED_WITHIN: { value: JobSearchPostedWithin; label: string }[] = [
-  { value: 1, label: '24 hours' }, { value: 3, label: '3 days' },
-  { value: 7, label: '7 days' }, { value: 14, label: '14 days' },
-  { value: 30, label: '30 days' }, { value: 90, label: '90 days' },
-];
-
-const LOADING_STAGES = [
-  'Fetching from sources…',
-  'Deduplicating results…',
-  'Filtering ghost jobs…',
-  'Scoring against your CV…',
-  'Ranking top 10…',
-];
-
-function scoreColor(score: number): string {
-  if (score >= 80) return 'text-emerald-300 border-emerald-400/40';
-  if (score >= 60) return 'text-violet-300 border-violet-400/40';
-  if (score >= 40) return 'text-amber-300 border-amber-400/40';
-  return 'text-rose-300 border-rose-400/40';
-}
-
-function safeHref(url: string | undefined): string | undefined {
-  if (!url) return undefined;
-  try {
-    const u = new URL(url);
-    return (u.protocol === 'http:' || u.protocol === 'https:') ? url : undefined;
-  } catch { return undefined; }
-}
+import JobSearchSection from './JobSearchSection';
 
 export default function JobSearchPage() {
-  const { t } = useTheme();
   const { user, profile } = useAuth();
   const navigate = useNavigate();
-  const { entries: trackerEntries, add: addToTracker } = useApplicationTracker({ userScope: user?.id });
+  const [authChecked, setAuthChecked] = useState(false);
 
-  const [keywords, setKeywords] = useState('');
-  const [location, setLocation] = useState('');
-  const [country, setCountry] = useState<JobSearchCountry>('gb');
-  const [workMode, setWorkMode] = useState<JobSearchWorkMode>('any');
-  const [postedWithin, setPostedWithin] = useState<JobSearchPostedWithin>(30);
-  const [salaryMin, setSalaryMin] = useState<string>('');
-  const [hideGhost, setHideGhost] = useState(true);
-
-  const [loading, setLoading] = useState(false);
-  const [loadingStage, setLoadingStage] = useState(0);
-  const [error, setError] = useState<string | null>(null);
-  const [needsTopUp, setNeedsTopUp] = useState(false);
-  const [hoursToFreeReset, setHoursToFreeReset] = useState<number | undefined>();
-  const [results, setResults] = useState<ScoredJob[] | null>(null);
-  const [meta, setMeta] = useState<{
-    sources?: Record<string, number>;
-    sourceReport?: Record<string, JobSourceReport>;
-    fetched?: number;
-    deduped?: number;
-    was_free?: boolean;
-    tokenBalance?: number;
-  }>({});
-  const [expandedId, setExpandedId] = useState<string | null>(null);
-  const inFlightRef = useRef(false);
-
-  const savedKeys = useMemo(() => {
-    const s = new Set<string>();
-    for (const e of trackerEntries) {
-      s.add(`${e.company.toLowerCase()}|${e.role.toLowerCase()}`);
-    }
-    return s;
-  }, [trackerEntries]);
-
-  function isJobSaved(job: ScoredJob): boolean {
-    return savedKeys.has(`${job.company.toLowerCase()}|${job.title.toLowerCase()}`);
-  }
-
+  // Anonymous users get bounced to /register with a return path.
   useEffect(() => {
-    if (user === null) navigate('/register?return=/jobs');
+    if (user === null) {
+      navigate('/register?return=/jobs');
+    } else if (user !== undefined) {
+      setAuthChecked(true);
+    }
   }, [user, navigate]);
 
-  useEffect(() => {
-    if (!loading) { setLoadingStage(0); return; }
-    const interval = setInterval(() => {
-      setLoadingStage((s) => Math.min(s + 1, LOADING_STAGES.length - 1));
-    }, 1400);
-    return () => clearInterval(interval);
-  }, [loading]);
-
-  const visibleResults = useMemo(() => {
-    if (!results) return null;
-    if (!hideGhost) return results;
-    return results.filter((j) => j.ghostProbability < 75);
-  }, [results, hideGhost]);
-
-  const hiddenGhostCount = useMemo(() => {
-    if (!results || !hideGhost) return 0;
-    return results.filter((j) => j.ghostProbability >= 75).length;
-  }, [results, hideGhost]);
-
-  async function handleSearch() {
-    if (inFlightRef.current) return;
-    if (!keywords.trim() && !location.trim()) {
-      setError('Add at least keywords or a location to search.');
-      return;
-    }
-    inFlightRef.current = true;
-    setLoading(true);
-    setError(null);
-    setNeedsTopUp(false);
-    setHoursToFreeReset(undefined);
-    setResults(null);
-    try {
-      const res: JobSearchResponse = await searchJobs({
-        keywords: keywords.trim().slice(0, 200),
-        location: location.trim().slice(0, 100),
-        country, workMode,
-        salaryMin: salaryMin ? Number(salaryMin) : undefined,
-        postedWithin,
-      });
-      if (!res.success || !res.jobs) {
-        setError(res.error || 'Search failed. Try again.');
-        if (res.needsTopUp) setNeedsTopUp(true);
-        if (typeof res.hoursToFreeReset === 'number') setHoursToFreeReset(res.hoursToFreeReset);
-        return;
-      }
-      setLoadingStage(LOADING_STAGES.length);
-      setResults(res.jobs);
-      setMeta({
-        sources: res.sources, sourceReport: res.source_report,
-        fetched: res.fetched, deduped: res.deduped,
-        was_free: res.was_free, tokenBalance: res.token_balance,
-      });
-      if (res.jobs.length === 0 && res.message) setError(res.message);
-    } catch (err: any) {
-      setError(err?.message?.toLowerCase().includes('network') ? 'Network error — try again.' : 'Search failed. Try again.');
-    } finally {
-      setLoading(false);
-      inFlightRef.current = false;
-    }
-  }
-
-  function saveJobToTracker(job: ScoredJob) {
-    if (isJobSaved(job)) return;
-    addToTracker({
-      company: job.company, role: job.title, status: 'saved',
-      sourceUrl: safeHref(job.url), location: job.location,
-      salaryBand: job.salaryEstimate || (job.salaryMin || job.salaryMax
-        ? `${job.salaryMin ?? '?'}-${job.salaryMax ?? '?'} ${job.salaryCurrency || ''}`.trim()
-        : undefined),
-      notes: job.fitOneLiner,
-    });
-  }
-
-  function applyViaVantage(job: ScoredJob) {
-    const href = safeHref(job.url);
-    if (!href) return;
-    navigate(`/dashboard?prefillUrl=${encodeURIComponent(href)}`, {
-      state: { prefilledFromJobSearch: { title: job.title, company: job.company } },
-    });
-  }
-
-  if (!user) {
+  if (!authChecked) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: t.pageBg }} role="status" aria-live="polite">
+      <div
+        className="min-h-screen flex items-center justify-center"
+        style={{ background: 'linear-gradient(135deg, #0d0b1e 0%, #1a1635 100%)' }}
+        role="status"
+        aria-live="polite"
+      >
         <div className="text-center">
           <Loader2 className="w-6 h-6 animate-spin text-violet-400 mx-auto mb-3" aria-hidden="true" />
-          <p className={`${t.textSub} text-sm`}>
+          <p className="text-white/70 text-sm">
             {user === null ? 'Redirecting you to sign in…' : 'Checking your account…'}
           </p>
         </div>
@@ -231,295 +51,49 @@ export default function JobSearchPage() {
     );
   }
 
-  const tokensAvailable = (profile?.token_balance ?? 0) > 0;
-  const canRunScan = !loading && (keywords.trim() || location.trim()) && (tokensAvailable || !meta.was_free);
-  const isFirstVisit = !results && !meta.was_free;
-
   return (
-    <div className="min-h-screen" style={{ background: t.pageBg }}>
+    <div
+      className="min-h-screen"
+      style={{ background: 'linear-gradient(135deg, #0d0b1e 0%, #1a1635 100%)' }}
+    >
       <SEO
         title="AI Job Search — find roles that fit you"
         description="Vantage AI searches 20+ countries and scores every result against your CV. Ghost-job filtered. Salary-transparent. Save to tracker. First scan free."
         path="/jobs"
       />
-      <nav className={`${t.nav} sticky top-0 z-30 backdrop-blur`}>
+
+      {/* Top nav strip — matches Dashboard's compact header */}
+      <nav
+        className="sticky top-0 z-30 backdrop-blur border-b border-white/5"
+        style={{ background: 'rgba(13,11,30,0.92)' }}
+      >
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
-          <Link to="/" className={`flex items-center gap-2 ${t.text} font-bold tracking-tight`}>Vantage</Link>
+          <div className="flex items-center gap-4">
+            <Link to="/" className="font-bold tracking-tight text-white">Vantage</Link>
+            <Link
+              to="/dashboard"
+              className="hidden sm:inline-flex items-center gap-1 text-xs font-semibold text-violet-300 hover:text-violet-200 transition"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" aria-hidden="true" /> Back to dashboard
+            </Link>
+          </div>
           <div className="flex items-center gap-3 text-sm">
-            <Link to="/dashboard" className={`${t.textSub} hover:opacity-80`}>Dashboard</Link>
-            <Link to="/pricing" className={`${t.textSub} hover:opacity-80`}>Pricing</Link>
-            <span className={`text-xs ${t.textMuted}`}>{profile?.token_balance ?? 0} tokens</span>
+            <Link to="/dashboard" className="text-white/70 hover:text-white transition sm:hidden">Dashboard</Link>
+            <Link to="/pricing" className="text-white/70 hover:text-white transition">Pricing</Link>
+            <span className="text-xs text-white/50">{profile?.token_balance ?? 0} tokens</span>
           </div>
         </div>
       </nav>
-      <main id="main" className="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
-        <header className="mb-8 sm:mb-10">
-          <div className="flex items-center gap-2 mb-2">
-            <Briefcase className="w-5 h-5 text-violet-400" aria-hidden="true" />
-            <span className={`text-xs uppercase tracking-widest font-semibold ${t.textSub}`}>AI Job Search</span>
-          </div>
-          <h1 className={`text-3xl sm:text-5xl font-bold ${t.text} mb-3 max-w-3xl`}>
-            Find roles that actually fit you. <span className="text-violet-400">Curated, scored, ghost-filtered.</span>
-          </h1>
-          <p className={`${t.textSub} max-w-2xl text-lg`}>
-            {isFirstVisit
-              ? 'We search 20 countries plus global remote, run every result against your CV, hide the ghost jobs, and rank the top 10 by fit. Your first scan is free.'
-              : 'Multi-country search + AI scoring against your CV. Ghost-filtered. Salary-transparent. Save to tracker. Apply via Vantage.'}
-          </p>
-        </header>
 
-        <section aria-label="Search filters" className={`${t.glass} rounded-2xl p-5 md:p-6 mb-6`}>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label htmlFor="js-keywords" className="block text-xs font-semibold text-white/70 mb-1">
-                <Search className="w-3.5 h-3.5 inline mr-1" aria-hidden="true" /> Keywords (role, skills, company)
-              </label>
-              <input id="js-keywords" type="text" value={keywords}
-                onChange={(e) => setKeywords(e.target.value.slice(0, 200))}
-                placeholder="Senior PM, payments, fintech"
-                className="w-full rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/30 px-3 py-2 text-sm outline-none focus:border-violet-500/50" />
-            </div>
-            <div>
-              <label htmlFor="js-location" className="block text-xs font-semibold text-white/70 mb-1">
-                <MapPin className="w-3.5 h-3.5 inline mr-1" aria-hidden="true" /> Location
-              </label>
-              <input id="js-location" type="text" value={location}
-                onChange={(e) => setLocation(e.target.value.slice(0, 100))}
-                placeholder="London / Manchester / SF / Remote"
-                className="w-full rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/30 px-3 py-2 text-sm outline-none focus:border-violet-500/50" />
-            </div>
-            <div>
-              <label htmlFor="js-country" className="block text-xs font-semibold text-white/70 mb-1">Country</label>
-              <select id="js-country" value={country} onChange={(e) => setCountry(e.target.value as JobSearchCountry)}
-                className="w-full rounded-lg bg-white/5 border border-white/10 text-white px-3 py-2 text-sm outline-none focus:border-violet-500/50">
-                {COUNTRIES.map((c) => (<option key={c.code} value={c.code}>{c.flag} {c.label}</option>))}
-              </select>
-            </div>
-            <div>
-              <span id="js-workmode-label" className="block text-xs font-semibold text-white/70 mb-1">Work mode</span>
-              <div className="flex flex-wrap gap-2" role="group" aria-labelledby="js-workmode-label">
-                {WORK_MODES.map((m) => (
-                  <button key={m.value} type="button" onClick={() => setWorkMode(m.value)} aria-pressed={workMode === m.value}
-                    className={`inline-flex items-center justify-center min-h-[40px] px-4 py-2 rounded-full text-xs font-semibold border transition focus:outline-none focus:ring-2 focus:ring-violet-400 ${
-                      workMode === m.value
-                        ? 'bg-violet-500/15 text-violet-200 border-violet-400/40'
-                        : 'bg-white/[0.02] text-white/50 border-white/10 hover:bg-white/5'
-                    }`}>{m.label}</button>
-                ))}
-              </div>
-            </div>
-            <div>
-              <label htmlFor="js-posted" className="block text-xs font-semibold text-white/70 mb-1">Posted within</label>
-              <select id="js-posted" value={postedWithin}
-                onChange={(e) => setPostedWithin(Number(e.target.value) as JobSearchPostedWithin)}
-                className="w-full rounded-lg bg-white/5 border border-white/10 text-white px-3 py-2 text-sm outline-none focus:border-violet-500/50">
-                {POSTED_WITHIN.map((p) => (<option key={p.value} value={p.value}>Last {p.label}</option>))}
-              </select>
-            </div>
-            <div>
-              <label htmlFor="js-salary" className="block text-xs font-semibold text-white/70 mb-1">
-                Min salary <span className="text-white/40">(optional, local currency)</span>
-              </label>
-              <input id="js-salary" type="number" min={0} max={10_000_000} value={salaryMin}
-                onChange={(e) => setSalaryMin(e.target.value)} placeholder="70000"
-                className="w-full rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/30 px-3 py-2 text-sm outline-none focus:border-violet-500/50" />
-            </div>
-          </div>
-          <div className="mt-4 pt-4 border-t border-white/10 flex flex-wrap items-center justify-between gap-3">
-            <label className="inline-flex items-center gap-2 text-sm text-white/80 cursor-pointer">
-              <input type="checkbox" checked={hideGhost} onChange={(e) => setHideGhost(e.target.checked)}
-                className="rounded border-white/20 bg-white/5 text-violet-600 focus:ring-violet-500" />
-              <Ghost className="w-4 h-4 text-amber-400" aria-hidden="true" />
-              Hide likely ghost jobs (recommended)
-            </label>
-            <button type="button" onClick={handleSearch} disabled={!canRunScan} aria-busy={loading}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-bold bg-gradient-to-r from-violet-600 to-purple-600 text-white hover:from-violet-500 hover:to-purple-500 disabled:from-white/10 disabled:to-white/10 disabled:text-white/40 disabled:cursor-not-allowed transition focus:outline-none focus:ring-2 focus:ring-violet-400 min-h-[44px]">
-              {loading ? (<><Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" /> Searching…</>)
-                : !tokensAvailable && meta.was_free ? (<><Sparkles className="w-4 h-4" aria-hidden="true" /> Top up to scan</>)
-                : (<><Sparkles className="w-4 h-4" aria-hidden="true" /> {meta.was_free === false ? 'Run scan (1 token)' : 'Run scan (free)'}</>)}
-            </button>
-          </div>
-        </section>
+      <main id="main" className="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
+        <JobSearchSection embedded={false} />
 
-        <AnimatePresence>
-          {loading && (
-            <motion.section initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 8 }}
-              role="status" aria-live="polite" className={`${t.glass} rounded-2xl p-6 mb-6`}>
-              <div className="space-y-2">
-                {LOADING_STAGES.map((s, i) => (
-                  <div key={s} className={`flex items-center gap-2 text-sm transition-opacity ${i <= loadingStage ? 'opacity-100' : 'opacity-30'}`}>
-                    {i < loadingStage ? <span className="text-emerald-400">✓</span>
-                      : i === loadingStage ? <Loader2 className="w-3.5 h-3.5 animate-spin text-violet-400" aria-hidden="true" />
-                      : <span className="text-white/30">•</span>}
-                    <span className={i <= loadingStage ? t.text : t.textMuted}>{s}</span>
-                  </div>
-                ))}
-              </div>
-            </motion.section>
-          )}
-        </AnimatePresence>
-
-        {error && !loading && (
-          <div role="alert" className="mb-6 p-4 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-200 text-sm flex items-start gap-3">
-            <AlertTriangle className="w-4 h-4 flex-shrink-0 mt-0.5" aria-hidden="true" />
-            <div className="flex-1">
-              <p>{error}</p>
-              {needsTopUp && (
-                <div className="mt-2 flex items-center gap-2 flex-wrap">
-                  <Link to="/pricing" className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-bold bg-violet-600 hover:bg-violet-500 text-white transition min-h-[36px]">
-                    Top up tokens →
-                  </Link>
-                  {typeof hoursToFreeReset === 'number' && hoursToFreeReset > 0 && (
-                    <span className="text-xs text-rose-200/80">…or your free daily scan resets in {hoursToFreeReset}h.</span>
-                  )}
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
-        {meta.sourceReport && meta.sourceReport.adzuna?.state === 'not-configured' && (
-          <div className="mb-6 p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-200 text-xs flex items-start gap-2">
-            <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" aria-hidden="true" />
-            <p>Multi-country search (Adzuna) is not configured. Showing global remote results only.</p>
-          </div>
-        )}
-
-        {visibleResults && !loading && (
-          <section aria-label="Search results">
-            <div className="flex items-center justify-between flex-wrap gap-3 mb-4 text-xs">
-              <p className={t.textMuted}>
-                {meta.fetched ?? 0} fetched · {meta.deduped ?? 0} deduplicated · top {visibleResults.length} curated
-                {hiddenGhostCount > 0 && <> · <button type="button" onClick={() => setHideGhost(false)} className="underline hover:text-amber-300">{hiddenGhostCount} ghost hidden</button></>}
-              </p>
-              <p className={t.textMuted}>
-                {meta.was_free ? <span className="text-emerald-400 font-semibold">Free scan used</span> : <span>1 token spent · {meta.tokenBalance ?? 0} left</span>}
-              </p>
-            </div>
-            {visibleResults.length === 0 ? (
-              <div className={`${t.glass} rounded-2xl p-8 text-center`}>
-                <p className={`${t.textSub}`}>No matches. Try relaxing keywords or unchecking the ghost filter.</p>
-              </div>
-            ) : (
-              <ul className="space-y-3">
-                <AnimatePresence initial={true}>
-                  {visibleResults.map((job, idx) => {
-                    const isExpanded = expandedId === job.id;
-                    const isSaved = isJobSaved(job);
-                    const href = safeHref(job.url);
-                    const ghostHigh = job.ghostProbability >= 75;
-                    const ghostMid = job.ghostProbability >= 50 && job.ghostProbability < 75;
-                    return (
-                      <motion.li key={job.id} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, height: 0 }}
-                        transition={{ delay: idx * 0.04 }} className={`${t.glass} rounded-2xl overflow-hidden`}>
-                        <div className="p-4 sm:p-5">
-                          <div className="flex items-start gap-4 flex-wrap sm:flex-nowrap">
-                            <div role="meter" aria-label={`Match score ${job.matchScore} out of 100`}
-                              aria-valuenow={job.matchScore} aria-valuemin={0} aria-valuemax={100}
-                              className={`flex-shrink-0 w-14 h-14 rounded-full border-2 flex items-center justify-center font-bold ${scoreColor(job.matchScore)}`}>
-                              {job.matchScore}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-baseline flex-wrap gap-x-2">
-                                <h3 className={`text-lg font-bold ${t.text} truncate`} title={job.title}>{job.title}</h3>
-                                <span className={`text-sm ${t.textSub}`}>at {job.company}</span>
-                              </div>
-                              <p className={`text-xs ${t.textMuted} mt-0.5`}>
-                                {job.location}
-                                {(job.salaryMin || job.salaryMax || job.salaryEstimate) && (
-                                  <> · {job.salaryMin || job.salaryMax
-                                      ? `${job.salaryMin ?? '?'}-${job.salaryMax ?? '?'} ${job.salaryCurrency || ''}`.trim()
-                                      : <span className="text-violet-300">{job.salaryEstimate}</span>}</>
-                                )}
-                                {job.postedAt && <> · {new Date(job.postedAt).toLocaleDateString()}</>}
-                                {' · '}<span className="text-white/40">{job.source}</span>
-                              </p>
-                              <p className={`text-sm mt-2 ${t.textSub}`}>{job.fitOneLiner}</p>
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-2 mt-4 flex-wrap">
-                            <button type="button" onClick={() => setExpandedId(isExpanded ? null : job.id)}
-                              aria-expanded={isExpanded} aria-controls={`job-body-${job.id}`}
-                              className="inline-flex items-center gap-1 px-3.5 py-2 rounded-md text-xs font-semibold bg-white/5 hover:bg-white/10 text-white/80 transition focus:outline-none focus:ring-2 focus:ring-violet-400 min-h-[44px]">
-                              {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
-                              {isExpanded ? 'Less' : 'More'}
-                            </button>
-                            <button type="button" onClick={() => saveJobToTracker(job)} disabled={isSaved}
-                              className={`inline-flex items-center gap-1 px-3.5 py-2 rounded-md text-xs font-semibold transition focus:outline-none focus:ring-2 focus:ring-violet-400 min-h-[44px] ${
-                                isSaved ? 'bg-emerald-500/15 text-emerald-300 cursor-default'
-                                  : 'bg-white/5 hover:bg-white/10 text-white/80'
-                              }`}
-                              aria-label={isSaved ? 'Already saved to tracker' : `Save ${job.company} ${job.title} to tracker`}>
-                              <Bookmark className="w-3.5 h-3.5" aria-hidden="true" />
-                              {isSaved ? 'Saved' : 'Save to tracker'}
-                            </button>
-                            <button type="button" onClick={() => applyViaVantage(job)} disabled={!href}
-                              className="inline-flex items-center gap-1 px-3.5 py-2 rounded-md text-xs font-bold bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white transition disabled:opacity-40 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-violet-400 min-h-[44px]">
-                              <Sparkles className="w-3.5 h-3.5" aria-hidden="true" /> Apply via Vantage
-                            </button>
-                            {href && (
-                              <a href={href} target="_blank" rel="noopener noreferrer nofollow"
-                                className="inline-flex items-center gap-1 px-3.5 py-2 rounded-md text-xs font-semibold text-white/70 hover:text-white transition focus:outline-none focus:ring-2 focus:ring-violet-400 min-h-[44px]">
-                                <ExternalLink className="w-3.5 h-3.5" aria-hidden="true" /> Original
-                              </a>
-                            )}
-                            {(ghostHigh || ghostMid) && (
-                              <span role="img" aria-label={`${ghostHigh ? 'Likely ghost job' : 'Possible ghost job'}, ${job.ghostProbability}% probability`}
-                                className={`ml-auto inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-bold border ${
-                                  ghostHigh ? 'bg-rose-500/15 text-rose-300 border-rose-500/40'
-                                    : 'bg-amber-500/15 text-amber-300 border-amber-500/30'
-                                }`}>
-                                <Ghost className="w-3 h-3" aria-hidden="true" /> {ghostHigh ? 'Likely ghost' : `${job.ghostProbability}% ghost`}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                        <AnimatePresence>
-                          {isExpanded && (
-                            <motion.div id={`job-body-${job.id}`} initial={{ height: 0, opacity: 0 }}
-                              animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}
-                              className="overflow-hidden border-t border-white/10">
-                              <div className="p-4 sm:p-5 space-y-4">
-                                <div className="grid sm:grid-cols-3 gap-3 text-xs">
-                                  <div className="flex items-center gap-2"><Target className="w-4 h-4 text-violet-400" aria-hidden="true" /><span className={t.textSub}>ATS pass: <strong className={t.text}>{job.atsPassLikelihood}</strong></span></div>
-                                  <div className="flex items-center gap-2"><Clock className="w-4 h-4 text-violet-400" aria-hidden="true" /><span className={t.textSub}>{job.timeToApply}</span></div>
-                                  <div className="flex items-center gap-2"><Ghost className="w-4 h-4 text-violet-400" aria-hidden="true" /><span className={t.textSub}>Ghost probability: <strong className={t.text}>{job.ghostProbability}%</strong></span></div>
-                                </div>
-                                {job.skillMatches.length > 0 && (
-                                  <div>
-                                    <p className={`text-[10px] font-bold uppercase tracking-widest ${t.textMuted} mb-1.5`}>Skill matches</p>
-                                    <div className="flex flex-wrap gap-1.5">{job.skillMatches.map((s, i) => (<span key={i} className="px-2 py-0.5 rounded-full text-xs bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">{s}</span>))}</div>
-                                  </div>
-                                )}
-                                {job.skillGaps.length > 0 && (
-                                  <div>
-                                    <p className={`text-[10px] font-bold uppercase tracking-widest ${t.textMuted} mb-1.5`}>Skill gaps</p>
-                                    <div className="flex flex-wrap gap-1.5">{job.skillGaps.map((s, i) => (<span key={i} className="px-2 py-0.5 rounded-full text-xs bg-amber-500/15 text-amber-300 border border-amber-500/30">{s}</span>))}</div>
-                                  </div>
-                                )}
-                                <div>
-                                  <p className={`text-[10px] font-bold uppercase tracking-widest ${t.textMuted} mb-1.5`}>Description (excerpt)</p>
-                                  <p className={`text-sm ${t.textSub} whitespace-pre-wrap line-clamp-6`}>{job.description}</p>
-                                </div>
-                              </div>
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                      </motion.li>
-                    );
-                  })}
-                </AnimatePresence>
-              </ul>
-            )}
-          </section>
-        )}
-
-        {!loading && !results && !error && (
-          <div className={`${t.glass} rounded-2xl p-8 text-center`}>
-            <Filter className="w-8 h-8 text-violet-400 mx-auto mb-3" aria-hidden="true" />
-            <p className={`${t.textSub}`}>Set your filters and tap <strong className={t.text}>Run scan</strong>. Your first scan today is free.</p>
-          </div>
-        )}
+        {/* Footer hint pointing back to the integrated Dashboard surface */}
+        <p className="text-center text-xs text-white/40 mt-8">
+          AI Job Search is also available directly inside your{' '}
+          <Link to="/dashboard" className="underline hover:text-violet-300">Dashboard</Link>{' '}
+          as an expandable section.
+        </p>
       </main>
     </div>
   );

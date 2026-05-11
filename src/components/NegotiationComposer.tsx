@@ -633,9 +633,15 @@ export default function NegotiationComposer({ defaultCompanyName, defaultRoleNam
                 </div>
               )}
 
-              {/* Basics */}
+              {/* ── TIER 1: ESSENTIALS (always visible) ────────────────
+                  Only the fields the AI actually needs to produce a
+                  usable brief. User feedback 2026-05-11: previous full-
+                  form layout was overwhelming, especially for users
+                  with less negotiation experience. Progressive disclosure
+                  pattern: minimum required visible, refinement details
+                  in expandable groups below. */}
               <fieldset className="space-y-3">
-                <legend className="text-xs font-bold uppercase tracking-widest text-white/70 mb-1">Basics</legend>
+                <legend className="text-xs font-bold uppercase tracking-widest text-violet-300 mb-1">Essentials <span className="text-white/40 normal-case font-normal">(needed to generate)</span></legend>
                 <div className="grid sm:grid-cols-2 gap-3">
                   <div>
                     <label htmlFor="neg-company" className="block text-xs font-semibold text-white/70 mb-1">Company *</label>
@@ -675,31 +681,6 @@ export default function NegotiationComposer({ defaultCompanyName, defaultRoleNam
                     />
                   </div>
                   <div>
-                    <label htmlFor="neg-level" className="block text-xs font-semibold text-white/70 mb-1">Level title <span className="text-white/40">(optional)</span></label>
-                    <input
-                      id="neg-level"
-                      type="text"
-                      value={levelTitle}
-                      onChange={(e) => setLevelTitle(e.target.value)}
-                      maxLength={80}
-                      placeholder="L5 / Staff / Principal"
-                      className="w-full rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/30 px-3 py-2 text-sm outline-none focus:border-violet-500/50"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="neg-years" className="block text-xs font-semibold text-white/70 mb-1">Years of experience <span className="text-white/40">(optional, calibrates warnings)</span></label>
-                    <input
-                      id="neg-years"
-                      type="number"
-                      min={0}
-                      max={80}
-                      value={yearsExperience}
-                      onChange={(e) => setYearsExperience(e.target.value)}
-                      placeholder="8"
-                      className="w-full rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/30 px-3 py-2 text-sm outline-none focus:border-violet-500/50"
-                    />
-                  </div>
-                  <div>
                     <label htmlFor="neg-currency" className="block text-xs font-semibold text-white/70 mb-1">Currency *</label>
                     <select
                       id="neg-currency"
@@ -712,20 +693,8 @@ export default function NegotiationComposer({ defaultCompanyName, defaultRoleNam
                       <option value="eur">EUR (€)</option>
                     </select>
                   </div>
-                </div>
-              </fieldset>
-
-              {/* Offer + targets. Mobile-first grid (single col under sm) to
-                  prevent label truncation at 375px viewport flagged by UX
-                  review 2026-05-11. Every input now has htmlFor/id paired
-                  (17 missing pairs were the single biggest a11y miss). */}
-              <fieldset className="space-y-3">
-                <legend className="text-xs font-bold uppercase tracking-widest text-white/70 mb-1">Offer + your targets</legend>
-                <p id="neg-asks-explainer" className="text-xs text-white/50 -mt-2">Each line: leave blank if not negotiating that item. You need at least one target above offered to generate.</p>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label htmlFor="neg-base-offered" className="block text-xs font-semibold text-white/70 mb-1">Base offered *</label>
+                    <label htmlFor="neg-base-offered" className="block text-xs font-semibold text-white/70 mb-1">Base salary offered *</label>
                     <input
                       id="neg-base-offered"
                       type="number"
@@ -740,7 +709,7 @@ export default function NegotiationComposer({ defaultCompanyName, defaultRoleNam
                   </div>
                   <div>
                     <label htmlFor="neg-base-target" className="block text-xs font-semibold text-white/70 mb-1">
-                      Base target *
+                      Base salary target *
                       {baseDeltaPct !== null && <span className="text-emerald-400 font-mono ml-1" aria-label={`asking ${baseDeltaPct} percent more than the offer`}>(+{baseDeltaPct}% vs offer)</span>}
                     </label>
                     <input
@@ -755,7 +724,33 @@ export default function NegotiationComposer({ defaultCompanyName, defaultRoleNam
                       className="w-full rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/30 px-3 py-2 text-sm outline-none focus:border-violet-500/50"
                     />
                   </div>
+                </div>
+                <p
+                  id="neg-asks-explainer"
+                  className="text-xs text-white/50 mt-1"
+                >
+                  Just need company, role, your name, currency, and the base offered vs target.
+                </p>
+                <p
+                  id="neg-ask-hint"
+                  role="status"
+                  className={`text-xs ${askCount === 0 ? 'text-amber-300' : 'text-emerald-400/90'}`}
+                >
+                  {askCount === 0
+                    ? '⚠ Target must be above offered to generate. Try a 5–20% bump on base.'
+                    : `${askCount} ${askCount === 1 ? 'ask' : 'asks'} detected. ${askCount === 1 ? 'Email anchors on the base ask.' : `Email anchors on the largest delta; phone script covers all ${askCount}.`}`}
+                </p>
+              </fieldset>
 
+              {/* ── TIER 2: ADDITIONAL COMP ITEMS (optional, collapsed) ──
+                  Signing / RSU / Bonus / PTO / Remote — all the
+                  multi-component negotiation items. Most users will
+                  have ONE or two of these to negotiate, not all. */}
+              <details className="rounded-lg bg-white/[0.03] border border-white/10 p-3">
+                <summary className="text-sm font-semibold text-white/80 cursor-pointer select-none">
+                  Negotiating more than base? <span className="text-white/40 font-normal">(signing, RSU, bonus, PTO, remote)</span>
+                </summary>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
                   <div>
                     <label htmlFor="neg-sign-offered" className="block text-xs font-semibold text-white/70 mb-1">Signing offered</label>
                     <input id="neg-sign-offered" type="number" min={0} inputMode="decimal" value={signOffered} onChange={(e) => setSignOffered(e.target.value)} placeholder="0" className="w-full rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/30 px-3 py-2 text-sm outline-none focus:border-violet-500/50" />
@@ -764,7 +759,6 @@ export default function NegotiationComposer({ defaultCompanyName, defaultRoleNam
                     <label htmlFor="neg-sign-target" className="block text-xs font-semibold text-white/70 mb-1">Signing target</label>
                     <input id="neg-sign-target" type="number" min={0} inputMode="decimal" value={signTarget} onChange={(e) => setSignTarget(e.target.value)} placeholder={`${symbol}15,000`} className="w-full rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/30 px-3 py-2 text-sm outline-none focus:border-violet-500/50" />
                   </div>
-
                   <div>
                     <label htmlFor="neg-rsu-offered" className="block text-xs font-semibold text-white/70 mb-1">RSU offered (4yr total)</label>
                     <input id="neg-rsu-offered" type="number" min={0} inputMode="decimal" value={rsuOffered} onChange={(e) => setRsuOffered(e.target.value)} placeholder="0" className="w-full rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/30 px-3 py-2 text-sm outline-none focus:border-violet-500/50" />
@@ -773,7 +767,6 @@ export default function NegotiationComposer({ defaultCompanyName, defaultRoleNam
                     <label htmlFor="neg-rsu-target" className="block text-xs font-semibold text-white/70 mb-1">RSU target (4yr total)</label>
                     <input id="neg-rsu-target" type="number" min={0} inputMode="decimal" value={rsuTarget} onChange={(e) => setRsuTarget(e.target.value)} placeholder={`${symbol}80,000`} className="w-full rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/30 px-3 py-2 text-sm outline-none focus:border-violet-500/50" />
                   </div>
-
                   <div>
                     <label htmlFor="neg-bonus-offered" className="block text-xs font-semibold text-white/70 mb-1">Bonus % offered</label>
                     <input id="neg-bonus-offered" type="number" min={0} max={100} inputMode="decimal" value={bonusPctOffered} onChange={(e) => setBonusPctOffered(e.target.value)} placeholder="0" className="w-full rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/30 px-3 py-2 text-sm outline-none focus:border-violet-500/50" />
@@ -782,7 +775,6 @@ export default function NegotiationComposer({ defaultCompanyName, defaultRoleNam
                     <label htmlFor="neg-bonus-target" className="block text-xs font-semibold text-white/70 mb-1">Bonus % target</label>
                     <input id="neg-bonus-target" type="number" min={0} max={100} inputMode="decimal" value={bonusPctTarget} onChange={(e) => setBonusPctTarget(e.target.value)} placeholder="15" className="w-full rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/30 px-3 py-2 text-sm outline-none focus:border-violet-500/50" />
                   </div>
-
                   <div>
                     <label htmlFor="neg-pto-offered" className="block text-xs font-semibold text-white/70 mb-1">PTO offered (days)</label>
                     <input id="neg-pto-offered" type="number" min={0} max={365} inputMode="numeric" value={ptoOffered} onChange={(e) => setPtoOffered(e.target.value)} placeholder="25" className="w-full rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/30 px-3 py-2 text-sm outline-none focus:border-violet-500/50" />
@@ -791,7 +783,6 @@ export default function NegotiationComposer({ defaultCompanyName, defaultRoleNam
                     <label htmlFor="neg-pto-target" className="block text-xs font-semibold text-white/70 mb-1">PTO target (days)</label>
                     <input id="neg-pto-target" type="number" min={0} max={365} inputMode="numeric" value={ptoTarget} onChange={(e) => setPtoTarget(e.target.value)} placeholder="30" className="w-full rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/30 px-3 py-2 text-sm outline-none focus:border-violet-500/50" />
                   </div>
-
                   <div>
                     <label htmlFor="neg-remote-offered" className="block text-xs font-semibold text-white/70 mb-1">Remote policy offered</label>
                     <input id="neg-remote-offered" type="text" maxLength={60} value={remotePolicyOffered} onChange={(e) => setRemotePolicyOffered(e.target.value)} placeholder="3 days in office" className="w-full rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/30 px-3 py-2 text-sm outline-none focus:border-violet-500/50" />
@@ -801,24 +792,50 @@ export default function NegotiationComposer({ defaultCompanyName, defaultRoleNam
                     <input id="neg-remote-target" type="text" maxLength={60} value={remotePolicyTarget} onChange={(e) => setRemotePolicyTarget(e.target.value)} placeholder="Fully remote" className="w-full rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/30 px-3 py-2 text-sm outline-none focus:border-violet-500/50" />
                   </div>
                 </div>
+                <p className="text-[10px] text-white/40 mt-2">Leave blank if you're not negotiating that line. Adding fields here makes the email + phone script cover more ground.</p>
+              </details>
 
-                {/* askCount status — role="status" so changes (0 → 1) are
-                    announced to screen readers when fields update. id is
-                    referenced by the Generate button via aria-describedby. */}
-                <p
-                  id="neg-ask-hint"
-                  role="status"
-                  className={`text-xs ${askCount === 0 ? 'text-amber-300' : 'text-white/50'}`}
-                >
-                  {askCount === 0
-                    ? '⚠ No asks yet — at least one target must be above its offered value.'
-                    : `${askCount} ${askCount === 1 ? 'ask' : 'asks'} detected. ${askCount === 1 ? 'Email will anchor on it; phone script will be tight.' : `Email will anchor on the largest delta; phone script will cover all ${askCount}.`}`}
-                </p>
-              </fieldset>
-
-              {/* Competing offer (collapsed by default) */}
+              {/* ── TIER 3: SENIORITY CALIBRATION (optional, collapsed) ──
+                  Helps the AI calibrate warning thresholds. A 25% base
+                  ask is wild for an L4 but normal for a Staff exit. */}
               <details className="rounded-lg bg-white/[0.03] border border-white/10 p-3">
-                <summary className="text-sm font-semibold text-white/80 cursor-pointer select-none">Competing offer (boosts leverage if real)</summary>
+                <summary className="text-sm font-semibold text-white/80 cursor-pointer select-none">
+                  Your seniority <span className="text-white/40 font-normal">(calibrates AI warnings)</span>
+                </summary>
+                <div className="grid sm:grid-cols-2 gap-3 mt-3">
+                  <div>
+                    <label htmlFor="neg-level" className="block text-xs font-semibold text-white/70 mb-1">Level title</label>
+                    <input
+                      id="neg-level"
+                      type="text"
+                      value={levelTitle}
+                      onChange={(e) => setLevelTitle(e.target.value)}
+                      maxLength={80}
+                      placeholder="L5 / Staff / Principal"
+                      className="w-full rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/30 px-3 py-2 text-sm outline-none focus:border-violet-500/50"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="neg-years" className="block text-xs font-semibold text-white/70 mb-1">Years of experience</label>
+                    <input
+                      id="neg-years"
+                      type="number"
+                      min={0}
+                      max={80}
+                      value={yearsExperience}
+                      onChange={(e) => setYearsExperience(e.target.value)}
+                      placeholder="8"
+                      className="w-full rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/30 px-3 py-2 text-sm outline-none focus:border-violet-500/50"
+                    />
+                  </div>
+                </div>
+              </details>
+
+              {/* ── TIER 4: LEVERAGE — COMPETING OFFER (collapsed) ──── */}
+              <details className="rounded-lg bg-white/[0.03] border border-white/10 p-3">
+                <summary className="text-sm font-semibold text-white/80 cursor-pointer select-none">
+                  Competing offer <span className="text-white/40 font-normal">(boosts leverage if real)</span>
+                </summary>
                 <div className="space-y-3 mt-3">
                   <label htmlFor="neg-has-competing" className="inline-flex items-center gap-2 text-sm text-white/80 cursor-pointer">
                     <input
@@ -860,44 +877,46 @@ export default function NegotiationComposer({ defaultCompanyName, defaultRoleNam
                 </div>
               </details>
 
-              {/* Channel + tone + recipient */}
-              <fieldset className="space-y-3">
-                <legend className="text-xs font-bold uppercase tracking-widest text-white/70 mb-1">Style</legend>
-                <div className="grid sm:grid-cols-2 gap-3">
-                  <div>
-                    <label htmlFor="neg-channel" className="block text-xs font-semibold text-white/70 mb-1">Preferred channel</label>
-                    <select
-                      id="neg-channel"
-                      value={preferredChannel}
-                      onChange={(e) => setPreferredChannel(e.target.value as Channel)}
-                      className="w-full rounded-lg bg-white/5 border border-white/10 text-white px-3 py-2 text-sm outline-none focus:border-violet-500/50"
-                    >
-                      <option value="email">Email (anchor + soft-handoff to call)</option>
-                      <option value="phone">Phone / video call</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label htmlFor="neg-tone" className="block text-xs font-semibold text-white/70 mb-1">Tone</label>
-                    <select
-                      id="neg-tone"
-                      value={tone}
-                      onChange={(e) => setTone(e.target.value as Tone)}
-                      className="w-full rounded-lg bg-white/5 border border-white/10 text-white px-3 py-2 text-sm outline-none focus:border-violet-500/50"
-                    >
-                      <option value="collaborative">Collaborative (partnership framing)</option>
-                      <option value="firm">Firm (transactional, direct)</option>
-                    </select>
-                  </div>
-                </div>
-                <details className="rounded-lg bg-white/[0.03] border border-white/10 p-3">
-                  <summary className="text-sm font-semibold text-white/80 cursor-pointer select-none">Recipient (optional)</summary>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
+              {/* ── TIER 5: STYLE — CHANNEL + TONE + RECIPIENT + CONTEXT ──
+                  All "how it sounds" / "who it's for" details. */}
+              <details className="rounded-lg bg-white/[0.03] border border-white/10 p-3">
+                <summary className="text-sm font-semibold text-white/80 cursor-pointer select-none">
+                  Email style + recipient <span className="text-white/40 font-normal">(channel, tone, who to address)</span>
+                </summary>
+                <div className="space-y-3 mt-3">
+                  <div className="grid sm:grid-cols-2 gap-3">
                     <div>
-                      <label htmlFor="neg-recipient-name" className="block text-xs font-semibold text-white/70 mb-1">Recipient name</label>
+                      <label htmlFor="neg-channel" className="block text-xs font-semibold text-white/70 mb-1">Preferred channel</label>
+                      <select
+                        id="neg-channel"
+                        value={preferredChannel}
+                        onChange={(e) => setPreferredChannel(e.target.value as Channel)}
+                        className="w-full rounded-lg bg-white/5 border border-white/10 text-white px-3 py-2 text-sm outline-none focus:border-violet-500/50"
+                      >
+                        <option value="email">Email (anchor + soft-handoff to call)</option>
+                        <option value="phone">Phone / video call</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label htmlFor="neg-tone" className="block text-xs font-semibold text-white/70 mb-1">Tone</label>
+                      <select
+                        id="neg-tone"
+                        value={tone}
+                        onChange={(e) => setTone(e.target.value as Tone)}
+                        className="w-full rounded-lg bg-white/5 border border-white/10 text-white px-3 py-2 text-sm outline-none focus:border-violet-500/50"
+                      >
+                        <option value="collaborative">Collaborative (partnership framing)</option>
+                        <option value="firm">Firm (transactional, direct)</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div className="grid sm:grid-cols-2 gap-3">
+                    <div>
+                      <label htmlFor="neg-recipient-name" className="block text-xs font-semibold text-white/70 mb-1">Recipient name (optional)</label>
                       <input id="neg-recipient-name" type="text" maxLength={80} value={recipientName} onChange={(e) => setRecipientName(e.target.value)} placeholder="Sarah Chen" className="w-full rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/30 px-3 py-2 text-sm outline-none focus:border-violet-500/50" />
                     </div>
                     <div>
-                      <label htmlFor="neg-recipient-role" className="block text-xs font-semibold text-white/70 mb-1">Their role</label>
+                      <label htmlFor="neg-recipient-role" className="block text-xs font-semibold text-white/70 mb-1">Their role (optional)</label>
                       <select id="neg-recipient-role" value={recipientRole} onChange={(e) => setRecipientRole(e.target.value as RecipientRole | '')} className="w-full rounded-lg bg-white/5 border border-white/10 text-white px-3 py-2 text-sm outline-none focus:border-violet-500/50">
                         <option value="">— Choose —</option>
                         <option value="recruiter">Recruiter</option>
@@ -907,26 +926,30 @@ export default function NegotiationComposer({ defaultCompanyName, defaultRoleNam
                       </select>
                     </div>
                   </div>
-                </details>
-                <details className="rounded-lg bg-white/[0.03] border border-white/10 p-3">
-                  <summary className="text-sm font-semibold text-white/80 cursor-pointer select-none">Additional context (optional)</summary>
-                  <div className="mt-3">
-                    <label htmlFor="neg-additional" className="block text-xs font-semibold text-white/70 mb-1">Anything else worth knowing <span className="text-white/40">(max 500 chars)</span></label>
-                    <textarea
-                      id="neg-additional"
-                      rows={3}
-                      value={additionalContext}
-                      onChange={(e) => setAdditionalContext(e.target.value.slice(0, 500))}
-                      placeholder="e.g. The recruiter mentioned they have flex on signing but not base. I want to stay in the same city, so no relocation needed."
-                      aria-describedby="neg-additional-hint"
-                      className="w-full rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/30 px-3 py-2 text-sm outline-none focus:border-violet-500/50 resize-y"
-                    />
-                    <p id="neg-additional-hint" className="text-[10px] text-white/40 mt-1">
-                      Saved to this browser for 7 days as part of the draft. Don't paste account numbers or other sensitive personal info.
-                    </p>
-                  </div>
-                </details>
-              </fieldset>
+                </div>
+              </details>
+
+              {/* ── TIER 6: ADDITIONAL FREE-TEXT CONTEXT (collapsed) ── */}
+              <details className="rounded-lg bg-white/[0.03] border border-white/10 p-3">
+                <summary className="text-sm font-semibold text-white/80 cursor-pointer select-none">
+                  Anything else worth knowing? <span className="text-white/40 font-normal">(optional)</span>
+                </summary>
+                <div className="mt-3">
+                  <label htmlFor="neg-additional" className="block text-xs font-semibold text-white/70 mb-1">Free text <span className="text-white/40">(max 500 chars)</span></label>
+                  <textarea
+                    id="neg-additional"
+                    rows={3}
+                    value={additionalContext}
+                    onChange={(e) => setAdditionalContext(e.target.value.slice(0, 500))}
+                    placeholder="e.g. The recruiter mentioned they have flex on signing but not base. I want to stay in the same city, so no relocation needed."
+                    aria-describedby="neg-additional-hint"
+                    className="w-full rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/30 px-3 py-2 text-sm outline-none focus:border-violet-500/50 resize-y"
+                  />
+                  <p id="neg-additional-hint" className="text-[10px] text-white/40 mt-1">
+                    Saved to this browser for 7 days as part of the draft. Don't paste account numbers or other sensitive personal info.
+                  </p>
+                </div>
+              </details>
 
               {/* Submit */}
               <div className="flex flex-wrap items-center justify-end gap-3 pt-2">

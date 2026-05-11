@@ -5,7 +5,7 @@ import {
   Upload, Link as LinkIcon, FileText, Loader2, Sparkles, ChevronRight,
   LogOut, CreditCard, Zap, Crown, Star, Settings, Check,
   Mic, BookOpen, Lock, RefreshCw, ClipboardPaste, Type,
-  Twitter, Linkedin, Copy, AlertTriangle, Mail, DollarSign, Download,
+  Twitter, Linkedin, Copy, AlertTriangle, Mail, DollarSign, Download, Briefcase,
 } from 'lucide-react';
 import { useAuth } from '../App';
 import { useCurrency } from '../contexts/CurrencyContext';
@@ -27,6 +27,7 @@ const LiveDemoReel = React.lazy(() => import('./LiveDemoReel'));
 const FollowupComposer = React.lazy(() => import('./FollowupComposer'));
 const NegotiationComposer = React.lazy(() => import('./NegotiationComposer'));
 const ApplicationTracker = React.lazy(() => import('./ApplicationTracker'));
+const JobSearchSection = React.lazy(() => import('./JobSearchSection'));
 
 /**
  * ProcessingStages — animated pipeline indicator shown during the 60-90s
@@ -371,6 +372,11 @@ export default function Dashboard() {
   // loaded so the modal + its form code don't bloat the initial Dashboard
   // bundle until the user actually wants to compose a follow-up.
   const [showFollowup, setShowFollowup] = useState(false);
+  // AI Job Search — expandable inline section inside Dashboard.
+  // User feedback 2026-05-11: should be a dropdown/option WITHIN
+  // Dashboard, not a separate page. Standalone /jobs route still
+  // exists for deep-link/SEO but the primary surface is here.
+  const [showJobSearch, setShowJobSearch] = useState(false);
   // AI Job Search handoff banner.
   const location = useLocation();
   const prefilledFromJobSearch = (location.state as any)?.prefilledFromJobSearch as
@@ -1919,12 +1925,60 @@ export default function Dashboard() {
                 </p>
               </div>
 
+              {/* AI Job Search — expandable inline section.
+                  Per user feedback 2026-05-11: this is the primary
+                  surface for the feature. Standalone /jobs route still
+                  exists for deep-link/SEO but Dashboard is where users
+                  naturally flow from prep → search → save → analyze.
+                  Lazy-loaded — chunk only arrives if user expands. */}
+              <div className="p-6 rounded-2xl bg-white/5 border border-white/10">
+                <div className="flex items-center justify-between flex-wrap gap-3">
+                  <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                    <Briefcase className="w-5 h-5 text-violet-400" />
+                    AI Job Search
+                    <span className="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 text-xs font-bold ml-2">New</span>
+                  </h3>
+                  <button
+                    onClick={() => setShowJobSearch((v) => !v)}
+                    aria-expanded={showJobSearch}
+                    aria-controls="dashboard-jobsearch-panel"
+                    className="px-4 py-2 rounded-lg bg-gradient-to-r from-violet-600 to-purple-600 text-white font-semibold text-sm hover:from-violet-500 hover:to-purple-500 transition-all flex items-center gap-2 min-h-[44px]"
+                  >
+                    {showJobSearch ? (
+                      <><ChevronRight className="w-4 h-4 rotate-90" /> Hide search</>
+                    ) : (
+                      <><Sparkles className="w-4 h-4" /> Find new jobs</>
+                    )}
+                  </button>
+                </div>
+                <p className="text-white/60 text-sm mt-2">
+                  Search 20 countries + global remote, AI-scored against your CV, ghost-filtered, salary-transparent. <strong className="text-white/80">First scan today is free</strong>, then 1 token per pack of 10. Save results to your tracker below or click "Apply via Vantage" to drop the JD URL straight into the analyzer.
+                </p>
+                <AnimatePresence>
+                  {showJobSearch && (
+                    <motion.div
+                      id="dashboard-jobsearch-panel"
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      className="overflow-hidden mt-5"
+                    >
+                      <React.Suspense fallback={
+                        <div className="p-6 text-center text-white/50 text-sm flex items-center justify-center gap-2">
+                          <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" />
+                          Loading search…
+                        </div>
+                      }>
+                        <JobSearchSection embedded={true} />
+                      </React.Suspense>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
               {/* Application Tracker — local CRM for jobs the user is
                   running. Pure client-side localStorage, user-scoped,
-                  swept on logout. Companion to the upcoming job-search
-                  feature (jobs saved from search will feed into here).
-                  Lazy-loaded so the panel chunk only arrives when this
-                  Dashboard view actually renders. */}
+                  swept on logout. */}
               <React.Suspense fallback={null}>
                 <ApplicationTracker userScope={user?.id} />
               </React.Suspense>
