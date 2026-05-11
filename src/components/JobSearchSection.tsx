@@ -32,6 +32,7 @@ import {
   type JobSourceReport,
 } from '../services/api';
 import { useApplicationTracker } from '../lib/useApplicationTracker';
+import { useFormDraft } from '../lib/useFormDraft';
 
 const COUNTRIES: { code: JobSearchCountry; label: string; flag: string }[] = [
   { code: 'gb', label: 'United Kingdom', flag: '🇬🇧' },
@@ -134,6 +135,47 @@ export default function JobSearchSection({ embedded = false, className = '' }: P
   const [postedWithin, setPostedWithin] = useState<JobSearchPostedWithin>(30);
   const [salaryMin, setSalaryMin] = useState<string>('');
   const [hideGhost, setHideGhost] = useState(true);
+
+  // Persist the search-filter inputs (keywords/location/country/workMode/
+  // postedWithin/salaryMin) per-user across navigations so repeat scans
+  // don't require re-typing. Auto-saved 500ms after the last keystroke,
+  // TTL 7 days, user-scoped storage key (sweepDraftsForUser clears on
+  // logout via the `vantage-` prefix). Only the 6 filter fields persist
+  // — never results, error state, or ephemeral UI toggles.
+  const searchDraft = useMemo(
+    () => ({ keywords, location, country, workMode, postedWithin, salaryMin }),
+    [keywords, location, country, workMode, postedWithin, salaryMin],
+  );
+  const { loadDraft: loadSearchDraft } = useFormDraft(
+    'vantage-jobsearch-filters-v1',
+    searchDraft,
+    // Only persist for authenticated users — the /jobs route bounces
+    // anonymous visitors to /register, and the Dashboard embedded mount
+    // is gated by auth too. Explicit `enabled` flag prevents any brief
+    // pre-auth render from writing to the unscoped global key.
+    { userScope: user?.id, enabled: !!user?.id },
+  );
+  // On mount only: silently restore the last search if one exists.
+  // No prompt — search filters are utility data, not a sensitive draft.
+  // A defensive whitelist guards against schema drift across versions.
+  useEffect(() => {
+    const saved = loadSearchDraft();
+    if (!saved) return;
+    if (typeof saved.keywords === 'string') setKeywords(saved.keywords.slice(0, 200));
+    if (typeof saved.location === 'string') setLocation(saved.location.slice(0, 100));
+    if (typeof saved.country === 'string' && COUNTRIES.some((c) => c.code === saved.country)) {
+      setCountry(saved.country as JobSearchCountry);
+    }
+    if (saved.workMode === 'any' || saved.workMode === 'remote' || saved.workMode === 'hybrid' || saved.workMode === 'on-site') {
+      setWorkMode(saved.workMode);
+    }
+    if (saved.postedWithin === 1 || saved.postedWithin === 3 || saved.postedWithin === 7 || saved.postedWithin === 14 || saved.postedWithin === 30 || saved.postedWithin === 90) {
+      setPostedWithin(saved.postedWithin);
+    }
+    if (typeof saved.salaryMin === 'string') setSalaryMin(saved.salaryMin.slice(0, 12));
+    // Deliberately not in deps: this runs once per mount.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const [loading, setLoading] = useState(false);
   const [loadingStage, setLoadingStage] = useState(0);
