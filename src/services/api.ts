@@ -234,6 +234,58 @@ export async function generateInterviewQuestions(
   return response.json();
 }
 
+// ─── Follow-up email generator ──────────────────────────────────────────
+// Costs 1 token. Server validates inputs + atomically deducts + refunds on
+// AI failure. Stage enums must match those in api/followup/index.ts.
+
+export type FollowupStage =
+  | 'post-application'
+  | 'post-phone-screen'
+  | 'post-onsite'
+  | 'post-final-round'
+  | 'after-offer-received';
+
+export type FollowupUrgency = 'patient' | 'polite-nudge' | 'time-sensitive';
+
+export type FollowupRecipientRole =
+  | 'recruiter'
+  | 'hiring-manager'
+  | 'founder'
+  | 'engineering-manager';
+
+export interface FollowupRequest {
+  companyName: string;
+  roleName: string;
+  userName: string;
+  recipientName?: string;
+  recipientRole?: FollowupRecipientRole;
+  daysSinceLast: number;
+  stage: FollowupStage;
+  urgencyTone: FollowupUrgency;
+  keyTalkingPoint?: string;
+  additionalContext?: string;
+}
+
+export interface FollowupResponse {
+  success: boolean;
+  subject?: string;
+  body?: string;
+  token_balance?: number;
+  error?: string;
+}
+
+export async function generateFollowupEmail(req: FollowupRequest): Promise<FollowupResponse> {
+  const response = await fetchWithAuth('/followup', {
+    method: 'POST',
+    body: JSON.stringify(req),
+  });
+  if (!response.ok) {
+    const error = await safeJson(response);
+    return { success: false, error: error.error || 'Failed to generate follow-up email' };
+  }
+  return response.json();
+}
+
 export async function evaluateAnswer(
   roleContext: string,
   question: string,

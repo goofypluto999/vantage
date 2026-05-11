@@ -5,7 +5,7 @@ import {
   Upload, Link as LinkIcon, FileText, Loader2, Sparkles, ChevronRight,
   LogOut, CreditCard, Zap, Crown, Star, Settings, Check,
   Mic, BookOpen, Lock, RefreshCw, ClipboardPaste, Type,
-  Twitter, Linkedin, Copy, AlertTriangle
+  Twitter, Linkedin, Copy, AlertTriangle, Mail,
 } from 'lucide-react';
 import { useAuth } from '../App';
 import { useCurrency } from '../contexts/CurrencyContext';
@@ -17,6 +17,10 @@ import { useFocusTrap } from '../lib/useFocusTrap';
 // Lazy-loaded — only fires for first-time dashboard visitors via the demo
 // popup. ~10KB+ of motion sequences shouldn't be in the critical chunk.
 const LiveDemoReel = React.lazy(() => import('./LiveDemoReel'));
+// Lazy-loaded follow-up composer — modal opens only when user clicks the
+// "Generate follow-up email" button on the results section. Its form +
+// validation logic don't touch the initial Dashboard bundle.
+const FollowupComposer = React.lazy(() => import('./FollowupComposer'));
 
 /**
  * ProcessingStages — animated pipeline indicator shown during the 60-90s
@@ -346,6 +350,10 @@ export default function Dashboard() {
   // Interview
   const [showInterview, setShowInterview] = useState(false);
   const [showPrepCards, setShowPrepCards] = useState(false);
+  // Follow-up email composer (post-analysis tool, added 2026-05-11). Lazy-
+  // loaded so the modal + its form code don't bloat the initial Dashboard
+  // bundle until the user actually wants to compose a follow-up.
+  const [showFollowup, setShowFollowup] = useState(false);
 
   const creditsRemaining = profile ? getCreditsRemaining(profile) : 0;
   const canAnalyze = hasCredits(profile, 3);
@@ -1773,6 +1781,33 @@ export default function Dashboard() {
                 </p>
               </div>
 
+              {/* Follow-up Email Composer — post-analysis tool added 2026-05-11.
+                  Most candidates don't follow up after an application or interview
+                  even though follow-ups materially lift response rates. This
+                  surfaces a 1-token tool right when the user has the company
+                  context fresh + the application has just been submitted. */}
+              <div className="p-6 rounded-2xl bg-white/5 border border-white/10">
+                <div className="flex items-center justify-between flex-wrap gap-3">
+                  <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                    <Mail className="w-5 h-5 text-violet-400" />
+                    Follow-up Email
+                    <span className="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 text-xs font-bold ml-2">New</span>
+                  </h3>
+                  <button
+                    onClick={() => setShowFollowup(true)}
+                    disabled={!hasCredits(profile, 1)}
+                    className="px-4 py-2 rounded-lg bg-gradient-to-r from-violet-600 to-purple-600 text-white font-semibold text-sm hover:from-violet-500 hover:to-purple-500 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
+                    aria-label="Open follow-up email composer"
+                  >
+                    <Mail className="w-4 h-4" />
+                    Compose follow-up (1 token)
+                  </button>
+                </div>
+                <p className="text-white/60 text-sm mt-2">
+                  Generate a calibrated follow-up email after your application or interview. Pick the stage (post-application / phone-screen / on-site / final-round / offer received), pick urgency, get a short, sharp email back. Subject + body, ready to copy + send.
+                </p>
+              </div>
+
               {/* Post-analysis upgrade nudge — added 2026-05-07. Shown to
                   unpaid users after they've burned at least one analysis
                   worth of tokens. Concrete: 'you have X left = N more
@@ -1823,6 +1858,30 @@ export default function Dashboard() {
             roleContext={`${results.companySnapshot?.name || ''} — ${results.keyRequirements?.join(', ') || ''}`}
             onClose={() => { setShowInterview(false); refreshProfile(); }}
           />
+        )}
+
+        {/* Follow-up Composer Modal — lazy-loaded so its bundle only
+            arrives when the user actually opens it. Closes via onClose
+            with the post-generation token balance so the parent profile
+            stays in sync without a full /credits round-trip. */}
+        {showFollowup && (
+          <React.Suspense fallback={null}>
+            <FollowupComposer
+              defaultCompanyName={results?.companySnapshot?.name || ''}
+              // Leave roleName blank — the analysis schema doesn't capture
+              // the role title as a discrete field. User types it (it's
+              // a single short field they remember from the job URL).
+              defaultRoleName={''}
+              defaultUserName={profile?.full_name || ''}
+              hasTokens={hasCredits(profile, 1)}
+              onClose={(_newBalance) => {
+                setShowFollowup(false);
+                // Always refresh after close — server may have deducted +
+                // refunded which we can't model client-side perfectly.
+                refreshProfile();
+              }}
+            />
+          </React.Suspense>
         )}
       </main>
     </div>
