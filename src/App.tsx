@@ -78,6 +78,7 @@ const ChangelogPage = React.lazy(() => import('./components/ChangelogPage'));
 const RoastPage = React.lazy(() => import('./components/RoastPage'));
 const DecodeRejectionPage = React.lazy(() => import('./components/DecodeRejectionPage'));
 const GhostJobCheckPage = React.lazy(() => import('./components/GhostJobCheckPage'));
+const JobSearchPage = React.lazy(() => import('./components/JobSearchPage'));
 const FaqPage = React.lazy(() => import('./components/FaqPage'));
 const AlternativesPage = React.lazy(() => import('./components/AlternativesPage'));
 const AlternativesHub = React.lazy(() => import('./components/AlternativesPage').then(m => ({ default: m.AlternativesHub })));
@@ -560,6 +561,11 @@ function AppContent() {
             <Route path="/ghost-job" element={<Navigate to="/ghost-job-check" replace />} />
             <Route path="/is-this-a-ghost-job" element={<Navigate to="/ghost-job-check" replace />} />
             <Route path="/ghost-job-detector" element={<Navigate to="/ghost-job-check" replace />} />
+            {/* AI Job Search — 2026-05-11 milestone. Anonymous redirect
+                handled by the page component on mount. */}
+            <Route path="/jobs" element={<JobSearchPage />} />
+            <Route path="/search-jobs" element={<Navigate to="/jobs" replace />} />
+            <Route path="/find-jobs" element={<Navigate to="/jobs" replace />} />
             <Route path="/faq" element={<FaqPage />} />
             <Route path="/help" element={<Navigate to="/faq" replace />} />
             <Route path="/questions" element={<Navigate to="/faq" replace />} />
