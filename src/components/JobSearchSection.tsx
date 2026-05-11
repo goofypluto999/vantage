@@ -146,7 +146,7 @@ export default function JobSearchSection({ embedded = false, className = '' }: P
     () => ({ keywords, location, country, workMode, postedWithin, salaryMin }),
     [keywords, location, country, workMode, postedWithin, salaryMin],
   );
-  const { loadDraft: loadSearchDraft } = useFormDraft(
+  const { loadDraft: loadSearchDraft, clearDraft: clearSearchDraft } = useFormDraft(
     'vantage-jobsearch-filters-v1',
     searchDraft,
     // Only persist for authenticated users — the /jobs route bounces
@@ -155,6 +155,22 @@ export default function JobSearchSection({ embedded = false, className = '' }: P
     // pre-auth render from writing to the unscoped global key.
     { userScope: user?.id, enabled: !!user?.id },
   );
+
+  // Reset all 6 persisted filter fields back to defaults AND wipe the
+  // saved draft so the cleared state is what stays after the next mount.
+  // Doesn't touch results/hideGhost (those aren't persisted).
+  // Order matters: clearDraft() suppresses the next auto-save, then we
+  // call the setters, so the post-reset render won't immediately
+  // re-persist the defaults (no-op, but cleaner).
+  function resetFilters() {
+    clearSearchDraft();
+    setKeywords('');
+    setLocation('');
+    setCountry('gb');
+    setWorkMode('any');
+    setPostedWithin(30);
+    setSalaryMin('');
+  }
   // On mount only: silently restore the last search if one exists.
   // No prompt — search filters are utility data, not a sensitive draft.
   // A defensive whitelist guards against schema drift across versions.
@@ -379,12 +395,26 @@ export default function JobSearchSection({ embedded = false, className = '' }: P
             <Ghost className="w-4 h-4 text-amber-400" aria-hidden="true" />
             Hide likely ghost jobs (recommended)
           </label>
-          <button type="button" onClick={handleSearch} disabled={!canRunScan} aria-busy={loading}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-bold bg-gradient-to-r from-violet-600 to-purple-600 text-white hover:from-violet-500 hover:to-purple-500 disabled:from-white/10 disabled:to-white/10 disabled:text-white/40 disabled:cursor-not-allowed transition focus:outline-none focus:ring-2 focus:ring-violet-400 min-h-[44px]">
-            {loading ? (<><Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" /> Searching…</>)
-              : !tokensAvailable && meta.was_free ? (<><Sparkles className="w-4 h-4" aria-hidden="true" /> Top up to scan</>)
-              : (<><Sparkles className="w-4 h-4" aria-hidden="true" /> {meta.was_free === false ? 'Run scan (1 token)' : 'Run scan (free)'}</>)}
-          </button>
+          <div className="flex items-center gap-2 flex-wrap">
+            {(keywords || location || salaryMin || country !== 'gb' || workMode !== 'any' || postedWithin !== 30) && (
+              <button
+                type="button"
+                onClick={resetFilters}
+                disabled={loading}
+                className="text-xs text-white/50 hover:text-white/80 underline-offset-2 hover:underline disabled:opacity-40 disabled:cursor-not-allowed transition px-2 py-1 min-h-[36px]"
+                aria-label="Reset all search filters to defaults"
+                title="Clear keywords, location, country, work mode, salary, and posted-within filters"
+              >
+                Reset filters
+              </button>
+            )}
+            <button type="button" onClick={handleSearch} disabled={!canRunScan} aria-busy={loading}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-bold bg-gradient-to-r from-violet-600 to-purple-600 text-white hover:from-violet-500 hover:to-purple-500 disabled:from-white/10 disabled:to-white/10 disabled:text-white/40 disabled:cursor-not-allowed transition focus:outline-none focus:ring-2 focus:ring-violet-400 min-h-[44px]">
+              {loading ? (<><Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" /> Searching…</>)
+                : !tokensAvailable && meta.was_free ? (<><Sparkles className="w-4 h-4" aria-hidden="true" /> Top up to scan</>)
+                : (<><Sparkles className="w-4 h-4" aria-hidden="true" /> {meta.was_free === false ? 'Run scan (1 token)' : 'Run scan (free)'}</>)}
+            </button>
+          </div>
         </div>
       </section>
 
