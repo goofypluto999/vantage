@@ -13,6 +13,7 @@ import { supabase, getCreditsRemaining, hasCredits } from '../lib/supabase';
 import { analyzeJob, createStripeCheckout, syncSubscription, rewriteTone, fetchAnalysisHistory } from '../services/api';
 import { sweepDraftsForUser } from '../lib/useFormDraft';
 import { sweepHistoryForUser } from '../lib/useResultHistory';
+import { sweepTrackerForUser } from '../lib/useApplicationTracker';
 import AIInterviewSession from './AIInterviewSession';
 import AtsScannerSection from './AtsScannerSection';
 import { useFocusTrap } from '../lib/useFocusTrap';
@@ -24,6 +25,7 @@ const LiveDemoReel = React.lazy(() => import('./LiveDemoReel'));
 // validation logic don't touch the initial Dashboard bundle.
 const FollowupComposer = React.lazy(() => import('./FollowupComposer'));
 const NegotiationComposer = React.lazy(() => import('./NegotiationComposer'));
+const ApplicationTracker = React.lazy(() => import('./ApplicationTracker'));
 
 /**
  * ProcessingStages — animated pipeline indicator shown during the 60-90s
@@ -483,12 +485,13 @@ export default function Dashboard() {
   };
 
   const handleSignOut = async () => {
-    // Sweep this user's drafts + result history from localStorage
-    // BEFORE the auth context clears, so we still have the user.id.
-    // Critical for shared-device privacy (multi-agent review HIGH).
+    // Sweep this user's drafts + result history + tracker from
+    // localStorage BEFORE the auth context clears, so we still have
+    // the user.id. Critical for shared-device privacy.
     const userId = user?.id;
     sweepDraftsForUser(userId);
     sweepHistoryForUser(userId);
+    sweepTrackerForUser(userId);
     await signOut();
     navigate('/');
   };
@@ -1848,6 +1851,16 @@ export default function Dashboard() {
                   Got an offer? Don't wing it. Enter what they offered + what you want (base, signing, RSU, bonus %, PTO, remote policy). Returns: a calibrated email back to the recruiter, a 60–90 second phone script, 5–7 in-conversation talking points, and warnings if any of your asks look risky for your level.
                 </p>
               </div>
+
+              {/* Application Tracker — local CRM for jobs the user is
+                  running. Pure client-side localStorage, user-scoped,
+                  swept on logout. Companion to the upcoming job-search
+                  feature (jobs saved from search will feed into here).
+                  Lazy-loaded so the panel chunk only arrives when this
+                  Dashboard view actually renders. */}
+              <React.Suspense fallback={null}>
+                <ApplicationTracker userScope={user?.id} />
+              </React.Suspense>
 
               {/* Post-analysis upgrade nudge — added 2026-05-07. Shown to
                   unpaid users after they've burned at least one analysis
