@@ -2,16 +2,21 @@
  * AtsScannerSection — compact, free, client-side ATS preview.
  *
  * Reads the CV file the user already uploaded to Vantage, extracts plain
- * text (DOCX via lazy mammoth, TXT via direct read), and runs the same
- * heuristics that power CV Mirror. Renders 5 vendor pills with pass/issue
- * counts and a one-line top issue.
+ * text (DOCX via lazy mammoth, PDF via lazy pdfjs-dist, TXT via direct
+ * read), and runs the same heuristics that power CV Mirror. Renders 5
+ * vendor pills with pass/issue counts and a one-line top issue.
  *
  * Self-contained:
  *   - Pure additive component (no shared state with Dashboard's flow)
- *   - No new dependencies (mammoth is already lazy-imported elsewhere)
- *   - PDF support is intentionally deferred (would need pdfjs ≈300KB)
+ *   - mammoth + pdfjs-dist are lazy-imported so they don't bloat the
+ *     initial bundle. The PDF worker is loaded from the same chunk via
+ *     the ?url import suffix.
  *   - Failure modes: silent pass — if extraction fails, the section stays
  *     hidden rather than disrupting the page.
+ *
+ * PDF support added 2026-05-11 — the previous "Upload DOCX/TXT" message
+ * confused users because the main /api/analyze flow accepts PDFs already.
+ * Now this preview accepts the same formats.
  *
  * Removing this section: delete the import + render block in Dashboard.tsx
  * and delete this file plus src/lib/atsLint.ts. Two lines of revert in
@@ -80,14 +85,32 @@ export default function AtsScannerSection({ cvFile }: Props) {
           const buffer = await cvFile.arrayBuffer();
           const { value } = await mammoth.extractRawText({ arrayBuffer: buffer });
           text = value || '';
+        } else if (fileName.endsWith('.pdf') || cvFile.type === 'application/pdf') {
+          // Lazy-import pdfjs-dist + its worker. Worker URL is resolved
+          // via Vite's ?url suffix at build time so the worker bundles
+          // alongside but doesn't load until first PDF.
+          const pdfjs = await import('pdfjs-dist');
+          // Vite-supplied worker URL. The ?url suffix makes Vite emit
+          // the worker as a separate asset + return its public URL.
+          const pdfWorkerUrl = (await import('pdfjs-dist/build/pdf.worker.min.mjs?url')).default;
+          pdfjs.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
+          const buffer = await cvFile.arrayBuffer();
+          const doc = await pdfjs.getDocument({ data: buffer }).promise;
+          const pageTexts: string[] = [];
+          for (let i = 1; i <= doc.numPages; i++) {
+            const page = await doc.getPage(i);
+            const content = await page.getTextContent();
+            // Each item is a TextItem with `.str`. Join with spaces so
+            // adjacent layout cells don't fuse into compound tokens.
+            pageTexts.push(content.items.map((it: any) => it.str || '').join(' '));
+          }
+          text = pageTexts.join('\n');
         } else if (fileName.endsWith('.txt') || cvFile.type === 'text/plain') {
           text = await cvFile.text();
         } else {
           if (!cancelled) setState({
             kind: 'unsupported',
-            reason: fileName.endsWith('.pdf')
-              ? 'PDF detected. Upload a DOCX or TXT version for the instant preview — your full Vantage analysis still works with PDFs.'
-              : 'Unsupported format. The instant ATS preview supports DOCX and TXT.',
+            reason: 'Unsupported format. The instant ATS preview supports PDF, DOCX, and TXT.',
           });
           return;
         }

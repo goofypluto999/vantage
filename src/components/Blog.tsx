@@ -5,9 +5,20 @@ import { ArrowLeft, ArrowRight, Calendar, Clock, Star, X, Rss } from 'lucide-rea
 import { useTheme } from '../contexts/ThemeContext';
 import { blogPosts } from '../data/blogPosts';
 
-// Companies that have a deep-dive interview guide. Order = display order
-// in the filter pill row. Tag name must match the post tags array exactly.
-const COMPANY_FILTERS = [
+// Whitelist of company-tag names we surface in the "Jump to" filter row.
+// Auto-deduped + auto-filtered against posts at render time. Adding a name
+// here is harmless — if no post actually has the tag, the chip just won't
+// render. Removing a name hides the chip but keeps the post visible in the
+// unfiltered list.
+//
+// Order is preserved for the subset that has matching posts. Rest is
+// alphabetised at render. So the curated A-list shows up first, then the
+// long tail in alpha order. Previous bug: this list had ~30 duplicates
+// from append-only edits across batches 20-40, plus several names with no
+// matching post tag, plus single-select state — so clicking a duplicate
+// chip toggled the filter off instead of switching companies. Fixed
+// 2026-05-11.
+const CURATED_COMPANY_ORDER = [
   'Stripe',
   'Anthropic',
   'OpenAI',
@@ -132,13 +143,14 @@ const COMPANY_FILTERS = [
   'Rivian',
   'Lucid',
   'BYD',
-] as const;
-
-type CompanyFilter = typeof COMPANY_FILTERS[number];
+];
 
 export default function Blog() {
   const { t } = useTheme();
-  const [activeCompany, setActiveCompany] = useState<CompanyFilter | null>(null);
+  // Multi-select set. User can click multiple chips to OR-filter across
+  // them (e.g. "Anthropic" + "OpenAI" shows posts tagged either). Click
+  // an active chip again to deselect that one. "Clear" wipes all.
+  const [selectedCompanies, setSelectedCompanies] = useState<Set<string>>(() => new Set());
 
   // Newest first
   const allPosts = useMemo(
@@ -146,10 +158,57 @@ export default function Blog() {
     []
   );
 
+  // Derive the actual chip list from posts' tags. Three-pass:
+  // (1) collect all unique tags from posts, lowercase-keyed for dedup
+  // (2) keep only tags that match a curated company name (case-sensitive
+  //     final form chosen from the curated order so the chip text uses
+  //     the canonical capitalisation, e.g. "MongoDB" not "mongodb"),
+  // (3) curated-order companies first in their original order, then any
+  //     remaining matched companies in alpha order. Prevents the
+  //     duplicate-chip bug (chip array de-duped via Set) AND only shows
+  //     chips that will actually filter to at least one post.
+  const companyChips = useMemo(() => {
+    const tagsInUse = new Set<string>();
+    for (const p of allPosts) {
+      for (const tag of p.tags) tagsInUse.add(tag);
+    }
+    // De-duped curated order, only kept if a post actually has that tag.
+    const curated = Array.from(new Set(CURATED_COMPANY_ORDER)).filter((c) => tagsInUse.has(c));
+    const curatedSet = new Set(curated);
+    // Any other in-use tag that matches a curated entry case-insensitively
+    // gets included too — guards against tag/curation drift. Sort alpha.
+    const alpha = Array.from(tagsInUse)
+      .filter((tag) => !curatedSet.has(tag) && CURATED_COMPANY_ORDER.some((c) => c.toLowerCase() === tag.toLowerCase()))
+      .sort((a, b) => a.localeCompare(b));
+    return [...curated, ...alpha];
+  }, [allPosts]);
+
   const posts = useMemo(() => {
-    if (!activeCompany) return allPosts;
-    return allPosts.filter((p) => p.tags.includes(activeCompany));
-  }, [allPosts, activeCompany]);
+    if (selectedCompanies.size === 0) return allPosts;
+    return allPosts.filter((p) => p.tags.some((t) => selectedCompanies.has(t)));
+  }, [allPosts, selectedCompanies]);
+
+  const toggleCompany = (company: string) => {
+    setSelectedCompanies((prev) => {
+      const next = new Set(prev);
+      if (next.has(company)) next.delete(company);
+      else next.add(company);
+      return next;
+    });
+  };
+
+  const clearCompanies = () => setSelectedCompanies(new Set());
+
+  const summaryLabel = (() => {
+    if (selectedCompanies.size === 0) {
+      return `Showing all ${allPosts.length} posts. Click any company chip to filter — pick more than one to combine.`;
+    }
+    const names = Array.from(selectedCompanies);
+    if (names.length === 1) {
+      return `Showing ${posts.length} ${posts.length === 1 ? 'post' : 'posts'} tagged ${names[0]}.`;
+    }
+    return `Showing ${posts.length} ${posts.length === 1 ? 'post' : 'posts'} tagged ${names.slice(0, -1).join(', ')} or ${names[names.length - 1]}.`;
+  })();
 
   return (
     <div className="min-h-screen" style={{ background: t.pageBg }}>
@@ -272,13 +331,13 @@ export default function Blog() {
           >
             Jump to:
           </span>
-          {COMPANY_FILTERS.map((company) => {
-            const active = activeCompany === company;
+          {companyChips.map((company) => {
+            const active = selectedCompanies.has(company);
             return (
               <button
                 key={company}
                 type="button"
-                onClick={() => setActiveCompany(active ? null : company)}
+                onClick={() => toggleCompany(company)}
                 aria-pressed={active}
                 className={`text-xs sm:text-sm px-3 py-1.5 rounded-full border transition focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent ${
                   active
@@ -290,15 +349,15 @@ export default function Blog() {
               </button>
             );
           })}
-          {activeCompany && (
+          {selectedCompanies.size > 0 && (
             <button
               type="button"
-              onClick={() => setActiveCompany(null)}
+              onClick={clearCompanies}
               className={`inline-flex items-center gap-1 text-xs sm:text-sm px-3 py-1.5 rounded-full ${t.textSub} hover:opacity-80 underline-offset-2 hover:underline`}
               aria-label="Clear company filter"
             >
               <X className="w-3.5 h-3.5" aria-hidden="true" />
-              Clear
+              Clear {selectedCompanies.size > 1 ? `(${selectedCompanies.size})` : ''}
             </button>
           )}
         </div>
@@ -306,9 +365,7 @@ export default function Blog() {
           className={`mt-3 text-sm ${t.textMuted}`}
           aria-live="polite"
         >
-          {activeCompany
-            ? `Showing ${posts.length} ${posts.length === 1 ? 'post' : 'posts'} tagged ${activeCompany}.`
-            : `Showing all ${allPosts.length} posts. Filter by company for a direct interview guide.`}
+          {summaryLabel}
         </p>
       </section>
 
@@ -317,7 +374,7 @@ export default function Blog() {
         {posts.length === 0 ? (
           <div className={`${t.glass} rounded-2xl p-8 text-center`}>
             <p className={`${t.text} font-semibold`}>
-              No posts yet for {activeCompany}.
+              No posts yet for {Array.from(selectedCompanies).join(' or ')}.
             </p>
             <p className={`mt-2 ${t.textSub}`}>
               We're still writing this one. In the meantime, run your CV against the live job link
@@ -331,7 +388,7 @@ export default function Blog() {
             </Link>
             <button
               type="button"
-              onClick={() => setActiveCompany(null)}
+              onClick={clearCompanies}
               className={`mt-4 block mx-auto text-sm ${t.textSub} underline-offset-2 hover:underline`}
             >
               Show all posts
