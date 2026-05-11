@@ -13,7 +13,9 @@
     "vercel-build": "node scripts/generate-feeds.mjs && vite build && node scripts/prerender-seo.mjs",
     "seo:prerender": "node scripts/prerender-seo.mjs",
     "seo:feeds": "node scripts/generate-feeds.mjs",
-    "seo:ping": "node scripts/indexnow-ping.mjs"
+    "seo:ping": "node scripts/indexnow-ping.mjs",
+    "preflight": "node scripts/preflight.mjs",
+    "preflight:fast": "node scripts/preflight.mjs --fast"
   },
   "dependencies": {
     "@google/genai": "^1.29.0",
