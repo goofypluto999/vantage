@@ -470,8 +470,12 @@ export default function FollowupComposer({ defaultCompanyName, defaultRoleName, 
                       onChange={(e) => setAdditionalContext(e.target.value.slice(0, 500))}
                       rows={2}
                       placeholder="e.g. The recruiter mentioned they'd be back from leave by Friday — checking in patiently."
+                      aria-describedby="fu-context-hint"
                       className="w-full rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/30 px-3 py-2 text-sm outline-none focus:border-violet-500/50 resize-y"
                     />
+                    <p id="fu-context-hint" className="text-[10px] text-white/40 mt-1">
+                      Saved to this browser for 7 days as part of the draft. Don't paste account numbers or other sensitive personal info.
+                    </p>
                   </div>
                 </div>
               </details>

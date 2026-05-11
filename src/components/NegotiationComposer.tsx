@@ -918,8 +918,12 @@ export default function NegotiationComposer({ defaultCompanyName, defaultRoleNam
                       value={additionalContext}
                       onChange={(e) => setAdditionalContext(e.target.value.slice(0, 500))}
                       placeholder="e.g. The recruiter mentioned they have flex on signing but not base. I want to stay in the same city, so no relocation needed."
+                      aria-describedby="neg-additional-hint"
                       className="w-full rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/30 px-3 py-2 text-sm outline-none focus:border-violet-500/50 resize-y"
                     />
+                    <p id="neg-additional-hint" className="text-[10px] text-white/40 mt-1">
+                      Saved to this browser for 7 days as part of the draft. Don't paste account numbers or other sensitive personal info.
+                    </p>
                   </div>
                 </details>
               </fieldset>
