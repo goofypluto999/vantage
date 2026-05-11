@@ -22,8 +22,11 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-      - run: npm install --no-save tsx
       - name: Ping IndexNow
         env:
           INDEXNOW_KEY: ${{ secrets.INDEXNOW_KEY }}
-        run: npx tsx scripts/indexnow-ping.ts
+        # Bug fix 2026-05-11: was `npx tsx scripts/indexnow-ping.ts`, but
+        # the script is .mjs (plain Node ESM, no TS). Workflow failed
+        # daily because the .ts file doesn't exist. Now matches the
+        # working invocation in seo-postdeploy.yml + seo-weekly.yml.
+        run: node scripts/indexnow-ping.mjs

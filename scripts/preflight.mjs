@@ -374,6 +374,62 @@ function checkApiNoEscapingImports() {
   }
 }
 
+// ── Check 10: JSON-LD validity in static index.html + prerendered routes ──
+// Added 2026-05-11 after Google Search Console reported "Unparsable
+// structured data — Parsing error: Missing '}' or object member name"
+// on https://aimvantage.uk/. Walks every <script type="application/ld+json">
+// block in dist/ (post-build) and runs JSON.parse on each. Any failure
+// is a hard FAIL — broken JSON-LD blocks rich-result eligibility AND
+// signals a malformed page to crawlers.
+//
+// Runs ONLY if dist/ exists (i.e., after a build). Skipped when running
+// preflight in a clean checkout pre-build.
+function checkJsonLdValidity() {
+  const distDir = join(ROOT, 'dist');
+  if (!existsSync(distDir)) {
+    // Skipped silently — the build check above will fail first if dist
+    // is missing for reasons other than "didn't run yet."
+    pass('json-ld-validity', 'dist/ not built yet — skipped (build first)');
+    return;
+  }
+  const htmlFiles = walk(distDir, (p) => p.endsWith('.html'));
+  if (htmlFiles.length === 0) {
+    warn('json-ld-validity', 'no HTML files in dist/');
+    return;
+  }
+  // Match <script type="application/ld+json">…</script> blocks. Tolerate
+  // attribute ordering + extra attributes (Helmet inserts `data-rh="true"`).
+  const blockRe = /<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/g;
+  const offenders = [];
+  let totalBlocks = 0;
+  for (const file of htmlFiles) {
+    const html = readFileSync(file, 'utf-8');
+    let m;
+    let blockIdx = 0;
+    while ((m = blockRe.exec(html)) !== null) {
+      blockIdx += 1;
+      totalBlocks += 1;
+      const raw = m[1].trim();
+      if (!raw) continue;
+      try {
+        JSON.parse(raw);
+      } catch (err) {
+        const typeMatch = raw.match(/"@type"\s*:\s*"([^"]+)"/);
+        const t = typeMatch ? typeMatch[1] : '?';
+        offenders.push(`${relative(ROOT, file)} (block #${blockIdx}, @type=${t}): ${err.message}`);
+      }
+    }
+  }
+  if (offenders.length > 0) {
+    fail(
+      'json-ld-validity',
+      `${offenders.length} of ${totalBlocks} JSON-LD block(s) failed to parse (Google Search Console will flag these):\n${offenders.slice(0, 8).map((s) => '  - ' + s).join('\n')}${offenders.length > 8 ? `\n  ... and ${offenders.length - 8} more` : ''}`,
+    );
+  } else {
+    pass('json-ld-validity', `${totalBlocks} JSON-LD block(s) across ${htmlFiles.length} HTML file(s) all parse cleanly`);
+  }
+}
+
 // ── Main ────────────────────────────────────────────────────────────────
 function main() {
   if (!JSON_MODE) {
@@ -389,6 +445,7 @@ function main() {
   checkEnvVarReferences();
   checkTypeScript();
   checkBuild();
+  checkJsonLdValidity();
 
   if (JSON_MODE) {
     console.log(JSON.stringify(results, null, 2));
