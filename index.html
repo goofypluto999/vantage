@@ -327,44 +327,76 @@
       <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
     </noscript>
 
-    <!-- Hide the static SEO fallback below from JS-enabled visitors so they
-         never see a flash of unstyled content before React hydrates. Crawlers
-         that don't process this CSS, plus no-JS users (via the noscript
-         override), still see the full content. -->
-    <style id="static-fallback-hide">
-      #root > [data-static-fallback] {
-        position: absolute;
-        left: -10000px;
-        width: 1px;
-        height: 1px;
-        overflow: hidden;
-        pointer-events: none;
-        opacity: 0;
+    <!-- Static SEO fallback is now VISIBLE in the DOM until React hydrates.
+         Previous off-screen positioning (left: -10000px) caused modern AI
+         crawlers like Google Pomelli to skip the content as cloaked. The
+         fallback is now styled as a clean brand-loading shell — short FOUC
+         while React mounts, but full content scrapeable by every crawler.
+         React replaces #root's children on hydration so this disappears
+         the moment the JS app boots. -->
+    <style id="static-fallback-style">
+      [data-static-fallback] {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background: linear-gradient(135deg, #0d0b1e 0%, #1a1635 100%);
+        color: #ffffff;
+        min-height: 100vh;
+        padding: 3rem 1.5rem;
+        margin: 0;
+        line-height: 1.5;
       }
+      [data-static-fallback] .ssf-container {
+        max-width: 720px;
+        margin: 0 auto;
+      }
+      [data-static-fallback] .ssf-logo {
+        width: 56px;
+        height: 56px;
+        margin-bottom: 1.5rem;
+      }
+      [data-static-fallback] h1 {
+        font-size: 2.25rem;
+        font-weight: 800;
+        margin: 0 0 1rem;
+        color: #ffffff;
+        letter-spacing: -0.02em;
+      }
+      [data-static-fallback] h2 {
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin: 2rem 0 0.75rem;
+        color: #a5b4fc;
+      }
+      [data-static-fallback] p { color: rgba(255,255,255,0.85); margin: 0 0 1rem; }
+      [data-static-fallback] ul { padding-left: 1.25rem; color: rgba(255,255,255,0.85); }
+      [data-static-fallback] li { margin-bottom: 0.5rem; }
+      [data-static-fallback] a { color: #a78bfa; text-decoration: underline; }
+      [data-static-fallback] strong { color: #ffffff; }
+      [data-static-fallback] .ssf-hero-img {
+        width: 100%;
+        max-width: 600px;
+        height: auto;
+        border-radius: 12px;
+        margin: 1.5rem 0;
+        border: 1px solid rgba(255,255,255,0.1);
+      }
+      [data-static-fallback] footer { color: rgba(255,255,255,0.5); font-size: 0.875rem; margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1); }
     </style>
-    <noscript>
-      <style>
-        #root > [data-static-fallback] {
-          position: static !important;
-          width: auto !important;
-          height: auto !important;
-          overflow: visible !important;
-          pointer-events: auto !important;
-          opacity: 1 !important;
-          left: auto !important;
-        }
-      </style>
-    </noscript>
   </head>
   <body>
     <div id="root">
-      <!-- Static fallback for non-JS crawlers (e.g. AiToolzDir backlink check,
-           older directory crawlers). React replaces this whole div on mount.
-           Hidden from JS users via the inline style above. -->
+      <!-- Static fallback visible to ALL crawlers (Pomelli, GPTBot, ClaudeBot,
+           Googlebot, Bingbot, AiToolzDir directory scrapers, IndieWeb readers).
+           React replaces #root children on mount so this only shows during the
+           ~100-300ms before hydration. Includes a visible logo and product
+           hero image so AI brand-extractors have visual assets to scrape. -->
       <div data-static-fallback>
+      <div class="ssf-container">
       <header>
+        <img src="/favicon.svg" alt="Vantage logo" class="ssf-logo" width="56" height="56" />
         <h1>Vantage — AI Job Preparation Tool</h1>
+        <p style="color: rgba(255,255,255,0.6); font-size: 1rem;">Clarity in the chaos. Brand colours: violet <span style="color:#a78bfa;">#a78bfa</span>, indigo <span style="color:#6366f1;">#6366f1</span>, dark purple background <span style="color:#a5b4fc;">#0d0b1e</span>.</p>
         <p>Upload your CV, paste a job link, and get the full prep pack in about 90 seconds: company intelligence, tailored cover letter, mock interview questions with an AI-graded mock drill, a CV fit score, and a 5-minute interview pitch outline. Built for people applying to many jobs a week.</p>
+        <img src="/og-image.png" alt="Vantage AI — Clarity in the Chaos. Upload your CV, paste a job link, get the full prep pack in 90 seconds." class="ssf-hero-img" width="600" height="315" loading="eager" />
       </header>
       <main>
         <h2>What you get in one analysis</h2>
@@ -374,6 +406,7 @@
           <li><strong>Mock Interview Questions</strong> — AI-generated likely questions plus an AI-graded mock interview.</li>
           <li><strong>CV Fit Score</strong> — match percentage plus the exact gaps to close before the interview.</li>
           <li><strong>Presentation Outline</strong> — a real 5-minute interview pitch, not a list of bullet points.</li>
+          <li><strong>AI Job Search</strong> — scan 20+ countries for jobs that match your CV, ghost-job filtered, salary-transparent.</li>
         </ul>
         <p><a href="/pricing">Pricing</a> &middot; <a href="/blog">Blog</a> &middot; <a href="/interview-questions">Interview prep packs</a> &middot; <a href="/tools">Free tools</a> &middot; <a href="/register">Get started free</a></p>
         <h2>Free tool: CV Mirror</h2>
@@ -387,6 +420,7 @@
         <p><strong>Sister product:</strong> <a href="https://cv-mirror-web.vercel.app/" rel="noopener">CV Mirror</a> &mdash; free ATS scanner.</p>
         <p>&copy; 2026 Vantage. <a href="/privacy">Privacy</a> &middot; <a href="/terms">Terms</a> &middot; <a href="/cookies">Cookies</a></p>
       </footer>
+      </div>
       </div>
     </div>
     <script type="module" src="/src/main.tsx"></script>
