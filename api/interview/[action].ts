@@ -353,8 +353,67 @@ async function getProfile(userId: string, fields: string) {
     { headers: { apikey: SUPABASE_SERVICE_KEY, Authorization: `Bearer ${SUPABASE_SERVICE_KEY}` } }
   );
   const profiles = await res.json();
-  if (!profiles?.length) return null;
-  return profiles[0];
+  if (profiles?.length) return profiles[0];
+
+  // Fallback: the on_auth_user_created trigger (database/schema.sql:241)
+  // is supposed to insert a profiles row whenever a new auth.users row is
+  // created. In practice we've seen accounts where that trigger didn't
+  // fire (trigger added after some accounts existed, or transient error
+  // during signup). The API was returning 'Profile not found' to those
+  // users on every call.
+  //
+  // Lazy-create the row here so the user recovers automatically. We pull
+  // the email from auth.users (admin endpoint, requires service role).
+  // Initial token grant matches the trigger's default of 10.
+  try {
+    const authRes = await fetch(`${SUPABASE_URL}/auth/v1/admin/users/${encodeURIComponent(userId)}`, {
+      headers: { apikey: SUPABASE_SERVICE_KEY, Authorization: `Bearer ${SUPABASE_SERVICE_KEY}` },
+    });
+    if (!authRes.ok) {
+      // auth.users lookup failed → can't safely create a profile (we'd
+      // be creating a row for a userId that may not be a real user).
+      return null;
+    }
+    const authUser = await authRes.json();
+    const email = authUser?.email || null;
+    const fullName = authUser?.user_metadata?.full_name || null;
+    const avatarUrl = authUser?.user_metadata?.avatar_url || null;
+
+    const createRes = await fetch(`${SUPABASE_URL}/rest/v1/profiles`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Prefer': 'return=representation,resolution=ignore-duplicates',
+        apikey: SUPABASE_SERVICE_KEY,
+        Authorization: `Bearer ${SUPABASE_SERVICE_KEY}`,
+      },
+      body: JSON.stringify({
+        id: userId,
+        email,
+        full_name: fullName,
+        avatar_url: avatarUrl,
+        token_balance: 10,
+        plan: 'starter',
+        subscription_status: 'inactive',
+      }),
+    });
+    if (createRes.ok) {
+      // Re-fetch with the caller's requested field set so we return the
+      // exact shape they asked for, not whatever the INSERT returned.
+      const retryRes = await fetch(
+        `${SUPABASE_URL}/rest/v1/profiles?id=eq.${userId}&select=${fields}`,
+        { headers: { apikey: SUPABASE_SERVICE_KEY, Authorization: `Bearer ${SUPABASE_SERVICE_KEY}` } }
+      );
+      const retried = await retryRes.json();
+      if (retried?.length) return retried[0];
+    } else {
+      console.warn(`getProfile: lazy-create returned ${createRes.status} for user ${userId}`);
+    }
+  } catch (err: any) {
+    console.warn(`getProfile: lazy-create error for user ${userId}: ${err?.message || ''}`);
+  }
+
+  return null;
 }
 
 async function deductTokens(userId: string, amount: number): Promise<number> {

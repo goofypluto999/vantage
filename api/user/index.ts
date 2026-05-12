@@ -37,14 +37,54 @@ async function handleCredits(_request: any, response: any, userId: string) {
   );
 
   const profiles = await profileRes.json();
-  if (!profiles || profiles.length === 0) {
-    return response.status(404).json({ error: 'Profile not found' });
+  if (profiles?.length) {
+    return response.status(200).json({
+      success: true,
+      token_balance: profiles[0].token_balance ?? 0,
+    });
   }
 
-  return response.status(200).json({
-    success: true,
-    token_balance: profiles[0].token_balance ?? 0,
-  });
+  // Lazy-create fallback (mirrors the same recovery path in
+  // /api/interview/[action].ts:getProfile). Triggered when the
+  // on_auth_user_created Supabase trigger didn't fire for this user's
+  // signup (we have seen accounts where the trigger was added after the
+  // account existed, or it silently failed). Without this, every
+  // /api/credits call returns 404 forever and the user looks token-less
+  // even though they should have the default grant.
+  try {
+    const authRes = await fetch(`${SUPABASE_URL}/auth/v1/admin/users/${encodeURIComponent(userId)}`, {
+      headers: { apikey: SUPABASE_SERVICE_KEY, Authorization: `Bearer ${SUPABASE_SERVICE_KEY}` },
+    });
+    if (authRes.ok) {
+      const authUser = await authRes.json();
+      const createRes = await fetch(`${SUPABASE_URL}/rest/v1/profiles`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Prefer': 'return=representation,resolution=ignore-duplicates',
+          apikey: SUPABASE_SERVICE_KEY,
+          Authorization: `Bearer ${SUPABASE_SERVICE_KEY}`,
+        },
+        body: JSON.stringify({
+          id: userId,
+          email: authUser?.email || null,
+          full_name: authUser?.user_metadata?.full_name || null,
+          avatar_url: authUser?.user_metadata?.avatar_url || null,
+          token_balance: 10,
+          plan: 'starter',
+          subscription_status: 'inactive',
+        }),
+      });
+      if (createRes.ok) {
+        return response.status(200).json({ success: true, token_balance: 10 });
+      }
+      console.warn(`handleCredits: lazy-create returned ${createRes.status} for user ${userId}`);
+    }
+  } catch (err: any) {
+    console.warn(`handleCredits: lazy-create error for user ${userId}: ${err?.message || ''}`);
+  }
+
+  return response.status(404).json({ error: 'Profile not found' });
 }
 
 async function handleAnalyses(request: any, response: any, userId: string) {
