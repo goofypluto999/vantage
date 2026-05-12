@@ -28,6 +28,7 @@ const FollowupComposer = React.lazy(() => import('./FollowupComposer'));
 const NegotiationComposer = React.lazy(() => import('./NegotiationComposer'));
 const ApplicationTracker = React.lazy(() => import('./ApplicationTracker'));
 const JobSearchSection = React.lazy(() => import('./JobSearchSection'));
+const DashboardSideNav = React.lazy(() => import('./DashboardSideNav'));
 
 /**
  * ProcessingStages — animated pipeline indicator shown during the 60-90s
@@ -132,7 +133,7 @@ function AnalysisHistory({ onLoad }: { onLoad: (data: any) => void }) {
   if (history.length === 0) return null;
 
   return (
-    <div className="mt-8">
+    <div id="past-analyses" className="mt-8 scroll-mt-20">
       <h3 className="text-lg font-display font-bold text-white mb-3">Past Analyses</h3>
       <div className="space-y-2">
         {history.slice(0, 10).map((a: any) => (
@@ -1112,6 +1113,14 @@ export default function Dashboard() {
         </div>
       )}
 
+      {/* Magnify-on-proximity side nav (desktop only — md:flex). Lazy
+          loaded so the chunk only arrives once Dashboard is mounted.
+          Anchored to: #dashboard-jobsearch-panel, #application-tracker,
+          #run-analysis, #past-analyses. Plus a 'Top' shortcut. */}
+      <React.Suspense fallback={null}>
+        <DashboardSideNav />
+      </React.Suspense>
+
       {/* Main Content */}
       <main className="max-w-5xl mx-auto p-6">
         {showPrefillBanner && prefilledFromJobSearch && (
@@ -1216,7 +1225,9 @@ export default function Dashboard() {
               initial={false}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
+              id="run-analysis"
               data-analysis-form
+              className="scroll-mt-20"
             >
               <div className="mb-8">
                 {/* Welcome strip for fresh users — replaces the pricing cards we
