@@ -1441,22 +1441,20 @@ async function handleJobSearch(request: any, response: any) {
       });
     }
 
-    // Aggressively reduced after live testing showed POST /api/interview/
-    // jobsearch returning 504 Gateway Timeout. The handler was exceeding
-    // Vercel's 30s budget even with my prior reductions — the Gemini call
-    // alone takes 10-25s with 20 jobs × 400-char descriptions + 8000-token
-    // output budget. Now:
-    //   * rawForAI: 12 jobs (was 20, originally 30)
-    //   * per-job description: 250 chars (was 400, originally 600)
-    //   * cv_summary: 1000 chars (was 1500, originally 2000)
-    // Combined with the maxOutputTokens drop below + maxDuration bump to
-    // 60s in vercel.json, the function now has 35-40s of headroom against
-    // a realistic worst case of 20s total.
+    // Restored depth after the thinkingBudget=0 fix (ec5aad8) freed up huge
+    // token headroom. Live verified: 12 jobs + 250-char descriptions + 5000
+    // maxOutputTokens completed in ~7s with full results. With thinking off,
+    // we can comfortably feed Gemini more data:
+    //   * rawForAI: 20 jobs (was 12 during the timeout panic, originally 30)
+    //   * per-job description: 400 chars (was 250)
+    //   * cv_summary: 1500 chars (was 1000)
+    //   * maxOutputTokens: 6000 (was 5000, room for 10 richer items)
+    // Worst case stays well under the 60s vercel.json budget.
     // Use the dedupe-filtered list (filteredRawJobs) — NOT fetchResult.rawJobs.
     // Otherwise the seen-jobs filter above is a no-op.
-    const rawForAI = filteredRawJobs.slice(0, 12);
+    const rawForAI = filteredRawJobs.slice(0, 20);
     const cvSummary = typeof profile.cv_summary === 'string' && profile.cv_summary.length > 0
-      ? profile.cv_summary.slice(0, 1000)
+      ? profile.cv_summary.slice(0, 1500)
       : 'No CV summary on file — score based on listed details vs. filters.';
 
     const rawJobLines = rawForAI.map((j: RawJob, idx: number) => {
@@ -1466,7 +1464,7 @@ async function handleJobSearch(request: any, response: any) {
       const safeDesc = (j.description || '')
         .replace(/\[JOB#\d+\|src=[^\]]*\]/gi, '[redacted]')
         .replace(/<<<[A-Z_]+(?:_START|_END)>>>/gi, '[redacted]')
-        .slice(0, 250);
+        .slice(0, 400);
       return `[JOB#${idx}|src=${j.source}] ${j.title} — ${j.company} — ${j.location} — Posted ${j.postedAt || 'unknown'} — ${salaryStr}\n[JOB#${idx}|desc] ${safeDesc}`;
     }).join('\n\n');
 
@@ -1523,7 +1521,7 @@ Penalize ghost-tells heavily. NEVER invent skills/companies not in CV/JD. STRICT
         contents: [{ parts: [{ text: prompt + '\n\nReturn ONLY a JSON array. No markdown fences, no prose. Always include up to 10 items even if matches are weak (assign low matchScore to weak fits — never return an empty array unless zero jobs were supplied).' }] }],
         config: {
           temperature: 0,
-          maxOutputTokens: 5000,
+          maxOutputTokens: 6000,
           // CRITICAL: Gemini 2.5 Flash 'thinking' mode is enabled by default
           // and its thinking tokens are charged against maxOutputTokens — meaning
           // the model can burn 4500 tokens 'thinking' and have only 500 left for
