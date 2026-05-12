@@ -1455,44 +1455,32 @@ For each top-10 ranked job output JSON with:
 
 Penalize ghost-tells heavily. NEVER invent skills/companies not in CV/JD. STRICT JSON array. No markdown. No prose.`;
 
-    // Generate-and-parse with one retry. The first attempt uses temp 0.4
-    // (some creative latitude on fitOneLiner). On parse failure — usually
-    // truncation or markdown wrapping — retry once with temp 0 + doubled
-    // output budget + a tighter 'JSON ONLY' suffix. Log both responses
-    // so production failures are diagnosable from Vercel logs instead
-    // of an opaque 500.
+    // SINGLE attempt — retries previously caused 30s Vercel function-timeout
+    // ('Unexpected server response' on the client because the timeout returns
+    // HTML, not JSON). One robust call:
+    //   * temperature 0 (deterministic JSON)
+    //   * maxOutputTokens 8000 (2x the original; enough headroom for 10
+    //     scored jobs plus any markdown/prose the model adds)
+    //   * 'JSON ONLY' suffix baked into the prompt so the model produces
+    //     the cleanest possible output first time
+    //   * raw text logged on parse failure for production diagnostics
     let parsed: any;
-    let lastRawText: string | undefined;
-    let lastError: any;
-    for (let attempt = 1; attempt <= 2; attempt += 1) {
-      try {
-        const attemptPrompt = attempt === 1
-          ? prompt
-          : prompt + '\n\nIMPORTANT: Return ONLY the JSON array, starting with [ and ending with ]. No code fences, no prose before or after.';
-        const aiResponse = await ai.models.generateContent({
-          model: 'models/gemini-2.5-flash',
-          contents: [{ parts: [{ text: attemptPrompt }] }],
-          config: {
-            temperature: attempt === 1 ? 0.4 : 0,
-            maxOutputTokens: attempt === 1 ? 8000 : 16000,
-          },
-        });
-        const text = aiResponse.text;
-        if (!text) throw new Error('No response text from AI');
-        lastRawText = text;
-        parsed = extractJson(text);
-        break; // success — exit retry loop
-      } catch (err: any) {
-        lastError = err;
-        console.warn(`jobsearch AI attempt ${attempt} failed: ${err?.message || 'unknown'}${lastRawText ? ` — first 300 chars of raw: ${lastRawText.slice(0, 300)}` : ''}`);
-        if (attempt === 2) {
-          console.error(`jobsearch AI giving up after 2 attempts. Last raw text (first 500): ${lastRawText?.slice(0, 500) || '(none)'}`);
-          if (didCharge) await refundTokens(user.id, JOBSEARCH_COST);
-          return response.status(500).json({
-            error: 'AI scoring failed. Tokens refunded. Try again — usually works on a second attempt.',
-          });
-        }
-      }
+    let rawText: string | undefined;
+    try {
+      const aiResponse = await ai.models.generateContent({
+        model: 'models/gemini-2.5-flash',
+        contents: [{ parts: [{ text: prompt + '\n\nReturn ONLY the JSON array. Start with [, end with ]. No code fences. No prose before or after.' }] }],
+        config: { temperature: 0, maxOutputTokens: 8000 },
+      });
+      rawText = aiResponse.text;
+      if (!rawText) throw new Error('No response text from AI');
+      parsed = extractJson(rawText);
+    } catch (err: any) {
+      console.error(`jobsearch AI scoring failed: ${err?.message || 'unknown'} — first 500 chars of raw: ${rawText?.slice(0, 500) || '(none)'}`);
+      if (didCharge) await refundTokens(user.id, JOBSEARCH_COST);
+      return response.status(500).json({
+        error: 'AI scoring failed. Tokens refunded. Please try again.',
+      });
     }
 
     if (!Array.isArray(parsed)) {
