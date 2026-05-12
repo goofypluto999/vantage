@@ -1398,14 +1398,20 @@ async function handleJobSearch(request: any, response: any) {
       });
     }
 
-    // Reduced from 30 → 20 jobs after observing 'AI scoring failed' on
-    // real users — 30 jobs with 600-char descriptions blew past Gemini's
-    // coherent-output threshold and produced truncated / malformed JSON.
-    // 20 jobs with 400-char descriptions still curates to top 10 with room
-    // for the AI to reason cleanly.
-    const rawForAI = fetchResult.rawJobs.slice(0, 20);
+    // Aggressively reduced after live testing showed POST /api/interview/
+    // jobsearch returning 504 Gateway Timeout. The handler was exceeding
+    // Vercel's 30s budget even with my prior reductions — the Gemini call
+    // alone takes 10-25s with 20 jobs × 400-char descriptions + 8000-token
+    // output budget. Now:
+    //   * rawForAI: 12 jobs (was 20, originally 30)
+    //   * per-job description: 250 chars (was 400, originally 600)
+    //   * cv_summary: 1000 chars (was 1500, originally 2000)
+    // Combined with the maxOutputTokens drop below + maxDuration bump to
+    // 60s in vercel.json, the function now has 35-40s of headroom against
+    // a realistic worst case of 20s total.
+    const rawForAI = fetchResult.rawJobs.slice(0, 12);
     const cvSummary = typeof profile.cv_summary === 'string' && profile.cv_summary.length > 0
-      ? profile.cv_summary.slice(0, 1500)
+      ? profile.cv_summary.slice(0, 1000)
       : 'No CV summary on file — score based on listed details vs. filters.';
 
     const rawJobLines = rawForAI.map((j: RawJob, idx: number) => {
@@ -1415,7 +1421,7 @@ async function handleJobSearch(request: any, response: any) {
       const safeDesc = (j.description || '')
         .replace(/\[JOB#\d+\|src=[^\]]*\]/gi, '[redacted]')
         .replace(/<<<[A-Z_]+(?:_START|_END)>>>/gi, '[redacted]')
-        .slice(0, 400);
+        .slice(0, 250);
       return `[JOB#${idx}|src=${j.source}] ${j.title} — ${j.company} — ${j.location} — Posted ${j.postedAt || 'unknown'} — ${salaryStr}\n[JOB#${idx}|desc] ${safeDesc}`;
     }).join('\n\n');
 
@@ -1470,7 +1476,7 @@ Penalize ghost-tells heavily. NEVER invent skills/companies not in CV/JD. STRICT
       const aiResponse = await ai.models.generateContent({
         model: 'models/gemini-2.5-flash',
         contents: [{ parts: [{ text: prompt + '\n\nReturn ONLY the JSON array. Start with [, end with ]. No code fences. No prose before or after.' }] }],
-        config: { temperature: 0, maxOutputTokens: 8000 },
+        config: { temperature: 0, maxOutputTokens: 5000 },
       });
       rawText = aiResponse.text;
       if (!rawText) throw new Error('No response text from AI');

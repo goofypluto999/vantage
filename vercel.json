@@ -1,7 +1,7 @@
 {
   "functions": {
     "api/analyze/index.ts": { "maxDuration": 60 },
-    "api/interview/[action].ts": { "maxDuration": 30 },
+    "api/interview/[action].ts": { "maxDuration": 60 },
     "api/rewrite-tone/index.ts": { "maxDuration": 30 },
     "api/roast/index.ts": { "maxDuration": 20 },
     "api/decode-rejection/index.ts": { "maxDuration": 20 },
