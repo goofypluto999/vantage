@@ -1473,11 +1473,10 @@ Penalize ghost-tells heavily. NEVER invent skills/companies not in CV/JD. STRICT
     let parsed: any;
     let rawText: string | undefined;
     try {
-      const targetCount = Math.min(rawForAI.length, 10);
       const aiResponse = await ai.models.generateContent({
         model: 'models/gemini-2.5-flash',
-        contents: [{ parts: [{ text: prompt + `\n\nCRITICAL OUTPUT RULES:\n- You MUST return exactly ${targetCount} items in the array, not fewer.\n- If a job is a weak match, give it a low matchScore (e.g. 30-40) but STILL include it.\n- Never return an empty array. Always rank the best available, even if they're imperfect.\n- Return ONLY the JSON array. Start with [, end with ]. No code fences. No prose before or after.` }] }],
-        config: { temperature: 0.2, maxOutputTokens: 5000 },
+        contents: [{ parts: [{ text: prompt + '\n\nReturn ONLY a JSON array. No markdown fences, no prose. Always include up to 10 items even if matches are weak (assign low matchScore to weak fits — never return an empty array unless zero jobs were supplied).' }] }],
+        config: { temperature: 0, maxOutputTokens: 5000 },
       });
       rawText = aiResponse.text;
       if (!rawText) throw new Error('No response text from AI');
@@ -1485,9 +1484,18 @@ Penalize ghost-tells heavily. NEVER invent skills/companies not in CV/JD. STRICT
     } catch (err: any) {
       console.error(`jobsearch AI scoring failed: ${err?.message || 'unknown'} — first 500 chars of raw: ${rawText?.slice(0, 500) || '(none)'}`);
       if (didCharge) await refundTokens(user.id, JOBSEARCH_COST);
+      // Friendlier message — most AI parse-failures resolve on second try.
       return response.status(500).json({
-        error: 'AI scoring failed. Tokens refunded. Please try again.',
+        error: 'AI scoring had a hiccup. Tokens refunded — please try again in a moment.',
       });
+    }
+
+    // If Gemini did return an empty array (rare with the new prompt guard
+    // but still possible), surface that as a no-results-200 instead of
+    // an error, so the user sees the actionable "relax keywords" copy and
+    // their token (if any) is refunded.
+    if (Array.isArray(parsed) && parsed.length === 0) {
+      console.warn(`jobsearch AI returned empty array for user ${user.id} despite ${rawForAI.length} jobs supplied`);
     }
 
     if (!Array.isArray(parsed)) {
