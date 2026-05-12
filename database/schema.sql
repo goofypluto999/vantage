@@ -36,7 +36,10 @@ CREATE TABLE IF NOT EXISTS analyses (
   -- that could stored-XSS the admin dashboard when rendered as an anchor href.
   job_url TEXT CHECK (job_url IS NULL OR job_url ~* '^https?://'),
   results_json JSONB,
-  tokens_spent INTEGER NOT NULL DEFAULT 3,
+  -- 1 token = 1 full analysis pack (migrated 2026-05-08 from 3 tokens).
+  -- API always passes this explicitly via COST_PER_ANALYSIS; the default
+  -- only fires if some future code path inserts a row without setting it.
+  tokens_spent INTEGER NOT NULL DEFAULT 1,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 

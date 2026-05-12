@@ -332,29 +332,67 @@ export default async function handler(request: any, response: any) {
         if (profiles.length > 0) {
           const profile = profiles[0];
 
-          // Derive which plan was actually refunded from charge amount + currency,
-          // NOT the user's current plan. Amounts are in the smallest unit (pence/cents).
-          // Known plan prices:
-          //   Starter: £5.00 = 500p  |  $5.00 = 500c  → 20 tokens
-          //   Pro:     £12.00 = 1200p |  $15.00 = 1500c → 60 tokens
-          //   Premium: £20.00 = 2000p |  $25.00 = 2500c → 120 tokens
-          function planTokensForCharge(amount: number, currency: string): number {
-            const isUsd = (currency || '').toLowerCase() === 'usd';
+          // Derive which plan was refunded from the invoice's price ID
+          // (subscription charges) or the checkout session's metadata
+          // (one-time top-up charges). This is robust against:
+          //   - price changes (a future £10 Pro tier wouldn't get
+          //     classified as Starter just because it's under the
+          //     hard-coded £11 threshold)
+          //   - promotional discounts / coupons (a £2 Premium charge
+          //     after coupon shouldn't deduct only Starter tokens)
+          //   - non-GBP/USD currencies (€/A$/etc. all hit the
+          //     amount-threshold fallback wrong)
+          //
+          // Amount-based inference is kept as a last-resort fallback
+          // for ancient legacy charges that have no recoverable price
+          // ID, but it triggers a console.warn so we know it fired.
+          async function inferPlanTokensFromCharge(c: Stripe.Charge): Promise<number> {
+            // Subscription charge → look up invoice → first line's price → plan
+            if (c.invoice && typeof c.invoice === 'string') {
+              try {
+                const invoice = await stripe.invoices.retrieve(c.invoice);
+                const priceId = invoice.lines.data[0]?.price?.id;
+                if (priceId) {
+                  const plan = getPlanFromPriceId(priceId);
+                  return PLAN_TOKENS[plan] || PLAN_TOKENS.starter;
+                }
+              } catch {
+                // fall through
+              }
+            }
+            // One-time top-up → resolve via the checkout session's metadata.plan
+            // (set when /api/stripe/checkout created the session)
+            try {
+              const sessions = await stripe.checkout.sessions.list({
+                payment_intent: typeof c.payment_intent === 'string' ? c.payment_intent : c.payment_intent?.id,
+                limit: 1,
+              });
+              const sessionPlan = sessions.data[0]?.metadata?.plan;
+              if (sessionPlan && PLAN_TOKENS[sessionPlan]) {
+                return PLAN_TOKENS[sessionPlan];
+              }
+            } catch {
+              // fall through
+            }
+            // LAST-RESORT: amount/currency thresholds — wrong for promo
+            // pricing + non-£/$ currencies. We log this so it can be
+            // investigated if it ever fires in production.
+            console.warn(`Refund: falling back to amount-based plan inference for charge ${c.id} (${c.currency} ${c.amount})`);
+            const isUsd = (c.currency || '').toLowerCase() === 'usd';
             if (isUsd) {
-              if (amount >= 2400) return PLAN_TOKENS.premium;
-              if (amount >= 1400) return PLAN_TOKENS.pro;
+              if (c.amount >= 2400) return PLAN_TOKENS.premium;
+              if (c.amount >= 1400) return PLAN_TOKENS.pro;
               return PLAN_TOKENS.starter;
             }
-            // GBP
-            if (amount >= 1900) return PLAN_TOKENS.premium;
-            if (amount >= 1100) return PLAN_TOKENS.pro;
+            if (c.amount >= 1900) return PLAN_TOKENS.premium;
+            if (c.amount >= 1100) return PLAN_TOKENS.pro;
             return PLAN_TOKENS.starter;
           }
 
-          const totalPaid = charge.amount; // smallest unit
+          const totalPaid = charge.amount;
           const refunded = charge.amount_refunded;
           const refundRatio = totalPaid > 0 ? refunded / totalPaid : 1;
-          const chargeTokens = planTokensForCharge(totalPaid, charge.currency || 'gbp');
+          const chargeTokens = await inferPlanTokensFromCharge(charge);
           const tokensToDeduct = Math.round(chargeTokens * refundRatio);
 
           // Can't go negative — cap at current balance
@@ -415,7 +453,35 @@ export default async function handler(request: any, response: any) {
 
     return response.status(200).json({ received: true });
   } catch (error) {
-    console.error('Webhook handler error');
+    // CRITICAL: release the idempotency claim before returning 500.
+    //
+    // Without this, the failure sequence is:
+    //   1. We claim the event row in processed_stripe_events (lines 137-159)
+    //   2. Side-effect throws (e.g. addTokensAtomic RPC errors out)
+    //   3. Catch returns 500 → Stripe retries the webhook
+    //   4. On retry the claim row already exists → 409 short-circuits
+    //      with duplicate:true and returns 200
+    //   5. Side effect NEVER re-attempts → user paid but never got tokens
+    //
+    // Releasing the claim row here means Stripe's retry can re-execute
+    // the handler. The side-effect handlers themselves are designed to
+    // be retry-safe: deduct_tokens is balance-guarded, addTokensAtomic
+    // is capped, and the checkout.session.completed handler has its
+    // own profile-state idempotency check at line 184.
+    try {
+      await fetch(`${SUPABASE_URL}/rest/v1/processed_stripe_events?event_id=eq.${encodeURIComponent(event.id)}`, {
+        method: 'DELETE',
+        headers: {
+          'apikey': SUPABASE_SERVICE_KEY,
+          'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+        },
+      });
+    } catch (cleanupErr: any) {
+      console.error(`Webhook: failed to release idempotency claim for event ${event.id}: ${cleanupErr?.message || ''}`);
+    }
+    // Preserve the actual error message/stack — losing it on line 482's
+    // static-string log was a diagnosability hole flagged in review.
+    console.error('Webhook handler error:', error);
     return response.status(500).json({ error: 'Webhook handler failed' });
   }
 }
