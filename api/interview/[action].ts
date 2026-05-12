@@ -222,6 +222,48 @@ async function jsAdzuna(params: JsParams): Promise<RawJob[]> {
   }
 }
 
+/**
+ * Decide whether a Remotive listing's `candidate_required_location` field
+ * is compatible with the user's chosen country. Remotive jobs are remote
+ * but listings often have geographic restrictions (USA-only, Switzerland-
+ * only, Europe-only, etc.). Without this check, a UK user filtered to GB
+ * would see Swiss/US-only jobs they can't actually apply for. Reported
+ * 2026-05-12: 'one was for SWITZERLAND, I have GB selected'.
+ */
+function isRemotiveLocationCompatible(rawLocation: string, country: AdzunaCountry): boolean {
+  const loc = (rawLocation || '').toLowerCase().trim();
+  // Empty / generic remote = open to anyone
+  if (!loc || loc === 'remote' || loc === 'anywhere') return true;
+  // Worldwide / global = open to anyone
+  if (/\b(worldwide|global|anywhere in the world|any location)\b/.test(loc)) return true;
+  // Country-specific aliases per Adzuna country code
+  const countryAliases: Record<string, RegExp> = {
+    gb: /\b(uk|united kingdom|britain|gb|england|scotland|wales|northern ireland|europe|eu|emea|gmt|bst)\b/,
+    us: /\b(usa|united states|us only|us\b|americas|north america|americas|na\b|pacific|pst|est|cst|mst)\b/,
+    ca: /\b(canada|americas|north america|na\b|pst|est)\b/,
+    au: /\b(australia|apac|asia.pacific|australasia|sydney|melbourne)\b/,
+    nz: /\b(new zealand|nz|apac|australasia)\b/,
+    de: /\b(germany|deutschland|europe|eu|emea|cet|cest)\b/,
+    fr: /\b(france|francais|europe|eu|emea|cet|cest)\b/,
+    es: /\b(spain|españa|europe|eu|emea|cet)\b/,
+    it: /\b(italy|italia|europe|eu|emea|cet)\b/,
+    nl: /\b(netherlands|holland|nederland|europe|eu|emea|cet)\b/,
+    pl: /\b(poland|polska|europe|eu|emea|cet)\b/,
+    sg: /\b(singapore|sg|apac|asia)\b/,
+    in: /\b(india|in\b|apac|asia|south asia|ist)\b/,
+    br: /\b(brazil|brasil|latam|americas|south america|sa\b)\b/,
+    mx: /\b(mexico|méxico|latam|americas|north america|na\b)\b/,
+    ch: /\b(switzerland|schweiz|suisse|europe|eu|emea|cet)\b/,
+    at: /\b(austria|österreich|europe|eu|emea|cet)\b/,
+    be: /\b(belgium|belgique|europe|eu|emea|cet)\b/,
+    za: /\b(south africa|sa\b|africa|emea|sast)\b/,
+    ru: /\b(russia|россия|europe|eu|emea|cet|msk)\b/,
+  };
+  const pattern = countryAliases[country];
+  if (!pattern) return true; // unknown country — be permissive
+  return pattern.test(loc);
+}
+
 // Remotive adapter (no API key, global remote)
 async function jsRemotive(params: JsParams): Promise<RawJob[]> {
   if (params.workMode === 'on-site' || params.workMode === 'hybrid') return [];
@@ -236,7 +278,7 @@ async function jsRemotive(params: JsParams): Promise<RawJob[]> {
     }
     const data: any = await res.json();
     const jobs: any[] = Array.isArray(data?.jobs) ? data.jobs : [];
-    return jobs.map((j: any): RawJob => {
+    const mapped = jobs.map((j: any): RawJob => {
       const u = jsSafeText(j?.url || '', 2000);
       return {
         id: j?.id ? String(j.id) : jsUrlHash(u),
@@ -250,6 +292,9 @@ async function jsRemotive(params: JsParams): Promise<RawJob[]> {
         workMode: 'remote',
       };
     });
+    // Country-compatibility filter — drop listings that explicitly
+    // restrict to regions the user can't apply from.
+    return mapped.filter((j) => isRemotiveLocationCompatible(j.location, params.country));
   } catch (err: any) {
     console.warn(`remotive fetch error: ${err?.message || 'unknown'}`);
     return [];
@@ -1430,7 +1475,7 @@ async function handleJobSearch(request: any, response: any) {
       keywords: trimmedKeywords, location: trimmedLocation,
       country: safeCountry, workMode: safeWorkMode,
       salaryMin: safeSalaryMin || undefined, postedWithin: safePostedWithin,
-      perSourceLimit: 25,
+      perSourceLimit: 50,
     };
     let fetchResult;
     try {
@@ -1462,18 +1507,25 @@ async function handleJobSearch(request: any, response: any) {
     // Best-effort: if the SELECT fails (table missing, network blip), we
     // log + proceed with the unfiltered raw jobs. Worst case: user sees a
     // repeat job — same as today's behaviour. No regression.
-    let seenIds = new Set<string>();
+    // Fetch seen IDs WITH timestamps so we can top-up with the least-
+    // recently-seen if dedup leaves us short of the target pool size.
+    // User reported 2026-05-12: 'top 2 curated, never giving fewer than
+    // 10 results to the user'. Hard rule below: never feed AI fewer than
+    // 12 jobs if at least 12 raw jobs exist (counting seen+unseen).
+    type SeenRow = { job_external_id: string; seen_at: string };
+    let seenRows: SeenRow[] = [];
     try {
       const seenRes = await fetch(
-        `${SUPABASE_URL}/rest/v1/seen_job_searches?user_id=eq.${encodeURIComponent(user.id)}&seen_at=gte.${encodeURIComponent(new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString())}&select=job_external_id`,
+        `${SUPABASE_URL}/rest/v1/seen_job_searches?user_id=eq.${encodeURIComponent(user.id)}&seen_at=gte.${encodeURIComponent(new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString())}&select=job_external_id,seen_at&order=seen_at.asc`,
         { headers: { apikey: SUPABASE_SERVICE_KEY, Authorization: `Bearer ${SUPABASE_SERVICE_KEY}` } }
       );
       if (seenRes.ok) {
         const rows = await seenRes.json();
         if (Array.isArray(rows)) {
-          for (const r of rows) {
-            if (r?.job_external_id) seenIds.add(String(r.job_external_id));
-          }
+          seenRows = rows.filter((r: any) => r?.job_external_id).map((r: any) => ({
+            job_external_id: String(r.job_external_id),
+            seen_at: String(r.seen_at || ''),
+          }));
         }
       } else {
         console.warn(`jobsearch dedup: seen_job_searches SELECT returned ${seenRes.status}`);
@@ -1481,9 +1533,28 @@ async function handleJobSearch(request: any, response: any) {
     } catch (err: any) {
       console.warn(`jobsearch dedup: SELECT error (proceeding without filter): ${err?.message || ''}`);
     }
-    const filteredRawJobs = seenIds.size > 0
+    const seenIds = new Set(seenRows.map((r) => r.job_external_id));
+    const TARGET_POOL = 15;
+    const freshJobs = seenIds.size > 0
       ? fetchResult.rawJobs.filter((j: any) => !seenIds.has(String(j?.id || '')))
       : fetchResult.rawJobs;
+    // Top-up: if the fresh pool is too small, add back the least-recently-
+    // seen jobs (in oldest-first order) until we hit the target. Forgotten
+    // jobs come back into rotation; recently-saved ones stay excluded
+    // longest. User intent: 'we store them and find new ones, user can
+    // keep the ones they like by saving, but the rest we archive, and
+    // keep finding new ones'.
+    let filteredRawJobs = freshJobs;
+    if (freshJobs.length < TARGET_POOL && seenRows.length > 0) {
+      const seenById = new Map(fetchResult.rawJobs.map((j: any) => [String(j?.id || ''), j]));
+      const oldestSeenJobsInResults: any[] = [];
+      for (const row of seenRows) {
+        const j = seenById.get(row.job_external_id);
+        if (j && !freshJobs.includes(j)) oldestSeenJobsInResults.push(j);
+        if (freshJobs.length + oldestSeenJobsInResults.length >= TARGET_POOL) break;
+      }
+      filteredRawJobs = [...freshJobs, ...oldestSeenJobsInResults];
+    }
 
     // All available jobs already seen — tell the user explicitly so they
     // don't think the tool is broken, and refund any spent token.
@@ -1574,7 +1645,7 @@ Penalize ghost-tells heavily. NEVER invent skills/companies not in CV/JD. STRICT
     try {
       const aiResponse = await ai.models.generateContent({
         model: 'models/gemini-2.5-flash',
-        contents: [{ parts: [{ text: prompt + '\n\nReturn ONLY a JSON array. No markdown fences, no prose. Always include up to 10 items even if matches are weak (assign low matchScore to weak fits — never return an empty array unless zero jobs were supplied).' }] }],
+        contents: [{ parts: [{ text: prompt + `\n\nReturn ONLY a JSON array. No markdown fences, no prose. Return exactly ${Math.min(rawForAI.length, 10)} items (or ${rawForAI.length} if fewer than 10 jobs were supplied). Include weaker matches with lower matchScores rather than dropping them — the user has explicitly asked for a full result list, never an empty one.` }] }],
         config: {
           temperature: 0,
           maxOutputTokens: 6000,
