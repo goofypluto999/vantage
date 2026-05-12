@@ -1476,7 +1476,18 @@ Penalize ghost-tells heavily. NEVER invent skills/companies not in CV/JD. STRICT
       const aiResponse = await ai.models.generateContent({
         model: 'models/gemini-2.5-flash',
         contents: [{ parts: [{ text: prompt + '\n\nReturn ONLY a JSON array. No markdown fences, no prose. Always include up to 10 items even if matches are weak (assign low matchScore to weak fits — never return an empty array unless zero jobs were supplied).' }] }],
-        config: { temperature: 0, maxOutputTokens: 5000 },
+        config: {
+          temperature: 0,
+          maxOutputTokens: 5000,
+          // CRITICAL: Gemini 2.5 Flash 'thinking' mode is enabled by default
+          // and its thinking tokens are charged against maxOutputTokens — meaning
+          // the model can burn 4500 tokens 'thinking' and have only 500 left for
+          // actual output, truncating the JSON mid-second-item. Live diagnostic
+          // confirmed Gemini returning 698 chars of output before cutoff despite
+          // a 5000 budget, producing 'Unmatched brackets in AI response'.
+          // Disabling thinking gives ALL 5000 tokens to actual output.
+          thinkingConfig: { thinkingBudget: 0 },
+        } as any,
       });
       rawText = aiResponse.text;
       if (!rawText) throw new Error('No response text from AI');
