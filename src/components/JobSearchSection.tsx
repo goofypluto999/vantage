@@ -405,6 +405,44 @@ export default function JobSearchSection({ embedded = false, className = '' }: P
         )}
       </AnimatePresence>
 
+      {/* CV-status banner. Without a saved CV summary on the profile (i.e.
+          the user hasn't run their first prep-pack analysis yet), the AI
+          scoring falls back to keyword + salary + filters only — which
+          produces results that look real but aren't matched against the
+          candidate's real profile. Surface this loud-and-clear so users
+          understand the score quality is degraded, with a one-click
+          'Upload CV →' CTA that scrolls them to the analysis form.
+          When cv_summary IS present, show a quieter green confirmation. */}
+      {profile && !profile.cv_summary && (
+        <div className="mb-5 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-200 text-sm flex items-start gap-3">
+          <AlertTriangle className="w-4 h-4 flex-shrink-0 mt-0.5" aria-hidden="true" />
+          <div className="flex-1">
+            <p className="font-semibold text-amber-100 mb-1">No CV on file yet</p>
+            <p className="text-amber-200/85 mb-2">
+              You can still run a scan, but results will be scored by keyword + salary + filters only — not against your actual CV. <strong className="text-amber-100">Upload your CV in the analyzer below first</strong> for proper match scoring.
+            </p>
+            <button
+              type="button"
+              onClick={() => {
+                const el = document.querySelector('[data-analysis-form]');
+                if (el && 'scrollIntoView' in el) {
+                  (el as HTMLElement).scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+              }}
+              className="text-xs font-semibold text-amber-100 hover:text-white underline"
+            >
+              Take me to the analyzer →
+            </button>
+          </div>
+        </div>
+      )}
+      {profile && profile.cv_summary && (
+        <div className="mb-5 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-200 text-xs flex items-center gap-2">
+          <Target className="w-3.5 h-3.5 flex-shrink-0" aria-hidden="true" />
+          <span>Matching against your CV ✓ — results are scored against your saved profile.</span>
+        </div>
+      )}
+
       <section aria-label="Search filters" className={`${glassCard} rounded-2xl p-5 md:p-6 mb-5`}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>

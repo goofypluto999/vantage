@@ -316,6 +316,40 @@ async function refundTokens(userId: string, amount: number): Promise<void> {
   }
 }
 
+/**
+ * Build a compact CV summary string (~2000 chars max) for storage on
+ * profiles.cv_summary. Used by AI Job Search to score listings against
+ * the real candidate profile.
+ *
+ * Strategy: concatenate the analysis's high-signal fields (key
+ * requirements + CV match points + brief sections) and a trimmed first
+ * portion of the raw CV text. This is high-density signal — exactly
+ * what the AI Job Search prompt feeds back into Gemini.
+ *
+ * No second AI round-trip: we reuse what /api/analyze already produced.
+ * Best-effort: returns empty string if there's nothing useful to save.
+ */
+function buildCvSummary(cvText: string, results: JobIntelligence): string {
+  const parts: string[] = [];
+  // The CV-vs-role match points are the AI's own summary of what the CV
+  // contains relative to the latest role. These are the highest-density
+  // signal we can store.
+  if (Array.isArray(results.cvMatchPoints) && results.cvMatchPoints.length > 0) {
+    parts.push('CV STRENGTHS (from analysis):');
+    parts.push(results.cvMatchPoints.slice(0, 10).map((p) => `- ${p}`).join('\n'));
+  }
+  // First 1200 chars of raw CV text gives the AI further context on
+  // experience + skills without bloating the prompt.
+  if (typeof cvText === 'string' && cvText.length > 0) {
+    parts.push('\nCV RAW (first 1200 chars):');
+    parts.push(cvText.slice(0, 1200).trim());
+  }
+  const summary = parts.join('\n').trim();
+  // Cap total at ~2000 chars — matches the AI Job Search prompt's
+  // cv_summary slice budget. Anything longer just gets truncated there.
+  return summary.length > 2000 ? summary.slice(0, 2000) : summary;
+}
+
 async function saveAnalysis(
   userId: string,
   jobUrl: string,
@@ -798,6 +832,31 @@ export default async function handler(request: any, response: any) {
       await saveAnalysis(user.id, jobUrl, results, COST_PER_ANALYSIS);
     } catch (err: any) {
       console.error('saveAnalysis failed (non-fatal):', err?.message || 'unknown');
+    }
+
+    // Save a compact CV summary to the user's profile so subsequent AI Job
+    // Search scans can match against the real CV. Without this, new users
+    // get keyword-only scoring forever (reported as "the rating system works
+    // without my CV — how?" on 2026-05-12). The summary is derived from the
+    // CV text we already extracted for the main analysis — no second Gemini
+    // round-trip, no extra cost.
+    // Best-effort: failures here are non-fatal to the request.
+    try {
+      const cvSummary = buildCvSummary(cvText, results);
+      if (cvSummary) {
+        await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${encodeURIComponent(user.id)}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'Prefer': 'return=minimal',
+            apikey: SUPABASE_SERVICE_KEY,
+            Authorization: `Bearer ${SUPABASE_SERVICE_KEY}`,
+          },
+          body: JSON.stringify({ cv_summary: cvSummary }),
+        });
+      }
+    } catch (err: any) {
+      console.error('cv_summary save failed (non-fatal):', err?.message || 'unknown');
     }
 
     return response.status(200).json({

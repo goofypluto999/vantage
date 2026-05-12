@@ -20,6 +20,12 @@ export interface Profile {
   subscription_status: SubscriptionStatus;
   created_at: string;
   updated_at: string;
+  /** Compact ~500-word summary of the user's CV, auto-extracted by
+   *  /api/analyze on successful prep-pack generation and saved server-side.
+   *  Used by AI Job Search to score listings against the candidate's real
+   *  profile. Empty until the user has run their first analysis. */
+  cv_summary?: string;
+  last_free_jobsearch_at?: string;
 }
 
 export interface WaitlistEntry {
