@@ -1473,10 +1473,11 @@ Penalize ghost-tells heavily. NEVER invent skills/companies not in CV/JD. STRICT
     let parsed: any;
     let rawText: string | undefined;
     try {
+      const targetCount = Math.min(rawForAI.length, 10);
       const aiResponse = await ai.models.generateContent({
         model: 'models/gemini-2.5-flash',
-        contents: [{ parts: [{ text: prompt + '\n\nReturn ONLY the JSON array. Start with [, end with ]. No code fences. No prose before or after.' }] }],
-        config: { temperature: 0, maxOutputTokens: 5000 },
+        contents: [{ parts: [{ text: prompt + `\n\nCRITICAL OUTPUT RULES:\n- You MUST return exactly ${targetCount} items in the array, not fewer.\n- If a job is a weak match, give it a low matchScore (e.g. 30-40) but STILL include it.\n- Never return an empty array. Always rank the best available, even if they're imperfect.\n- Return ONLY the JSON array. Start with [, end with ]. No code fences. No prose before or after.` }] }],
+        config: { temperature: 0.2, maxOutputTokens: 5000 },
       });
       rawText = aiResponse.text;
       if (!rawText) throw new Error('No response text from AI');
