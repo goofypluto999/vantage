@@ -389,7 +389,10 @@ export default function JobSearchSection({ embedded = false, className = '' }: P
           </div>
         </div>
         <div className="mt-4 pt-4 border-t border-white/10 flex flex-wrap items-center justify-between gap-3">
-          <label className="inline-flex items-center gap-2 text-sm text-white/80 cursor-pointer">
+          <label
+            className="inline-flex items-center gap-2 text-sm text-white/80 cursor-pointer"
+            title="Ghost jobs are listings that look real but have no actual role behind them — old roles posted to inflate hiring funnels, ATS test posts, or résumé harvesting. Vantage scores each result for ghost probability (0-100) using posting age, vague requirements, missing salary, and reposting patterns. With this on, listings scoring ≥75% are hidden from view."
+          >
             <input type="checkbox" checked={hideGhost} onChange={(e) => setHideGhost(e.target.checked)}
               className="rounded border-white/20 bg-white/5 text-violet-600 focus:ring-violet-500" />
             <Ghost className="w-4 h-4 text-amber-400" aria-hidden="true" />
