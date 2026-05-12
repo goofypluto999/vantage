@@ -547,6 +547,7 @@ export default function JobSearchSection({ embedded = false, className = '' }: P
                         <div className="flex items-start gap-4 flex-wrap sm:flex-nowrap">
                           <div role="meter" aria-label={`Match score ${job.matchScore} out of 100`}
                             aria-valuenow={job.matchScore} aria-valuemin={0} aria-valuemax={100}
+                            title={`AI match score — your CV summary weighed against the role's title, requirements, salary, and posting freshness. ${job.matchScore} of 100.`}
                             className={`flex-shrink-0 w-14 h-14 rounded-full border-2 flex items-center justify-center font-bold ${scoreColor(job.matchScore)}`}>
                             {job.matchScore}
                           </div>
@@ -596,6 +597,7 @@ export default function JobSearchSection({ embedded = false, className = '' }: P
                           )}
                           {(ghostHigh || ghostMid) && (
                             <span role="img" aria-label={`${ghostHigh ? 'Likely ghost job' : 'Possible ghost job'}, ${job.ghostProbability}% probability`}
+                              title={`Ghost-job probability ${job.ghostProbability}% — based on posting age, vague requirements, no salary disclosure, and reposting patterns. ${ghostHigh ? 'High risk of no real role behind this listing.' : 'Apply with awareness; less confidence than green-flagged listings.'}`}
                               className={`ml-auto inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-bold border ${
                                 ghostHigh ? 'bg-rose-500/15 text-rose-300 border-rose-500/40'
                                   : 'bg-amber-500/15 text-amber-300 border-amber-500/30'
