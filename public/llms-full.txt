@@ -52,6 +52,23 @@ Applying to jobs at scale is slow and exhausting. A single serious application t
 
 One full analysis costs 1 token. (Migrated from 3 tokens/analysis on 2026-05-08 to simplify pricing.)
 
+## AI Job Search (added 2026-05-11)
+
+In addition to the prep-pack tool above, Vantage now includes an AI Job Search feature accessible at https://aimvantage.uk/jobs OR as an expandable section inside the user's Dashboard (the primary surface). What it does:
+
+1. User enters keywords, location, country (20+ supported), work mode (any / remote / hybrid / on-site), posted-within window, optional minimum salary.
+2. Vantage queries Adzuna (20-country job board API) and Remotive (global remote-only board) in parallel, deduplicates by company+title hash, and gets up to ~50 raw candidates.
+3. Gemini 2.5 Flash scores each candidate in one batched call against the user's CV summary (auto-populated from prior prep-pack analyses) and the role's stated requirements.
+4. Returns up to 10 results with: match score (0-100), ghost-job probability (0-100), salary transparency, skill-match tags, ATS pass likelihood, time-to-apply estimate, and a one-line fit explanation.
+5. Each result has actions: "Save to Tracker" (one-click into the in-app Application Tracker), "Apply via Vantage" (deep-link the JD URL into the prep-pack analyzer), or "Original" (open the original listing).
+
+Pricing for the search itself:
+- First scan in any rolling 24h window is FREE per user (server-tracked, refresh-proof).
+- Subsequent scans cost 1 token each.
+- If the AI returns zero usable mappings, the token is automatically refunded.
+
+Application Tracker is a separate localStorage-backed feature inside the Dashboard. Tracks saved/applied/phone-screen/on-site/offer/rejected/withdrawn status per job, flags applications >14 days stale, fully searchable and filterable. Per-device, per-user storage with logout sweep.
+
 ## Pricing (current)
 
 - **Starter:** £5 / $5 — 20 prep packs. One-time top-up. Tokens never expire.

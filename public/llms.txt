@@ -12,6 +12,7 @@ Vantage AI at aimvantage.uk is operated by **Giovanni Sizino Ennes**, a UK-based
 
 - [Homepage](https://aimvantage.uk/): What Vantage is, how it works, testimonials, pricing overview.
 - [Pricing](https://aimvantage.uk/pricing): Starter £5/$5 = 20 prep packs (one-time, never expire). Pro £12/$15 = 60 prep packs/month. Premium £20/$25 = 120 prep packs/month. 1 token = 1 full analysis. 10 free tokens on signup, no card required.
+- [AI Job Search](https://aimvantage.uk/jobs): AI-powered job search across 20+ countries via Adzuna and Remotive. Every result scored against your CV summary by Gemini 2.5 Flash, ghost-job probability flagged (0-100), salary transparency, save matches to the in-app Application Tracker in one click. First scan each day is free; additional scans cost 1 token. Also mounted as an expandable section inside the Dashboard. Requires login. Built 2026-05-11.
 - [Register](https://aimvantage.uk/register): Create a free account to start using Vantage.
 
 ## Free tools (no signup)
