@@ -362,23 +362,49 @@ async function getProfile(userId: string, fields: string) {
   // during signup). The API was returning 'Profile not found' to those
   // users on every call.
   //
-  // Lazy-create the row here so the user recovers automatically. We pull
-  // the email from auth.users (admin endpoint, requires service role).
-  // Initial token grant matches the trigger's default of 10.
+  // Lazy-create the row here so the user recovers automatically.
+  // profiles.email is NOT NULL (schema.sql:10) so we have to resolve a
+  // non-null email value or the INSERT fails the constraint check —
+  // we walk multiple paths off the Supabase admin user object, with a
+  // synthetic last-resort so the user is never stuck. They can fix it
+  // later in Account settings.
   try {
     const authRes = await fetch(`${SUPABASE_URL}/auth/v1/admin/users/${encodeURIComponent(userId)}`, {
       headers: { apikey: SUPABASE_SERVICE_KEY, Authorization: `Bearer ${SUPABASE_SERVICE_KEY}` },
     });
     if (!authRes.ok) {
-      // auth.users lookup failed → can't safely create a profile (we'd
-      // be creating a row for a userId that may not be a real user).
+      console.warn(`getProfile: admin user lookup returned ${authRes.status} for ${userId}`);
       return null;
     }
     const authUser = await authRes.json();
-    const email = authUser?.email || null;
-    const fullName = authUser?.user_metadata?.full_name || null;
-    const avatarUrl = authUser?.user_metadata?.avatar_url || null;
+    // Some Supabase versions wrap the response as { user: {...} }; unwrap.
+    const u = authUser?.user || authUser;
+    // Walk through every reasonable place the email might live.
+    const identities = Array.isArray(u?.identities) ? u.identities : [];
+    const identityEmail = identities.find((i: any) => i?.identity_data?.email)?.identity_data?.email;
+    const email = u?.email
+      || u?.new_email
+      || u?.user_metadata?.email
+      || identityEmail
+      || `${userId}@vantage-recovered.local`;
+    const fullName = u?.user_metadata?.full_name
+      || u?.user_metadata?.name
+      || identities.find((i: any) => i?.identity_data?.full_name)?.identity_data?.full_name
+      || null;
+    const avatarUrl = u?.user_metadata?.avatar_url
+      || u?.user_metadata?.picture
+      || identities.find((i: any) => i?.identity_data?.avatar_url)?.identity_data?.avatar_url
+      || null;
 
+    const createBody = {
+      id: userId,
+      email,
+      full_name: fullName,
+      avatar_url: avatarUrl,
+      token_balance: 10,
+      plan: 'starter',
+      subscription_status: 'inactive',
+    };
     const createRes = await fetch(`${SUPABASE_URL}/rest/v1/profiles`, {
       method: 'POST',
       headers: {
@@ -387,30 +413,22 @@ async function getProfile(userId: string, fields: string) {
         apikey: SUPABASE_SERVICE_KEY,
         Authorization: `Bearer ${SUPABASE_SERVICE_KEY}`,
       },
-      body: JSON.stringify({
-        id: userId,
-        email,
-        full_name: fullName,
-        avatar_url: avatarUrl,
-        token_balance: 10,
-        plan: 'starter',
-        subscription_status: 'inactive',
-      }),
+      body: JSON.stringify(createBody),
     });
     if (createRes.ok) {
-      // Re-fetch with the caller's requested field set so we return the
-      // exact shape they asked for, not whatever the INSERT returned.
       const retryRes = await fetch(
         `${SUPABASE_URL}/rest/v1/profiles?id=eq.${userId}&select=${fields}`,
         { headers: { apikey: SUPABASE_SERVICE_KEY, Authorization: `Bearer ${SUPABASE_SERVICE_KEY}` } }
       );
       const retried = await retryRes.json();
       if (retried?.length) return retried[0];
+      console.warn(`getProfile: post-create re-fetch empty for ${userId}`);
     } else {
-      console.warn(`getProfile: lazy-create returned ${createRes.status} for user ${userId}`);
+      const errBody = await createRes.text().catch(() => '');
+      console.warn(`getProfile: lazy-create returned ${createRes.status} for ${userId} — body: ${errBody.slice(0, 300)} — resolved email: ${email}`);
     }
   } catch (err: any) {
-    console.warn(`getProfile: lazy-create error for user ${userId}: ${err?.message || ''}`);
+    console.warn(`getProfile: lazy-create exception for ${userId}: ${err?.message || ''}`);
   }
 
   return null;

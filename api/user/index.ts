@@ -47,16 +47,32 @@ async function handleCredits(_request: any, response: any, userId: string) {
   // Lazy-create fallback (mirrors the same recovery path in
   // /api/interview/[action].ts:getProfile). Triggered when the
   // on_auth_user_created Supabase trigger didn't fire for this user's
-  // signup (we have seen accounts where the trigger was added after the
-  // account existed, or it silently failed). Without this, every
-  // /api/credits call returns 404 forever and the user looks token-less
-  // even though they should have the default grant.
+  // signup. profiles.email is NOT NULL (schema.sql:10) so we must
+  // resolve a non-null email — walking multiple paths off the admin
+  // user object with a synthetic last-resort.
   try {
     const authRes = await fetch(`${SUPABASE_URL}/auth/v1/admin/users/${encodeURIComponent(userId)}`, {
       headers: { apikey: SUPABASE_SERVICE_KEY, Authorization: `Bearer ${SUPABASE_SERVICE_KEY}` },
     });
     if (authRes.ok) {
       const authUser = await authRes.json();
+      const u = authUser?.user || authUser;
+      const identities = Array.isArray(u?.identities) ? u.identities : [];
+      const identityEmail = identities.find((i: any) => i?.identity_data?.email)?.identity_data?.email;
+      const email = u?.email
+        || u?.new_email
+        || u?.user_metadata?.email
+        || identityEmail
+        || `${userId}@vantage-recovered.local`;
+      const fullName = u?.user_metadata?.full_name
+        || u?.user_metadata?.name
+        || identities.find((i: any) => i?.identity_data?.full_name)?.identity_data?.full_name
+        || null;
+      const avatarUrl = u?.user_metadata?.avatar_url
+        || u?.user_metadata?.picture
+        || identities.find((i: any) => i?.identity_data?.avatar_url)?.identity_data?.avatar_url
+        || null;
+
       const createRes = await fetch(`${SUPABASE_URL}/rest/v1/profiles`, {
         method: 'POST',
         headers: {
@@ -67,9 +83,9 @@ async function handleCredits(_request: any, response: any, userId: string) {
         },
         body: JSON.stringify({
           id: userId,
-          email: authUser?.email || null,
-          full_name: authUser?.user_metadata?.full_name || null,
-          avatar_url: authUser?.user_metadata?.avatar_url || null,
+          email,
+          full_name: fullName,
+          avatar_url: avatarUrl,
           token_balance: 10,
           plan: 'starter',
           subscription_status: 'inactive',
@@ -78,10 +94,13 @@ async function handleCredits(_request: any, response: any, userId: string) {
       if (createRes.ok) {
         return response.status(200).json({ success: true, token_balance: 10 });
       }
-      console.warn(`handleCredits: lazy-create returned ${createRes.status} for user ${userId}`);
+      const errBody = await createRes.text().catch(() => '');
+      console.warn(`handleCredits: lazy-create returned ${createRes.status} for ${userId} — body: ${errBody.slice(0, 300)} — resolved email: ${email}`);
+    } else {
+      console.warn(`handleCredits: admin user lookup returned ${authRes.status} for ${userId}`);
     }
   } catch (err: any) {
-    console.warn(`handleCredits: lazy-create error for user ${userId}: ${err?.message || ''}`);
+    console.warn(`handleCredits: lazy-create exception for ${userId}: ${err?.message || ''}`);
   }
 
   return response.status(404).json({ error: 'Profile not found' });
