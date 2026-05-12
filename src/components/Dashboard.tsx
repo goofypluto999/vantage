@@ -966,7 +966,7 @@ export default function Dashboard() {
               Pre-filled from your AI Job Search: <strong>{prefilledFromJobSearch.title}</strong> at <strong>{prefilledFromJobSearch.company}</strong>. Add your CV and run the full prep analysis below.
             </p>
             <button type="button" onClick={() => setShowPrefillBanner(false)}
-              className="px-3 py-1 rounded text-xs font-semibold text-violet-200/80 hover:text-white hover:bg-white/5 transition"
+              className="px-3 py-1 rounded text-xs font-semibold text-violet-200/80 hover:text-white hover:bg-white/5 transition min-h-[36px]"
               aria-label="Dismiss prefill banner">Dismiss</button>
           </div>
         )}

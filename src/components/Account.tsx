@@ -130,7 +130,7 @@ export default function Account() {
 
           <button
             onClick={() => navigate('/dashboard')}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-white/5 text-white/50 hover:text-white transition-colors text-sm"
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-white/5 text-white/50 hover:text-white transition-colors text-sm min-h-[44px]"
           >
             <ArrowLeft className="w-4 h-4" aria-hidden="true" />
             Back to Dashboard
@@ -200,13 +200,13 @@ export default function Account() {
                 <button
                   onClick={handleSaveName}
                   disabled={nameSaving}
-                  className="px-4 py-2 rounded-lg bg-violet-600 text-white text-sm font-semibold hover:bg-violet-500 transition-colors disabled:opacity-50"
+                  className="px-4 py-2 rounded-lg bg-violet-600 text-white text-sm font-semibold hover:bg-violet-500 transition-colors disabled:opacity-50 min-h-[44px]"
                 >
                   {nameSaving ? 'Saving...' : 'Save'}
                 </button>
                 <button
                   onClick={() => { setEditingName(false); setNameValue(profile?.full_name || ''); }}
-                  className="px-3 py-2 rounded-lg bg-white/5 text-white/50 text-sm hover:bg-white/10 transition-colors"
+                  className="px-3 py-2 rounded-lg bg-white/5 text-white/50 text-sm hover:bg-white/10 transition-colors min-h-[44px]"
                 >
                   Cancel
                 </button>
@@ -304,7 +304,7 @@ export default function Account() {
                 <button
                   onClick={handleManageSubscription}
                   disabled={portalLoading}
-                  className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white/5 border border-white/10 text-white text-sm font-semibold hover:bg-white/10 transition-colors disabled:opacity-50"
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white/5 border border-white/10 text-white text-sm font-semibold hover:bg-white/10 transition-colors disabled:opacity-50 min-h-[44px]"
                 >
                   <ExternalLink className="w-4 h-4" aria-hidden="true" />
                   {portalLoading ? 'Opening...' : 'Manage Subscription'}
@@ -312,7 +312,7 @@ export default function Account() {
               ) : (
                 <button
                   onClick={() => navigate('/pricing')}
-                  className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-gradient-to-r from-violet-600 to-purple-600 text-white text-sm font-bold hover:from-violet-500 hover:to-purple-500 transition-all"
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-gradient-to-r from-violet-600 to-purple-600 text-white text-sm font-bold hover:from-violet-500 hover:to-purple-500 transition-all min-h-[44px]"
                 >
                   <Zap className="w-4 h-4" aria-hidden="true" />
                   Subscribe
@@ -320,7 +320,7 @@ export default function Account() {
               )}
               <button
                 onClick={() => navigate('/pricing')}
-                className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white/5 border border-white/10 text-white/70 text-sm font-semibold hover:bg-white/10 transition-colors"
+                className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white/5 border border-white/10 text-white/70 text-sm font-semibold hover:bg-white/10 transition-colors min-h-[44px]"
               >
                 <Crown className="w-4 h-4" aria-hidden="true" />
                 {hasActiveSub ? 'Upgrade Plan' : 'View Plans'}
@@ -392,7 +392,7 @@ export default function Account() {
             <button
               onClick={handleChangePassword}
               disabled={passwordSaving || !newPassword || !confirmPassword}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-violet-600 text-white text-sm font-semibold hover:bg-violet-500 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-violet-600 text-white text-sm font-semibold hover:bg-violet-500 transition-colors disabled:opacity-40 disabled:cursor-not-allowed min-h-[44px]"
             >
               <Lock className="w-4 h-4" aria-hidden="true" />
               {passwordSaving ? 'Updating...' : 'Change Password'}
@@ -408,7 +408,7 @@ export default function Account() {
             <p className="text-white/60 text-sm mb-4">Sign out of your account on this device.</p>
             <button
               onClick={handleSignOut}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm font-semibold hover:bg-red-500/20 transition-colors"
+              className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm font-semibold hover:bg-red-500/20 transition-colors min-h-[44px]"
             >
               <LogOut className="w-4 h-4" aria-hidden="true" />
               Sign Out
