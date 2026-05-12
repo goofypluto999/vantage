@@ -1968,7 +1968,22 @@ export default function Dashboard() {
                     <span className="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 text-xs font-bold ml-2">New</span>
                   </h3>
                   <button
-                    onClick={() => setShowJobSearch((v) => !v)}
+                    onClick={() => {
+                      setShowJobSearch((v) => {
+                        const next = !v;
+                        // On expand only, smooth-scroll the panel into view so
+                        // mobile users aren't stranded looking at the trigger
+                        // button while the form lives below the fold. RAF wait
+                        // gives the AnimatePresence child a frame to mount.
+                        if (next) {
+                          window.requestAnimationFrame(() => {
+                            const el = document.getElementById('dashboard-jobsearch-panel');
+                            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                          });
+                        }
+                        return next;
+                      });
+                    }}
                     aria-expanded={showJobSearch}
                     aria-controls="dashboard-jobsearch-panel"
                     className="px-4 py-2 rounded-lg bg-gradient-to-r from-violet-600 to-purple-600 text-white font-semibold text-sm hover:from-violet-500 hover:to-purple-500 transition-all flex items-center gap-2 min-h-[44px]"
