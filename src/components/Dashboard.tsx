@@ -970,6 +970,70 @@ export default function Dashboard() {
               aria-label="Dismiss prefill banner">Dismiss</button>
           </div>
         )}
+
+        {/* AI Job Search — expandable inline section, persistent across
+            input + results views (moved out of the results-gated block
+            on 2026-05-12 after a user reported they couldn't find it).
+            This is the primary surface for the feature. Standalone /jobs
+            route still exists for deep-link/SEO but Dashboard is where
+            users naturally flow from prep → search → save → analyze.
+            Lazy-loaded — chunk only arrives if user expands. */}
+        <div className="mb-6 p-6 rounded-2xl bg-white/5 border border-white/10">
+          <div className="flex items-center justify-between flex-wrap gap-3">
+            <h3 className="text-lg font-bold text-white flex items-center gap-2">
+              <Briefcase className="w-5 h-5 text-violet-400" />
+              AI Job Search
+              <span className="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 text-xs font-bold ml-2">New</span>
+            </h3>
+            <button
+              onClick={() => {
+                setShowJobSearch((v) => {
+                  const next = !v;
+                  if (next) {
+                    window.requestAnimationFrame(() => {
+                      const el = document.getElementById('dashboard-jobsearch-panel');
+                      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    });
+                  }
+                  return next;
+                });
+              }}
+              aria-expanded={showJobSearch}
+              aria-controls="dashboard-jobsearch-panel"
+              className="px-4 py-2 rounded-lg bg-gradient-to-r from-violet-600 to-purple-600 text-white font-semibold text-sm hover:from-violet-500 hover:to-purple-500 transition-all flex items-center gap-2 min-h-[44px]"
+            >
+              {showJobSearch ? (
+                <><ChevronRight className="w-4 h-4 rotate-90" /> Hide search</>
+              ) : (
+                <><Sparkles className="w-4 h-4" /> Find new jobs</>
+              )}
+            </button>
+          </div>
+          <p className="text-white/60 text-sm mt-2">
+            Search 20 countries + global remote, AI-scored against your CV, ghost-filtered, salary-transparent. <strong className="text-white/80">First scan today is free</strong>, then 1 token per scan. Save results to your tracker or click "Apply via Vantage" to drop the JD URL straight into the analyzer.
+          </p>
+          <AnimatePresence>
+            {showJobSearch && (
+              <motion.div
+                id="dashboard-jobsearch-panel"
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                className="overflow-hidden mt-5"
+              >
+                <React.Suspense fallback={
+                  <div className="p-6 text-center text-white/50 text-sm flex items-center justify-center gap-2">
+                    <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" />
+                    Loading search…
+                  </div>
+                }>
+                  <JobSearchSection embedded={true} />
+                </React.Suspense>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
         <AnimatePresence mode="wait">
           {step === 'input' && (
             // initial={false} — skip entrance animation (mirrors Pricing/Auth
@@ -1952,72 +2016,6 @@ export default function Dashboard() {
                 <p className="text-white/60 text-sm mt-2">
                   Got an offer? Don't wing it. Enter what they offered + what you want (base, signing, RSU, bonus %, PTO, remote policy). Returns: a calibrated email back to the recruiter, a 60–90 second phone script, 5–7 in-conversation talking points, and warnings if any of your asks look risky for your level.
                 </p>
-              </div>
-
-              {/* AI Job Search — expandable inline section.
-                  Per user feedback 2026-05-11: this is the primary
-                  surface for the feature. Standalone /jobs route still
-                  exists for deep-link/SEO but Dashboard is where users
-                  naturally flow from prep → search → save → analyze.
-                  Lazy-loaded — chunk only arrives if user expands. */}
-              <div className="p-6 rounded-2xl bg-white/5 border border-white/10">
-                <div className="flex items-center justify-between flex-wrap gap-3">
-                  <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                    <Briefcase className="w-5 h-5 text-violet-400" />
-                    AI Job Search
-                    <span className="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 text-xs font-bold ml-2">New</span>
-                  </h3>
-                  <button
-                    onClick={() => {
-                      setShowJobSearch((v) => {
-                        const next = !v;
-                        // On expand only, smooth-scroll the panel into view so
-                        // mobile users aren't stranded looking at the trigger
-                        // button while the form lives below the fold. RAF wait
-                        // gives the AnimatePresence child a frame to mount.
-                        if (next) {
-                          window.requestAnimationFrame(() => {
-                            const el = document.getElementById('dashboard-jobsearch-panel');
-                            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                          });
-                        }
-                        return next;
-                      });
-                    }}
-                    aria-expanded={showJobSearch}
-                    aria-controls="dashboard-jobsearch-panel"
-                    className="px-4 py-2 rounded-lg bg-gradient-to-r from-violet-600 to-purple-600 text-white font-semibold text-sm hover:from-violet-500 hover:to-purple-500 transition-all flex items-center gap-2 min-h-[44px]"
-                  >
-                    {showJobSearch ? (
-                      <><ChevronRight className="w-4 h-4 rotate-90" /> Hide search</>
-                    ) : (
-                      <><Sparkles className="w-4 h-4" /> Find new jobs</>
-                    )}
-                  </button>
-                </div>
-                <p className="text-white/60 text-sm mt-2">
-                  Search 20 countries + global remote, AI-scored against your CV, ghost-filtered, salary-transparent. <strong className="text-white/80">First scan today is free</strong>, then 1 token per pack of 10. Save results to your tracker below or click "Apply via Vantage" to drop the JD URL straight into the analyzer.
-                </p>
-                <AnimatePresence>
-                  {showJobSearch && (
-                    <motion.div
-                      id="dashboard-jobsearch-panel"
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      className="overflow-hidden mt-5"
-                    >
-                      <React.Suspense fallback={
-                        <div className="p-6 text-center text-white/50 text-sm flex items-center justify-center gap-2">
-                          <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" />
-                          Loading search…
-                        </div>
-                      }>
-                        <JobSearchSection embedded={true} />
-                      </React.Suspense>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
               </div>
 
               {/* Application Tracker — local CRM for jobs the user is
