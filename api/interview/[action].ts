@@ -1452,14 +1452,14 @@ For each top-10 ranked job output JSON with:
   - "rawIndex": integer 0..${rawForAI.length - 1}
   - "matchScore": integer 0..100
   - "fitOneLiner": 1 sentence, max 200 chars, specific
-  - "skillMatches": array of 1-4 short strings
-  - "skillGaps": array of 0-3 short strings
+  - "skillMatches": comma-separated string of 1-4 matching skills (e.g. "Python, SQL, AWS")
+  - "skillGaps": comma-separated string of 0-3 missing skills (empty string if none)
   - "salaryEstimate": string OR null
   - "ghostProbability": integer 0..100
   - "timeToApply": short string
   - "atsPassLikelihood": "high" / "medium" / "low"
 
-Penalize ghost-tells heavily. NEVER invent skills/companies not in CV/JD. STRICT JSON array. No markdown. No prose.`;
+Penalize ghost-tells heavily. NEVER invent skills/companies not in CV/JD. STRICT JSON array. No markdown. No prose. All values are STRINGS or NUMBERS — no nested arrays or objects.`;
 
     // SINGLE attempt — retries previously caused 30s Vercel function-timeout
     // ('Unexpected server response' on the client because the timeout returns
@@ -1517,8 +1517,19 @@ Penalize ghost-tells heavily. NEVER invent skills/companies not in CV/JD. STRICT
           ...job,
           matchScore,
           fitOneLiner: safeStringField(s?.fitOneLiner, 250),
-          skillMatches: safeStringArray(s?.skillMatches, 6),
-          skillGaps: safeStringArray(s?.skillGaps, 4),
+          // skillMatches / skillGaps used to be JSON arrays in the AI output,
+          // but nested arrays inside the top-level array caused the response
+          // to be brittle when Gemini truncated or added markdown wrapping —
+          // unbalanced inner brackets broke extractJson's bracket walker.
+          // Now the AI returns comma-separated strings and we split here.
+          // Falls back to whatever shape we got: if AI accidentally returned
+          // an array (older schema), safeStringArray still handles it.
+          skillMatches: typeof s?.skillMatches === 'string'
+            ? s.skillMatches.split(',').map((x: string) => x.trim()).filter((x: string) => x.length > 0).slice(0, 6)
+            : safeStringArray(s?.skillMatches, 6),
+          skillGaps: typeof s?.skillGaps === 'string'
+            ? s.skillGaps.split(',').map((x: string) => x.trim()).filter((x: string) => x.length > 0).slice(0, 4)
+            : safeStringArray(s?.skillGaps, 4),
           salaryEstimate: typeof s?.salaryEstimate === 'string' ? s.salaryEstimate.trim().slice(0, 100) : null,
           ghostProbability: ghostProb,
           timeToApply: safeStringField(s?.timeToApply, 50),
