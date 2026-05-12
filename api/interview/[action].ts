@@ -1398,6 +1398,49 @@ async function handleJobSearch(request: any, response: any) {
       });
     }
 
+    // PER-USER DEDUPE: filter out jobs the user has seen in the last 30
+    // days (table: seen_job_searches, migration 2026-05-12-seen-jobs-dedup).
+    // Without this, two scans with the same filters return the same top 10
+    // and burn a token both times — reported as 'wasting their tokens'.
+    //
+    // Best-effort: if the SELECT fails (table missing, network blip), we
+    // log + proceed with the unfiltered raw jobs. Worst case: user sees a
+    // repeat job — same as today's behaviour. No regression.
+    let seenIds = new Set<string>();
+    try {
+      const seenRes = await fetch(
+        `${SUPABASE_URL}/rest/v1/seen_job_searches?user_id=eq.${encodeURIComponent(user.id)}&seen_at=gte.${encodeURIComponent(new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString())}&select=job_external_id`,
+        { headers: { apikey: SUPABASE_SERVICE_KEY, Authorization: `Bearer ${SUPABASE_SERVICE_KEY}` } }
+      );
+      if (seenRes.ok) {
+        const rows = await seenRes.json();
+        if (Array.isArray(rows)) {
+          for (const r of rows) {
+            if (r?.job_external_id) seenIds.add(String(r.job_external_id));
+          }
+        }
+      } else {
+        console.warn(`jobsearch dedup: seen_job_searches SELECT returned ${seenRes.status}`);
+      }
+    } catch (err: any) {
+      console.warn(`jobsearch dedup: SELECT error (proceeding without filter): ${err?.message || ''}`);
+    }
+    const filteredRawJobs = seenIds.size > 0
+      ? fetchResult.rawJobs.filter((j: any) => !seenIds.has(String(j?.id || '')))
+      : fetchResult.rawJobs;
+
+    // All available jobs already seen — tell the user explicitly so they
+    // don't think the tool is broken, and refund any spent token.
+    if (filteredRawJobs.length === 0) {
+      if (didCharge) await refundTokens(user.id, JOBSEARCH_COST);
+      return response.status(200).json({
+        jobs: [], sources: fetchResult.perSourceCounts, source_report: fetchResult.perSourceReport,
+        fetched: fetchResult.fetched, deduped: fetchResult.deduped, token_balance: newBalance, was_free: !didCharge,
+        next_free_at: nextFreeAt,
+        message: `You've already seen all ${fetchResult.deduped} jobs matching these filters in the last 30 days. Try different keywords, a wider location, or come back when more roles are posted.`,
+      });
+    }
+
     // Aggressively reduced after live testing showed POST /api/interview/
     // jobsearch returning 504 Gateway Timeout. The handler was exceeding
     // Vercel's 30s budget even with my prior reductions — the Gemini call
@@ -1409,7 +1452,9 @@ async function handleJobSearch(request: any, response: any) {
     // Combined with the maxOutputTokens drop below + maxDuration bump to
     // 60s in vercel.json, the function now has 35-40s of headroom against
     // a realistic worst case of 20s total.
-    const rawForAI = fetchResult.rawJobs.slice(0, 12);
+    // Use the dedupe-filtered list (filteredRawJobs) — NOT fetchResult.rawJobs.
+    // Otherwise the seen-jobs filter above is a no-op.
+    const rawForAI = filteredRawJobs.slice(0, 12);
     const cvSummary = typeof profile.cv_summary === 'string' && profile.cv_summary.length > 0
       ? profile.cv_summary.slice(0, 1000)
       : 'No CV summary on file — score based on listed details vs. filters.';
@@ -1575,6 +1620,32 @@ Penalize ghost-tells heavily. NEVER invent skills/companies not in CV/JD. STRICT
       } catch (err: any) {
         console.warn('jobsearch: failed to record free-scan timestamp', err?.message || '');
       }
+    }
+
+    // Record returned IDs as 'seen' so subsequent scans don't repeat them.
+    // Uses Prefer: resolution=merge-duplicates so re-served jobs just
+    // refresh the seen_at timestamp (extending the 30-day exclusion window).
+    // Best-effort: failure is logged but doesn't break the user's response.
+    try {
+      const seenRows = scored.map((j: any) => ({
+        user_id: user.id,
+        job_external_id: String(j?.id || '').slice(0, 200),
+        seen_at: new Date().toISOString(),
+      })).filter((r: any) => r.job_external_id.length > 0);
+      if (seenRows.length > 0) {
+        await fetch(`${SUPABASE_URL}/rest/v1/seen_job_searches`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Prefer': 'return=minimal,resolution=merge-duplicates',
+            apikey: SUPABASE_SERVICE_KEY,
+            Authorization: `Bearer ${SUPABASE_SERVICE_KEY}`,
+          },
+          body: JSON.stringify(seenRows),
+        });
+      }
+    } catch (err: any) {
+      console.warn(`jobsearch: failed to record seen jobs for dedup: ${err?.message || ''}`);
     }
 
     return response.status(200).json({
