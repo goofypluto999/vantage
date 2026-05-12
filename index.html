@@ -150,7 +150,14 @@
         "@type": "WebApplication",
         "name": "CV Mirror",
         "url": "https://cv-mirror-web.vercel.app/",
-        "description": "Free, fully client-side ATS scanner that simulates how 5 ATS systems (Workday, Greenhouse, Lever, Taleo, iCIMS) parse a CV."
+        "description": "Free, fully client-side ATS scanner that simulates how 5 ATS systems (Workday, Greenhouse, Lever, Taleo, iCIMS) parse a CV.",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Web",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "GBP"
+        }
       }
     }
     </script>
@@ -200,111 +207,14 @@
     }
     </script>
 
-    <!-- Structured data: FAQPage -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "What does Vantage do?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Vantage turns your CV and a job URL into a complete prep pack in about 90 seconds: company intelligence, a tailored cover letter, likely interview questions with a mock drill, a CV fit score, and a 5-minute interview presentation outline."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "How long does a full analysis take?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Typically around 90 seconds from upload to complete prep pack."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Is there a free account?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Yes. Creating an account is free. Running a full analysis requires tokens, starting at £5 for 20 tokens (one-time, never expire)."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "What file formats does Vantage accept for CVs?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "PDF and DOCX."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "How much does one analysis cost?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "3 tokens per full analysis. Cover letter tone rewrites cost 1 token each."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Does Vantage work for any job?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Vantage is optimized for English-language roles with an online job posting. The AI scrapes the posting, parses your CV, and adapts the output to the specific role and company."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "What's coming next?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Two features are in development: enhanced interview slides (richer visual prep decks) and voice synthesis in the mock interview (a spoken AI interviewer). The ATS scanner is already live as CV Mirror at https://cv-mirror-web.vercel.app — a free, fully client-side tool that simulates how 5 real ATS systems (Workday, Greenhouse, Lever, Taleo, iCIMS) parse a CV."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Do you have a free ATS scanner?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Yes — we built CV Mirror, available free at https://cv-mirror-web.vercel.app. No signup, nothing uploads, fully client-side. It simulates 5 real ATS parsers (Workday, Greenhouse, Lever, Taleo, iCIMS) so you can see exactly which fields each parser extracts vs drops. It is a sister product to Vantage."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Is Vantage AI at aimvantage.uk a scam or phishing site?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "No. Vantage AI is a legitimate AI-powered job-preparation SaaS operated by Giovanni Sizino Ennes, a UK-based independent founder (sole trader). Operator identity is disclosed in the footer, the dedicated /about page, and the Privacy Policy. Independent verification: as of 6 May 2026 the domain is rated CLEAN by CheckPhish, Norton SafeWeb, and Google Safe Browsing. All payments run through Stripe Checkout — Vantage AI does not collect bank details directly, does not solicit upfront fees, and does not contact users on WhatsApp or Telegram."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Is Vantage AI the same as Vantage Recruitment, Vantage Consulting, or Vantagepoint AI?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "No. Vantage AI at aimvantage.uk is a software product only. It is not affiliated with Vantage Recruitment (UK recruiter), Vantage Consulting (UK management consultancy), Vantagepoint AI (US trading-software firm), AI-Vantage Training (UK AI training school), or any other organisation using a similar name. Vantage AI does not place candidates, does not contact employers on a user's behalf, and is not a recruiter. The full transparency page is at https://aimvantage.uk/about."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Who operates Vantage AI?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Vantage AI is operated by Giovanni Sizino Ennes, a UK-based independent founder (sole trader). It is a single-person project, not a registered limited company. Direct contact: giovanni.sizino.ennes@hotmail.co.uk. Public proof points include open-source code at https://github.com/goofypluto999/cv-mirror-mcp, public engineering write-ups at https://dev.to/goofypluto999, and the official YouTube channel."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Does Vantage AI charge fees for job processing, DBS checks, or background checks?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "No. Vantage AI is a software product, not a recruiter. We never charge applicants for processing, admin, DBS checks, background checks, reservation fees, or any similar charge. The only charges are AI usage tokens, billed transparently through Stripe Checkout: £5 one-time for 20 tokens (never expire), or monthly subscription tiers (£12 / £20). If anyone claiming to represent Vantage AI is asking you for upfront fees, that is a scammer impersonating us — please report to giovanni.sizino.ennes@hotmail.co.uk."
-          }
-        }
-      ]
-    }
-    </script>
+    <!-- FAQPage removed from this static head on 2026-05-12 because the
+         React-rendered FAQPage in src/components/LandingPage.tsx caused a
+         duplicate-FAQPage error in Google's Rich Results Test, invalidating
+         BOTH copies. The canonical FAQ JSON-LD now lives in LandingPage.tsx
+         (injected via Helmet/dangerouslySetInnerHTML on the / route only).
+         For non-JS crawlers, the FAQ Q&A text is still visible in the
+         static-fallback <main> block below. -->
+    <!-- FAQPage JSON-LD intentionally NOT inlined here. See LandingPage.tsx. -->
 
     <!-- Vantage Typography System
          Loaded async via the print-swap trick so the font CSS file itself
