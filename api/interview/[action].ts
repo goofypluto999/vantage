@@ -122,6 +122,42 @@ async function jsFetchTimeout(url: string, init: RequestInit = {}, timeoutMs = 5
 }
 
 // Adzuna adapter (https://developer.adzuna.com/docs/search)
+/**
+ * Heuristic work-mode classifier for a raw Adzuna listing. Adzuna's
+ * API has no first-class remote/hybrid/on-site filter, so we scan
+ * the title + description for signal phrases. Used after fetch to
+ * filter results to the user's chosen mode. Reported 2026-05-12:
+ * 'I selected REMOTE jobs, BUT I'm still getting in-person jobs'.
+ */
+function inferAdzunaWorkMode(title: string, description: string, location: string): 'remote' | 'hybrid' | 'on-site' {
+  const blob = `${title || ''}\n${description || ''}\n${location || ''}`.toLowerCase();
+  // Strong remote signals — phrases that virtually guarantee remote.
+  const remoteSignals = [
+    'fully remote', '100% remote', 'remote-first', 'remote only',
+    'work from home', 'work-from-home', 'wfh',
+    'remote, anywhere', 'remote (', 'remote -',
+  ];
+  // Hybrid signals — explicitly hybrid arrangements.
+  const hybridSignals = [
+    'hybrid', 'flexible working', 'flexible hybrid',
+    '2 days in office', '3 days in office', '2-3 days in office',
+    'mix of remote and office', 'remote/hybrid', 'hybrid/remote',
+    'partially remote', 'office and home',
+  ];
+  // Lone 'remote' is ambiguous (could mean 'remote office in...') so
+  // we treat it as a weak remote signal — counts ONLY if no hybrid
+  // signal also fires.
+  const hasHybrid = hybridSignals.some((s) => blob.includes(s));
+  if (hasHybrid) return 'hybrid';
+  const hasStrongRemote = remoteSignals.some((s) => blob.includes(s));
+  if (hasStrongRemote) return 'remote';
+  // Lone 'remote' word — treat as remote unless 'office' / 'on-site' also present
+  if (/\bremote\b/.test(blob) && !/\bon[\s-]?site\b|\bin[\s-]?office\b/.test(blob)) {
+    return 'remote';
+  }
+  return 'on-site';
+}
+
 async function jsAdzuna(params: JsParams): Promise<RawJob[]> {
   const id = process.env.ADZUNA_APP_ID || '';
   const key = process.env.ADZUNA_APP_KEY || '';
@@ -136,6 +172,14 @@ async function jsAdzuna(params: JsParams): Promise<RawJob[]> {
   if (params.location?.trim()) url.searchParams.set('where', params.location.trim().slice(0, 100));
   if (params.salaryMin && params.salaryMin > 0) url.searchParams.set('salary_min', String(params.salaryMin));
   url.searchParams.set('max_days_old', String(params.postedWithin));
+  // Adzuna supports a `what_or` keyword bundle — when the user picked
+  // remote/hybrid, append those terms to bias the search server-side
+  // BEFORE we apply the heuristic filter below. Fewer wasted results.
+  if (params.workMode === 'remote') {
+    url.searchParams.set('what_or', 'remote work-from-home wfh');
+  } else if (params.workMode === 'hybrid') {
+    url.searchParams.set('what_or', 'hybrid');
+  }
   try {
     const res = await jsFetchTimeout(url.toString(), {}, 5000);
     if (!res.ok) {
@@ -144,22 +188,34 @@ async function jsAdzuna(params: JsParams): Promise<RawJob[]> {
     }
     const data: any = await res.json();
     const results: any[] = Array.isArray(data?.results) ? data.results : [];
-    return results.map((r: any): RawJob => {
+    const mapped: RawJob[] = results.map((r: any): RawJob => {
       const u = jsSafeText(r?.redirect_url || '', 2000);
+      const title = jsSafeText(r?.title, 200);
+      const company = jsSafeText(r?.company?.display_name || r?.company?.name || '', 200);
+      const location = jsSafeText(r?.location?.display_name || '', 200);
+      const description = jsSafeText(r?.description, 4000);
       return {
         id: r?.id ? String(r.id) : jsUrlHash(u),
-        title: jsSafeText(r?.title, 200),
-        company: jsSafeText(r?.company?.display_name || r?.company?.name || '', 200),
-        location: jsSafeText(r?.location?.display_name || '', 200),
+        title,
+        company,
+        location,
         url: u,
-        description: jsSafeText(r?.description, 4000),
+        description,
         postedAt: jsSafeText(r?.created || '', 50),
         salaryMin: typeof r?.salary_min === 'number' ? r.salary_min : undefined,
         salaryMax: typeof r?.salary_max === 'number' ? r.salary_max : undefined,
         salaryCurrency: undefined,
         source: 'adzuna',
+        workMode: inferAdzunaWorkMode(title, description, location),
       };
     });
+    // Apply work-mode filter: 'any' lets everything through; otherwise
+    // only keep listings whose inferred mode matches the user's pick.
+    // This is the actual fix for 'I selected REMOTE jobs, BUT I'm still
+    // getting in-person jobs' — Adzuna's API has no native work-mode
+    // parameter, so we filter post-fetch using the heuristic above.
+    if (params.workMode === 'any') return mapped;
+    return mapped.filter((j) => j.workMode === params.workMode);
   } catch (err: any) {
     console.warn(`adzuna fetch error: ${err?.message || 'unknown'}`);
     return [];

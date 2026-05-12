@@ -135,6 +135,22 @@ function isValidEntry(e: any): e is ApplicationEntry {
 }
 
 /** Write with byte budget enforcement + quota retry. */
+/**
+ * Broadcast a same-tab change event so all useApplicationTracker hook
+ * instances (e.g. JobSearchSection's + ApplicationTracker's) refresh
+ * their `entries` state immediately after a write. The browser's
+ * 'storage' event doesn't fire in the writing tab, so without this
+ * dispatch one hook instance can save and the other doesn't see it
+ * until a refresh. Detail carries the storage key so listeners can
+ * filter to their own scope.
+ */
+function broadcastChange(key: string): void {
+  if (typeof window === 'undefined') return;
+  try {
+    window.dispatchEvent(new CustomEvent('vantage-tracker:change', { detail: { key } }));
+  } catch { /* CustomEvent unsupported — best-effort */ }
+}
+
 function writeSafe(key: string, entries: ApplicationEntry[]): boolean {
   if (typeof window === 'undefined') return false;
   // Reject any single entry exceeding the per-entry budget.
@@ -157,6 +173,7 @@ function writeSafe(key: string, entries: ApplicationEntry[]): boolean {
     if (serialized.length <= MAX_BYTES) {
       try {
         window.localStorage.setItem(key, serialized);
+        broadcastChange(key);
         return true;
       } catch {
         attempt.pop();
@@ -169,6 +186,7 @@ function writeSafe(key: string, entries: ApplicationEntry[]): boolean {
   // Edge case: empty payload still serializable
   try {
     window.localStorage.setItem(key, JSON.stringify({ v: STORAGE_VERSION, entries: [] }));
+    broadcastChange(key);
     return true;
   } catch {
     return false;
@@ -196,15 +214,36 @@ export function useApplicationTracker(
     setEntries(readSafe(key));
   }, [key, enabled]);
 
-  // Cross-tab sync
+  // Cross-tab + cross-component sync.
+  //
+  // The 'storage' event ONLY fires in OTHER tabs/windows — never in the
+  // tab that triggered the write. So when JobSearchSection's hook
+  // instance adds an entry and ApplicationTracker's hook instance is
+  // mounted in the same document, the tracker doesn't see the change
+  // until a full re-render or page refresh. Reported 2026-05-12:
+  // 'when I click the Save to tracker, it does not save to the tracker
+  // section live, it might work when I refresh the page'.
+  //
+  // Fix: emit a custom DOM event on every local write, listen for it
+  // in every hook instance, and re-read from localStorage on receipt.
+  // This is the cheapest cross-instance pub-sub that doesn't require
+  // a React context refactor.
   useEffect(() => {
     if (!enabled) return;
     if (typeof window === 'undefined') return;
     const onStorage = (e: StorageEvent) => {
       if (e.key === key) setEntries(readSafe(key));
     };
+    const onLocalChange = (e: Event) => {
+      const detail = (e as CustomEvent).detail as { key?: string } | undefined;
+      if (!detail || detail.key === key) setEntries(readSafe(key));
+    };
     window.addEventListener('storage', onStorage);
-    return () => window.removeEventListener('storage', onStorage);
+    window.addEventListener('vantage-tracker:change', onLocalChange);
+    return () => {
+      window.removeEventListener('storage', onStorage);
+      window.removeEventListener('vantage-tracker:change', onLocalChange);
+    };
   }, [key, enabled]);
 
   const add = useCallback(
