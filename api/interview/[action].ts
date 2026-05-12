@@ -1398,9 +1398,14 @@ async function handleJobSearch(request: any, response: any) {
       });
     }
 
-    const rawForAI = fetchResult.rawJobs.slice(0, 30);
+    // Reduced from 30 → 20 jobs after observing 'AI scoring failed' on
+    // real users — 30 jobs with 600-char descriptions blew past Gemini's
+    // coherent-output threshold and produced truncated / malformed JSON.
+    // 20 jobs with 400-char descriptions still curates to top 10 with room
+    // for the AI to reason cleanly.
+    const rawForAI = fetchResult.rawJobs.slice(0, 20);
     const cvSummary = typeof profile.cv_summary === 'string' && profile.cv_summary.length > 0
-      ? profile.cv_summary.slice(0, 2000)
+      ? profile.cv_summary.slice(0, 1500)
       : 'No CV summary on file — score based on listed details vs. filters.';
 
     const rawJobLines = rawForAI.map((j: RawJob, idx: number) => {
@@ -1410,7 +1415,7 @@ async function handleJobSearch(request: any, response: any) {
       const safeDesc = (j.description || '')
         .replace(/\[JOB#\d+\|src=[^\]]*\]/gi, '[redacted]')
         .replace(/<<<[A-Z_]+(?:_START|_END)>>>/gi, '[redacted]')
-        .slice(0, 600);
+        .slice(0, 400);
       return `[JOB#${idx}|src=${j.source}] ${j.title} — ${j.company} — ${j.location} — Posted ${j.postedAt || 'unknown'} — ${salaryStr}\n[JOB#${idx}|desc] ${safeDesc}`;
     }).join('\n\n');
 
@@ -1450,19 +1455,44 @@ For each top-10 ranked job output JSON with:
 
 Penalize ghost-tells heavily. NEVER invent skills/companies not in CV/JD. STRICT JSON array. No markdown. No prose.`;
 
+    // Generate-and-parse with one retry. The first attempt uses temp 0.4
+    // (some creative latitude on fitOneLiner). On parse failure — usually
+    // truncation or markdown wrapping — retry once with temp 0 + doubled
+    // output budget + a tighter 'JSON ONLY' suffix. Log both responses
+    // so production failures are diagnosable from Vercel logs instead
+    // of an opaque 500.
     let parsed: any;
-    try {
-      const aiResponse = await ai.models.generateContent({
-        model: 'models/gemini-2.5-flash',
-        contents: [{ parts: [{ text: prompt }] }],
-        config: { temperature: 0.4, maxOutputTokens: 4000 },
-      });
-      if (!aiResponse.text) throw new Error('No response from AI');
-      parsed = extractJson(aiResponse.text);
-    } catch (err: any) {
-      console.error('jobsearch AI error:', err?.message || 'unknown');
-      if (didCharge) await refundTokens(user.id, JOBSEARCH_COST);
-      return response.status(500).json({ error: 'AI scoring failed. Tokens refunded. Try again.' });
+    let lastRawText: string | undefined;
+    let lastError: any;
+    for (let attempt = 1; attempt <= 2; attempt += 1) {
+      try {
+        const attemptPrompt = attempt === 1
+          ? prompt
+          : prompt + '\n\nIMPORTANT: Return ONLY the JSON array, starting with [ and ending with ]. No code fences, no prose before or after.';
+        const aiResponse = await ai.models.generateContent({
+          model: 'models/gemini-2.5-flash',
+          contents: [{ parts: [{ text: attemptPrompt }] }],
+          config: {
+            temperature: attempt === 1 ? 0.4 : 0,
+            maxOutputTokens: attempt === 1 ? 8000 : 16000,
+          },
+        });
+        const text = aiResponse.text;
+        if (!text) throw new Error('No response text from AI');
+        lastRawText = text;
+        parsed = extractJson(text);
+        break; // success — exit retry loop
+      } catch (err: any) {
+        lastError = err;
+        console.warn(`jobsearch AI attempt ${attempt} failed: ${err?.message || 'unknown'}${lastRawText ? ` — first 300 chars of raw: ${lastRawText.slice(0, 300)}` : ''}`);
+        if (attempt === 2) {
+          console.error(`jobsearch AI giving up after 2 attempts. Last raw text (first 500): ${lastRawText?.slice(0, 500) || '(none)'}`);
+          if (didCharge) await refundTokens(user.id, JOBSEARCH_COST);
+          return response.status(500).json({
+            error: 'AI scoring failed. Tokens refunded. Try again — usually works on a second attempt.',
+          });
+        }
+      }
     }
 
     if (!Array.isArray(parsed)) {
