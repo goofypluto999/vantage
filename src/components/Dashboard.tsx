@@ -822,18 +822,14 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* Subscription Banner — hidden for fresh users (≥7 free tokens, never paid)
-          so the upload form is the first thing they see. They get the cards back
-          once they've spent some tokens or come back as a returning user. This
-          single conditional was the biggest dashboard friction observed in the
-          UX walk: pricing cards above the upload form felt like a paywall to
-          users who hadn't tried the product yet. */}
-      {!checkoutSuccess && (() => {
-        const tokens = profile?.token_balance ?? 0;
-        const everPaid = !!(profile?.stripe_customer_id && profile.stripe_customer_id.length > 0);
-        const isFreshUser = !everPaid && tokens >= 7;
-        return !isFreshUser;
-      })() && (
+      {/* Subscription Banner — shown to ALL signed-in users so the
+          pricing/plan view is consistent across accounts (user feedback
+          2026-05-12: 'hotmail login has it, gmail does not — they
+          should be the same'). The previous fresh-user gate hid the
+          banner for ≥7-token never-paid accounts to avoid feeling
+          paywall-y, but the inconsistency between accounts was worse
+          UX than the paywall vibe. */}
+      {!checkoutSuccess && (
         <div className="max-w-5xl mx-auto px-6 pt-6">
           <div className="p-6 rounded-2xl bg-gradient-to-r from-violet-600/10 to-purple-600/10 border border-violet-500/20">
             {(() => {
