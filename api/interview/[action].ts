@@ -1495,21 +1495,6 @@ Penalize ghost-tells heavily. NEVER invent skills/companies not in CV/JD. STRICT
     } catch (err: any) {
       console.error(`jobsearch AI scoring failed: ${err?.message || 'unknown'} — first 500 chars of raw: ${rawText?.slice(0, 500) || '(none)'}`);
       if (didCharge) await refundTokens(user.id, JOBSEARCH_COST);
-      // Diagnostic: when request body has _debug:1, expose the raw AI text +
-      // parse error in the 500 response. Used to debug AI scoring failures
-      // without needing Vercel log access. Remove this branch after the
-      // parse instability is resolved.
-      if (body && (body as any)._debug === 1) {
-        return response.status(500).json({
-          error: 'AI scoring had a hiccup. Tokens refunded — please try again in a moment.',
-          _debug: {
-            parseError: err?.message || 'unknown',
-            rawTextLength: rawText?.length ?? 0,
-            rawTextStart: rawText?.slice(0, 800) ?? null,
-            rawTextEnd: rawText && rawText.length > 800 ? rawText.slice(-400) : null,
-          },
-        });
-      }
       return response.status(500).json({
         error: 'AI scoring had a hiccup. Tokens refunded — please try again in a moment.',
       });
