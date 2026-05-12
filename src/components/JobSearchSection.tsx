@@ -295,6 +295,24 @@ export default function JobSearchSection({ embedded = false, className = '' }: P
         : undefined),
       notes: job.fitOneLiner,
     });
+    // Surface a toast so the user (a) knows the save worked and (b) can jump
+    // to the tracker. Previously users hit Save with no feedback and didn't
+    // know where the saved job went (user feedback 2026-05-12).
+    setToast({ title: job.title, company: job.company });
+  }
+
+  // Toast for save-to-tracker confirmation. Auto-dismisses after 4s.
+  const [toast, setToast] = useState<{ title: string; company: string } | null>(null);
+  useEffect(() => {
+    if (!toast) return;
+    const t = setTimeout(() => setToast(null), 4000);
+    return () => clearTimeout(t);
+  }, [toast]);
+
+  function scrollToTracker() {
+    // Same id we added to ApplicationTracker.tsx for the deep-link feature.
+    const el = document.getElementById('application-tracker');
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   function applyViaVantage(job: ScoredJob) {
@@ -330,6 +348,62 @@ export default function JobSearchSection({ embedded = false, className = '' }: P
           </p>
         </header>
       )}
+
+      {/* Tracker shortcut pill — visible whenever the user has saved any jobs.
+          Click jumps them to their Application Tracker section. Bridges the
+          'Save to Tracker → where did it go?' UX gap reported 2026-05-12. */}
+      {trackerEntries.length > 0 && (
+        <div className="mb-4 flex justify-end">
+          <button
+            type="button"
+            onClick={scrollToTracker}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-violet-500/15 text-violet-200 border border-violet-500/30 hover:bg-violet-500/25 transition min-h-[36px]"
+            aria-label={`Open your application tracker (${trackerEntries.length} saved)`}
+          >
+            <Bookmark className="w-3.5 h-3.5" aria-hidden="true" />
+            Tracker · {trackerEntries.length} saved
+          </button>
+        </div>
+      )}
+
+      {/* Save-to-tracker confirmation toast. Bottom-right, auto-dismisses
+          after 4s. Surfaces because users were saving jobs with no feedback
+          and didn't know where they went. */}
+      <AnimatePresence>
+        {toast && (
+          <motion.div
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 10, scale: 0.95 }}
+            role="status"
+            aria-live="polite"
+            className="fixed bottom-6 right-6 z-50 max-w-sm px-4 py-3 rounded-xl bg-emerald-500/15 backdrop-blur-xl border border-emerald-500/40 shadow-[0_8px_32px_rgba(0,0,0,0.5)] flex items-start gap-3"
+          >
+            <Bookmark className="w-4 h-4 text-emerald-300 flex-shrink-0 mt-0.5" aria-hidden="true" />
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold text-white truncate">Saved to tracker</p>
+              <p className="text-xs text-white/70 truncate" title={`${toast.title} at ${toast.company}`}>
+                {toast.title} at {toast.company}
+              </p>
+              <button
+                type="button"
+                onClick={() => { setToast(null); scrollToTracker(); }}
+                className="mt-1.5 text-xs font-semibold text-emerald-300 hover:text-emerald-200 underline"
+              >
+                View tracker →
+              </button>
+            </div>
+            <button
+              type="button"
+              onClick={() => setToast(null)}
+              aria-label="Dismiss notification"
+              className="text-white/40 hover:text-white/80 transition flex-shrink-0"
+            >
+              <span aria-hidden="true">×</span>
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <section aria-label="Search filters" className={`${glassCard} rounded-2xl p-5 md:p-6 mb-5`}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

@@ -408,9 +408,69 @@ export default function Dashboard() {
       window.cancelAnimationFrame(raf2);
     };
   }, [location.hash]);
-  const prefilledFromJobSearch = (location.state as any)?.prefilledFromJobSearch as
-    | { title: string; company: string } | undefined;
-  const [showPrefillBanner, setShowPrefillBanner] = useState(!!prefilledFromJobSearch);
+  // prefilledFromJobSearch + showPrefillBanner are state (not derived) because
+  // the user can navigate to /dashboard via 'Apply via Vantage' WHILE the
+  // Dashboard is already mounted (embedded Job Search case). useState
+  // initialisers don't re-run on subsequent renders, so we need a useEffect
+  // (below) to watch location.state changes and update both the banner state
+  // AND the jobUrl prefill. This was the root cause of the 'Apply via Vantage
+  // does nothing' bug reported 2026-05-12.
+  const [prefilledFromJobSearch, setPrefilledFromJobSearch] = useState<
+    { title: string; company: string } | undefined
+  >((location.state as any)?.prefilledFromJobSearch);
+  const [showPrefillBanner, setShowPrefillBanner] = useState(
+    !!(location.state as any)?.prefilledFromJobSearch
+  );
+
+  // Watch the URL + router state for incoming 'Apply via Vantage' handoffs.
+  // Fires whenever location.search or location.state changes (e.g. user clicks
+  // a job's Apply button while already on /dashboard with the embedded Job
+  // Search expanded). Guards against double-fire by checking if jobUrl already
+  // matches the incoming value. Clears the query param + state after consuming
+  // so a page refresh doesn't re-trigger.
+  useEffect(() => {
+    const qs = new URLSearchParams(location.search);
+    const fromQuery = qs.get('prefillUrl');
+    const fromState = (location.state as any)?.prefilledFromJobSearch as
+      | { title: string; company: string } | undefined;
+    const isHttpsOrHttp = (raw: string | null): boolean => {
+      if (!raw) return false;
+      try {
+        const u = new URL(raw);
+        return u.protocol === 'http:' || u.protocol === 'https:';
+      } catch { return false; }
+    };
+
+    if (fromQuery && isHttpsOrHttp(fromQuery) && fromQuery !== jobUrl) {
+      setJobUrl(fromQuery);
+      // Smooth-scroll the analysis form into view so users see what happened.
+      window.requestAnimationFrame(() => {
+        const el = document.querySelector('[data-analysis-form]');
+        if (el && 'scrollIntoView' in el) {
+          (el as HTMLElement).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    }
+    if (fromState && (!prefilledFromJobSearch ||
+        prefilledFromJobSearch.title !== fromState.title ||
+        prefilledFromJobSearch.company !== fromState.company)) {
+      setPrefilledFromJobSearch(fromState);
+      setShowPrefillBanner(true);
+    }
+
+    // Consume: strip ?prefillUrl from URL and clear router state so refresh
+    // doesn't re-trigger the prefill.
+    if ((fromQuery && isHttpsOrHttp(fromQuery)) || fromState) {
+      const cleanedSearch = (() => {
+        const next = new URLSearchParams(location.search);
+        next.delete('prefillUrl');
+        const s = next.toString();
+        return s ? `?${s}` : '';
+      })();
+      navigate(`/dashboard${cleanedSearch}${location.hash}`, { replace: true, state: null });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.search, location.state]);
   // Salary negotiation brief composer (post-analysis tool, added 2026-05-11).
   // 2 tokens. Returns email + phone script + talking points + warnings.
   // Lazy-loaded so its bundle only arrives if the user opens the modal.
@@ -1042,6 +1102,7 @@ export default function Dashboard() {
               initial={false}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
+              data-analysis-form
             >
               <div className="mb-8">
                 {/* Welcome strip for fresh users — replaces the pricing cards we
