@@ -156,8 +156,67 @@ async function handleAnalyses(request: any, response: any, userId: string) {
   return response.status(200).json({ analyses });
 }
 
+/**
+ * Save a CV summary directly from a client-extracted CV text upload.
+ * No Gemini round-trip, no token spend — the user gets cv_summary
+ * populated the moment they drop their CV, before any analysis runs.
+ *
+ * Resolves the user complaint: 'the user has to run a scan first, on
+ * the Run a new analysis section it makes the user run that tool
+ * first before the CV gets used in the Jobs search section, which
+ * is not good, it forces user to waste a token first before being
+ * able to use the tool with the job search function.' (2026-05-12).
+ */
+async function handleCvUpload(request: any, response: any, userId: string) {
+  let body: any = {};
+  try {
+    body = request.body || {};
+  } catch {
+    return response.status(400).json({ error: 'Invalid JSON body' });
+  }
+  const cvText = typeof body?.cvText === 'string' ? body.cvText.trim() : '';
+  if (cvText.length < 60) {
+    return response.status(400).json({ error: 'CV text too short — at least 60 characters required.' });
+  }
+  // Sanity ceiling so a malicious upload can't bloat the profile row.
+  // 12000 chars ~ a typical 2-page CV.
+  const safeText = cvText.slice(0, 12000);
+
+  // Build the same shape /api/analyze uses so AI Job Search treats this
+  // identically to a post-analysis summary. No analysis was actually run,
+  // so we don't have cvMatchPoints — just the raw CV text labelled as
+  // such. The Job Search prompt accepts either format.
+  const summary = [
+    'CV RAW (uploaded directly, no analysis yet):',
+    safeText.slice(0, 1800),
+  ].join('\n').slice(0, 2000);
+
+  try {
+    const patchRes = await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${encodeURIComponent(userId)}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal',
+        apikey: SUPABASE_SERVICE_KEY,
+        Authorization: `Bearer ${SUPABASE_SERVICE_KEY}`,
+      },
+      body: JSON.stringify({ cv_summary: summary }),
+    });
+    if (!patchRes.ok) {
+      const text = await patchRes.text().catch(() => '');
+      console.error(`cv-upload PATCH failed ${patchRes.status}: ${text.slice(0, 200)}`);
+      return response.status(500).json({ error: 'Could not save CV summary' });
+    }
+    return response.status(200).json({ success: true, cv_summary_length: summary.length });
+  } catch (err: any) {
+    console.error('cv-upload exception:', err?.message || 'unknown');
+    return response.status(500).json({ error: 'Could not save CV summary' });
+  }
+}
+
 export default async function handler(request: any, response: any) {
-  if (request.method !== 'GET') {
+  // POST allowed for cv-upload; everything else stays GET-only.
+  if (request.method !== 'GET' && request.method !== 'POST') {
     return response.status(405).json({ error: 'Method not allowed' });
   }
 
@@ -178,10 +237,16 @@ export default async function handler(request: any, response: any) {
 
   try {
     if (endpoint === 'credits') {
+      if (request.method !== 'GET') return response.status(405).json({ error: 'GET only' });
       return await handleCredits(request, response, user.id);
     }
     if (endpoint === 'analyses') {
+      if (request.method !== 'GET') return response.status(405).json({ error: 'GET only' });
       return await handleAnalyses(request, response, user.id);
+    }
+    if (endpoint === 'cv-upload') {
+      if (request.method !== 'POST') return response.status(405).json({ error: 'POST only' });
+      return await handleCvUpload(request, response, user.id);
     }
     return response.status(400).json({ error: 'Unknown endpoint' });
   } catch (error: any) {

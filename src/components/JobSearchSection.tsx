@@ -126,7 +126,7 @@ interface Props {
 export default function JobSearchSection({ embedded = false, className = '' }: Props) {
   const { user, profile } = useAuth();
   const navigate = useNavigate();
-  const { entries: trackerEntries, add: addToTracker } = useApplicationTracker({ userScope: user?.id });
+  const { entries: trackerEntries, add: addToTracker, remove: removeFromTracker } = useApplicationTracker({ userScope: user?.id });
 
   const [keywords, setKeywords] = useState('');
   const [location, setLocation] = useState('');
@@ -286,8 +286,19 @@ export default function JobSearchSection({ embedded = false, className = '' }: P
   }
 
   function saveJobToTracker(job: ScoredJob) {
-    if (isJobSaved(job)) return;
-    addToTracker({
+    // Click-to-unsave: if already saved, remove instead of no-op.
+    if (isJobSaved(job)) {
+      const existing = trackerEntries.find((e) =>
+        e.company.toLowerCase() === job.company.toLowerCase() &&
+        e.role.toLowerCase() === job.title.toLowerCase()
+      );
+      if (existing) {
+        removeFromTracker(existing.id);
+        setToast({ title: job.title, company: job.company, mode: 'removed', entryKey: null });
+      }
+      return;
+    }
+    const newId = addToTracker({
       company: job.company, role: job.title, status: 'saved',
       sourceUrl: safeHref(job.url), location: job.location,
       salaryBand: job.salaryEstimate || (job.salaryMin || job.salaryMax
@@ -295,31 +306,53 @@ export default function JobSearchSection({ embedded = false, className = '' }: P
         : undefined),
       notes: job.fitOneLiner,
     });
-    // Surface a toast so the user (a) knows the save worked and (b) can jump
-    // to the tracker. Previously users hit Save with no feedback and didn't
-    // know where the saved job went (user feedback 2026-05-12).
-    setToast({ title: job.title, company: job.company });
+    // Toast carries the entry key so 'Undo' can remove the right row.
+    setToast({ title: job.title, company: job.company, mode: 'saved', entryKey: newId || null });
   }
 
-  // Toast for save-to-tracker confirmation. Auto-dismisses after 4s.
-  const [toast, setToast] = useState<{ title: string; company: string } | null>(null);
+  // Toast for save-to-tracker feedback. Bigger now, 6s duration (was 4s —
+  // user reported 3s felt too fast), with Undo + View Tracker actions.
+  const [toast, setToast] = useState<
+    | { title: string; company: string; mode: 'saved' | 'removed'; entryKey: string | null }
+    | null
+  >(null);
   useEffect(() => {
     if (!toast) return;
-    const t = setTimeout(() => setToast(null), 4000);
+    const t = setTimeout(() => setToast(null), 6000);
     return () => clearTimeout(t);
   }, [toast]);
 
   function scrollToTracker() {
-    // Same id we added to ApplicationTracker.tsx for the deep-link feature.
+    // ApplicationTracker now persistently rendered on Dashboard (out of the
+    // results-step gate as of 2026-05-12) so this always has a target on
+    // the Dashboard route. On the standalone /jobs route, no tracker exists
+    // — navigate the user back to /dashboard#application-tracker.
     const el = document.getElementById('application-tracker');
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+      navigate('/dashboard#application-tracker');
+    }
+  }
+  function undoLastSave() {
+    if (!toast || toast.mode !== 'saved' || !toast.entryKey) return;
+    removeFromTracker(toast.entryKey);
+    setToast(null);
   }
 
   function applyViaVantage(job: ScoredJob) {
     const href = safeHref(job.url);
     if (!href) return;
+    // Pass the JD description text along so the analyzer can skip the
+    // scrape entirely (sites like Adzuna / LinkedIn / Indeed block our
+    // scraper). The user reported this failure mode 2026-05-12.
+    // The job.description was already fetched + paid for by the scan —
+    // re-using it here saves a token AND eliminates the scrape failure.
     navigate(`/dashboard?prefillUrl=${encodeURIComponent(href)}`, {
-      state: { prefilledFromJobSearch: { title: job.title, company: job.company } },
+      state: {
+        prefilledFromJobSearch: { title: job.title, company: job.company },
+        prefilledJobDescription: job.description || '',
+      },
     });
   }
 
@@ -377,27 +410,44 @@ export default function JobSearchSection({ embedded = false, className = '' }: P
             exit={{ opacity: 0, y: 10, scale: 0.95 }}
             role="status"
             aria-live="polite"
-            className="fixed bottom-6 right-6 z-50 max-w-sm px-4 py-3 rounded-xl bg-emerald-500/15 backdrop-blur-xl border border-emerald-500/40 shadow-[0_8px_32px_rgba(0,0,0,0.5)] flex items-start gap-3"
+            className={`fixed bottom-6 right-6 z-50 w-[360px] max-w-[calc(100vw-3rem)] p-4 rounded-2xl backdrop-blur-xl shadow-[0_12px_48px_rgba(0,0,0,0.6)] flex items-start gap-3 ${
+              toast.mode === 'saved'
+                ? 'bg-emerald-500/20 border-2 border-emerald-500/60'
+                : 'bg-amber-500/20 border-2 border-amber-500/60'
+            }`}
           >
-            <Bookmark className="w-4 h-4 text-emerald-300 flex-shrink-0 mt-0.5" aria-hidden="true" />
+            <Bookmark className={`w-5 h-5 flex-shrink-0 mt-0.5 ${toast.mode === 'saved' ? 'text-emerald-300' : 'text-amber-300'}`} aria-hidden="true" />
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-white truncate">Saved to tracker</p>
-              <p className="text-xs text-white/70 truncate" title={`${toast.title} at ${toast.company}`}>
-                {toast.title} at {toast.company}
+              <p className="text-base font-bold text-white mb-0.5">
+                {toast.mode === 'saved' ? 'Saved to tracker' : 'Removed from tracker'}
               </p>
-              <button
-                type="button"
-                onClick={() => { setToast(null); scrollToTracker(); }}
-                className="mt-1.5 text-xs font-semibold text-emerald-300 hover:text-emerald-200 underline"
-              >
-                View tracker →
-              </button>
+              <p className="text-sm text-white/80 line-clamp-2 mb-2" title={`${toast.title} at ${toast.company}`}>
+                {toast.title} <span className="text-white/60">at</span> {toast.company}
+              </p>
+              <div className="flex items-center gap-3 mt-1">
+                <button
+                  type="button"
+                  onClick={() => { setToast(null); scrollToTracker(); }}
+                  className="px-3 py-1.5 rounded-md text-sm font-semibold bg-white/15 text-white hover:bg-white/25 transition min-h-[36px]"
+                >
+                  View tracker →
+                </button>
+                {toast.mode === 'saved' && toast.entryKey && (
+                  <button
+                    type="button"
+                    onClick={undoLastSave}
+                    className="text-sm font-semibold text-white/70 hover:text-white underline-offset-2 hover:underline transition min-h-[36px]"
+                  >
+                    Undo
+                  </button>
+                )}
+              </div>
             </div>
             <button
               type="button"
               onClick={() => setToast(null)}
               aria-label="Dismiss notification"
-              className="text-white/40 hover:text-white/80 transition flex-shrink-0"
+              className="text-white/50 hover:text-white text-2xl leading-none transition flex-shrink-0 -mt-1"
             >
               <span aria-hidden="true">×</span>
             </button>
@@ -691,14 +741,15 @@ export default function JobSearchSection({ embedded = false, className = '' }: P
                             {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
                             {isExpanded ? 'Less' : 'More'}
                           </button>
-                          <button type="button" onClick={() => saveJobToTracker(job)} disabled={isSaved}
-                            className={`inline-flex items-center gap-1 px-3.5 py-2 rounded-md text-xs font-semibold transition focus:outline-none focus:ring-2 focus:ring-violet-400 min-h-[44px] ${
-                              isSaved ? 'bg-emerald-500/15 text-emerald-300 cursor-default'
-                                : 'bg-white/5 hover:bg-white/10 text-white/80'
+                          <button type="button" onClick={() => saveJobToTracker(job)}
+                            className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-md text-xs font-bold transition focus:outline-none focus:ring-2 focus:ring-violet-400 min-h-[44px] border ${
+                              isSaved
+                                ? 'bg-emerald-500/25 text-emerald-100 border-emerald-500/60 hover:bg-rose-500/25 hover:text-rose-100 hover:border-rose-500/60'
+                                : 'bg-white/10 hover:bg-white/15 text-white/90 border-white/15'
                             }`}
-                            aria-label={isSaved ? 'Already saved to tracker' : `Save ${job.company} ${job.title} to tracker`}>
+                            aria-label={isSaved ? `Saved — click to remove ${job.company} ${job.title} from tracker` : `Save ${job.company} ${job.title} to tracker`}>
                             <Bookmark className="w-3.5 h-3.5" aria-hidden="true" />
-                            {isSaved ? 'Saved' : 'Save to tracker'}
+                            {isSaved ? 'Saved ✓' : 'Save to tracker'}
                           </button>
                           <button type="button" onClick={() => applyViaVantage(job)} disabled={!href}
                             className="inline-flex items-center gap-1 px-3.5 py-2 rounded-md text-xs font-bold bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white transition disabled:opacity-40 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-violet-400 min-h-[44px]">

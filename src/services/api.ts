@@ -55,6 +55,27 @@ async function safeJson(response: Response): Promise<any> {
   }
 }
 
+/**
+ * Save a CV summary directly to the user's profile, without running a
+ * full prep-pack analysis. Used the moment the user uploads their CV
+ * on Dashboard so AI Job Search has cv_summary available immediately
+ * (no token spend).
+ */
+export async function uploadCvSummary(cvText: string): Promise<{ success: boolean; error?: string }> {
+  if (!cvText || typeof cvText !== 'string' || cvText.trim().length < 60) {
+    return { success: false, error: 'CV text too short.' };
+  }
+  const response = await fetchWithAuth('/user?endpoint=cv-upload', {
+    method: 'POST',
+    body: JSON.stringify({ cvText }),
+  });
+  if (!response.ok) {
+    const body = await response.json().catch(() => ({}));
+    return { success: false, error: body?.error || 'Could not save CV summary.' };
+  }
+  return { success: true };
+}
+
 export async function checkCredits(): Promise<CreditsResponse> {
   const response = await fetchWithAuth('/credits');
   if (!response.ok) {

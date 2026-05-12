@@ -10,7 +10,7 @@ import {
 import { useAuth } from '../App';
 import { useCurrency } from '../contexts/CurrencyContext';
 import { supabase, getCreditsRemaining, hasCredits } from '../lib/supabase';
-import { analyzeJob, createStripeCheckout, syncSubscription, rewriteTone, fetchAnalysisHistory } from '../services/api';
+import { analyzeJob, createStripeCheckout, syncSubscription, rewriteTone, fetchAnalysisHistory, uploadCvSummary } from '../services/api';
 import { sweepDraftsForUser } from '../lib/useFormDraft';
 import { sweepHistoryForUser } from '../lib/useResultHistory';
 import { sweepTrackerForUser } from '../lib/useApplicationTracker';
@@ -422,6 +422,98 @@ export default function Dashboard() {
     !!(location.state as any)?.prefilledFromJobSearch
   );
 
+  // CV-upload state for the auto-extract → save flow. When the user
+  // drops a CV file, we client-extract text (PDF / DOCX / TXT) and POST
+  // it to /api/user?endpoint=cv-upload immediately. No token spend.
+  // Resolves user complaint 2026-05-12: 'forces user to waste a token
+  // first before being able to use the tool with the job search'.
+  type CvUploadStage = 'idle' | 'extracting' | 'saving' | 'done' | 'error' | 'unsupported';
+  const [cvUploadStage, setCvUploadStage] = useState<CvUploadStage>(() => (profile?.cv_summary ? 'done' : 'idle'));
+  const [cvUploadError, setCvUploadError] = useState<string | null>(null);
+  const cvUploadFileRef = useRef<File | null>(null);
+
+  // Keep stage in sync with profile.cv_summary — if a refresh comes in
+  // and reveals existing cv_summary, mark done.
+  useEffect(() => {
+    if (profile?.cv_summary && cvUploadStage === 'idle') {
+      setCvUploadStage('done');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profile?.cv_summary]);
+
+  // Watch cvFile + auto-extract + save. Throttled: each new file replaces
+  // the in-flight job via cvUploadFileRef. PDF / DOCX / TXT supported
+  // (same matrix as AtsScannerSection).
+  useEffect(() => {
+    if (!cvFile) return;
+    cvUploadFileRef.current = cvFile;
+    let cancelled = false;
+    setCvUploadStage('extracting');
+    setCvUploadError(null);
+
+    (async () => {
+      try {
+        const fileName = cvFile.name.toLowerCase();
+        let text = '';
+        if (fileName.endsWith('.docx') || cvFile.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+          const mammoth = await import('mammoth');
+          const buffer = await cvFile.arrayBuffer();
+          const { value } = await mammoth.extractRawText({ arrayBuffer: buffer });
+          text = value || '';
+        } else if (fileName.endsWith('.pdf') || cvFile.type === 'application/pdf') {
+          const pdfjs = await import('pdfjs-dist');
+          const pdfWorkerUrl = (await import('pdfjs-dist/build/pdf.worker.min.mjs?url')).default;
+          (pdfjs as any).GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
+          const buffer = await cvFile.arrayBuffer();
+          const doc = await (pdfjs as any).getDocument({ data: buffer }).promise;
+          const pageTexts: string[] = [];
+          for (let i = 1; i <= doc.numPages; i++) {
+            const page = await doc.getPage(i);
+            const content = await page.getTextContent();
+            pageTexts.push(content.items.map((it: any) => it.str || '').join(' '));
+          }
+          text = pageTexts.join('\n');
+        } else if (fileName.endsWith('.txt') || cvFile.type === 'text/plain') {
+          text = await cvFile.text();
+        } else {
+          if (!cancelled && cvUploadFileRef.current === cvFile) {
+            setCvUploadStage('unsupported');
+            setCvUploadError('Unsupported format. Use PDF, DOCX, or TXT.');
+          }
+          return;
+        }
+
+        if (cancelled || cvUploadFileRef.current !== cvFile) return;
+        if (text.trim().length < 60) {
+          setCvUploadStage('error');
+          setCvUploadError('CV is too short or unreadable.');
+          return;
+        }
+
+        setCvUploadStage('saving');
+        const result = await uploadCvSummary(text);
+        if (cancelled || cvUploadFileRef.current !== cvFile) return;
+        if (!result.success) {
+          setCvUploadStage('error');
+          setCvUploadError(result.error || 'Could not save CV summary.');
+          return;
+        }
+        // Pull fresh profile so cv_summary lands in client state — flips
+        // Job Search's amber banner to green confirmation automatically.
+        await refreshProfile();
+        if (!cancelled) setCvUploadStage('done');
+      } catch (err: any) {
+        if (!cancelled) {
+          setCvUploadStage('error');
+          setCvUploadError(err?.message || 'CV extraction failed.');
+        }
+      }
+    })();
+
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cvFile]);
+
   // Watch the URL + router state for incoming 'Apply via Vantage' handoffs.
   // Fires whenever location.search or location.state changes (e.g. user clicks
   // a job's Apply button while already on /dashboard with the embedded Job
@@ -433,6 +525,11 @@ export default function Dashboard() {
     const fromQuery = qs.get('prefillUrl');
     const fromState = (location.state as any)?.prefilledFromJobSearch as
       | { title: string; company: string } | undefined;
+    // JD text passed alongside Apply-via-Vantage so we don't have to
+    // re-scrape (Adzuna/LinkedIn/Indeed block our scraper). The JD was
+    // already fetched + paid for during the scan; reusing it here means
+    // the user's prep-pack analysis 'just works' without a scrape failure.
+    const fromStateJD = (location.state as any)?.prefilledJobDescription as string | undefined;
     const isHttpsOrHttp = (raw: string | null): boolean => {
       if (!raw) return false;
       try {
@@ -450,6 +547,9 @@ export default function Dashboard() {
           (el as HTMLElement).scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
       });
+    }
+    if (typeof fromStateJD === 'string' && fromStateJD.trim().length > 0 && fromStateJD !== jobDescText) {
+      setJobDescText(fromStateJD.slice(0, 50000));
     }
     if (fromState && (!prefilledFromJobSearch ||
         prefilledFromJobSearch.title !== fromState.title ||
@@ -1090,6 +1190,20 @@ export default function Dashboard() {
           </AnimatePresence>
         </div>
 
+        {/* Application Tracker — moved out of the results-step gate on
+            2026-05-12 (user reported: 'click View tracker → does nothing').
+            Root cause: it was nested inside {step === 'results' && ...} so
+            on the default input view the #application-tracker anchor didn't
+            exist, breaking every scroll-to-tracker button (the toast 'View
+            tracker →' link, the 'Tracker · N saved' pill, the 'N saved →'
+            inline link in scan results). Now persistent — always available
+            for save/view actions, regardless of analysis state. */}
+        <div className="mb-6">
+          <React.Suspense fallback={null}>
+            <ApplicationTracker userScope={user?.id} />
+          </React.Suspense>
+        </div>
+
         <AnimatePresence mode="wait">
           {step === 'input' && (
             // initial={false} — skip entrance animation (mirrors Pricing/Auth
@@ -1267,6 +1381,48 @@ export default function Dashboard() {
                   </div>
                 );
               })()}
+
+              {/* CV upload status: extract→save animation + green confirmation
+                  once cv_summary is on the profile. Renders only when cvFile
+                  has been touched OR profile already has cv_summary. Bridges
+                  the user complaint that there was no signal the CV had been
+                  saved for AI Job Search (2026-05-12). */}
+              {(cvFile || profile?.cv_summary) && (
+                <div className={`mb-4 p-3 rounded-xl border-2 flex items-center gap-3 ${
+                  cvUploadStage === 'done' ? 'bg-emerald-500/15 border-emerald-500/50' :
+                  cvUploadStage === 'error' || cvUploadStage === 'unsupported' ? 'bg-rose-500/15 border-rose-500/50' :
+                  'bg-violet-500/15 border-violet-500/50'
+                }`}>
+                  {cvUploadStage === 'done' ? (
+                    <Check className="w-5 h-5 text-emerald-300 flex-shrink-0" aria-hidden="true" />
+                  ) : cvUploadStage === 'error' || cvUploadStage === 'unsupported' ? (
+                    <AlertTriangle className="w-5 h-5 text-rose-300 flex-shrink-0" aria-hidden="true" />
+                  ) : (
+                    <Loader2 className="w-5 h-5 text-violet-300 animate-spin flex-shrink-0" aria-hidden="true" />
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-bold text-white">
+                      {cvUploadStage === 'extracting' && 'Reading your CV…'}
+                      {cvUploadStage === 'saving' && 'Saving CV profile…'}
+                      {cvUploadStage === 'done' && 'CV ready ✓ — AI Job Search will now score against your profile'}
+                      {cvUploadStage === 'error' && 'Could not save CV'}
+                      {cvUploadStage === 'unsupported' && 'Unsupported file type'}
+                      {cvUploadStage === 'idle' && cvFile && 'CV loaded — ready to analyse'}
+                    </p>
+                    {(cvUploadStage === 'extracting' || cvUploadStage === 'saving') && (
+                      <p className="text-xs text-white/70 mt-0.5">
+                        {cvUploadStage === 'extracting' ? 'Extracting skills, experience, and qualifications…' : 'Locking your CV into your profile so every tool uses it…'}
+                      </p>
+                    )}
+                    {cvUploadStage === 'error' && cvUploadError && (
+                      <p className="text-xs text-rose-200/80 mt-0.5">{cvUploadError}</p>
+                    )}
+                    {cvUploadStage === 'unsupported' && (
+                      <p className="text-xs text-rose-200/80 mt-0.5">{cvUploadError || 'Please use PDF, DOCX, or TXT.'}</p>
+                    )}
+                  </div>
+                </div>
+              )}
 
               <div className="grid md:grid-cols-3 gap-5 mb-6">
                 {/* CV Upload */}
@@ -2074,13 +2230,6 @@ export default function Dashboard() {
                   Got an offer? Don't wing it. Enter what they offered + what you want (base, signing, RSU, bonus %, PTO, remote policy). Returns: a calibrated email back to the recruiter, a 60–90 second phone script, 5–7 in-conversation talking points, and warnings if any of your asks look risky for your level.
                 </p>
               </div>
-
-              {/* Application Tracker — local CRM for jobs the user is
-                  running. Pure client-side localStorage, user-scoped,
-                  swept on logout. */}
-              <React.Suspense fallback={null}>
-                <ApplicationTracker userScope={user?.id} />
-              </React.Suspense>
 
               {/* Post-analysis upgrade nudge — added 2026-05-07. Shown to
                   unpaid users after they've burned at least one analysis
