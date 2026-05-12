@@ -1880,7 +1880,7 @@ export default function Dashboard() {
                     <button
                       onClick={() => setShowInterview(true)}
                       disabled={!hasCredits(profile, 1)}
-                      className="px-4 py-2 rounded-lg bg-gradient-to-r from-violet-600 to-purple-600 text-white font-semibold text-sm hover:from-violet-500 hover:to-purple-500 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
+                      className="px-4 py-2 rounded-lg bg-gradient-to-r from-violet-600 to-purple-600 text-white font-semibold text-sm hover:from-violet-500 hover:to-purple-500 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2 min-h-[44px]"
                     >
                       <Mic className="w-4 h-4" />
                       Start Interview (1 token)
@@ -1888,7 +1888,7 @@ export default function Dashboard() {
                   ) : (
                     <button
                       onClick={() => navigate('/pricing')}
-                      className="px-4 py-2 rounded-lg bg-white/5 text-white/50 font-semibold text-sm hover:bg-white/10 transition-colors"
+                      className="px-4 py-2 rounded-lg bg-white/5 text-white/50 font-semibold text-sm hover:bg-white/10 transition-colors min-h-[44px]"
                     >
                       Upgrade to Unlock
                     </button>
@@ -1914,7 +1914,7 @@ export default function Dashboard() {
                   <button
                     onClick={() => setShowFollowup(true)}
                     disabled={!hasCredits(profile, 1)}
-                    className="px-4 py-2 rounded-lg bg-gradient-to-r from-violet-600 to-purple-600 text-white font-semibold text-sm hover:from-violet-500 hover:to-purple-500 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
+                    className="px-4 py-2 rounded-lg bg-gradient-to-r from-violet-600 to-purple-600 text-white font-semibold text-sm hover:from-violet-500 hover:to-purple-500 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2 min-h-[44px]"
                     aria-label="Open follow-up email composer"
                   >
                     <Mail className="w-4 h-4" />
@@ -1942,7 +1942,7 @@ export default function Dashboard() {
                   <button
                     onClick={() => setShowNegotiation(true)}
                     disabled={!hasCredits(profile, 2)}
-                    className="px-4 py-2 rounded-lg bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-semibold text-sm hover:from-emerald-500 hover:to-teal-500 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
+                    className="px-4 py-2 rounded-lg bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-semibold text-sm hover:from-emerald-500 hover:to-teal-500 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2 min-h-[44px]"
                     aria-label="Open salary negotiation brief composer"
                   >
                     <DollarSign className="w-4 h-4" />
@@ -2059,7 +2059,7 @@ export default function Dashboard() {
                       <button
                         onClick={() => handleCheckout('starter')}
                         disabled={checkoutLoading !== null}
-                        className="px-5 py-2.5 rounded-lg bg-gradient-to-r from-violet-600 to-purple-600 text-white font-semibold text-sm hover:opacity-95 transition-opacity disabled:opacity-50 flex-shrink-0"
+                        className="px-5 py-2.5 rounded-lg bg-gradient-to-r from-violet-600 to-purple-600 text-white font-semibold text-sm hover:opacity-95 transition-opacity disabled:opacity-50 flex-shrink-0 min-h-[44px]"
                       >
                         {checkoutLoading === 'starter' ? 'Redirecting…' : 'Top up £5'}
                       </button>
