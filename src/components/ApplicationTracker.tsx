@@ -185,9 +185,10 @@ export default function ApplicationTracker({ userScope }: Props) {
 
   return (
     <div
+      id="application-tracker"
       role="region"
       aria-label="Application tracker"
-      className="p-6 rounded-2xl bg-white/5 border border-white/10"
+      className="p-6 rounded-2xl bg-white/5 border border-white/10 scroll-mt-20"
     >
       <div className="flex items-center justify-between flex-wrap gap-3 mb-4">
         <h3 className="text-lg font-bold text-white flex items-center gap-2">

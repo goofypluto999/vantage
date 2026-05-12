@@ -485,6 +485,34 @@ export default function JobSearchSection({ embedded = false, className = '' }: P
             <p className="text-white/50">
               {meta.fetched ?? 0} fetched · {meta.deduped ?? 0} deduplicated · top {visibleResults.length} curated
               {hiddenGhostCount > 0 && <> · <button type="button" onClick={() => setHideGhost(false)} className="underline hover:text-amber-300">{hiddenGhostCount} ghost hidden</button></>}
+              {trackerEntries.length > 0 && (
+                <>
+                  {' · '}
+                  {embedded ? (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        // Smooth-scroll to the ApplicationTracker section already
+                        // mounted further down on the Dashboard page.
+                        const el = document.getElementById('application-tracker');
+                        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                      }}
+                      className="underline text-violet-300 hover:text-violet-200"
+                      aria-label={`View your ${trackerEntries.length} saved application${trackerEntries.length === 1 ? '' : 's'} in the tracker`}
+                    >
+                      {trackerEntries.length} saved →
+                    </button>
+                  ) : (
+                    <Link
+                      to="/dashboard#application-tracker"
+                      className="underline text-violet-300 hover:text-violet-200"
+                      aria-label={`View your ${trackerEntries.length} saved application${trackerEntries.length === 1 ? '' : 's'} in the tracker`}
+                    >
+                      {trackerEntries.length} saved →
+                    </Link>
+                  )}
+                </>
+              )}
             </p>
             <p className="text-white/50">
               {meta.was_free ? <span className="text-emerald-400 font-semibold">Free scan used</span> : <span>1 token spent · {meta.tokenBalance ?? 0} left</span>}

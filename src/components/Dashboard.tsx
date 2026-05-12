@@ -379,6 +379,35 @@ export default function Dashboard() {
   const [showJobSearch, setShowJobSearch] = useState(false);
   // AI Job Search handoff banner.
   const location = useLocation();
+  // Hash-fragment scroller. React Router v6 doesn't auto-scroll to
+  // anchors on hash navigation — when something links to e.g.
+  // /dashboard#application-tracker we manually locate the element and
+  // smooth-scroll it into view. retries-with-RAF guards against the
+  // element being lazy-mounted (Suspense) — by the time the second
+  // animation frame fires the lazy chunk is usually resolved.
+  useEffect(() => {
+    if (!location.hash) return;
+    const id = location.hash.slice(1);
+    let frame = 0;
+    let raf1 = 0;
+    let raf2 = 0;
+    const tryScroll = () => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        return;
+      }
+      frame += 1;
+      if (frame < 30) {
+        raf2 = window.requestAnimationFrame(tryScroll);
+      }
+    };
+    raf1 = window.requestAnimationFrame(tryScroll);
+    return () => {
+      window.cancelAnimationFrame(raf1);
+      window.cancelAnimationFrame(raf2);
+    };
+  }, [location.hash]);
   const prefilledFromJobSearch = (location.state as any)?.prefilledFromJobSearch as
     | { title: string; company: string } | undefined;
   const [showPrefillBanner, setShowPrefillBanner] = useState(!!prefilledFromJobSearch);
