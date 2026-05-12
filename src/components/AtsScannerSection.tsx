@@ -217,18 +217,31 @@ function ReadyView({
           const Icon = isClean ? CheckCircle2 : tone.icon;
           const iconClass = isClean ? 'text-emerald-400' : tone.text;
           const labelClass = isClean ? 'text-emerald-400' : tone.text;
-          const isOpen = expanded === r.vendor;
+          // Default-expanded design (2026-05-12 user feedback: 'I don't
+          // like that you need to click on the squares to see the
+          // information, we should be able to see that info the moment
+          // the CV gets put in'). Replaced click-to-expand pills with
+          // 5 stacked cards — each shows vendor + status + ALL findings
+          // inline. setExpanded retained as a manual focus highlight
+          // (clicking a pill at the top still scrolls + highlights the
+          // matching card below) but the click is no longer required to
+          // see findings.
+          const isHighlighted = expanded === r.vendor;
           return (
             <button
               key={r.vendor}
               type="button"
-              onClick={() => setExpanded(isOpen ? null : r.vendor)}
+              onClick={() => {
+                setExpanded(isHighlighted ? null : r.vendor);
+                const el = document.getElementById(`ats-card-${r.vendor}`);
+                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              }}
               className={`group flex flex-col items-center gap-1 p-2 rounded-lg border transition-all text-left
                 ${isClean
                   ? 'bg-emerald-500/10 border-emerald-500/30 hover:bg-emerald-500/15'
                   : `${tone.bg} ${tone.border} hover:brightness-110`}
-                ${isOpen ? 'ring-2 ring-violet-500/40' : ''}`}
-              aria-expanded={isOpen}
+                ${isHighlighted ? 'ring-2 ring-violet-500/60' : ''}`}
+              aria-label={`Scroll to ${r.name} findings`}
             >
               <Icon className={`w-4 h-4 ${iconClass}`} />
               <span className="text-[11px] font-semibold text-white/80 truncate w-full text-center">{r.name}</span>
@@ -240,42 +253,57 @@ function ReadyView({
         })}
       </div>
 
-      {expanded && (() => {
-        const r = reports.find((x) => x.vendor === expanded);
-        if (!r) return null;
-        if (r.findings.length === 0) {
+      {/* ALL findings rendered inline — no click-to-expand required.
+          Each ATS vendor gets its own card with status + finding list. */}
+      <div className="space-y-3">
+        {reports.map((r) => {
+          const isClean = r.errors === 0 && r.warns === 0;
+          const isHighlighted = expanded === r.vendor;
           return (
-            <div className="rounded-lg p-3 bg-emerald-500/5 border border-emerald-500/20 text-xs text-emerald-300/90">
-              <strong>{r.name}:</strong> No issues detected for this vendor. Your CV format is compatible.
+            <div
+              key={r.vendor}
+              id={`ats-card-${r.vendor}`}
+              className={`rounded-lg p-3 border transition ${
+                isClean
+                  ? 'bg-emerald-500/5 border-emerald-500/20'
+                  : 'bg-white/[0.03] border-white/10'
+              } ${isHighlighted ? 'ring-2 ring-violet-500/60' : ''}`}
+            >
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-sm font-bold text-white">{r.name}</p>
+                <span className={`text-xs font-semibold ${isClean ? 'text-emerald-300' : 'text-amber-300'}`}>
+                  {isClean
+                    ? '✓ Clean — no issues'
+                    : `${r.errors + r.warns} issue${(r.errors + r.warns) === 1 ? '' : 's'} to fix`}
+                </span>
+              </div>
+              {isClean ? (
+                <p className="text-xs text-emerald-300/80">
+                  Your CV format parses cleanly for this vendor.
+                </p>
+              ) : (
+                <div className="space-y-2">
+                  {r.findings.map((f) => {
+                    const tone = SEVERITY_TONES[f.severity];
+                    const Icon = tone.icon;
+                    return (
+                      <div key={f.code} className={`rounded-md p-2.5 ${tone.bg} border ${tone.border}`}>
+                        <div className="flex items-start gap-2">
+                          <Icon className={`w-4 h-4 mt-0.5 flex-shrink-0 ${tone.text}`} />
+                          <div className="min-w-0">
+                            <p className="text-xs text-white/90 leading-relaxed">{f.message}</p>
+                            <p className="text-[11px] text-white/60 mt-1.5"><strong className={tone.text}>Fix:</strong> {f.fix}</p>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           );
-        }
-        return (
-          <div className="space-y-2">
-            {r.findings.map((f) => {
-              const tone = SEVERITY_TONES[f.severity];
-              const Icon = tone.icon;
-              return (
-                <div key={f.code} className={`rounded-lg p-3 ${tone.bg} border ${tone.border}`}>
-                  <div className="flex items-start gap-2">
-                    <Icon className={`w-4 h-4 mt-0.5 flex-shrink-0 ${tone.text}`} />
-                    <div className="min-w-0">
-                      <p className="text-xs text-white/85 leading-relaxed">{f.message}</p>
-                      <p className="text-[11px] text-white/55 mt-1.5"><strong className={tone.text}>Fix:</strong> {f.fix}</p>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        );
-      })()}
-
-      {!expanded && (
-        <p className="text-[11px] text-white/40 mt-1 inline-flex items-center gap-1">
-          <ChevronDown className="w-3 h-3" /> Tap a system to see findings + fixes
-        </p>
-      )}
+        })}
+      </div>
     </>
   );
 }
