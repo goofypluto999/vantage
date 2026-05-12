@@ -488,7 +488,7 @@ export default function FollowupComposer({ defaultCompanyName, defaultRoleName, 
                 <button
                   type="button"
                   onClick={() => onClose(returnedBalance)}
-                  className="px-4 py-2 rounded-lg text-sm font-semibold text-white/70 hover:text-white transition"
+                  className="px-4 py-2 rounded-lg text-sm font-semibold text-white/70 hover:text-white transition min-h-[44px]"
                 >
                   Cancel
                 </button>
@@ -496,7 +496,7 @@ export default function FollowupComposer({ defaultCompanyName, defaultRoleName, 
                   type="button"
                   onClick={handleGenerate}
                   disabled={!canGenerate}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-bold bg-gradient-to-r from-violet-600 to-purple-600 text-white hover:from-violet-500 hover:to-purple-500 disabled:from-white/10 disabled:to-white/10 disabled:text-white/40 disabled:cursor-not-allowed transition"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-bold bg-gradient-to-r from-violet-600 to-purple-600 text-white hover:from-violet-500 hover:to-purple-500 disabled:from-white/10 disabled:to-white/10 disabled:text-white/40 disabled:cursor-not-allowed transition min-h-[44px]"
                 >
                   {loading ? (
                     <>
