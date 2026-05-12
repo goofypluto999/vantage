@@ -1,5 +1,30 @@
 # Session State — Resume Point for Future Claude Sessions
 
+> **2026-05-12 — AI JOB SEARCH POST-MILESTONE POLISH (083a3c8 → 861586f, autonomous /loop):**
+>
+> After the AI Job Search milestone landed (c46bdbb), the user reported three critical UX issues that became the kickoff for an autonomous /loop polish run:
+> 1. NegotiationComposer modal was overwhelming — every field rendered at once → progressive disclosure refactor (TIER 1 essentials always visible, TIERs 2-6 collapsible).
+> 2. AI Job Search shipped as a separate /jobs page — user wanted it as an expandable Dashboard section. Extracted `JobSearchSection` (embedded prop) and mounted it inside Dashboard between Negotiation and Tracker. `/jobs` route now a thin Dashboard-themed wrapper.
+> 3. `/jobs` page rendered invisibly ("NOTHING LOADS") — theme-aware `t.pageBg` (light theme bright) collided with dark-theme `text-white` classes. Fixed by hardcoding the Dashboard dark gradient.
+>
+> All three landed in `083a3c8`. The session then continued in autonomous mode shipping safe polish commits:
+>
+> | SHA | What | Verified |
+> |---|---|---|
+> | `083a3c8` | three user-reported UX fixes (above) | ✓ live |
+> | `95e8758` | "Next free scan in Xh" hint on successful scans | ✓ live |
+> | `f461aa7` | distinct rose banner for `errored` job sources | ✓ live |
+> | `0d703ad` | search filters auto-persist per-user via useFormDraft | ✓ live |
+> | `511dae5` | landing-page FAQ entry mentioning AI Job Search | ✓ live |
+> | `2466020` | "Reset filters" button (companion to persistence) | ✓ live |
+> | `c3bbc3e` | AI Job Search bullet on Pricing Starter plan | queued |
+> | `5484271` | "N saved →" deep-link from search results to tracker | queued |
+> | `861586f` | smooth-scroll job-search panel on expand (mobile UX) | queued |
+>
+> Each commit shipped with: type-check clean, multi-agent review, preflight 8/8. Sandbox blocks direct master push, so user manually `git push origin master` each iteration; loop verifies bundle hash change + endpoint health on the next tick.
+>
+> ---
+
 > **2026-05-11 — AI JOB SEARCH MILESTONE LIVE (c46bdbb):**
 >
 > Third attempt succeeded after two prior runtime crashes (`106a0bf`, `7594121`).
@@ -26,19 +51,14 @@
 >
 > ---
 
-> **2026-05-11 QUEUE STATE (continuously updated):**
+> **2026-05-11 QUEUE STATE (historical — all of these have since shipped):**
 >
-> **Live healthy** (verified just now): homepage 200, negotiation 401, ghost-job 400 on empty body, all previously-shipped features intact.
+> All three commits below pushed + verified live on 2026-05-11:
+> - `903122e` preflight new checks → live
+> - `b98736a` Dashboard download (.md) on analysis results → live
+> - `860a4d4` ghost-job degraded:true banner → live
 >
-> **3 commits queued, waiting:**
->
-> | SHA | What | Status |
-> |---|---|---|
-> | `903122e` | infra(preflight): two new checks closing the 106a0bf incident gap | **Pushed**, Vercel returns `Deployment rate limited — retry in 24 hours`. Will auto-deploy when window clears. Script-only — no live runtime impact. |
-> | `b98736a` | feat(dashboard): Download (.md) on analysis results + review polish | **Local only**, NOT pushed. Multi-agent reviewed (0 HIGH, 3 polish + 5 LOW applied). Preflight 7/7. Held for explicit ship approval. |
-> | `860a4d4` | fix(ghost-job): degraded:true fallback banner (parity with negotiation) | **Local only**, NOT pushed. Pure UI add, ~15 lines. Closes a LOW from prior review. Preflight 7/7. Held for explicit ship approval. |
->
-> **To ship the queue:** say "ship queue" → I push both local commits in one Vercel build (rate-limit permitting) and smoke the result.
+> Current queue lives in the 2026-05-12 polish block above.
 >
 > ---
 
