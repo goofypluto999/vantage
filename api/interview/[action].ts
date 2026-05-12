@@ -353,7 +353,43 @@ async function getProfile(userId: string, fields: string) {
     { headers: { apikey: SUPABASE_SERVICE_KEY, Authorization: `Bearer ${SUPABASE_SERVICE_KEY}` } }
   );
   const profiles = await res.json();
-  if (profiles?.length) return profiles[0];
+  // Defensive: PostgREST returns an array on success and a {code, message}
+  // error object on column / schema errors. Array.isArray() distinguishes
+  // them so a schema mismatch surfaces as a clear log line instead of being
+  // mis-classified as 'no profile' (the bug that caused our 'Profile not
+  // found' fire-loop when the cv_summary / last_free_jobsearch_at migration
+  // hadn't been run).
+  if (Array.isArray(profiles) && profiles.length > 0) return profiles[0];
+  if (!Array.isArray(profiles)) {
+    console.warn(`getProfile: PostgREST returned non-array for ${userId} fields=${fields}: ${JSON.stringify(profiles).slice(0, 300)}`);
+    // Re-fetch with a minimal proven-stable field set to see if the row
+    // actually exists. If it does, the original error was schema-only and
+    // the caller is asking for a column the DB hasn't migrated yet.
+    try {
+      const safeRes = await fetch(
+        `${SUPABASE_URL}/rest/v1/profiles?id=eq.${userId}&select=id`,
+        { headers: { apikey: SUPABASE_SERVICE_KEY, Authorization: `Bearer ${SUPABASE_SERVICE_KEY}` } }
+      );
+      const safe = await safeRes.json();
+      if (Array.isArray(safe) && safe.length > 0) {
+        console.warn(`getProfile: SCHEMA MISMATCH — profile exists for ${userId} but requested fields '${fields}' include columns the DB doesn't have. Run database/migration-2026-05-12-fix-all.sql.`);
+        // Return a stub with the requested fields nulled out so the caller
+        // can proceed (e.g. jobsearch will treat last_free_jobsearch_at as
+        // null = free scan available; cv_summary null = use fallback prompt).
+        const stub: any = { id: userId };
+        for (const f of fields.split(',').map((s) => s.trim()).filter(Boolean)) {
+          if (f === 'id') continue;
+          if (f === 'token_balance') stub[f] = 0;
+          else if (f === 'plan') stub[f] = 'starter';
+          else if (f === 'subscription_status') stub[f] = 'inactive';
+          else stub[f] = null;
+        }
+        return stub;
+      }
+    } catch (e) {
+      // Fall through to lazy-create
+    }
+  }
 
   // Fallback: the on_auth_user_created trigger (database/schema.sql:241)
   // is supposed to insert a profiles row whenever a new auth.users row is
