@@ -75,7 +75,10 @@ interface Stored {
 
 export interface UseApplicationTrackerReturn {
   entries: ApplicationEntry[];
-  add: (entry: Omit<ApplicationEntry, 'id' | 'createdAt' | 'updatedAt'>) => string;
+  add: (entry: Omit<ApplicationEntry, 'id' | 'createdAt' | 'updatedAt'> & {
+    _preserveCreatedAt?: number;
+    _preserveUpdatedAt?: number;
+  }) => string;
   update: (id: string, patch: Partial<Omit<ApplicationEntry, 'id' | 'createdAt'>>) => void;
   remove: (id: string) => void;
   clear: () => void;
@@ -247,14 +250,25 @@ export function useApplicationTracker(
   }, [key, enabled]);
 
   const add = useCallback(
-    (entry: Omit<ApplicationEntry, 'id' | 'createdAt' | 'updatedAt'>): string => {
+    (entry: Omit<ApplicationEntry, 'id' | 'createdAt' | 'updatedAt'> & {
+      // Optional timestamp overrides — used by CSV import to preserve
+      // original Created/Updated values so a round-trip doesn't reset
+      // the stale-flag timeline (applications go from "applied 30 days
+      // ago" to "applied just now", breaking follow-up nudges).
+      // Sanitized to finite positive numbers in the past.
+      _preserveCreatedAt?: number;
+      _preserveUpdatedAt?: number;
+    }): string => {
       if (!enabled) return '';
       const now = Date.now();
+      const { _preserveCreatedAt, _preserveUpdatedAt, ...clean } = entry;
+      const isValidTs = (t: any): t is number =>
+        typeof t === 'number' && Number.isFinite(t) && t > 0 && t <= now;
       const full: ApplicationEntry = {
-        ...entry,
+        ...clean,
         id: genId(),
-        createdAt: now,
-        updatedAt: now,
+        createdAt: isValidTs(_preserveCreatedAt) ? _preserveCreatedAt : now,
+        updatedAt: isValidTs(_preserveUpdatedAt) ? _preserveUpdatedAt : now,
       };
       // Cap notes
       if (full.notes && full.notes.length > 1000) {

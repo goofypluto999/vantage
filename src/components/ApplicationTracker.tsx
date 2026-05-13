@@ -19,7 +19,7 @@
 
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Briefcase, Plus, X, Search, AlertTriangle, ExternalLink, Edit2, Check, Download } from 'lucide-react';
+import { Briefcase, Plus, X, Search, AlertTriangle, ExternalLink, Edit2, Check, Download, Upload } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import {
   useApplicationTracker,
@@ -245,6 +245,228 @@ export default function ApplicationTracker({ userScope }: Props) {
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
+  /**
+   * RFC 4180 CSV parser. Handles quoted fields containing commas,
+   * embedded newlines, and escaped double-quotes (""). State machine:
+   *
+   *   normal      — outside quotes
+   *   quoted      — inside quotes; commas/newlines are literal
+   *   quoted-end  — saw a closing quote; next char decides: '"' → escaped,
+   *                 anything else → end of field
+   *
+   * Returns rows as string[][]. Empty/whitespace-only input returns [].
+   * Leading UTF-8 BOM is stripped if present (our exporter writes one).
+   */
+  function parseCsv(text: string): string[][] {
+    if (!text || typeof text !== 'string') return [];
+    if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+    const rows: string[][] = [];
+    let row: string[] = [];
+    let field = '';
+    let state: 'normal' | 'quoted' | 'quoted-end' = 'normal';
+    for (let i = 0; i < text.length; i += 1) {
+      const c = text[i];
+      if (state === 'normal') {
+        if (c === '"') { state = 'quoted'; continue; }
+        if (c === ',') { row.push(field); field = ''; continue; }
+        if (c === '\n') { row.push(field); rows.push(row); row = []; field = ''; continue; }
+        if (c === '\r') { continue; } // strip CR; treat CRLF as just LF
+        field += c;
+      } else if (state === 'quoted') {
+        if (c === '"') { state = 'quoted-end'; continue; }
+        // CRLF normalization inside quoted fields: a literal \r before a
+        // \n is part of the line break, not the data. Strip stray \r so
+        // round-tripping a Windows-exported CSV doesn't leave artifacts
+        // in the field. Council finding.
+        if (c === '\r' && text[i + 1] === '\n') continue;
+        field += c; // commas, newlines, etc. are literal inside quotes
+      } else { // quoted-end
+        if (c === '"') { field += '"'; state = 'quoted'; continue; }
+        if (c === ',') { row.push(field); field = ''; state = 'normal'; continue; }
+        if (c === '\n') { row.push(field); rows.push(row); row = []; field = ''; state = 'normal'; continue; }
+        if (c === '\r') { state = 'normal'; continue; }
+        // Stray data after closing quote (malformed CSV) — treat as normal
+        field += c; state = 'normal';
+      }
+    }
+    // Tail: flush any pending field/row
+    if (field.length > 0 || row.length > 0) { row.push(field); rows.push(row); }
+    return rows;
+  }
+
+  /**
+   * Reverse the CSV-injection tick prefix added by csvEscape on export.
+   * Without this, importing back a previously-exported file would carry
+   * extra apostrophes on any field that started with =/+/-/@ — visibly
+   * wrong.
+   */
+  function stripExportTick(s: string): string {
+    if (s.length >= 2 && s[0] === "'" && /^[=+\-@\t\r]/.test(s[1])) {
+      return s.slice(1);
+    }
+    return s;
+  }
+
+  /** Reverse-map STATUS_LABEL display strings to canonical status codes. */
+  function parseStatus(s: string): ApplicationStatus | null {
+    const trimmed = (s || '').trim().toLowerCase();
+    if (!trimmed) return null;
+    // Direct match on canonical code
+    if ((APPLICATION_STATUSES as readonly string[]).includes(trimmed)) {
+      return trimmed as ApplicationStatus;
+    }
+    // Match on display label
+    for (const code of APPLICATION_STATUSES) {
+      if (STATUS_LABEL[code].toLowerCase() === trimmed) return code;
+    }
+    return null;
+  }
+
+  // Import-mode state — confirmation modal showing a preview of how
+  // many valid rows we parsed and asking whether to replace or append.
+  // statusesCoerced counts how many rows had an unrecognised Status value
+  // that we silently defaulted to 'saved' — surfaced in the preview so
+  // the user isn't surprised when half their data ends up under "Saved".
+  type ImportRow = Omit<ApplicationEntry, 'id' | 'createdAt' | 'updatedAt'> & {
+    _preserveCreatedAt?: number;
+    _preserveUpdatedAt?: number;
+  };
+  const [importPreview, setImportPreview] = useState<{
+    valid: ImportRow[];
+    skipped: number;
+    statusesCoerced: number;
+    totalParsed: number;
+    fileName: string;
+  } | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  function handleImportFile(file: File) {
+    if (!file) return;
+    // Tightened from 5MB to 2MB: the tracker caps at 200 entries × ~8KB
+    // per entry = ~1.6MB worst case. 2MB gives headroom without inviting
+    // pathological inputs that would burn memory during parse. Council
+    // finding.
+    if (file.size > 2 * 1024 * 1024) {
+      window.alert('File is larger than 2MB. The tracker stores at most 200 applications — please trim the CSV and try again.');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onerror = () => window.alert('Could not read the file. Make sure it is a valid CSV.');
+    reader.onload = () => {
+      try {
+        const text = String(reader.result || '');
+        const rows = parseCsv(text);
+        if (rows.length < 2) {
+          window.alert('CSV is empty or has no data rows after the header.');
+          return;
+        }
+        // Match columns by header name so reordered exports still work.
+        const header = rows[0].map((h) => h.trim().toLowerCase());
+        const col = (name: string) => header.indexOf(name.toLowerCase());
+        const iCompany = col('Company');
+        const iRole = col('Role');
+        const iStatus = col('Status');
+        const iUrl = col('Source URL');
+        const iLocation = col('Location');
+        const iSalary = col('Salary band');
+        const iApplied = col('Applied date');
+        const iNotes = col('Notes');
+        // Optional: round-trip support for Created/Updated columns
+        // (preserves stale-flag timeline). Council finding: without
+        // these, a re-import resets every entry's createdAt to 'now',
+        // hiding all follow-up nudges.
+        const iCreated = col('Created');
+        const iUpdated = col('Updated');
+        if (iCompany < 0 || iRole < 0) {
+          window.alert('CSV is missing required columns (need at least Company and Role).');
+          return;
+        }
+        const valid: ImportRow[] = [];
+        let skipped = 0;
+        let statusesCoerced = 0;
+        for (let r = 1; r < rows.length; r += 1) {
+          const row = rows[r];
+          if (row.length === 0 || (row.length === 1 && row[0] === '')) continue; // blank line
+          const company = stripExportTick((row[iCompany] || '').trim());
+          const role = stripExportTick((row[iRole] || '').trim());
+          if (!company || !role) { skipped += 1; continue; }
+          const statusRaw = iStatus >= 0 ? stripExportTick((row[iStatus] || '').trim()) : '';
+          const parsedStatus = parseStatus(statusRaw);
+          if (statusRaw && !parsedStatus) statusesCoerced += 1;
+          const status: ApplicationStatus = parsedStatus || 'saved';
+          const sourceUrl = iUrl >= 0 ? stripExportTick((row[iUrl] || '').trim()) : '';
+          const location = iLocation >= 0 ? stripExportTick((row[iLocation] || '').trim()) : '';
+          const salaryBand = iSalary >= 0 ? stripExportTick((row[iSalary] || '').trim()) : '';
+          const appliedDate = iApplied >= 0 ? stripExportTick((row[iApplied] || '').trim()) : '';
+          const notes = iNotes >= 0 ? stripExportTick((row[iNotes] || '').trim()).slice(0, 1000) : '';
+          // Parse ISO Created/Updated if present. Date.parse returns
+          // NaN on invalid input — caught by add()'s isValidTs guard.
+          const createdRaw = iCreated >= 0 ? stripExportTick((row[iCreated] || '').trim()) : '';
+          const updatedRaw = iUpdated >= 0 ? stripExportTick((row[iUpdated] || '').trim()) : '';
+          const createdMs = createdRaw ? Date.parse(createdRaw) : NaN;
+          const updatedMs = updatedRaw ? Date.parse(updatedRaw) : NaN;
+          valid.push({
+            company: company.slice(0, 200),
+            role: role.slice(0, 200),
+            status,
+            sourceUrl: sourceUrl || undefined,
+            location: location || undefined,
+            salaryBand: salaryBand || undefined,
+            appliedDate: appliedDate || undefined,
+            notes: notes || undefined,
+            _preserveCreatedAt: Number.isFinite(createdMs) ? createdMs : undefined,
+            _preserveUpdatedAt: Number.isFinite(updatedMs) ? updatedMs : undefined,
+          });
+        }
+        if (valid.length === 0) {
+          window.alert(`No valid rows found in ${file.name} (parsed ${rows.length - 1}, all skipped due to missing Company/Role).`);
+          return;
+        }
+        setImportPreview({ valid, skipped, statusesCoerced, totalParsed: rows.length - 1, fileName: file.name });
+      } catch (err: any) {
+        console.error('CSV parse error', err);
+        window.alert('Could not parse the CSV. Make sure it was exported from Vantage or follows the same column layout.');
+      } finally {
+        // Allow re-importing the same file later (input wouldn't fire change otherwise)
+        if (fileInputRef.current) fileInputRef.current.value = '';
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  function commitImport(mode: 'append' | 'replace') {
+    if (!importPreview) return;
+    if (mode === 'replace') {
+      if (!window.confirm(`This will REPLACE your ${entries.length} existing tracked application${entries.length === 1 ? '' : 's'} with the ${importPreview.valid.length} from ${importPreview.fileName}. Continue?`)) {
+        return;
+      }
+      // Cancel any in-progress edit BEFORE clearing, so the editing UI
+      // doesn't sit there referencing an id that no longer exists.
+      // Council finding: without this, mid-edit Save would silently
+      // vanish after a replace import.
+      cancelEdit();
+      setExpandedId(null);
+      clear();
+    }
+    // Append in reverse so the first row in the CSV ends up first in the list
+    // (`add` prepends — calling it from the bottom of the array keeps order).
+    // Track persistence failures so we can honest-report partial imports
+    // (writeSafe returns '' on quota exhaustion — see council finding).
+    let writeFailures = 0;
+    for (let i = importPreview.valid.length - 1; i >= 0; i -= 1) {
+      const newId = add(importPreview.valid[i]);
+      if (!newId) writeFailures += 1;
+    }
+    setImportPreview(null);
+    if (writeFailures > 0) {
+      window.alert(
+        `Imported ${importPreview.valid.length - writeFailures} of ${importPreview.valid.length} entries. ` +
+        `${writeFailures} couldn't be saved — your browser may be out of storage space, in private mode, ` +
+        `or have site storage disabled.`
+      );
+    }
+  }
+
   // Validate URL strictly — only http(s) schemes. Don't render a link
   // for anything else (defense in depth — `javascript:` etc).
   function safeHref(url: string | undefined): string | undefined {
@@ -289,6 +511,29 @@ export default function ApplicationTracker({ userScope }: Props) {
           )}
         </h3>
         <div className="inline-flex items-center gap-2 flex-wrap">
+          {/* Hidden file input — triggered by the Import button. ref'd so we
+              can clear .value after each pick (otherwise re-importing the
+              same file wouldn't fire `change`). */}
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".csv,text/csv"
+            className="sr-only"
+            onChange={(e) => {
+              const f = e.target.files?.[0];
+              if (f) handleImportFile(f);
+            }}
+            aria-label="Choose a CSV file to import"
+          />
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-white/80 text-sm font-semibold border border-white/15 transition focus:outline-none focus:ring-2 focus:ring-violet-400"
+            title="Import a CSV of tracked applications. Useful when restoring from a Vantage export, moving devices, or migrating from another tracker."
+            aria-label="Import tracked applications from a CSV file"
+          >
+            <Upload className="w-4 h-4" /> Import CSV
+          </button>
           {entries.length > 0 && (
             <button
               type="button"
@@ -660,6 +905,89 @@ export default function ApplicationTracker({ userScope }: Props) {
           </button>
         </div>
       )}
+
+      {/* Import preview modal — fixed overlay, dismissable, asks user
+          whether to append the imported entries to existing or replace
+          everything. Capacity warning surfaces when the import would
+          exceed the 200-entry maxEntries cap. */}
+      <AnimatePresence>
+        {importPreview && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Confirm CSV import"
+            onClick={(e) => { if (e.target === e.currentTarget) setImportPreview(null); }}
+          >
+            <motion.div
+              initial={{ scale: 0.95, y: 10 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.95, y: 10 }}
+              className="w-full max-w-md p-5 rounded-2xl bg-[#181530] border-2 border-violet-500/40 shadow-[0_20px_80px_rgba(0,0,0,0.6)]"
+            >
+              <div className="flex items-start gap-3 mb-3">
+                <Upload className="w-5 h-5 text-violet-300 flex-shrink-0 mt-1" aria-hidden="true" />
+                <div className="flex-1">
+                  <h4 className="text-base font-bold text-white">Import preview</h4>
+                  <p className="text-xs text-white/60 mt-0.5">{importPreview.fileName}</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setImportPreview(null)}
+                  className="text-white/50 hover:text-white text-xl leading-none"
+                  aria-label="Cancel import"
+                >
+                  <span aria-hidden="true">×</span>
+                </button>
+              </div>
+              <ul className="text-sm text-white/80 space-y-1 mb-4">
+                <li>· <strong className="text-emerald-300">{importPreview.valid.length}</strong> valid {importPreview.valid.length === 1 ? 'entry' : 'entries'} ready to import</li>
+                {importPreview.skipped > 0 && (
+                  <li>· <strong className="text-amber-300">{importPreview.skipped}</strong> row{importPreview.skipped === 1 ? '' : 's'} skipped (missing Company or Role)</li>
+                )}
+                {importPreview.statusesCoerced > 0 && (
+                  <li>· <strong className="text-amber-300">{importPreview.statusesCoerced}</strong> {importPreview.statusesCoerced === 1 ? 'entry has' : 'entries have'} an unrecognised Status — will default to "Saved" (you can edit after import)</li>
+                )}
+                <li>· You currently have <strong>{entries.length}</strong> tracked application{entries.length === 1 ? '' : 's'}</li>
+                {entries.length + importPreview.valid.length > 200 && (
+                  <li className="text-amber-300">
+                    ⚠ Append would push you over the 200-entry cap — the <strong>{Math.min(entries.length, entries.length + importPreview.valid.length - 200)} oldest application{(entries.length + importPreview.valid.length - 200) === 1 ? '' : 's'}</strong> you have today will be dropped to make room.
+                  </li>
+                )}
+              </ul>
+              <div className="flex items-center gap-2 flex-wrap">
+                <button
+                  type="button"
+                  onClick={() => commitImport('append')}
+                  className="flex-1 px-3 py-2 rounded-lg bg-violet-600 hover:bg-violet-500 text-white text-sm font-bold transition focus:outline-none focus:ring-2 focus:ring-violet-400 min-h-[44px]"
+                  title={`Add the ${importPreview.valid.length} imported ${importPreview.valid.length === 1 ? 'entry' : 'entries'} alongside your existing ${entries.length}. Most common choice.`}
+                >
+                  Append (keep existing)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => commitImport('replace')}
+                  className="px-3 py-2 rounded-lg bg-rose-500/20 hover:bg-rose-500/35 text-rose-200 text-sm font-bold border border-rose-500/40 transition focus:outline-none focus:ring-2 focus:ring-rose-400 min-h-[44px]"
+                  title={`Delete your existing ${entries.length} tracked application${entries.length === 1 ? '' : 's'} first, then import. Cannot be undone.`}
+                  disabled={entries.length === 0}
+                >
+                  Replace all
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setImportPreview(null)}
+                  className="px-3 py-2 rounded-lg text-sm font-semibold text-white/70 hover:text-white min-h-[44px]"
+                >
+                  Cancel
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
