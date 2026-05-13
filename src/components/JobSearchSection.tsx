@@ -254,6 +254,15 @@ export default function JobSearchSection({ embedded = false, className = '' }: P
     return results.filter((j) => j.isAdjacent).length;
   }, [results]);
 
+  // True when the strict tier is entirely empty (every result is a fallback).
+  // Triggers a top-of-list banner because the "Related roles" divider
+  // suppresses itself when firstAdjacentIdx === 0 — without the banner the
+  // user has no visual cue that ALL results below are looser matches.
+  const allResultsAdjacent = useMemo(() => {
+    if (!results || results.length === 0) return false;
+    return results.every((j) => j.isAdjacent);
+  }, [results]);
+
   // Index in the visibleResults array where the first 'adjacent' job
   // appears — used to drop a 'Related roles' divider into the list.
   // -1 means no adjacent rows are showing.
@@ -730,6 +739,18 @@ export default function JobSearchSection({ embedded = false, className = '' }: P
               <p className="text-white/70">No matches. Try relaxing keywords or unchecking the ghost filter.</p>
             </div>
           ) : (
+            <>
+            {allResultsAdjacent && (
+              <div role="status" className="mb-4 p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-100 text-sm flex items-start gap-2.5">
+                <AlertTriangle className="w-4 h-4 flex-shrink-0 mt-0.5" aria-hidden="true" />
+                <div className="flex-1">
+                  <p className="font-semibold">No exact matches — every result below is a looser fit.</p>
+                  <p className="text-amber-200/80 text-xs mt-0.5">
+                    We couldn't find any role that hits ALL your keywords AND your exact work mode. These are the closest options — verify the work-mode in each listing before applying. To get stronger matches, try widening your keywords, switching work-mode to "Any", or removing the salary floor.
+                  </p>
+                </div>
+              </div>
+            )}
             <ul className="space-y-3">
               <AnimatePresence initial={true}>
                 {visibleResults.map((job, idx) => {
@@ -769,14 +790,28 @@ export default function JobSearchSection({ embedded = false, className = '' }: P
                             <div className="flex items-baseline flex-wrap gap-x-2">
                               <h3 className="text-lg font-bold text-white truncate" title={job.title}>{job.title}</h3>
                               <span className="text-sm text-white/70">at {job.company}</span>
-                              {job.isAdjacent && (
+                              {/*
+                                Adjacent jobs get a SINGLE badge — either:
+                                  - amber "Work-mode unclear" when the listing didn't state a mode
+                                    (more actionable: tells the user to verify the listing)
+                                  - violet "Related" otherwise (any other looser-match reason)
+                                Showing both was too cluttered on mobile per council review.
+                              */}
+                              {job.isAdjacent && !job.workMode ? (
+                                <span
+                                  className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider bg-amber-500/15 text-amber-200 border border-amber-500/30"
+                                  title="The listing doesn't explicitly say if this role is remote, hybrid or on-site. Verify on the original posting before applying."
+                                >
+                                  Work-mode unclear
+                                </span>
+                              ) : job.isAdjacent ? (
                                 <span
                                   className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider bg-violet-500/20 text-violet-200 border border-violet-400/30"
-                                  title={`Related role — looser match. If you picked Remote, this may be Hybrid (or vice-versa). May share only some of your keywords. Salary and country still strict. Job's actual work-mode: ${job.workMode || 'not listed'}.`}
+                                  title={`Related role — looser match. If you picked Remote, this may be Hybrid (or vice-versa). May share only some of your keywords. Salary and country still strict. Job's actual work-mode: ${job.workMode}.`}
                                 >
                                   Related
                                 </span>
-                              )}
+                              ) : null}
                             </div>
                             <p className="text-xs text-white/50 mt-0.5">
                               {job.location}
@@ -867,6 +902,7 @@ export default function JobSearchSection({ embedded = false, className = '' }: P
                 })}
               </AnimatePresence>
             </ul>
+            </>
           )}
         </section>
       )}

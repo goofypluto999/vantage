@@ -148,8 +148,14 @@ function jsRelevanceReject(j: RawJob, params: JsParams): string | null {
       }
     }
   }
-  if (params.workMode !== 'any' && j.workMode && j.workMode !== params.workMode) {
-    return `workMode '${j.workMode}' != requested '${params.workMode}'`;
+  // STRICT workMode: must be EXPLICIT match. undefined j.workMode (heuristic
+  // couldn't tell either way) fails strict — those jobs route to the adjacent
+  // tier with a 'Work-mode unclear' label. Stops vague listings being passed
+  // off as 'strong matches' when the user picked Remote and the listing says
+  // nothing about work arrangements. Was previously `j.workMode &&` which
+  // silently let undefined through.
+  if (params.workMode !== 'any' && j.workMode !== params.workMode) {
+    return `workMode '${j.workMode ?? 'unknown'}' != requested '${params.workMode}'`;
   }
   if (params.salaryMin && params.salaryMin > 0) {
     const jobMax = j.salaryMax;
@@ -199,15 +205,16 @@ function jsAdjacencyReject(j: RawJob, params: JsParams): string | null {
     }
   }
 
-  // workMode — looser than strict. Remote ↔ Hybrid are interchangeable
-  // in adjacency (both involve WFH some/all of the time, and Adzuna's
-  // heuristic classifier mis-labels hybrid roles as on-site frequently).
-  // on-site is a hard line in BOTH directions: if user picked Remote or
-  // Hybrid, never show on-site; if user picked on-site, never show
-  // remote/hybrid. UI badges these results 'Related' so the user knows
-  // they may not match work-mode perfectly. Live diagnostic 2026-05-13:
-  // 'Marketing UK Remote' returned 2/10 because the strict workMode gate
-  // killed 16 of 18 fetched. Relaxing remote↔hybrid here recovers most.
+  // workMode — looser than strict. Three rules:
+  //   1. undefined j.workMode (heuristic couldn't tell) is ADMITTED to
+  //      adjacency. UI tags these 'Work-mode unclear — verify' so the
+  //      user knows to check the listing. Big lever: most UK Adzuna
+  //      listings don't say explicitly, so undefined is common.
+  //   2. Remote ↔ Hybrid are interchangeable (both allow some/all WFH,
+  //      and listings often blur the line).
+  //   3. on-site is a hard wall in BOTH directions: if user picked
+  //      Remote/Hybrid, never serve on-site; if user picked on-site,
+  //      never serve Remote/Hybrid.
   if (params.workMode !== 'any' && j.workMode) {
     const userWantsWfh = params.workMode === 'remote' || params.workMode === 'hybrid';
     const jobIsOnSite = j.workMode === 'on-site';
@@ -219,6 +226,7 @@ function jsAdjacencyReject(j: RawJob, params: JsParams): string | null {
       return `workMode '${j.workMode}' != requested 'on-site' (remote/hybrid never adjacent for on-site)`;
     }
   }
+  // (undefined j.workMode falls through — admitted to adjacency)
 
   // Salary stays STRICT — money is a hard user constraint.
   if (params.salaryMin && params.salaryMin > 0) {
@@ -237,33 +245,50 @@ function jsAdjacencyReject(j: RawJob, params: JsParams): string | null {
  * filter results to the user's chosen mode. Reported 2026-05-12:
  * 'I selected REMOTE jobs, BUT I'm still getting in-person jobs'.
  */
-function inferAdzunaWorkMode(title: string, description: string, location: string): 'remote' | 'hybrid' | 'on-site' {
+function inferAdzunaWorkMode(title: string, description: string, location: string): 'remote' | 'hybrid' | 'on-site' | undefined {
   const blob = `${title || ''}\n${description || ''}\n${location || ''}`.toLowerCase();
   // Strong remote signals — phrases that virtually guarantee remote.
   const remoteSignals = [
     'fully remote', '100% remote', 'remote-first', 'remote only',
     'work from home', 'work-from-home', 'wfh',
     'remote, anywhere', 'remote (', 'remote -',
+    'work remotely', 'remote opportunity', 'home-based', 'home based',
+    'anywhere in the uk', 'anywhere in the us', 'fully home-working',
   ];
   // Hybrid signals — explicitly hybrid arrangements.
   const hybridSignals = [
     'hybrid', 'flexible working', 'flexible hybrid',
     '2 days in office', '3 days in office', '2-3 days in office',
     'mix of remote and office', 'remote/hybrid', 'hybrid/remote',
-    'partially remote', 'office and home',
+    'partially remote', 'office and home', 'split between',
   ];
-  // Lone 'remote' is ambiguous (could mean 'remote office in...') so
-  // we treat it as a weak remote signal — counts ONLY if no hybrid
-  // signal also fires.
+  // Explicit on-site signals — phrases that virtually guarantee in-office.
+  const onSiteSignals = [
+    'on-site', 'onsite', 'on site',
+    'in-office', 'in office', 'in our office',
+    'office-based', 'office based',
+    'must commute', 'must be in office', 'must be on site',
+    'no remote', 'no working from home', 'no wfh',
+  ];
   const hasHybrid = hybridSignals.some((s) => blob.includes(s));
   if (hasHybrid) return 'hybrid';
   const hasStrongRemote = remoteSignals.some((s) => blob.includes(s));
   if (hasStrongRemote) return 'remote';
-  // Lone 'remote' word — treat as remote unless 'office' / 'on-site' also present
-  if (/\bremote\b/.test(blob) && !/\bon[\s-]?site\b|\bin[\s-]?office\b/.test(blob)) {
+  // Lone 'remote' word — counts as remote when no on-site signal contradicts.
+  if (/\bremote\b/.test(blob) && !onSiteSignals.some((s) => blob.includes(s))) {
     return 'remote';
   }
-  return 'on-site';
+  // Explicit on-site signal — return 'on-site'.
+  if (onSiteSignals.some((s) => blob.includes(s))) return 'on-site';
+  // No signal either way — return undefined ('unknown'). Strict filter
+  // will reject these (it requires explicit match — see jsRelevanceReject
+  // below). Adjacent filter will admit them with a 'Work-mode unclear'
+  // badge so the user can verify in the listing. Live diagnostic
+  // 2026-05-13: defaulting to 'on-site' here was killing 16/18 fetched
+  // jobs for 'Marketing UK Remote' because most UK listings don't say
+  // either way explicitly. Better to surface them as 'unclear, verify'
+  // than silently drop them.
+  return undefined;
 }
 
 async function jsAdzuna(params: JsParams, page: number = 1): Promise<RawJob[]> {
@@ -1724,17 +1749,27 @@ async function handleJobSearch(request: any, response: any) {
     // very thin AND we haven't seen everything from a wider sweep, fetch
     // page 2 + 3 of Adzuna with the same filters. This is the 'request
     // more until list is curated' loop the user asked for.
-    if (filteredRawJobs.length < 8 && process.env.ADZUNA_APP_ID && process.env.ADZUNA_APP_KEY) {
-      for (let page = 2; page <= 3 && filteredRawJobs.length < TARGET_POOL; page += 1) {
+    if (filteredRawJobs.length < 12 && process.env.ADZUNA_APP_ID && process.env.ADZUNA_APP_KEY) {
+      for (let page = 2; page <= 4 && filteredRawJobs.length < TARGET_POOL; page += 1) {
         try {
           const extra = await jsAdzuna({ ...params, perSourceLimit: 50 }, page);
-          const extraRelevant = extra.filter((j) => {
-            if (jsRelevanceReject(j, params)) return false;
-            if (seenIds.has(String(j.id || ''))) return false;
-            if (filteredRawJobs.some((x: any) => String(x.id) === String(j.id))) return false;
-            return true;
-          });
-          filteredRawJobs = [...filteredRawJobs, ...extraRelevant];
+          // Two-tier intake: jobs that pass strict are added as-is (strict
+          // tier); jobs that fail strict but pass adjacency are added with
+          // isAdjacent:true. Without this split, pagination wasted bandwidth
+          // because the new tighter strict gate (explicit workMode required)
+          // rejected most newly fetched jobs.
+          const extraStrict: RawJob[] = [];
+          const extraAdjacent: RawJob[] = [];
+          for (const j of extra) {
+            if (seenIds.has(String(j.id || ''))) continue;
+            if (filteredRawJobs.some((x: any) => String(x.id) === String(j.id))) continue;
+            if (!jsRelevanceReject(j, params)) {
+              extraStrict.push(j);
+            } else if (!jsAdjacencyReject(j, params)) {
+              extraAdjacent.push({ ...j, isAdjacent: true });
+            }
+          }
+          filteredRawJobs = [...filteredRawJobs, ...extraStrict, ...extraAdjacent];
           if (extra.length === 0) break; // no more pages
         } catch (err: any) {
           console.warn(`jobsearch: adzuna page ${page} fetch error: ${err?.message || ''}`);
