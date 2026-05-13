@@ -590,7 +590,17 @@ export default function JobSearchSection({ embedded = false, className = '' }: P
       )}
 
       <section aria-label="Search filters" className={`${glassCard} rounded-2xl p-5 md:p-6 mb-5`}>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <form
+          onSubmit={(e) => {
+            // Enter-to-search: native form submit fires when the user
+            // presses Enter from any input. Cancel the browser default
+            // (full page reload) and trigger the same handleSearch we
+            // wire to the Run-scan button.
+            e.preventDefault();
+            if (canRunScan) handleSearch();
+          }}
+          className="grid grid-cols-1 md:grid-cols-2 gap-4"
+        >
           <div>
             <label htmlFor="js-keywords" className="block text-xs font-semibold text-white/80 mb-1.5">
               <Search className="w-3.5 h-3.5 inline mr-1" aria-hidden="true" /> Keywords (role, skills, company)
@@ -645,7 +655,13 @@ export default function JobSearchSection({ embedded = false, className = '' }: P
               onChange={(e) => setSalaryMin(e.target.value)} placeholder="70000"
               className={inputCls} />
           </div>
-        </div>
+          {/* Hidden submit button guarantees the form fires on Enter from any
+              input even in browsers that skip implicit submission for multi-
+              input forms. Visually hidden but still triggered by Enter. */}
+          <button type="submit" aria-hidden="true" tabIndex={-1} className="sr-only" disabled={!canRunScan}>
+            Submit search
+          </button>
+        </form>
         <div className="mt-4 pt-4 border-t border-white/10 flex flex-wrap items-center justify-between gap-3">
           <label
             className="inline-flex items-center gap-2 text-sm text-white/80 cursor-pointer"
