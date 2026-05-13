@@ -26,6 +26,17 @@ export default function Register() {
       setError('Please enter your full name.');
       return;
     }
+    // Client-side password length checks matching Supabase default (8)
+    // and bcrypt upper bound (72). Surfaces a clear message before the
+    // round-trip; matches Account + ResetPassword behaviour.
+    if (password.length < 8) {
+      setError('Password must be at least 8 characters.');
+      return;
+    }
+    if (password.length > 72) {
+      setError('Password must be 72 characters or fewer (bcrypt limit). Use a passphrase that fits.');
+      return;
+    }
 
     setLoading(true);
 

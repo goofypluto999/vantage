@@ -19,8 +19,14 @@ export default function ResetPassword() {
     e.preventDefault();
     setError('');
 
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters');
+    // Length policy matched to Supabase Auth default (8). Bcrypt upper
+    // bound (72) prevents the silent-prefix-match footgun.
+    if (password.length < 8) {
+      setError('Password must be at least 8 characters.');
+      return;
+    }
+    if (password.length > 72) {
+      setError('Password must be 72 characters or fewer (bcrypt limit). Use a passphrase that fits.');
       return;
     }
 

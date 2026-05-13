@@ -76,8 +76,18 @@ export default function Account() {
   const handleChangePassword = async () => {
     setPasswordError('');
     setPasswordSuccess(false);
-    if (newPassword.length < 6) {
-      setPasswordError('Password must be at least 6 characters');
+    // Length policy matched to Supabase Auth's default minimum (8) — was
+    // previously 6 which is below modern NIST SP 800-63B guidance and
+    // typically rejected by Supabase before reaching the API. Also enforce
+    // an upper bound (72 — bcrypt truncates beyond this, so longer
+    // 'passwords' would silently match shorter prefixes — a real footgun
+    // for users who think a long passphrase is more secure).
+    if (newPassword.length < 8) {
+      setPasswordError('Password must be at least 8 characters.');
+      return;
+    }
+    if (newPassword.length > 72) {
+      setPasswordError('Password must be 72 characters or fewer (bcrypt limit). Use a passphrase that fits.');
       return;
     }
     if (newPassword !== confirmPassword) {
