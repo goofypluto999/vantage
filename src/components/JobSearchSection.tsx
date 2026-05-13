@@ -251,6 +251,7 @@ export default function JobSearchSection({ embedded = false, className = '' }: P
 
   const [loading, setLoading] = useState(false);
   const [loadingStage, setLoadingStage] = useState(0);
+  const [loadingElapsedS, setLoadingElapsedS] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [needsTopUp, setNeedsTopUp] = useState(false);
   const [hoursToFreeReset, setHoursToFreeReset] = useState<number | undefined>();
@@ -284,11 +285,22 @@ export default function JobSearchSection({ embedded = false, className = '' }: P
   }
 
   useEffect(() => {
-    if (!loading) { setLoadingStage(0); return; }
-    const interval = setInterval(() => {
+    if (!loading) { setLoadingStage(0); setLoadingElapsedS(0); return; }
+    const stageInterval = setInterval(() => {
       setLoadingStage((s) => Math.min(s + 1, LOADING_STAGES.length - 1));
     }, 1400);
-    return () => clearInterval(interval);
+    // Separate 1-second tick for the elapsed-time counter. Triggers a
+    // 'still ranking — niche searches sometimes need a deeper sweep'
+    // message after 7s so the user knows the spinner isn't stuck.
+    // Backend can take up to ~25s with all expansion fallbacks firing.
+    const startedAt = Date.now();
+    const elapsedInterval = setInterval(() => {
+      setLoadingElapsedS(Math.floor((Date.now() - startedAt) / 1000));
+    }, 1000);
+    return () => {
+      clearInterval(stageInterval);
+      clearInterval(elapsedInterval);
+    };
   }, [loading]);
 
   const visibleResults = useMemo(() => {
@@ -726,6 +738,17 @@ export default function JobSearchSection({ embedded = false, className = '' }: P
                 </div>
               ))}
             </div>
+            {/* After 7s the fake stage-cycle has finished and the user
+                sees the last 'Ranking top 10…' stage with spinner but no
+                further progress. For niche searches the backend can
+                legitimately take 15-25s (expansion fallbacks + AI). Show
+                an honest patient-state message so the user doesn't think
+                the spinner is stuck. */}
+            {loadingElapsedS >= 7 && (
+              <p className="mt-3 pt-3 border-t border-white/10 text-xs text-white/50">
+                <span className="text-violet-300">Still working</span> — niche searches sometimes need a deeper sweep across sources and pages. Up to ~25s is normal. <span className="tabular-nums text-white/40">({loadingElapsedS}s elapsed)</span>
+              </p>
+            )}
           </motion.section>
         )}
       </AnimatePresence>
