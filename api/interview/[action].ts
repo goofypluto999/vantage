@@ -1132,8 +1132,12 @@ Return EXACTLY this JSON shape (no other text, no markdown fences):
     }
 
     if (!parsed.subject || !parsed.body) {
-      await refundTokens(user.id, FOLLOWUP_COST);
-      return response.status(500).json({ error: 'AI response missing subject or body. Tokens refunded.' });
+      const refundOk = await refundTokens(user.id, FOLLOWUP_COST);
+      return response.status(500).json({
+        error: refundOk
+          ? 'AI response missing subject or body. Your token was refunded — please try again.'
+          : 'AI response missing subject or body AND token refund failed. Please contact support@aimvantage.uk to have your token restored.',
+      });
     }
 
     return response.status(200).json({
@@ -1508,8 +1512,12 @@ Return EXACTLY this JSON shape (no other text, no markdown fences). All five fie
       !Array.isArray(parsed.talkingPoints) ||
       !Array.isArray(parsed.warnings)
     ) {
-      await refundTokens(user.id, NEGOTIATION_COST);
-      return response.status(500).json({ error: 'AI response did not match expected shape. Tokens refunded.' });
+      const refundOk = await refundTokens(user.id, NEGOTIATION_COST);
+      return response.status(500).json({
+        error: refundOk
+          ? 'AI response did not match expected shape. Your token was refunded — please try again.'
+          : 'AI response did not match expected shape AND token refund failed. Please contact support@aimvantage.uk to have your token restored.',
+      });
     }
 
     // Type-guard array elements before stringification — `String(null)` /
@@ -1646,16 +1654,27 @@ async function handleJobSearch(request: any, response: any) {
       fetchResult = await jsFetchAllSources(params);
     } catch (err: any) {
       console.error('jobsearch sources error:', err?.message || 'unknown');
-      if (didCharge) await refundTokens(user.id, JOBSEARCH_COST);
-      return response.status(502).json({ error: 'Job sources unavailable. Try again in a moment.' });
+      const refundOk = didCharge ? await refundTokens(user.id, JOBSEARCH_COST) : true;
+      return response.status(502).json({
+        error: !didCharge
+          ? 'Job sources unavailable. Try again in a moment.'
+          : refundOk
+            ? 'Job sources unavailable. Your token was refunded — try again in a moment.'
+            : 'Job sources unavailable AND token refund failed. Please contact support@aimvantage.uk with your account email — we\'ll restore your token manually.',
+      });
     }
 
     if (fetchResult.deduped === 0) {
-      if (didCharge) await refundTokens(user.id, JOBSEARCH_COST);
+      const refundOk = didCharge ? await refundTokens(user.id, JOBSEARCH_COST) : true;
       const adzunaConfigured = fetchResult.perSourceReport.adzuna?.state === 'configured';
-      const message = adzunaConfigured
+      const refundSuffix = !didCharge
+        ? ''
+        : refundOk
+          ? ' Your token was refunded.'
+          : ' Your token refund failed — please contact support@aimvantage.uk to have it restored.';
+      const message = (adzunaConfigured
         ? 'No jobs matched. Try relaxing keywords or expanding location.'
-        : "Adzuna isn't configured on this deploy yet. Showing global remote results only.";
+        : "Adzuna isn't configured on this deploy yet. Showing global remote results only.") + refundSuffix;
       return response.status(200).json({
         jobs: [], sources: fetchResult.perSourceCounts, source_report: fetchResult.perSourceReport,
         fetched: fetchResult.fetched, deduped: 0, token_balance: newBalance, was_free: !didCharge,
@@ -1862,12 +1881,17 @@ async function handleJobSearch(request: any, response: any) {
     // All available jobs already seen — tell the user explicitly so they
     // don't think the tool is broken, and refund any spent token.
     if (filteredRawJobs.length === 0) {
-      if (didCharge) await refundTokens(user.id, JOBSEARCH_COST);
+      const refundOk = didCharge ? await refundTokens(user.id, JOBSEARCH_COST) : true;
+      const refundSuffix = !didCharge
+        ? ''
+        : refundOk
+          ? ' Your token was refunded.'
+          : ' Your token refund failed — please contact support@aimvantage.uk to have it restored.';
       return response.status(200).json({
         jobs: [], sources: fetchResult.perSourceCounts, source_report: fetchResult.perSourceReport,
         fetched: fetchResult.fetched, deduped: fetchResult.deduped, token_balance: newBalance, was_free: !didCharge,
         next_free_at: nextFreeAt,
-        message: `You've already seen all ${fetchResult.deduped} jobs matching these filters in the last 30 days. Try different keywords, a wider location, or come back when more roles are posted.`,
+        message: `You've already seen all ${fetchResult.deduped} jobs matching these filters in the last 30 days. Try different keywords, a wider location, or come back when more roles are posted.` + refundSuffix,
       });
     }
 
@@ -2008,9 +2032,13 @@ Penalize ghost-tells heavily. NEVER invent skills/companies not in CV/JD. STRICT
         console.log(`jobsearch AI retry SUCCEEDED with slim payload (primary error: ${scoringError})`);
       } else {
         console.error(`jobsearch AI scoring failed BOTH attempts: primary=${scoringError} retry=${retry.error}`);
-        if (didCharge) await refundTokens(user.id, JOBSEARCH_COST);
+        const refundOk = didCharge ? await refundTokens(user.id, JOBSEARCH_COST) : true;
         return response.status(500).json({
-          error: 'AI scoring had a hiccup. Tokens refunded — please try again in a moment.',
+          error: !didCharge
+            ? 'AI scoring had a hiccup — please try again in a moment.'
+            : refundOk
+              ? 'AI scoring had a hiccup. Your token was refunded — please try again in a moment.'
+              : 'AI scoring had a hiccup AND token refund failed. Please contact support@aimvantage.uk to have your token restored.',
         });
       }
     }
@@ -2025,8 +2053,14 @@ Penalize ghost-tells heavily. NEVER invent skills/companies not in CV/JD. STRICT
 
     if (!Array.isArray(parsed)) {
       console.error('jobsearch AI returned non-array:', typeof parsed);
-      if (didCharge) await refundTokens(user.id, JOBSEARCH_COST);
-      return response.status(500).json({ error: 'AI returned unexpected shape. Tokens refunded.' });
+      const refundOk = didCharge ? await refundTokens(user.id, JOBSEARCH_COST) : true;
+      return response.status(500).json({
+        error: !didCharge
+          ? 'AI returned unexpected shape. Please try again.'
+          : refundOk
+            ? 'AI returned unexpected shape. Your token was refunded — please try again.'
+            : 'AI returned unexpected shape AND token refund failed. Please contact support@aimvantage.uk to have your token restored.',
+      });
     }
 
     const scored = parsed
@@ -2092,12 +2126,17 @@ Penalize ghost-tells heavily. NEVER invent skills/companies not in CV/JD. STRICT
       .slice(0, 10);
 
     if (scored.length === 0) {
-      if (didCharge) await refundTokens(user.id, JOBSEARCH_COST);
+      const refundOk = didCharge ? await refundTokens(user.id, JOBSEARCH_COST) : true;
+      const refundSuffix = !didCharge
+        ? ' (Free scan — no token consumed.)'
+        : refundOk
+          ? ' Your token was refunded.'
+          : ' Your token refund failed — please contact support@aimvantage.uk to have it restored.';
       return response.status(200).json({
         jobs: [], sources: fetchResult.perSourceCounts, source_report: fetchResult.perSourceReport,
         fetched: fetchResult.fetched, deduped: fetchResult.deduped, token_balance: newBalance, was_free: !didCharge,
         next_free_at: nextFreeAt,
-        message: 'AI scoring returned no valid mappings. Tokens were not consumed.',
+        message: 'AI scoring returned no valid mappings.' + refundSuffix,
       });
     }
 
