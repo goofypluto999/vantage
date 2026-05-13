@@ -300,9 +300,16 @@ async function deductTokens(userId: string, amount: number): Promise<number> {
   return res.json();
 }
 
-async function refundTokens(userId: string, amount: number): Promise<void> {
+/**
+ * Refunds tokens to a user. Returns true on confirmed success, false on
+ * any failure (network, HTTP non-200). Callers should use this boolean
+ * to gate user-facing copy that promises 'tokens refunded' — the old
+ * void return meant we could tell the user 'refunded' even when the
+ * RPC silently failed. Aligned with api/interview/[action].ts.
+ */
+async function refundTokens(userId: string, amount: number): Promise<boolean> {
   try {
-    await fetch(`${SUPABASE_URL}/rest/v1/rpc/add_tokens`, {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/add_tokens`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -311,8 +318,14 @@ async function refundTokens(userId: string, amount: number): Promise<void> {
       },
       body: JSON.stringify({ p_user_id: userId, p_amount: amount }),
     });
+    if (!res.ok) {
+      console.error('Refund non-ok for user', userId, 'status', res.status);
+      return false;
+    }
+    return true;
   } catch (err: any) {
     console.error('Refund failed for user', userId, 'amount', amount, err?.message || '');
+    return false;
   }
 }
 
@@ -755,6 +768,13 @@ export default async function handler(request: any, response: any) {
 
   const token = authHeader.replace('Bearer ', '');
 
+  // Lifted OUT of the try block so the outer catch can refund if an
+  // exception escapes before generateJobIntelligence's inner refund
+  // runs. Matches the pattern in api/interview/[action].ts.
+  let didCharge = false;
+  let chargedUserId: string | null = null;
+  const COST_PER_ANALYSIS_OUTER = 1;
+
   try {
     const userRes = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
       headers: {
@@ -812,6 +832,8 @@ export default async function handler(request: any, response: any) {
     let newBalance: number;
     try {
       newBalance = await deductTokens(user.id, COST_PER_ANALYSIS);
+      didCharge = true;
+      chargedUserId = user.id;
     } catch (err: any) {
       if (err.message?.includes('Insufficient')) {
         return response.status(403).json({ error: 'Insufficient tokens' });
@@ -823,9 +845,13 @@ export default async function handler(request: any, response: any) {
     try {
       results = await generateJobIntelligence(cvText, jobUrl, jobDescText, includeFitScore, cvBase64, cvMimeType);
     } catch (err) {
-      await refundTokens(user.id, COST_PER_ANALYSIS);
+      const refundOk = await refundTokens(user.id, COST_PER_ANALYSIS);
+      didCharge = !refundOk; // false if refunded, true if we still owe the user
       throw err;
     }
+    // Past this point the inner-catch has either succeeded (didCharge stays
+    // true, results assigned) or refunded already (didCharge=false). The
+    // outer catch refunds if didCharge is still true on entry.
 
     // Persist analysis (best-effort — don't fail the request if this fails)
     try {
@@ -859,6 +885,9 @@ export default async function handler(request: any, response: any) {
       console.error('cv_summary save failed (non-fatal):', err?.message || 'unknown');
     }
 
+    // Mark didCharge=false on success — analysis delivered, the charge
+    // is legitimately earned. Outer catch shouldn't try to refund.
+    didCharge = false;
     return response.status(200).json({
       success: true,
       data: results,
@@ -866,15 +895,28 @@ export default async function handler(request: any, response: any) {
     });
   } catch (error: any) {
     console.error('Analysis error:', error?.message || 'Unknown error');
-    // Insufficient tokens — surface the message
+    // Insufficient tokens — surface the message (never charged)
     if (error.message?.includes('Insufficient')) {
       return response.status(403).json({ error: error.message });
+    }
+    // CRITICAL: refund if we charged but the inner catch didn't (e.g. an
+    // exception escaped between deduct and generateJobIntelligence, or
+    // refund there failed). Use the boolean return to honest-report.
+    let refundSucceeded = false;
+    if (didCharge && chargedUserId) {
+      refundSucceeded = await refundTokens(chargedUserId, COST_PER_ANALYSIS_OUTER);
     }
     // Friendly job-parse failure — tokens already refunded by the inner catch.
     // Surface the message verbatim so the user knows to paste the JD text.
     if (error.code === 'JOB_PARSE_FAILED') {
       return response.status(422).json({ error: error.message, code: 'JOB_PARSE_FAILED' });
     }
-    return response.status(500).json({ error: 'Analysis failed' });
+    return response.status(500).json({
+      error: !didCharge
+        ? 'Analysis failed. Please try again.'
+        : refundSucceeded
+          ? 'Analysis failed. Your token was refunded — please try again.'
+          : 'Analysis failed AND the token refund failed. Please contact support@aimvantage.uk with your account email — we\'ll restore your token manually.',
+    });
   }
 }
