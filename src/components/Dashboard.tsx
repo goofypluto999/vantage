@@ -6,6 +6,7 @@ import {
   LogOut, CreditCard, Zap, Crown, Star, Settings, Check,
   Mic, BookOpen, Lock, RefreshCw, ClipboardPaste, Type,
   Twitter, Linkedin, Copy, AlertTriangle, Mail, DollarSign, Download, Briefcase,
+  Bookmark,
 } from 'lucide-react';
 import { useAuth } from '../App';
 import { useCurrency } from '../contexts/CurrencyContext';
@@ -13,7 +14,7 @@ import { supabase, getCreditsRemaining, hasCredits } from '../lib/supabase';
 import { analyzeJob, createStripeCheckout, syncSubscription, rewriteTone, fetchAnalysisHistory, uploadCvSummary } from '../services/api';
 import { sweepDraftsForUser } from '../lib/useFormDraft';
 import { sweepHistoryForUser } from '../lib/useResultHistory';
-import { sweepTrackerForUser } from '../lib/useApplicationTracker';
+import { sweepTrackerForUser, useApplicationTracker } from '../lib/useApplicationTracker';
 import { buildAnalysisMarkdown, downloadMarkdown } from '../lib/exportMarkdown';
 import AIInterviewSession from './AIInterviewSession';
 import AtsScannerSection from './AtsScannerSection';
@@ -171,6 +172,18 @@ const PLANS = [
 
 export default function Dashboard() {
   const { user, profile, signOut, refreshProfile } = useAuth();
+  // Tracker hook so the analyzer can offer 'Save to tracker' on the
+  // results page — closes the loop between "I analysed this role"
+  // and "now I want to follow up". Without this, users had to scroll
+  // up, find the same job in search results, click Save, then come
+  // back — major flow break.
+  const { add: addAnalysisToTracker } = useApplicationTracker({ userScope: user?.id });
+  const [analysisTrackerToast, setAnalysisTrackerToast] = useState<null | { mode: 'saved' | 'error'; company: string; role: string }>(null);
+  useEffect(() => {
+    if (!analysisTrackerToast) return;
+    const t = setTimeout(() => setAnalysisTrackerToast(null), 5000);
+    return () => clearTimeout(t);
+  }, [analysisTrackerToast]);
   const { currency, symbol } = useCurrency();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -963,6 +976,47 @@ export default function Dashboard() {
           </div>
         </div>
       </header>
+
+      {/* Analyser → tracker save toast. Bottom-right, auto-dismisses 5s.
+          Mirrors the JobSearchSection toast pattern for consistency. */}
+      <AnimatePresence>
+        {analysisTrackerToast && (
+          <motion.div
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 10, scale: 0.95 }}
+            role="status"
+            aria-live="polite"
+            className={`fixed bottom-6 right-6 z-50 w-[340px] max-w-[calc(100vw-3rem)] p-4 rounded-2xl backdrop-blur-xl shadow-[0_12px_48px_rgba(0,0,0,0.6)] flex items-start gap-3 ${
+              analysisTrackerToast.mode === 'saved'
+                ? 'bg-emerald-500/20 border-2 border-emerald-500/60'
+                : 'bg-rose-500/20 border-2 border-rose-500/60'
+            }`}
+          >
+            {analysisTrackerToast.mode === 'saved'
+              ? <Bookmark className="w-5 h-5 flex-shrink-0 mt-0.5 text-emerald-300" aria-hidden="true" />
+              : <AlertTriangle className="w-5 h-5 flex-shrink-0 mt-0.5 text-rose-300" aria-hidden="true" />}
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-bold text-white mb-0.5">
+                {analysisTrackerToast.mode === 'saved' ? 'Saved to tracker' : 'Couldn\'t save to tracker'}
+              </p>
+              <p className="text-xs text-white/80">
+                {analysisTrackerToast.mode === 'saved'
+                  ? <>{analysisTrackerToast.role} at {analysisTrackerToast.company}</>
+                  : <>Browser storage may be full or blocked. Try again from the tracker section directly.</>}
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setAnalysisTrackerToast(null)}
+              aria-label="Dismiss notification"
+              className="text-white/50 hover:text-white text-xl leading-none flex-shrink-0"
+            >
+              <span aria-hidden="true">×</span>
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Checkout Success Banner — fires after Stripe redirect with ?success=true.
           The post-purchase moment is the MOST positively-primed instant in the
@@ -1870,6 +1924,62 @@ export default function Dashboard() {
                         vision users without screen reader. */}
                     <Download className="w-4 h-4" /> Download .md
                   </button>
+                  {/* Save-to-tracker — closes the analyse→follow-up loop.
+                      Pre-fills company from the analysis output and role
+                      from the JobSearch hand-off (if user came via Apply
+                      via Vantage). Falls back to prompt() asking for the
+                      role title when not available. Source URL is the
+                      analysed jobUrl. Status defaults to 'saved' so the
+                      user can update to 'applied' once they actually
+                      submit. Disabled when companySnapshot.name is
+                      generic ('Unknown — could not identify employer')
+                      so we don't pollute the tracker with bad data. */}
+                  {(() => {
+                    const company = results.companySnapshot?.name || '';
+                    const companyOk = company && !company.startsWith('Unknown') && !company.includes('may be incorrect');
+                    return (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (!companyOk) return;
+                          // Prefer the role title we already know from
+                          // an Apply-via-Vantage hand-off; otherwise ask.
+                          let role = prefilledFromJobSearch?.title?.trim() || '';
+                          if (!role) {
+                            const typed = window.prompt(`Save "${company}" to your application tracker — what's the role title?`, '');
+                            if (typed === null) return; // user cancelled
+                            role = typed.trim();
+                          }
+                          if (!role) {
+                            setAnalysisTrackerToast({ mode: 'error', company, role: '' });
+                            return;
+                          }
+                          const newId = addAnalysisToTracker({
+                            company: company.slice(0, 200),
+                            role: role.slice(0, 200),
+                            status: 'saved',
+                            sourceUrl: jobUrl || undefined,
+                            notes: results.cvFitSummary ? results.cvFitSummary.slice(0, 1000) : undefined,
+                          });
+                          if (!newId) {
+                            setAnalysisTrackerToast({ mode: 'error', company, role });
+                          } else {
+                            setAnalysisTrackerToast({ mode: 'saved', company, role });
+                          }
+                        }}
+                        disabled={!companyOk}
+                        className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-white/5 text-white/70 font-semibold text-sm hover:bg-white/10 disabled:opacity-40 disabled:cursor-not-allowed"
+                        aria-label={companyOk
+                          ? `Save ${company} to your application tracker`
+                          : 'Save to tracker disabled because the company name could not be reliably identified'}
+                        title={companyOk
+                          ? `Add ${company} to your application tracker so you can follow up after applying. Role title is auto-filled if you came via Apply-via-Vantage, otherwise you'll be asked.`
+                          : 'Company name could not be reliably identified — save manually from the tracker instead.'}
+                      >
+                        <Bookmark className="w-4 h-4" /> Save to tracker
+                      </button>
+                    );
+                  })()}
                   {/* "Same CV, new job" — preserves the uploaded CV so users
                       applying to multiple roles don't have to re-drop the
                       file every time. Habit-forming: typical job-seeker
