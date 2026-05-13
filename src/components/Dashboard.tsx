@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   Upload, Link as LinkIcon, FileText, Loader2, Sparkles, ChevronRight,
@@ -664,7 +664,13 @@ export default function Dashboard() {
   const [showNegotiation, setShowNegotiation] = useState(false);
 
   const creditsRemaining = profile ? getCreditsRemaining(profile) : 0;
-  const canAnalyze = hasCredits(profile, 3);
+  // BUG FIX 2026-05-13: was hasCredits(profile, 3) — a hangover from the
+  // pre-2026-05-08 pricing era when analysis cost 3 tokens. The backend
+  // dropped to 1 token per analysis but this frontend gate stayed at 3,
+  // so users with 1-2 tokens saw the Run-my-prep-pack button disabled
+  // even though they had enough to run an analysis. Now matches the
+  // backend's COST_PER_ANALYSIS=1.
+  const canAnalyze = hasCredits(profile, 1);
   const isPro = profile?.plan === 'pro' || profile?.plan === 'premium';
 
   const handleStart = async () => {
@@ -1789,7 +1795,10 @@ export default function Dashboard() {
               </button>
 
               {/* Explain why the button is disabled — silent disabled state was confusing
-                  users who didn't realise CV + Job URL were both required. */}
+                  users who didn't realise CV + Job URL were both required.
+                  Also surface the no-tokens case (canAnalyze=false), previously
+                  unexplained: button greyed with no hint that tokens were the
+                  blocker. */}
               {(!cvFile || !jobUrl) && canAnalyze && (
                 <p className="mt-2 text-center text-xs text-white/60">
                   {!cvFile && !jobUrl
@@ -1797,6 +1806,15 @@ export default function Dashboard() {
                     : !cvFile
                     ? 'Upload your CV above to enable.'
                     : 'Add a job posting URL above to enable.'}
+                </p>
+              )}
+              {!canAnalyze && cvFile && jobUrl && (
+                <p className="mt-2 text-center text-xs text-amber-300/90">
+                  Out of tokens.{' '}
+                  <Link to="/pricing" className="underline font-semibold hover:text-amber-200">
+                    Top up at /pricing
+                  </Link>
+                  {' '}to run another prep pack.
                 </p>
               )}
 
