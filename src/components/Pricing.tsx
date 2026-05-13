@@ -36,6 +36,12 @@ interface PricingProps {
   onRegister?: () => void;
   onCheckout?: (plan: string) => void;
   isAuthenticated?: boolean;
+  /** Lowercase plan name ('starter' | 'pro' | 'premium') the user is
+   *  currently subscribed to. Surfaces a 'Your current plan' badge on
+   *  the matching card and disables its Subscribe button to prevent
+   *  accidental double-subscription. Undefined when signed-out or on
+   *  the free/unsubscribed tier. */
+  currentPlan?: string;
 }
 
 // 2026-05-08: pricing migrated to 1 token = 1 full prep pack.
@@ -103,7 +109,7 @@ const PLANS = [
   },
 ];
 
-export default function Pricing({ onLogin, onRegister, onCheckout, isAuthenticated }: PricingProps) {
+export default function Pricing({ onLogin, onRegister, onCheckout, isAuthenticated, currentPlan }: PricingProps) {
   const { currency, setCurrency, symbol } = useCurrency();
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
@@ -264,6 +270,10 @@ export default function Pricing({ onLogin, onRegister, onCheckout, isAuthenticat
         <div className="grid md:grid-cols-3 gap-6">
           {PLANS.map((plan) => {
             const Icon = plan.icon;
+            // Is THIS card the user's current subscription? Lowercase
+            // comparison so 'Pro' / 'pro' / 'PRO' all match. Topup plans
+            // are excluded (Starter top-up can be bought repeatedly).
+            const isCurrent = !!currentPlan && currentPlan.toLowerCase() === plan.name.toLowerCase() && !plan.isTopup;
             return (
               // Static card — previously used motion.div with initial:opacity-0 +
               // animate:opacity-1 entrance. The animation got stuck at opacity
@@ -276,12 +286,18 @@ export default function Pricing({ onLogin, onRegister, onCheckout, isAuthenticat
               <div
                 key={plan.name}
                 className={`relative p-8 rounded-3xl border ${
-                  plan.popular
+                  isCurrent
+                    ? 'bg-emerald-500/10 border-emerald-500/50'
+                    : plan.popular
                     ? 'bg-violet-500/10 border-violet-500/30'
                     : 'bg-white/5 border-white/10'
                 }`}
               >
-                {plan.popular && (
+                {isCurrent ? (
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-emerald-500 text-white text-xs font-bold uppercase tracking-wider">
+                    Your Current Plan
+                  </div>
+                ) : plan.popular && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-violet-500 text-white text-xs font-bold uppercase tracking-wider">
                     Most Popular
                   </div>
@@ -322,16 +338,27 @@ export default function Pricing({ onLogin, onRegister, onCheckout, isAuthenticat
                 </ul>
 
                 <button
-                  onClick={() => isAuthenticated && onCheckout ? onCheckout(plan.name.toLowerCase()) : onRegister?.()}
+                  onClick={() => {
+                    if (isCurrent) return;
+                    if (isAuthenticated && onCheckout) onCheckout(plan.name.toLowerCase());
+                    else onRegister?.();
+                  }}
+                  disabled={isCurrent}
+                  aria-label={isCurrent ? `${plan.name} — your current plan. Manage from Account.` : undefined}
+                  title={isCurrent ? 'You’re already on this plan. Open Account → Manage Subscription to change or cancel.' : undefined}
                   className={`w-full py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 transition-all ${
-                    plan.popular
+                    isCurrent
+                      ? 'bg-emerald-500/20 text-emerald-200 border border-emerald-500/40 cursor-not-allowed'
+                      : plan.popular
                       ? 'bg-gradient-to-r from-violet-600 to-purple-600 text-white hover:from-violet-500 hover:to-purple-500'
                       : 'bg-white/10 text-white hover:bg-white/20'
                   }`}
                 >
-                  {isAuthenticated
-                    ? (plan.isTopup ? `Buy ${plan.packs} prep packs` : `Subscribe to ${plan.name}`)
-                    : 'Start free first'} <ArrowRight className="w-5 h-5" aria-hidden="true" />
+                  {isCurrent
+                    ? <><Check className="w-5 h-5" aria-hidden="true" /> Current plan</>
+                    : <>{isAuthenticated
+                        ? (plan.isTopup ? `Buy ${plan.packs} prep packs` : `Subscribe to ${plan.name}`)
+                        : 'Start free first'} <ArrowRight className="w-5 h-5" aria-hidden="true" /></>}
                 </button>
               </div>
             );

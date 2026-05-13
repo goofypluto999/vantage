@@ -683,7 +683,7 @@ function RegisterWrapper() {
 }
 
 function PricingWrapper() {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const navigate = useNavigate();
   const { currency } = useCurrency();
 
@@ -697,12 +697,22 @@ function PricingWrapper() {
     }
   };
 
+  // Surface the user's current plan so the Pricing cards can render a
+  // "Your current plan" badge — stops returning subscribers from
+  // accidentally double-subscribing (Stripe will reject but the UI was
+  // misleading). Falls back to undefined when not signed in.
+  const hasActiveSub = profile?.subscription_status === 'active'
+    || profile?.subscription_status === 'cancelling'
+    || profile?.subscription_status === 'past_due';
+  const currentPlan = hasActiveSub ? (profile?.plan as string | undefined) : undefined;
+
   return (
     <Pricing
       onLogin={() => navigate('/login')}
       onRegister={() => navigate('/register')}
       onCheckout={user ? handleCheckout : undefined}
       isAuthenticated={!!user}
+      currentPlan={currentPlan}
     />
   );
 }
