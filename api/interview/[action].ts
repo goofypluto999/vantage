@@ -818,6 +818,10 @@ async function handleQuestions(request: any, response: any) {
   const user = await authenticate(request, response);
   if (!user) return;
 
+  // Lifted out so the outer catch can refund if an exception escapes
+  // between deduct and the inner refund. Parity with jobsearch + analyze.
+  let didChargeQuestions = false;
+
   try {
     const profile = await getProfile(user.id, 'plan,token_balance');
     if (!profile) return response.status(404).json({ error: 'Profile not found' });
@@ -832,6 +836,7 @@ async function handleQuestions(request: any, response: any) {
     let newBalance: number;
     try {
       newBalance = await deductTokens(user.id, QUESTIONS_COST);
+      didChargeQuestions = true;
     } catch (err: any) {
       if (err.message?.includes('Insufficient')) {
         return response.status(403).json({ error: 'Insufficient tokens' });
@@ -874,10 +879,12 @@ Only return the JSON array, no other text. No markdown fences. No commentary.`;
       if (!aiResponse.text) throw new Error('No response from AI');
       questions = extractJson(aiResponse.text);
     } catch (err) {
-      await refundTokens(user.id, QUESTIONS_COST);
+      const refundOk = await refundTokens(user.id, QUESTIONS_COST);
+      didChargeQuestions = !refundOk; // false if refunded, true if still owed
       throw err;
     }
 
+    didChargeQuestions = false; // success — keep the charge
     return response.status(200).json({
       success: true,
       questions: questions.slice(0, 5),
@@ -885,8 +892,20 @@ Only return the JSON array, no other text. No markdown fences. No commentary.`;
     });
   } catch (error: any) {
     console.error('Interview questions error:', error?.message || 'Unknown error');
-    const msg = error.message?.includes('Insufficient') ? error.message : 'Failed to generate questions';
-    return response.status(500).json({ error: msg });
+    if (error.message?.includes('Insufficient')) {
+      return response.status(500).json({ error: error.message });
+    }
+    let refundSucceeded = false;
+    if (didChargeQuestions && user?.id) {
+      refundSucceeded = await refundTokens(user.id, QUESTIONS_COST);
+    }
+    return response.status(500).json({
+      error: !didChargeQuestions
+        ? 'Failed to generate questions. Please try again.'
+        : refundSucceeded
+          ? 'Failed to generate questions. Your token was refunded — please try again.'
+          : 'Failed to generate questions AND token refund failed. Please contact support@aimvantage.uk to have your token restored.',
+    });
   }
 }
 
@@ -1047,6 +1066,9 @@ async function handleFollowup(request: any, response: any) {
   const user = await authenticate(request, response);
   if (!user) return;
 
+  // Lifted out so outer catch can refund on escape-from-inner. Parity.
+  let didChargeFollowup = false;
+
   try {
     // No Pro-gating on follow-up — any paid tier (including Starter) can use it.
     const body = request.body || {};
@@ -1094,6 +1116,7 @@ async function handleFollowup(request: any, response: any) {
     let newBalance: number;
     try {
       newBalance = await deductTokens(user.id, FOLLOWUP_COST);
+      didChargeFollowup = true;
     } catch (err: any) {
       if (err.message?.includes('Insufficient')) {
         return response.status(403).json({ error: 'Insufficient tokens. Top up at /pricing to continue.' });
@@ -1143,12 +1166,14 @@ Return EXACTLY this JSON shape (no other text, no markdown fences):
       if (!aiResponse.text) throw new Error('No response from AI');
       parsed = extractJson(aiResponse.text);
     } catch (err) {
-      await refundTokens(user.id, FOLLOWUP_COST);
+      const refundOk = await refundTokens(user.id, FOLLOWUP_COST);
+      didChargeFollowup = !refundOk;
       throw err;
     }
 
     if (!parsed.subject || !parsed.body) {
       const refundOk = await refundTokens(user.id, FOLLOWUP_COST);
+      didChargeFollowup = !refundOk;
       return response.status(500).json({
         error: refundOk
           ? 'AI response missing subject or body. Your token was refunded — please try again.'
@@ -1156,6 +1181,7 @@ Return EXACTLY this JSON shape (no other text, no markdown fences):
       });
     }
 
+    didChargeFollowup = false; // success
     return response.status(200).json({
       success: true,
       subject: String(parsed.subject).trim(),
@@ -1164,8 +1190,20 @@ Return EXACTLY this JSON shape (no other text, no markdown fences):
     });
   } catch (error: any) {
     console.error('Interview followup error:', error?.message || 'Unknown error');
-    const msg = error.message?.includes('Insufficient') ? 'Insufficient tokens' : 'Failed to generate follow-up email';
-    return response.status(500).json({ error: msg });
+    if (error.message?.includes('Insufficient')) {
+      return response.status(500).json({ error: 'Insufficient tokens' });
+    }
+    let refundSucceeded = false;
+    if (didChargeFollowup && user?.id) {
+      refundSucceeded = await refundTokens(user.id, FOLLOWUP_COST);
+    }
+    return response.status(500).json({
+      error: !didChargeFollowup
+        ? 'Failed to generate follow-up email. Please try again.'
+        : refundSucceeded
+          ? 'Failed to generate follow-up email. Your token was refunded — please try again.'
+          : 'Failed to generate follow-up email AND token refund failed. Please contact support@aimvantage.uk to have your token restored.',
+    });
   }
 }
 
@@ -1185,6 +1223,9 @@ async function handleNegotiation(request: any, response: any) {
   if (request.method !== 'POST') return response.status(405).json({ error: 'Method not allowed' });
   const user = await authenticate(request, response);
   if (!user) return;
+
+  // Lifted out so outer catch can refund. Parity with sibling handlers.
+  let didChargeNegotiation = false;
 
   try {
     // No Pro-gating — Starter can use it. Negotiation is the moment of
@@ -1296,6 +1337,7 @@ async function handleNegotiation(request: any, response: any) {
     let newBalance: number;
     try {
       newBalance = await deductTokens(user.id, NEGOTIATION_COST);
+      didChargeNegotiation = true;
     } catch (err: any) {
       if (err.message?.includes('Insufficient')) {
         return response.status(403).json({
@@ -1404,9 +1446,12 @@ async function handleNegotiation(request: any, response: any) {
 
     if (asks.length === 0) {
       // Refund — there are no actual asks to negotiate
-      await refundTokens(user.id, NEGOTIATION_COST);
+      const refundOk = await refundTokens(user.id, NEGOTIATION_COST);
+      didChargeNegotiation = !refundOk;
       return response.status(400).json({
-        error: 'No asks detected. Provide at least one target above the offered value (base / signing / RSU / bonus / PTO / remote).',
+        error: refundOk
+          ? 'No asks detected. Provide at least one target above the offered value (base / signing / RSU / bonus / PTO / remote). Your token was refunded.'
+          : 'No asks detected AND token refund failed. Please contact support@aimvantage.uk to have your token restored.',
       });
     }
 
@@ -1515,7 +1560,8 @@ Return EXACTLY this JSON shape (no other text, no markdown fences). All five fie
       if (!aiResponse.text) throw new Error('No response from AI');
       parsed = extractJson(aiResponse.text);
     } catch (err) {
-      await refundTokens(user.id, NEGOTIATION_COST);
+      const refundOk = await refundTokens(user.id, NEGOTIATION_COST);
+      didChargeNegotiation = !refundOk;
       throw err;
     }
 
@@ -1529,6 +1575,7 @@ Return EXACTLY this JSON shape (no other text, no markdown fences). All five fie
       !Array.isArray(parsed.warnings)
     ) {
       const refundOk = await refundTokens(user.id, NEGOTIATION_COST);
+      didChargeNegotiation = !refundOk;
       return response.status(500).json({
         error: refundOk
           ? 'AI response did not match expected shape. Your token was refunded — please try again.'
@@ -1546,6 +1593,7 @@ Return EXACTLY this JSON shape (no other text, no markdown fences). All five fie
         .filter((p) => p.length > 0)
         .slice(0, cap);
 
+    didChargeNegotiation = false; // success
     return response.status(200).json({
       success: true,
       emailSubject: String(parsed.emailSubject).trim(),
@@ -1557,8 +1605,20 @@ Return EXACTLY this JSON shape (no other text, no markdown fences). All five fie
     });
   } catch (error: any) {
     console.error('Interview negotiation error:', error?.message || 'Unknown error');
-    const msg = error.message?.includes('Insufficient') ? 'Insufficient tokens' : 'Failed to generate negotiation brief';
-    return response.status(500).json({ error: msg });
+    if (error.message?.includes('Insufficient')) {
+      return response.status(500).json({ error: 'Insufficient tokens' });
+    }
+    let refundSucceeded = false;
+    if (didChargeNegotiation && user?.id) {
+      refundSucceeded = await refundTokens(user.id, NEGOTIATION_COST);
+    }
+    return response.status(500).json({
+      error: !didChargeNegotiation
+        ? 'Failed to generate negotiation brief. Please try again.'
+        : refundSucceeded
+          ? 'Failed to generate negotiation brief. Your token was refunded — please try again.'
+          : 'Failed to generate negotiation brief AND token refund failed. Please contact support@aimvantage.uk to have your token restored.',
+    });
   }
 }
 
