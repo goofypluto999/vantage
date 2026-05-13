@@ -2008,14 +2008,27 @@ export default function Dashboard() {
                       runs 5-10 analyses against the same CV.
                       "New Analysis" clears everything for a fresh start. */}
                   <button
-                    onClick={() => { setStep('input'); setJobUrl(''); setJobDescText(''); setJobDescFile(null); setResults(null); }}
+                    onClick={() => {
+                      setStep('input'); setJobUrl(''); setJobDescText(''); setJobDescFile(null); setResults(null);
+                      // Scroll user to the analysis form — without this they sit
+                      // at the bottom of the page where results used to be,
+                      // confusing 'where did the form go?'.
+                      window.requestAnimationFrame(() => {
+                        document.getElementById('run-analysis')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                      });
+                    }}
                     className="px-4 py-2 rounded-lg bg-violet-600/20 text-violet-300 border border-violet-500/30 font-semibold text-sm hover:bg-violet-600/30"
                     title="Keep your CV, swap the job URL for the next role"
                   >
                     Same CV, new job
                   </button>
                   <button
-                    onClick={() => { setStep('input'); setCvFile(null); setJobUrl(''); setJobDescText(''); setJobDescFile(null); setResults(null); }}
+                    onClick={() => {
+                      setStep('input'); setCvFile(null); setJobUrl(''); setJobDescText(''); setJobDescFile(null); setResults(null);
+                      window.requestAnimationFrame(() => {
+                        document.getElementById('run-analysis')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                      });
+                    }}
                     className="px-4 py-2 rounded-lg bg-white/5 text-white/70 font-semibold text-sm hover:bg-white/10"
                   >
                     New Analysis
