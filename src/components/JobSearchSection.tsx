@@ -751,7 +751,7 @@ export default function JobSearchSection({ embedded = false, className = '' }: P
                           <div className="flex-1 h-px bg-violet-400/20" />
                         </div>
                         <p className="text-[11px] text-white/40 text-center -mt-0.5 mb-1">
-                          These match some of your keywords (not all). Same country, work mode and salary as your strong matches.
+                          Looser match — may share only some of your keywords, or be hybrid if you picked remote (and vice-versa). Salary and country are still strict. Verify the listing before applying.
                         </p>
                       </li>
                     )}
@@ -772,7 +772,7 @@ export default function JobSearchSection({ embedded = false, className = '' }: P
                               {job.isAdjacent && (
                                 <span
                                   className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider bg-violet-500/20 text-violet-200 border border-violet-400/30"
-                                  title="Related role — matches some of your keywords but not all. Same country/work mode/salary as your strong matches."
+                                  title={`Related role — looser match. If you picked Remote, this may be Hybrid (or vice-versa). May share only some of your keywords. Salary and country still strict. Job's actual work-mode: ${job.workMode || 'not listed'}.`}
                                 >
                                   Related
                                 </span>

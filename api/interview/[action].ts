@@ -198,11 +198,29 @@ function jsAdjacencyReject(j: RawJob, params: JsParams): string | null {
       if (!anyMatch) return `no keyword overlap`;
     }
   }
-  // workMode + salary still STRICT — these are hard user constraints,
-  // not preferences. Even an 'adjacent' role must respect them.
-  if (params.workMode !== 'any' && j.workMode && j.workMode !== params.workMode) {
-    return `workMode '${j.workMode}' != requested '${params.workMode}'`;
+
+  // workMode — looser than strict. Remote ↔ Hybrid are interchangeable
+  // in adjacency (both involve WFH some/all of the time, and Adzuna's
+  // heuristic classifier mis-labels hybrid roles as on-site frequently).
+  // on-site is a hard line in BOTH directions: if user picked Remote or
+  // Hybrid, never show on-site; if user picked on-site, never show
+  // remote/hybrid. UI badges these results 'Related' so the user knows
+  // they may not match work-mode perfectly. Live diagnostic 2026-05-13:
+  // 'Marketing UK Remote' returned 2/10 because the strict workMode gate
+  // killed 16 of 18 fetched. Relaxing remote↔hybrid here recovers most.
+  if (params.workMode !== 'any' && j.workMode) {
+    const userWantsWfh = params.workMode === 'remote' || params.workMode === 'hybrid';
+    const jobIsOnSite = j.workMode === 'on-site';
+    if (userWantsWfh && jobIsOnSite) {
+      return `workMode 'on-site' != requested '${params.workMode}' (on-site never adjacent)`;
+    }
+    if (!userWantsWfh && j.workMode !== 'on-site') {
+      // user picked on-site; never serve remote/hybrid as adjacent
+      return `workMode '${j.workMode}' != requested 'on-site' (remote/hybrid never adjacent for on-site)`;
+    }
   }
+
+  // Salary stays STRICT — money is a hard user constraint.
   if (params.salaryMin && params.salaryMin > 0) {
     const jobMax = j.salaryMax;
     if (typeof jobMax === 'number' && jobMax > 0 && jobMax < params.salaryMin) {
