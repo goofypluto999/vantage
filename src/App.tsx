@@ -98,7 +98,10 @@ interface AuthContextType {
   profile: Profile | null;
   loading: boolean;
   signOut: () => Promise<void>;
-  refreshProfile: () => Promise<void>;
+  // Returns the freshly-fetched profile so callers can read post-refresh
+  // state without waiting for React to flush — used by checkout-success
+  // polling to detect when new tokens have landed.
+  refreshProfile: () => Promise<Profile | null>;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -106,7 +109,7 @@ const AuthContext = createContext<AuthContextType>({
   profile: null,
   loading: true,
   signOut: async () => {},
-  refreshProfile: async () => {},
+  refreshProfile: async () => null,
 });
 
 export const useAuth = () => useContext(AuthContext);
@@ -138,11 +141,11 @@ function AppContent() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const refreshProfile = async () => {
-    if (user?.id) {
-      const p = await fetchProfile(user.id);
-      setProfile(p);
-    }
+  const refreshProfile = async (): Promise<Profile | null> => {
+    if (!user?.id) return null;
+    const p = await fetchProfile(user.id);
+    setProfile(p);
+    return p;
   };
 
   // Bookmarklet entry: when ?job=<URL> is present in the landing URL, persist

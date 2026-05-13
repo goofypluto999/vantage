@@ -177,6 +177,10 @@ export default function Dashboard() {
   const [checkoutSuccess, setCheckoutSuccess] = useState(false);
   const [checkoutCancelled, setCheckoutCancelled] = useState(false);
   const [checkoutError, setCheckoutError] = useState(false);
+  // True while the post-checkout poll is running. Drives a 'Syncing…'
+  // indicator on the token chip so the user doesn't think the purchase
+  // failed when the chip briefly shows the pre-purchase balance.
+  const [tokenSyncing, setTokenSyncing] = useState(false);
   // First-login demo popup. Shows the 22s LiveDemoReel as a modal once,
   // for first-time users only (localStorage flag), to teach them what
   // the dashboard does before they stare at empty upload zones. Skipped
@@ -247,18 +251,40 @@ export default function Dashboard() {
 
   // Handle post-checkout return — sync from Stripe then refresh profile.
   // Both ?success=true and ?cancelled=true are set by api/stripe/[action].ts
-  // as Stripe Checkout success_url / cancel_url targets. The cancel branch
-  // was previously unhandled — users who clicked back from Stripe Checkout
-  // landed on the dashboard with a stranded query param and no acknowledgement.
+  // as Stripe Checkout success_url / cancel_url targets.
+  //
+  // Sync strategy: poll with backoff instead of a single 2s wait. Stripe
+  // webhook latency varies wildly (50ms in dev, up to 30s in some prod
+  // failure cases). The poll watches profile.token_balance — when it
+  // exceeds the pre-purchase snapshot, the new tokens have landed and we
+  // stop. Bounded to 8 attempts over ~20s total; if we run out the user
+  // still sees a successful banner (their tokens WILL land via the
+  // webhook even if we miss it).
   useEffect(() => {
     if (searchParams.get('success') === 'true') {
       setCheckoutSuccess(true);
       setSearchParams({}, { replace: true });
-      const timer = setTimeout(async () => {
-        await syncSubscription();
-        await refreshProfile();
-      }, 2000);
-      return () => clearTimeout(timer);
+      const preBalance = typeof profile?.token_balance === 'number' ? profile.token_balance : 0;
+      let cancelled = false;
+      setTokenSyncing(true);
+      const attempt = async (delayMs: number, remaining: number) => {
+        if (cancelled) return;
+        await new Promise((r) => setTimeout(r, delayMs));
+        if (cancelled) return;
+        try { await syncSubscription(); } catch { /* webhook may already have run */ }
+        if (cancelled) return;
+        const fresh = await refreshProfile();
+        const newBalance = typeof fresh?.token_balance === 'number' ? fresh.token_balance : preBalance;
+        if (newBalance > preBalance || remaining <= 0) {
+          if (!cancelled) setTokenSyncing(false);
+          return;
+        }
+        // Backoff: 500ms, 1s, 2s, 3s, 4s, 5s, ~5s (sum ~20s total)
+        const nextDelay = Math.min(5000, delayMs * 1.6 + 200);
+        attempt(nextDelay, remaining - 1);
+      };
+      attempt(500, 7);
+      return () => { cancelled = true; setTokenSyncing(false); };
     }
     if (searchParams.get('cancelled') === 'true' || searchParams.get('canceled') === 'true') {
       setCheckoutCancelled(true);
@@ -883,9 +909,15 @@ export default function Dashboard() {
           </div>
 
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
-              <div className="w-2 h-2 bg-emerald-400 rounded-full" />
-              <span className="text-sm font-bold text-emerald-400">{profile ? creditsRemaining : '--'} Tokens</span>
+            <div
+              className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20"
+              title={tokenSyncing ? 'Syncing your new tokens from Stripe — this usually takes a few seconds.' : undefined}
+            >
+              <div className={`w-2 h-2 bg-emerald-400 rounded-full ${tokenSyncing ? 'animate-pulse' : ''}`} />
+              <span className="text-sm font-bold text-emerald-400">
+                {profile ? creditsRemaining : '--'} Tokens
+                {tokenSyncing && <span className="text-emerald-400/70 font-normal ml-1.5">· syncing…</span>}
+              </span>
             </div>
 
             {profile?.plan && (
