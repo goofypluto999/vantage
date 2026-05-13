@@ -93,6 +93,39 @@ function safeHref(url: string | undefined): string | undefined {
   } catch { return undefined; }
 }
 
+/** ISO currency code → display symbol. Falls back to the code itself for
+ *  currencies without a common 1-3 character symbol (most users in those
+ *  regions recognise the code). Keeps salary ranges compact:
+ *    GBP 60000-80000  →  £60K-80K
+ *    EUR 60000-80000  →  €60K-80K
+ *    INR 1500000-2000000 → ₹15L-20L (formatted as K below; per-locale formatting
+ *    deferred — minimum-viable for global consistency).
+ */
+const CURRENCY_SYMBOLS: Record<string, string> = {
+  GBP: '£', USD: '$', EUR: '€', CAD: 'CA$', AUD: 'A$', NZD: 'NZ$',
+  CHF: 'CHF', PLN: 'zł', SGD: 'S$', INR: '₹',
+  BRL: 'R$', MXN: 'MX$', RUB: '₽', ZAR: 'R',
+};
+
+/**
+ * Compact salary range: '£60K-80K' or '€60K' or '$120K+'. Returns null if
+ * neither min nor max is set. Numbers ≥ 1000 collapse to K to keep the row
+ * readable; smaller numbers (rare for annual UK salaries but possible for
+ * day-rates) render as-is.
+ */
+function formatSalaryRange(min?: number, max?: number, currencyCode?: string): string | null {
+  if (!min && !max) return null;
+  const symbol = (currencyCode && CURRENCY_SYMBOLS[currencyCode.toUpperCase()]) || currencyCode || '';
+  const fmt = (n: number) => (n >= 1000 ? `${Math.round(n / 1000)}K` : `${n}`);
+  if (min && max) {
+    if (min === max) return `${symbol}${fmt(min)}`;
+    return `${symbol}${fmt(min)}-${fmt(max)}`;
+  }
+  if (min) return `${symbol}${fmt(min)}+`;
+  if (max) return `up to ${symbol}${fmt(max)}`;
+  return null;
+}
+
 /** User-facing source labels (keys match perSourceReport keys returned by the API). */
 const SOURCE_DISPLAY_NAMES: Record<string, string> = {
   adzuna: 'Adzuna',
@@ -330,9 +363,7 @@ export default function JobSearchSection({ embedded = false, className = '' }: P
     const newId = addToTracker({
       company: job.company, role: job.title, status: 'saved',
       sourceUrl: safeHref(job.url), location: job.location,
-      salaryBand: job.salaryEstimate || (job.salaryMin || job.salaryMax
-        ? `${job.salaryMin ?? '?'}-${job.salaryMax ?? '?'} ${job.salaryCurrency || ''}`.trim()
-        : undefined),
+      salaryBand: job.salaryEstimate || formatSalaryRange(job.salaryMin, job.salaryMax, job.salaryCurrency) || undefined,
       notes: job.fitOneLiner,
     });
     // useApplicationTracker.add() returns '' when localStorage write fails
@@ -856,7 +887,7 @@ export default function JobSearchSection({ embedded = false, className = '' }: P
                               {job.location}
                               {(job.salaryMin || job.salaryMax || job.salaryEstimate) && (
                                 <> · {job.salaryMin || job.salaryMax
-                                    ? `${job.salaryMin ?? '?'}-${job.salaryMax ?? '?'} ${job.salaryCurrency || ''}`.trim()
+                                    ? formatSalaryRange(job.salaryMin, job.salaryMax, job.salaryCurrency)
                                     : <span className="text-violet-300">{job.salaryEstimate}</span>}</>
                               )}
                               {job.postedAt && <> · {new Date(job.postedAt).toLocaleDateString()}</>}

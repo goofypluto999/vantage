@@ -59,6 +59,19 @@ const ADZUNA_COUNTRIES = [
   'nz', 'ch', 'at', 'be',
 ] as const;
 type AdzunaCountry = typeof ADZUNA_COUNTRIES[number];
+
+// Currency fallback map. Adzuna's `salary_min` / `salary_max` come back as
+// raw numbers without a currency field, so we default by country. Previously
+// salaryCurrency was hardcoded undefined, which made the UI show '60000-80000'
+// with no symbol — confusing and felt unprofessional. Now: explicit ISO
+// currency code per country, surfaced as '£60K-80K' / '€60K-80K' etc.
+const ADZUNA_COUNTRY_CURRENCY: Record<AdzunaCountry, string> = {
+  gb: 'GBP', us: 'USD', ca: 'CAD', au: 'AUD',
+  de: 'EUR', fr: 'EUR', es: 'EUR', it: 'EUR',
+  nl: 'EUR', pl: 'PLN', sg: 'SGD', in: 'INR',
+  br: 'BRL', mx: 'MXN', ru: 'RUB', za: 'ZAR',
+  nz: 'NZD', ch: 'CHF', at: 'EUR', be: 'EUR',
+};
 type JsWorkMode = 'remote' | 'hybrid' | 'on-site' | 'any';
 type JsPostedWithinDays = 1 | 3 | 7 | 14 | 30 | 90;
 
@@ -349,7 +362,10 @@ async function jsAdzuna(params: JsParams, page: number = 1): Promise<RawJob[]> {
         postedAt: jsSafeText(r?.created || '', 50),
         salaryMin: typeof r?.salary_min === 'number' ? r.salary_min : undefined,
         salaryMax: typeof r?.salary_max === 'number' ? r.salary_max : undefined,
-        salaryCurrency: undefined,
+        // Adzuna doesn't return currency on listings — derive from the
+        // country code. Without this, UI showed raw numbers like
+        // '60000-80000' with no symbol.
+        salaryCurrency: ADZUNA_COUNTRY_CURRENCY[params.country],
         source: 'adzuna',
         workMode: inferAdzunaWorkMode(title, description, location),
       };
