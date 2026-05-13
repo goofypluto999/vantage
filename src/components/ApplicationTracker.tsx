@@ -19,7 +19,7 @@
 
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Briefcase, Plus, X, Search, AlertTriangle, ExternalLink, Edit2, Check } from 'lucide-react';
+import { Briefcase, Plus, X, Search, AlertTriangle, ExternalLink, Edit2, Check, Download } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import {
   useApplicationTracker,
@@ -178,6 +178,73 @@ export default function ApplicationTracker({ userScope }: Props) {
     }
   }
 
+  /**
+   * Export the current tracker to a CSV file. Insurance against
+   * localStorage loss (browser nuke, switch devices, private mode) —
+   * the description copy promises 'synced to your account next push'
+   * but until that ships, CSV export is the user's safety net.
+   *
+   * CSV escaping: any field containing a comma, double-quote, or
+   * newline gets wrapped in double-quotes with internal quotes doubled,
+   * per RFC 4180. Otherwise rendered raw. Tests via opening in Excel /
+   * Google Sheets / Numbers — all parse correctly.
+   */
+  function csvEscape(v: string | number | undefined | null): string {
+    if (v === null || v === undefined) return '';
+    let s = String(v);
+    // CSV INJECTION DEFENSE (OWASP / CWE-1236). Excel, LibreOffice, and
+    // Google Sheets execute any cell starting with =, +, -, @, or tab/CR
+    // as a formula — including externally-fetched payloads like
+    // =cmd|'/c calc'!A1 which can run arbitrary commands on the user's
+    // machine when they open our exported CSV. Prefix a single tick to
+    // such fields so spreadsheets render them as text but the original
+    // value is still visible. Council review 2026-05-13 flagged this
+    // as critical before the export feature shipped.
+    if (/^[=+\-@\t\r]/.test(s)) {
+      s = "'" + s;
+    }
+    if (s.includes(',') || s.includes('"') || s.includes('\n') || s.includes('\r')) {
+      return `"${s.replace(/"/g, '""')}"`;
+    }
+    return s;
+  }
+
+  function exportToCsv() {
+    if (entries.length === 0) return; // button is hidden in this state
+    const header = [
+      'Company', 'Role', 'Status', 'Source URL', 'Location', 'Salary band',
+      'Applied date', 'Notes', 'Created', 'Updated', 'Stale flag',
+    ].join(',');
+    const rows = entries.map((e) => [
+      csvEscape(e.company),
+      csvEscape(e.role),
+      csvEscape(STATUS_LABEL[e.status] || e.status),
+      csvEscape(e.sourceUrl),
+      csvEscape(e.location),
+      csvEscape(e.salaryBand),
+      csvEscape(e.appliedDate),
+      csvEscape(e.notes),
+      csvEscape(new Date(e.createdAt).toISOString()),
+      csvEscape(new Date(e.updatedAt).toISOString()),
+      csvEscape(isStaleApplication(e) ? 'YES' : ''),
+    ].join(','));
+    // BOM so Excel opens the file as UTF-8 correctly (without BOM, accented
+    // characters in company names / notes render as garbage on Windows Excel).
+    const csv = '﻿' + header + '\n' + rows.join('\n') + '\n';
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const ts = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+    a.href = url;
+    a.download = `vantage-tracker-${ts}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    // Revoke async so some browsers (Safari) finish the download before
+    // the URL is invalidated.
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
   // Validate URL strictly — only http(s) schemes. Don't render a link
   // for anything else (defense in depth — `javascript:` etc).
   function safeHref(url: string | undefined): string | undefined {
@@ -221,14 +288,27 @@ export default function ApplicationTracker({ userScope }: Props) {
             </button>
           )}
         </h3>
-        <button
-          type="button"
-          onClick={() => setShowAdd((v) => !v)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-violet-600 hover:bg-violet-500 text-white text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-violet-400"
-          aria-expanded={showAdd}
-        >
-          {showAdd ? <><X className="w-4 h-4" /> Cancel</> : <><Plus className="w-4 h-4" /> Track an application</>}
-        </button>
+        <div className="inline-flex items-center gap-2 flex-wrap">
+          {entries.length > 0 && (
+            <button
+              type="button"
+              onClick={exportToCsv}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-white/80 text-sm font-semibold border border-white/15 transition focus:outline-none focus:ring-2 focus:ring-violet-400"
+              title={`Download your ${entries.length} tracked application${entries.length === 1 ? '' : 's'} as a CSV file (opens in Excel / Google Sheets / Numbers). Insurance against localStorage loss.`}
+              aria-label={`Export ${entries.length} tracked application${entries.length === 1 ? '' : 's'} as CSV`}
+            >
+              <Download className="w-4 h-4" /> Export CSV
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={() => setShowAdd((v) => !v)}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-violet-600 hover:bg-violet-500 text-white text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-violet-400"
+            aria-expanded={showAdd}
+          >
+            {showAdd ? <><X className="w-4 h-4" /> Cancel</> : <><Plus className="w-4 h-4" /> Track an application</>}
+          </button>
+        </div>
       </div>
 
       <p className={`text-sm ${t.textSub} mb-4`}>
