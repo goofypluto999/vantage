@@ -63,6 +63,10 @@ export default function ApplicationTracker({ userScope }: Props) {
   // Filters
   const [activeStatuses, setActiveStatuses] = useState<ApplicationStatus[]>([]);
   const [query, setQuery] = useState('');
+  // Stale-only filter — toggled by clicking the 'N stale' chip in the header.
+  // When true, hides all non-stale entries so the user can focus on
+  // follow-ups. Clear with a 'show all' button on the empty-state copy.
+  const [staleOnly, setStaleOnly] = useState(false);
   const filters: TrackerFilters = { statuses: activeStatuses, query };
 
   // Expanded-row tracking
@@ -83,8 +87,12 @@ export default function ApplicationTracker({ userScope }: Props) {
   }, [showAdd]);
 
   const filtered = useMemo(
-    () => entries.filter((e) => filterEntry(e, filters)),
-    [entries, filters, filterEntry],
+    () => entries.filter((e) => {
+      if (!filterEntry(e, filters)) return false;
+      if (staleOnly && !isStaleApplication(e)) return false;
+      return true;
+    }),
+    [entries, filters, filterEntry, staleOnly],
   );
 
   // Counts per status — drives chip badges
@@ -196,12 +204,21 @@ export default function ApplicationTracker({ userScope }: Props) {
           Application Tracker
           <span className="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 text-xs font-bold ml-2">New</span>
           {staleCount > 0 && (
-            <span
-              className="px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-300 text-xs font-bold ml-1 inline-flex items-center gap-1"
-              title={`${staleCount} application(s) applied >14 days ago with no progression — consider following up`}
+            <button
+              type="button"
+              onClick={() => setStaleOnly((v) => !v)}
+              aria-pressed={staleOnly}
+              className={`px-2 py-0.5 rounded-full text-xs font-bold ml-1 inline-flex items-center gap-1 transition focus:outline-none focus:ring-2 focus:ring-amber-400 ${
+                staleOnly
+                  ? 'bg-amber-500/40 text-amber-100 border border-amber-400/70'
+                  : 'bg-amber-500/15 text-amber-300 border border-transparent hover:bg-amber-500/25 hover:border-amber-500/40'
+              }`}
+              title={staleOnly
+                ? 'Currently showing only stale applications. Click to show all again.'
+                : `Click to filter view to the ${staleCount} stale application${staleCount === 1 ? '' : 's'} (applied >14 days ago with no progression).`}
             >
-              <AlertTriangle className="w-3 h-3" aria-hidden="true" /> {staleCount} stale
-            </span>
+              <AlertTriangle className="w-3 h-3" aria-hidden="true" /> {staleCount} stale {staleOnly && '✓'}
+            </button>
           )}
         </h3>
         <button
@@ -385,9 +402,18 @@ export default function ApplicationTracker({ userScope }: Props) {
           No applications tracked yet. Click <strong>Track an application</strong> above to log your first one.
         </p>
       ) : filtered.length === 0 ? (
-        <p className={`text-sm ${t.textMuted} text-center py-6`}>
-          No matches. Clear filters to see all {entries.length} application{entries.length === 1 ? '' : 's'}.
-        </p>
+        <div className={`text-sm ${t.textMuted} text-center py-6`}>
+          <p>No matches. Clear filters to see all {entries.length} application{entries.length === 1 ? '' : 's'}.</p>
+          {(staleOnly || activeStatuses.length > 0 || query.trim()) && (
+            <button
+              type="button"
+              onClick={() => { setStaleOnly(false); setActiveStatuses([]); setQuery(''); }}
+              className="mt-2 inline-flex items-center px-3 py-1.5 rounded-md text-xs font-semibold bg-violet-500/20 text-violet-200 hover:bg-violet-500/30 border border-violet-400/30 transition focus:outline-none focus:ring-2 focus:ring-violet-400"
+            >
+              Show all applications
+            </button>
+          )}
+        </div>
       ) : (
         <ul className="space-y-2">
           <AnimatePresence initial={false}>
