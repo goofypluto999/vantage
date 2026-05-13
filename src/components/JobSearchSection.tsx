@@ -751,6 +751,27 @@ export default function JobSearchSection({ embedded = false, className = '' }: P
                 </div>
               </div>
             )}
+            {/*
+              Limited-inventory banner. Fires when there are genuinely few raw
+              listings in the source pool — e.g. niche keyword + small city +
+              recent-only filter. Stops the user thinking the tool is broken
+              when the source data is just thin. Suppressed when allResultsAdjacent
+              already shows the louder banner. Live diagnostic 2026-05-13:
+              'Marketing Newcastle UK Remote £20K' returned 2 results because
+              Adzuna's UK inventory has ~10 marketing jobs in Newcastle, not
+              because of a bug.
+            */}
+            {!allResultsAdjacent && visibleResults.length < 8 && (meta.fetched ?? 0) < 15 && (
+              <div role="status" className="mb-4 p-3.5 rounded-xl bg-sky-500/10 border border-sky-500/30 text-sky-100 text-sm flex items-start gap-2.5">
+                <AlertTriangle className="w-4 h-4 flex-shrink-0 mt-0.5" aria-hidden="true" />
+                <div className="flex-1">
+                  <p className="font-semibold">Limited inventory — only {meta.fetched ?? 0} listing{(meta.fetched ?? 0) === 1 ? '' : 's'} matched your filters.</p>
+                  <p className="text-sky-200/80 text-xs mt-0.5">
+                    Niche searches (small city, very specific keyword, narrow recency) often have a small pool. The {visibleResults.length} result{visibleResults.length === 1 ? '' : 's'} below {visibleResults.length === 1 ? 'is the' : 'are the'} strongest match{visibleResults.length === 1 ? '' : 'es'} we found honestly. To see more options, try: clearing the location, switching work-mode to "Any", lowering the salary floor, or extending "Posted within" to 90 days.
+                  </p>
+                </div>
+              </div>
+            )}
             <ul className="space-y-3">
               <AnimatePresence initial={true}>
                 {visibleResults.map((job, idx) => {
