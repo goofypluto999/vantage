@@ -377,7 +377,54 @@ export default function Dashboard() {
   // User feedback 2026-05-11: should be a dropdown/option WITHIN
   // Dashboard, not a separate page. Standalone /jobs route still
   // exists for deep-link/SEO but the primary surface is here.
-  const [showJobSearch, setShowJobSearch] = useState(false);
+  // Collapsed/expanded state persists per-user across reloads so
+  // someone who likes it open doesn't have to click 'Find new jobs'
+  // every visit.
+  const [showJobSearch, setShowJobSearch] = useState<boolean>(false);
+  // Re-read the persisted preference once the user has loaded. We can't
+  // do this in the lazy initializer because `user` may still be null on
+  // first render — auth loads asynchronously. Two ref gates:
+  //   * skipPersistRef stops the save effect from immediately wiping
+  //     the value the load effect just wrote.
+  //   * hasUserToggledRef stops the load effect from overwriting a
+  //     user's click that happens before auth loads (rare race flagged
+  //     by council review — user toggles button between mount and
+  //     user.id arrival; without this, their click would be clobbered).
+  const skipPersistRef = useRef(true);
+  const hasUserToggledRef = useRef(false);
+  useEffect(() => {
+    if (typeof window === 'undefined' || !user?.id) return;
+    if (hasUserToggledRef.current) return; // user already chose — don't overwrite
+    try {
+      const key = `vantage-jobsearch-open:${user.id}`;
+      const stored = window.localStorage.getItem(key) === '1';
+      skipPersistRef.current = true;
+      setShowJobSearch(stored);
+    } catch {
+      // localStorage unavailable — leave default state.
+    }
+  }, [user?.id]);
+  // Persist on user-driven change. user-scoped so different accounts on a
+  // shared device keep their own preference. Skip the first run after a
+  // user-load so we don't clobber the just-loaded value.
+  useEffect(() => {
+    if (typeof window === 'undefined' || !user?.id) return;
+    if (skipPersistRef.current) {
+      skipPersistRef.current = false;
+      return;
+    }
+    try {
+      const key = `vantage-jobsearch-open:${user.id}`;
+      if (showJobSearch) {
+        window.localStorage.setItem(key, '1');
+      } else {
+        window.localStorage.removeItem(key);
+      }
+    } catch {
+      // localStorage may be unavailable (private mode, quota, blocked) —
+      // just skip persistence; in-session state still works.
+    }
+  }, [showJobSearch, user?.id]);
   // AI Job Search handoff banner.
   const location = useLocation();
   // Hash-fragment scroller. React Router v6 doesn't auto-scroll to
@@ -1152,6 +1199,10 @@ export default function Dashboard() {
             </h3>
             <button
               onClick={() => {
+                // Flag this as a deliberate user action so the load effect
+                // can't subsequently overwrite the click if auth happens
+                // to finish loading right after this toggle.
+                hasUserToggledRef.current = true;
                 setShowJobSearch((v) => {
                   const next = !v;
                   if (next) {
