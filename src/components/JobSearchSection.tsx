@@ -880,7 +880,37 @@ export default function JobSearchSection({ embedded = false, className = '' }: P
           </div>
           {visibleResults.length === 0 ? (
             <div className={`${glassCard} rounded-2xl p-8 text-center`}>
-              <p className="text-white/70">No matches. Try relaxing keywords or unchecking the ghost filter.</p>
+              <p className="text-white/70 mb-4">No matches. Try one of these:</p>
+              <div className="flex items-center justify-center gap-2 flex-wrap">
+                {hideGhost && hiddenGhostCount > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => setHideGhost(false)}
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-md text-xs font-semibold bg-amber-500/15 hover:bg-amber-500/25 text-amber-200 border border-amber-500/30 transition focus:outline-none focus:ring-2 focus:ring-amber-400 min-h-[36px]"
+                  >
+                    Show {hiddenGhostCount} hidden ghost {hiddenGhostCount === 1 ? 'job' : 'jobs'}
+                  </button>
+                )}
+                {hideAdjacent && adjacentCount > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => setHideAdjacent(false)}
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-md text-xs font-semibold bg-violet-500/15 hover:bg-violet-500/25 text-violet-200 border border-violet-400/30 transition focus:outline-none focus:ring-2 focus:ring-violet-400 min-h-[36px]"
+                  >
+                    Show {adjacentCount} related {adjacentCount === 1 ? 'role' : 'roles'}
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={resetFilters}
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-md text-xs font-semibold bg-white/10 hover:bg-white/15 text-white/90 border border-white/15 transition focus:outline-none focus:ring-2 focus:ring-violet-400 min-h-[36px]"
+                >
+                  Reset all filters
+                </button>
+              </div>
+              <p className="text-white/40 text-xs mt-4">
+                Or try a broader location, lower salary floor, or "Posted within: 90 days".
+              </p>
             </div>
           ) : (
             <>
