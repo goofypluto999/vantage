@@ -820,6 +820,18 @@ export default async function handler(request: any, response: any) {
     if (cvText && cvText.length > 200000) {
       return response.status(400).json({ error: 'CV text is too long' });
     }
+    // Lower-bound CV check: if the user pasted plain text that's clearly
+    // too short to be a real CV (e.g. 'John Doe, software dev'), the AI
+    // would produce a near-empty prep pack and burn a token. Reject early
+    // with a clear message. 200 chars is well below any real CV
+    // (typical resumes are 2,000-6,000 chars). Skipped when cvBase64
+    // is provided — file uploads route through PDF/DOCX extraction
+    // server-side which has its own validation.
+    if (cvText && !cvBase64 && cvText.trim().length < 200) {
+      return response.status(400).json({
+        error: 'CV looks too short (under 200 characters). Paste your full CV text or upload a PDF/DOCX.',
+      });
+    }
     if (cvBase64 && cvBase64.length > 10000000) {
       return response.status(400).json({ error: 'CV file is too large (max ~7MB)' });
     }
