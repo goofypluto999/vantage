@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createContext, useContext } from 'react';
+import React, { useState, useEffect, useRef, createContext, useContext } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { supabase, signOut, fetchProfile, Profile } from './lib/supabase';
 import { createStripeCheckout } from './services/api';
@@ -114,6 +114,34 @@ const AuthContext = createContext<AuthContextType>({
 
 export const useAuth = () => useContext(AuthContext);
 
+/**
+ * ScrollToTop — resets window scroll to the top on every pathname change.
+ *
+ * React Router v6 deliberately does NOT auto-restore scroll on navigation
+ * (the recommended pattern is a component like this one). Without it,
+ * users who scrolled to the results section on /dashboard then clicked
+ * a footer link to /pricing landed near the bottom of /pricing — confusing
+ * 'where did the page go?' moment.
+ *
+ * Only scrolls on PATHNAME change, not on hash/search changes — so anchor
+ * links (#application-tracker) and same-page filter updates don't trigger
+ * a jump.
+ */
+function ScrollToTop() {
+  const location = useLocation();
+  const lastPathRef = useRef(location.pathname);
+  useEffect(() => {
+    if (location.pathname === lastPathRef.current) return;
+    lastPathRef.current = location.pathname;
+    // 'auto' over 'smooth' so heavy hash links don't fight the user's
+    // own scroll. Most users prefer the instant snap on navigation.
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    }
+  }, [location.pathname]);
+  return null;
+}
+
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
   const location = useLocation();
@@ -227,6 +255,7 @@ function AppContent() {
               auth, dashboard, account, pricing) are eagerly imported and don't
               hit this fallback. The fallback matches the ProtectedRoute spinner
               for visual consistency on slower connections. */}
+          <ScrollToTop />
           <React.Suspense fallback={
             <div className="min-h-screen flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #edeaff, #e8f4ff)' }}>
               <div className="w-8 h-8 border-4 border-violet-500 border-t-transparent rounded-full animate-spin" />
