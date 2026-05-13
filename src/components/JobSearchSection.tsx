@@ -744,7 +744,28 @@ export default function JobSearchSection({ embedded = false, className = '' }: P
         <section aria-label="Search results">
           <div className="flex items-center justify-between flex-wrap gap-3 mb-4 text-xs">
             <p className="text-white/50">
-              {meta.fetched ?? 0} fetched · {meta.deduped ?? 0} deduplicated · top {visibleResults.length} curated
+              {meta.fetched ?? 0} fetched
+              {/*
+                Per-source breakdown for transparency. Renders inline (e.g.
+                ' from Adzuna 7 · Remotive 2') only when at least one source
+                returned >0 results. Helps users trust that the system
+                actually queried the sources it claims (especially when
+                results are thin and they wonder if a source errored).
+                Hidden on small screens via sr-only-on-mobile span styling.
+              */}
+              {(() => {
+                if (!meta.sources) return null;
+                const entries = Object.entries(meta.sources)
+                  .filter(([, n]) => typeof n === 'number' && n > 0)
+                  .map(([name, n]) => `${SOURCE_DISPLAY_NAMES[name] ?? name} ${n}`);
+                if (entries.length === 0) return null;
+                return (
+                  <span className="text-white/40 hidden sm:inline" title="Per-source result counts (before dedup, work-mode filter, and AI scoring)">
+                    {' (from '}{entries.join(' · ')}{')'}
+                  </span>
+                );
+              })()}
+              {' · '}{meta.deduped ?? 0} deduplicated · top {visibleResults.length} curated
               {hiddenGhostCount > 0 && <> · <button type="button" onClick={() => setHideGhost(false)} className="underline hover:text-amber-300">{hiddenGhostCount} ghost hidden</button></>}
               {adjacentCount > 0 && (
                 <> · <button
