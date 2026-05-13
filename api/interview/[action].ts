@@ -314,14 +314,17 @@ async function jsAdzuna(params: JsParams, page: number = 1): Promise<RawJob[]> {
   if (params.location?.trim()) url.searchParams.set('where', params.location.trim().slice(0, 100));
   if (params.salaryMin && params.salaryMin > 0) url.searchParams.set('salary_min', String(params.salaryMin));
   url.searchParams.set('max_days_old', String(params.postedWithin));
-  // Adzuna supports a `what_or` keyword bundle — when the user picked
-  // remote/hybrid, append those terms to bias the search server-side
-  // BEFORE we apply the heuristic filter below. Fewer wasted results.
-  if (params.workMode === 'remote') {
-    url.searchParams.set('what_or', 'remote work-from-home wfh');
-  } else if (params.workMode === 'hybrid') {
-    url.searchParams.set('what_or', 'hybrid');
-  }
+  // NOTE: Adzuna's `what_or` is a HARD filter, not a bias — it requires at
+  // least one of its words to appear in addition to `what_and`. Previously
+  // setting it to 'remote work-from-home wfh' for Remote searches narrowed
+  // a Newcastle+Marketing pool from 56 to 8 — most UK marketing jobs don't
+  // say "remote" in title/description even when WFH is an option. Live
+  // diagnostic 2026-05-13: Newcastle Remote returned 2/10 because of this
+  // hard filter. We now let Adzuna return the FULL keyword+location pool
+  // and rely on the client-side heuristic (inferAdzunaWorkMode) + the
+  // adjacent tier (jsAdjacencyReject admits undefined workMode) to surface
+  // the remote-friendly subset honestly. The 'Work-mode unclear' badge
+  // tells the user to verify.
   try {
     const res = await jsFetchTimeout(url.toString(), {}, 5000);
     if (!res.ok) {
