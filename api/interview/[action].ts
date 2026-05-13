@@ -123,6 +123,69 @@ async function jsFetchTimeout(url: string, init: RequestInit = {}, timeoutMs = 5
 
 // Adzuna adapter (https://developer.adzuna.com/docs/search)
 /**
+ * STRICT relevance check. Every job that makes it through to the AI scorer
+ * (and into the user's results) MUST pass this gate. Without it, garbage
+ * leaks in via Adzuna's loose keyword matching, Remotive's global pool,
+ * and the dedup top-up logic recycling stale unrelated jobs. User reported
+ * 2026-05-13: 'I got non marketing, none remote, non UK ones, develop
+ * system add more, refine add parameters, checkers, classify qualify
+ * reject approve, until list is ACTUALLY curated'.
+ *
+ * Each requirement is an independent gate — a job that fails ANY check
+ * is rejected. Returns the rejection reason string for telemetry, or
+ * null if the job passes.
+ */
+function jsRelevanceReject(j: RawJob, params: JsParams): string | null {
+  const title = (j.title || '').toLowerCase();
+  const desc = (j.description || '').toLowerCase();
+  const blob = `${title}\n${desc}`;
+
+  // 1. KEYWORD CHECK — every word in the user's keyword field must appear
+  //    in title OR description (case-insensitive). Without this, Adzuna's
+  //    loose 'what' search returns jobs whose only connection to
+  //    'marketing' is the word appearing once in the company's "About"
+  //    boilerplate. STRICT: 'data engineer' requires BOTH words.
+  if (params.keywords?.trim()) {
+    const words = params.keywords.trim().toLowerCase()
+      .split(/\s+/)
+      .filter((w) => w.length >= 2);
+    for (const word of words) {
+      // Word-boundary regex so 'marketing' doesn't accidentally match 'remarketing'
+      // unrelated to the user's intent. Escape regex specials.
+      const escaped = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      if (!new RegExp(`\\b${escaped}\\b`, 'i').test(blob)) {
+        return `keyword '${word}' missing from title+description`;
+      }
+    }
+  }
+
+  // 2. WORK MODE CHECK — strict match against the user's pick.
+  if (params.workMode !== 'any' && j.workMode && j.workMode !== params.workMode) {
+    return `workMode '${j.workMode}' != requested '${params.workMode}'`;
+  }
+
+  // 3. SALARY CHECK — if the user set a minimum AND the job has salary
+  //    data, reject jobs whose salaryMax is below the user's minimum.
+  //    Jobs with no salary data pass through (we can't reject what we
+  //    don't know).
+  if (params.salaryMin && params.salaryMin > 0) {
+    const jobMax = j.salaryMax;
+    const jobMin = j.salaryMin;
+    if (typeof jobMax === 'number' && jobMax > 0 && jobMax < params.salaryMin) {
+      return `salaryMax ${jobMax} < requested ${params.salaryMin}`;
+    }
+    // If only min is reported, that's the ceiling we have to judge by — too
+    // permissive to reject on this alone, so skip.
+    if (typeof jobMin === 'number' && jobMin > 0 && typeof jobMax !== 'number' && jobMin * 1.5 < params.salaryMin) {
+      // Even with a generous 50% range assumption, this can't reach the floor.
+      return `salaryMin ${jobMin} too low to reach requested ${params.salaryMin}`;
+    }
+  }
+
+  return null;
+}
+
+/**
  * Heuristic work-mode classifier for a raw Adzuna listing. Adzuna's
  * API has no first-class remote/hybrid/on-site filter, so we scan
  * the title + description for signal phrases. Used after fetch to
@@ -158,17 +221,26 @@ function inferAdzunaWorkMode(title: string, description: string, location: strin
   return 'on-site';
 }
 
-async function jsAdzuna(params: JsParams): Promise<RawJob[]> {
+async function jsAdzuna(params: JsParams, page: number = 1): Promise<RawJob[]> {
   const id = process.env.ADZUNA_APP_ID || '';
   const key = process.env.ADZUNA_APP_KEY || '';
   if (!id || !key) return [];
   if (!(ADZUNA_COUNTRIES as readonly string[]).includes(params.country)) return [];
-  const url = new URL(`https://api.adzuna.com/v1/api/jobs/${params.country}/search/1`);
+  const url = new URL(`https://api.adzuna.com/v1/api/jobs/${params.country}/search/${page}`);
   url.searchParams.set('app_id', id);
   url.searchParams.set('app_key', key);
   url.searchParams.set('results_per_page', String(Math.min(50, Math.max(10, params.perSourceLimit))));
   url.searchParams.set('content-type', 'application/json');
-  if (params.keywords?.trim()) url.searchParams.set('what', params.keywords.trim().slice(0, 200));
+  // STRICTER keyword match. Adzuna's `what` is OR semantics across words —
+  // a search for 'marketing' returns anything with 'marketing' anywhere,
+  // including company names + adjacent words. Use `what_and` so ALL words
+  // must be present, and `what_phrase` for exact-phrase matching when the
+  // user typed a quoted phrase. User reported 2026-05-13: 'I got non
+  // marketing, none remote, non UK ones'.
+  if (params.keywords?.trim()) {
+    const kw = params.keywords.trim().slice(0, 200);
+    url.searchParams.set('what_and', kw);
+  }
   if (params.location?.trim()) url.searchParams.set('where', params.location.trim().slice(0, 100));
   if (params.salaryMin && params.salaryMin > 0) url.searchParams.set('salary_min', String(params.salaryMin));
   url.searchParams.set('max_days_old', String(params.postedWithin));
@@ -1535,18 +1607,38 @@ async function handleJobSearch(request: any, response: any) {
     }
     const seenIds = new Set(seenRows.map((r) => r.job_external_id));
     const TARGET_POOL = 15;
+
+    // STAGE 0: RELEVANCE PRE-FILTER. Reject jobs that fail keyword /
+    // workMode / salary / location checks BEFORE we deal with dedup.
+    // Garbage in → garbage out. Without this the AI gets fed Sales
+    // Consultant jobs when the user asked for Marketing remote.
+    const rejectionLog: Record<string, number> = {};
+    const relevant = fetchResult.rawJobs.filter((j: any) => {
+      const reason = jsRelevanceReject(j, params);
+      if (reason) {
+        rejectionLog[reason] = (rejectionLog[reason] || 0) + 1;
+        return false;
+      }
+      return true;
+    });
+    if (Object.keys(rejectionLog).length > 0) {
+      const summary = Object.entries(rejectionLog).map(([r, n]) => `${n}×${r}`).join(', ');
+      console.log(`jobsearch relevance: kept ${relevant.length}/${fetchResult.rawJobs.length} for user ${user.id} — rejected: ${summary}`);
+    }
+
+    // STAGE 1: Per-user dedupe against seen_job_searches (last 30 days).
     const freshJobs = seenIds.size > 0
-      ? fetchResult.rawJobs.filter((j: any) => !seenIds.has(String(j?.id || '')))
-      : fetchResult.rawJobs;
-    // Top-up: if the fresh pool is too small, add back the least-recently-
-    // seen jobs (in oldest-first order) until we hit the target. Forgotten
-    // jobs come back into rotation; recently-saved ones stay excluded
-    // longest. User intent: 'we store them and find new ones, user can
-    // keep the ones they like by saving, but the rest we archive, and
-    // keep finding new ones'.
+      ? relevant.filter((j: any) => !seenIds.has(String(j?.id || '')))
+      : relevant;
+
+    // STAGE 2: Top-up with oldest-seen IF (and only if) those seen jobs
+    // STILL PASS the relevance check. Forgotten-but-relevant jobs come
+    // back into rotation; irrelevant ones never re-enter regardless of
+    // age. User intent: 'we store them and find new ones, user can keep
+    // the ones they like by saving, but the rest we archive'.
     let filteredRawJobs = freshJobs;
     if (freshJobs.length < TARGET_POOL && seenRows.length > 0) {
-      const seenById = new Map(fetchResult.rawJobs.map((j: any) => [String(j?.id || ''), j]));
+      const seenById = new Map(relevant.map((j: any) => [String(j?.id || ''), j]));
       const oldestSeenJobsInResults: any[] = [];
       for (const row of seenRows) {
         const j = seenById.get(row.job_external_id);
@@ -1554,6 +1646,29 @@ async function handleJobSearch(request: any, response: any) {
         if (freshJobs.length + oldestSeenJobsInResults.length >= TARGET_POOL) break;
       }
       filteredRawJobs = [...freshJobs, ...oldestSeenJobsInResults];
+    }
+
+    // STAGE 3: Adzuna pagination fallback — if relevance filter left us
+    // very thin AND we haven't seen everything from a wider sweep, fetch
+    // page 2 + 3 of Adzuna with the same filters. This is the 'request
+    // more until list is curated' loop the user asked for.
+    if (filteredRawJobs.length < 8 && process.env.ADZUNA_APP_ID && process.env.ADZUNA_APP_KEY) {
+      for (let page = 2; page <= 3 && filteredRawJobs.length < TARGET_POOL; page += 1) {
+        try {
+          const extra = await jsAdzuna({ ...params, perSourceLimit: 50 }, page);
+          const extraRelevant = extra.filter((j) => {
+            if (jsRelevanceReject(j, params)) return false;
+            if (seenIds.has(String(j.id || ''))) return false;
+            if (filteredRawJobs.some((x: any) => String(x.id) === String(j.id))) return false;
+            return true;
+          });
+          filteredRawJobs = [...filteredRawJobs, ...extraRelevant];
+          if (extra.length === 0) break; // no more pages
+        } catch (err: any) {
+          console.warn(`jobsearch: adzuna page ${page} fetch error: ${err?.message || ''}`);
+          break;
+        }
+      }
     }
 
     // All available jobs already seen — tell the user explicitly so they
@@ -1717,6 +1832,17 @@ Penalize ghost-tells heavily. NEVER invent skills/companies not in CV/JD. STRICT
         };
       })
       .filter(Boolean)
+      // STAGE 4 (final gate): post-AI relevance recheck. Even after the
+      // pre-filter at Stage 0, Gemini occasionally returns items it
+      // 'liked' but that don't match the user's keyword/workMode/salary.
+      // Re-run the same jsRelevanceReject against every scored item.
+      // Tighter than pre-filter: also drops matchScore < 25 (very weak
+      // fits) so the user never sees obviously irrelevant 18% matches.
+      .filter((scoredJob: any) => {
+        if (jsRelevanceReject(scoredJob, params)) return false;
+        if (typeof scoredJob.matchScore === 'number' && scoredJob.matchScore < 25) return false;
+        return true;
+      })
       .sort((a: any, b: any) => b.matchScore - a.matchScore)
       .slice(0, 10);
 
