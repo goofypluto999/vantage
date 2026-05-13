@@ -262,9 +262,14 @@ export function useApplicationTracker(
       }
       const fromDisk = readSafe(key);
       const next = [full, ...fromDisk].slice(0, maxEntries);
-      writeSafe(key, next);
+      // Return empty string on persistence failure (quota exhausted, security
+      // policy blocking localStorage, etc.) so the caller can surface a toast
+      // and not falsely claim success. Previously this returned `full.id`
+      // even when writeSafe silently failed, which made the UI claim the
+      // job was saved when it actually wasn't.
+      const ok = writeSafe(key, next);
       setEntries(readSafe(key));
-      return full.id;
+      return ok ? full.id : '';
     },
     [key, enabled, maxEntries],
   );

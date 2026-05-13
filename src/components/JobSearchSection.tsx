@@ -335,14 +335,22 @@ export default function JobSearchSection({ embedded = false, className = '' }: P
         : undefined),
       notes: job.fitOneLiner,
     });
+    // useApplicationTracker.add() returns '' when localStorage write fails
+    // (quota exhausted, security policy blocking storage, etc.). Surface
+    // that to the user so they don't think they saved when they didn't,
+    // instead of the previous silent fail.
+    if (!newId) {
+      setToast({ title: job.title, company: job.company, mode: 'error', entryKey: null });
+      return;
+    }
     // Toast carries the entry key so 'Undo' can remove the right row.
-    setToast({ title: job.title, company: job.company, mode: 'saved', entryKey: newId || null });
+    setToast({ title: job.title, company: job.company, mode: 'saved', entryKey: newId });
   }
 
   // Toast for save-to-tracker feedback. Bigger now, 6s duration (was 4s —
   // user reported 3s felt too fast), with Undo + View Tracker actions.
   const [toast, setToast] = useState<
-    | { title: string; company: string; mode: 'saved' | 'removed'; entryKey: string | null }
+    | { title: string; company: string; mode: 'saved' | 'removed' | 'error'; entryKey: string | null }
     | null
   >(null);
   useEffect(() => {
@@ -442,25 +450,35 @@ export default function JobSearchSection({ embedded = false, className = '' }: P
             className={`fixed bottom-6 right-6 z-50 w-[360px] max-w-[calc(100vw-3rem)] p-4 rounded-2xl backdrop-blur-xl shadow-[0_12px_48px_rgba(0,0,0,0.6)] flex items-start gap-3 ${
               toast.mode === 'saved'
                 ? 'bg-emerald-500/20 border-2 border-emerald-500/60'
+                : toast.mode === 'error'
+                ? 'bg-rose-500/20 border-2 border-rose-500/60'
                 : 'bg-amber-500/20 border-2 border-amber-500/60'
             }`}
           >
-            <Bookmark className={`w-5 h-5 flex-shrink-0 mt-0.5 ${toast.mode === 'saved' ? 'text-emerald-300' : 'text-amber-300'}`} aria-hidden="true" />
+            {toast.mode === 'error' ? (
+              <AlertTriangle className="w-5 h-5 flex-shrink-0 mt-0.5 text-rose-300" aria-hidden="true" />
+            ) : (
+              <Bookmark className={`w-5 h-5 flex-shrink-0 mt-0.5 ${toast.mode === 'saved' ? 'text-emerald-300' : 'text-amber-300'}`} aria-hidden="true" />
+            )}
             <div className="flex-1 min-w-0">
               <p className="text-base font-bold text-white mb-0.5">
-                {toast.mode === 'saved' ? 'Saved to tracker' : 'Removed from tracker'}
+                {toast.mode === 'saved' ? 'Saved to tracker' : toast.mode === 'error' ? 'Couldn\'t save to tracker' : 'Removed from tracker'}
               </p>
               <p className="text-sm text-white/80 line-clamp-2 mb-2" title={`${toast.title} at ${toast.company}`}>
-                {toast.title} <span className="text-white/60">at</span> {toast.company}
+                {toast.mode === 'error'
+                  ? <>Your browser blocked saving — it may be out of space, in private/incognito mode, or have site storage disabled. Try a regular browser window or clear site data.</>
+                  : <>{toast.title} <span className="text-white/60">at</span> {toast.company}</>}
               </p>
               <div className="flex items-center gap-3 mt-1">
-                <button
-                  type="button"
-                  onClick={() => { setToast(null); scrollToTracker(); }}
-                  className="px-3 py-1.5 rounded-md text-sm font-semibold bg-white/15 text-white hover:bg-white/25 transition min-h-[36px]"
-                >
-                  View tracker →
-                </button>
+                {toast.mode !== 'error' && (
+                  <button
+                    type="button"
+                    onClick={() => { setToast(null); scrollToTracker(); }}
+                    className="px-3 py-1.5 rounded-md text-sm font-semibold bg-white/15 text-white hover:bg-white/25 transition min-h-[36px]"
+                  >
+                    View tracker →
+                  </button>
+                )}
                 {toast.mode === 'saved' && toast.entryKey && (
                   <button
                     type="button"
