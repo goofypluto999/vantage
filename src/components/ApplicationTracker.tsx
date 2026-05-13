@@ -397,7 +397,34 @@ export default function ApplicationTracker({ userScope }: Props) {
           const sourceUrl = iUrl >= 0 ? stripExportTick((row[iUrl] || '').trim()) : '';
           const location = iLocation >= 0 ? stripExportTick((row[iLocation] || '').trim()) : '';
           const salaryBand = iSalary >= 0 ? stripExportTick((row[iSalary] || '').trim()) : '';
-          const appliedDate = iApplied >= 0 ? stripExportTick((row[iApplied] || '').trim()) : '';
+          // Normalize appliedDate to YYYY-MM-DD. Free-text dates ("yesterday",
+          // "5/5/2025", "May 5th") break the stale-flag timeline (Date.parse
+          // returns NaN, isStaleApplication returns false, follow-up nudge
+          // never fires) AND the edit form's type="date" input can't display
+          // them so they appear blank in the UI. Drop unparseable values
+          // entirely — better blank than misleading.
+          let appliedDate: string = '';
+          if (iApplied >= 0) {
+            const raw = stripExportTick((row[iApplied] || '').trim());
+            if (raw) {
+              if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) {
+                appliedDate = raw;
+              } else {
+                const ms = Date.parse(raw);
+                if (Number.isFinite(ms)) {
+                  const d = new Date(ms);
+                  // Sanity: reject dates >5y old or >1y in the future to
+                  // catch obvious parsing mistakes like Date.parse('1234').
+                  const now = Date.now();
+                  const fiveYearsMs = 5 * 365 * 24 * 60 * 60 * 1000;
+                  const oneYearMs = 365 * 24 * 60 * 60 * 1000;
+                  if (ms >= now - fiveYearsMs && ms <= now + oneYearMs) {
+                    appliedDate = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+                  }
+                }
+              }
+            }
+          }
           const notes = iNotes >= 0 ? stripExportTick((row[iNotes] || '').trim()).slice(0, 1000) : '';
           // Parse ISO Created/Updated if present. Date.parse returns
           // NaN on invalid input — caught by add()'s isValidTs guard.
