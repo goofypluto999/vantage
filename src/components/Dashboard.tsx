@@ -2123,11 +2123,17 @@ export default function Dashboard() {
                     </p>
                   </div>
 
-                  {/* Copy cover letter — added 2026-05-07. The cover letter
-                      is the most-actioned output (users paste it into the
-                      job application immediately). One-click copy beats
-                      'select all → cmd+c'. */}
-                  <div className="mt-4 pt-4 border-t border-white/10">
+                  {/* Copy cover letter + ATS character-fit hints.
+                      The cover letter is the most-actioned output (users
+                      paste it into the job application immediately). The
+                      character count exposes ATS limits BEFORE the paste:
+                        * LinkedIn Easy Apply: 2000 chars
+                        * Workday default: 4000 chars
+                        * Typical recommended: 250-400 words
+                      Without this, users paste a 4500-char letter into
+                      LinkedIn, see it truncated, and have to ask the AI
+                      to rewrite shorter — wasting a token. */}
+                  <div className="mt-4 pt-4 border-t border-white/10 flex items-center justify-between flex-wrap gap-3">
                     <button
                       type="button"
                       onClick={async () => {
@@ -2146,6 +2152,35 @@ export default function Dashboard() {
                     >
                       <Copy className="w-3.5 h-3.5" /> Copy cover letter
                     </button>
+                    {(() => {
+                      const text = displayLetter || results.coverLetter || '';
+                      const chars = text.length;
+                      const words = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
+                      // Three-tier fit hint:
+                      //   <= 2000: fits everywhere (LinkedIn Easy Apply too)
+                      //   2001-4000: fits Workday and most others, NOT LinkedIn
+                      //   > 4000: may need trimming for any ATS form
+                      let fit: { label: string; tone: 'good' | 'warn' | 'bad' };
+                      if (chars <= 2000) {
+                        fit = { label: 'fits LinkedIn Easy Apply', tone: 'good' };
+                      } else if (chars <= 4000) {
+                        fit = { label: 'over LinkedIn limit (2000) · fits Workday', tone: 'warn' };
+                      } else {
+                        fit = { label: 'over 4000 — may need trimming for ATS forms', tone: 'bad' };
+                      }
+                      const toneClass =
+                        fit.tone === 'good' ? 'text-emerald-300' :
+                        fit.tone === 'warn' ? 'text-amber-300' :
+                        'text-rose-300';
+                      return (
+                        <p
+                          className="text-xs text-white/50"
+                          title={`Character counts shown so you know if the letter fits common ATS paste limits. ${chars} characters / ${words} words.`}
+                        >
+                          <strong className="text-white/70">{words}</strong> words · <strong className="text-white/70">{chars.toLocaleString()}</strong> chars · <span className={toneClass}>{fit.label}</span>
+                        </p>
+                      );
+                    })()}
                   </div>
                 </div>
               )}
