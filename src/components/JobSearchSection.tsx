@@ -266,6 +266,10 @@ export default function JobSearchSection({ embedded = false, className = '' }: P
   }>({});
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const inFlightRef = useRef(false);
+  // Ref on the results section so we can smooth-scroll to it after a
+  // successful search. Especially helpful on mobile where the filter
+  // form fills the viewport.
+  const resultsRef = useRef<HTMLElement | null>(null);
 
   const savedKeys = useMemo(() => {
     const s = new Set<string>();
@@ -357,6 +361,19 @@ export default function JobSearchSection({ embedded = false, className = '' }: P
         nextFreeAt: res.next_free_at,
       });
       if (res.jobs.length === 0 && res.message) setError(res.message);
+      // Auto-scroll to the results section after a successful search.
+      // Especially on mobile where the form occupies a full viewport, the
+      // user otherwise has to manually scroll down past the loading stages.
+      // requestAnimationFrame so the DOM has reflowed to include the new
+      // results before we measure & scroll.
+      if (res.jobs.length > 0 && typeof window !== 'undefined') {
+        window.requestAnimationFrame(() => {
+          const el = resultsRef.current;
+          if (el && 'scrollIntoView' in el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
+      }
     } catch (err: any) {
       setError(err?.message?.toLowerCase().includes('network') ? 'Network error — try again.' : 'Search failed. Try again.');
     } finally {
@@ -757,7 +774,7 @@ export default function JobSearchSection({ embedded = false, className = '' }: P
       })()}
 
       {visibleResults && !loading && (
-        <section aria-label="Search results">
+        <section aria-label="Search results" ref={resultsRef} className="scroll-mt-20">
           <div className="flex items-center justify-between flex-wrap gap-3 mb-4 text-xs">
             <p className="text-white/50">
               {meta.fetched ?? 0} fetched
