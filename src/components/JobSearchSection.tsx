@@ -14,7 +14,7 @@
 //
 // Built 2026-05-11 as the third refinement of the Job Search milestone.
 
-import { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import {
@@ -135,6 +135,11 @@ export default function JobSearchSection({ embedded = false, className = '' }: P
   const [postedWithin, setPostedWithin] = useState<JobSearchPostedWithin>(30);
   const [salaryMin, setSalaryMin] = useState<string>('');
   const [hideGhost, setHideGhost] = useState(true);
+  // Adjacency toggle — when true, results from the looser keyword-overlap
+  // backfill (any one word vs. all words) are hidden so the user sees only
+  // strong matches. Default OFF so users see the full plate of 10 (matches
+  // the 'never make them feel cheated' UX rule).
+  const [hideAdjacent, setHideAdjacent] = useState(false);
 
   // Persist the search-filter inputs (keywords/location/country/workMode/
   // postedWithin/salaryMin) per-user across navigations so repeat scans
@@ -233,14 +238,29 @@ export default function JobSearchSection({ embedded = false, className = '' }: P
 
   const visibleResults = useMemo(() => {
     if (!results) return null;
-    if (!hideGhost) return results;
-    return results.filter((j) => j.ghostProbability < 75);
-  }, [results, hideGhost]);
+    let filtered = results;
+    if (hideGhost) filtered = filtered.filter((j) => j.ghostProbability < 75);
+    if (hideAdjacent) filtered = filtered.filter((j) => !j.isAdjacent);
+    return filtered;
+  }, [results, hideGhost, hideAdjacent]);
 
   const hiddenGhostCount = useMemo(() => {
     if (!results || !hideGhost) return 0;
     return results.filter((j) => j.ghostProbability >= 75).length;
   }, [results, hideGhost]);
+
+  const adjacentCount = useMemo(() => {
+    if (!results) return 0;
+    return results.filter((j) => j.isAdjacent).length;
+  }, [results]);
+
+  // Index in the visibleResults array where the first 'adjacent' job
+  // appears — used to drop a 'Related roles' divider into the list.
+  // -1 means no adjacent rows are showing.
+  const firstAdjacentIdx = useMemo(() => {
+    if (!visibleResults) return -1;
+    return visibleResults.findIndex((j) => j.isAdjacent);
+  }, [visibleResults]);
 
   async function handleSearch() {
     if (inFlightRef.current) return;
@@ -650,6 +670,19 @@ export default function JobSearchSection({ embedded = false, className = '' }: P
             <p className="text-white/50">
               {meta.fetched ?? 0} fetched · {meta.deduped ?? 0} deduplicated · top {visibleResults.length} curated
               {hiddenGhostCount > 0 && <> · <button type="button" onClick={() => setHideGhost(false)} className="underline hover:text-amber-300">{hiddenGhostCount} ghost hidden</button></>}
+              {adjacentCount > 0 && (
+                <> · <button
+                  type="button"
+                  onClick={() => setHideAdjacent((v) => !v)}
+                  className="underline hover:text-violet-200 text-violet-300"
+                  title={hideAdjacent
+                    ? 'Currently showing only strong matches. Click to include related roles that match some but not all of your keywords.'
+                    : 'Currently showing related roles too. Click to see only strong matches that hit every keyword.'}
+                  aria-pressed={hideAdjacent}
+                >
+                  {hideAdjacent ? `Show ${adjacentCount} related` : `Hide ${adjacentCount} related`}
+                </button></>
+              )}
               {trackerEntries.length > 0 && (
                 <>
                   {' · '}
@@ -705,9 +738,25 @@ export default function JobSearchSection({ embedded = false, className = '' }: P
                   const href = safeHref(job.url);
                   const ghostHigh = job.ghostProbability >= 75;
                   const ghostMid = job.ghostProbability >= 50 && job.ghostProbability < 75;
+                  const showAdjacentDivider = idx === firstAdjacentIdx && firstAdjacentIdx > 0;
                   return (
-                    <motion.li key={job.id} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, height: 0 }}
-                      transition={{ delay: idx * 0.04 }} className={`${glassCard} rounded-2xl overflow-hidden`}>
+                    <React.Fragment key={job.id}>
+                    {showAdjacentDivider && (
+                      <li role="separator" aria-label="Related roles section" className="!list-none pt-2">
+                        <div className="flex items-center gap-3 my-1">
+                          <div className="flex-1 h-px bg-violet-400/20" />
+                          <span className="text-[11px] uppercase tracking-widest font-bold text-violet-300/80 px-2">
+                            Related roles you might also consider
+                          </span>
+                          <div className="flex-1 h-px bg-violet-400/20" />
+                        </div>
+                        <p className="text-[11px] text-white/40 text-center -mt-0.5 mb-1">
+                          These match some of your keywords (not all). Same country, work mode and salary as your strong matches.
+                        </p>
+                      </li>
+                    )}
+                    <motion.li initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, height: 0 }}
+                      transition={{ delay: idx * 0.04 }} className={`${glassCard} rounded-2xl overflow-hidden ${job.isAdjacent ? 'opacity-80 border-violet-400/15' : ''}`}>
                       <div className="p-4 sm:p-5">
                         <div className="flex items-start gap-4 flex-wrap sm:flex-nowrap">
                           <div role="meter" aria-label={`Match score ${job.matchScore} out of 100`}
@@ -720,6 +769,14 @@ export default function JobSearchSection({ embedded = false, className = '' }: P
                             <div className="flex items-baseline flex-wrap gap-x-2">
                               <h3 className="text-lg font-bold text-white truncate" title={job.title}>{job.title}</h3>
                               <span className="text-sm text-white/70">at {job.company}</span>
+                              {job.isAdjacent && (
+                                <span
+                                  className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider bg-violet-500/20 text-violet-200 border border-violet-400/30"
+                                  title="Related role — matches some of your keywords but not all. Same country/work mode/salary as your strong matches."
+                                >
+                                  Related
+                                </span>
+                              )}
                             </div>
                             <p className="text-xs text-white/50 mt-0.5">
                               {job.location}
@@ -805,6 +862,7 @@ export default function JobSearchSection({ embedded = false, className = '' }: P
                         )}
                       </AnimatePresence>
                     </motion.li>
+                    </React.Fragment>
                   );
                 })}
               </AnimatePresence>

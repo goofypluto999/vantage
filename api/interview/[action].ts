@@ -75,6 +75,12 @@ interface RawJob {
   salaryCurrency?: string;
   source: 'adzuna' | 'remotive' | 'mock';
   workMode?: JsWorkMode;
+  // True when this job passed the looser ADJACENCY gate (jsAdjacencyReject)
+  // but failed the STRICT gate (jsRelevanceReject). Backfilled into results
+  // so the user always gets 10 entries rather than e.g. 3 strong matches +
+  // an empty plate. UI labels these 'Related roles you might also consider'
+  // and offers a toggle to hide them. Added 2026-05-13 per user request.
+  isAdjacent?: boolean;
 }
 
 type SourceState = 'configured' | 'not-configured' | 'errored';
@@ -123,65 +129,86 @@ async function jsFetchTimeout(url: string, init: RequestInit = {}, timeoutMs = 5
 
 // Adzuna adapter (https://developer.adzuna.com/docs/search)
 /**
- * STRICT relevance check. Every job that makes it through to the AI scorer
- * (and into the user's results) MUST pass this gate. Without it, garbage
- * leaks in via Adzuna's loose keyword matching, Remotive's global pool,
- * and the dedup top-up logic recycling stale unrelated jobs. User reported
- * 2026-05-13: 'I got non marketing, none remote, non UK ones, develop
- * system add more, refine add parameters, checkers, classify qualify
- * reject approve, until list is ACTUALLY curated'.
- *
- * Each requirement is an independent gate — a job that fails ANY check
- * is rejected. Returns the rejection reason string for telemetry, or
- * null if the job passes.
+ * STRICT relevance check — Stage 0a. ALL keyword words present, workMode
+ * exact, salary compatible. Strong matches only.
  */
 function jsRelevanceReject(j: RawJob, params: JsParams): string | null {
   const title = (j.title || '').toLowerCase();
   const desc = (j.description || '').toLowerCase();
   const blob = `${title}\n${desc}`;
 
-  // 1. KEYWORD CHECK — every word in the user's keyword field must appear
-  //    in title OR description (case-insensitive). Without this, Adzuna's
-  //    loose 'what' search returns jobs whose only connection to
-  //    'marketing' is the word appearing once in the company's "About"
-  //    boilerplate. STRICT: 'data engineer' requires BOTH words.
   if (params.keywords?.trim()) {
     const words = params.keywords.trim().toLowerCase()
       .split(/\s+/)
       .filter((w) => w.length >= 2);
     for (const word of words) {
-      // Word-boundary regex so 'marketing' doesn't accidentally match 'remarketing'
-      // unrelated to the user's intent. Escape regex specials.
       const escaped = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
       if (!new RegExp(`\\b${escaped}\\b`, 'i').test(blob)) {
         return `keyword '${word}' missing from title+description`;
       }
     }
   }
-
-  // 2. WORK MODE CHECK — strict match against the user's pick.
   if (params.workMode !== 'any' && j.workMode && j.workMode !== params.workMode) {
     return `workMode '${j.workMode}' != requested '${params.workMode}'`;
   }
-
-  // 3. SALARY CHECK — if the user set a minimum AND the job has salary
-  //    data, reject jobs whose salaryMax is below the user's minimum.
-  //    Jobs with no salary data pass through (we can't reject what we
-  //    don't know).
   if (params.salaryMin && params.salaryMin > 0) {
     const jobMax = j.salaryMax;
     const jobMin = j.salaryMin;
     if (typeof jobMax === 'number' && jobMax > 0 && jobMax < params.salaryMin) {
       return `salaryMax ${jobMax} < requested ${params.salaryMin}`;
     }
-    // If only min is reported, that's the ceiling we have to judge by — too
-    // permissive to reject on this alone, so skip.
     if (typeof jobMin === 'number' && jobMin > 0 && typeof jobMax !== 'number' && jobMin * 1.5 < params.salaryMin) {
-      // Even with a generous 50% range assumption, this can't reach the floor.
       return `salaryMin ${jobMin} too low to reach requested ${params.salaryMin}`;
     }
   }
+  return null;
+}
 
+/**
+ * ADJACENT relevance check — Stage 0b. Looser than strict: only requires
+ * AT LEAST ONE keyword word to appear (not all), but still enforces
+ * workMode + salary because those are hard user constraints (they
+ * explicitly chose remote — never show on-site, ever).
+ *
+ * Used to backfill the result pool to 10 when strict matches < 10, so
+ * the user always gets a 'full plate' instead of feeling cheated by 3
+ * results for a free scan. Adjacent results are tagged isAdjacent:true
+ * on the response so the UI can label them 'Related roles' separately.
+ *
+ * User asked 2026-05-13: 'if it only shows 10 results, there should be
+ * an option to populate AFTER THE SEARCH with more adjacent roles, so
+ * that the user always gets 10 results per search; otherwise feels like
+ * they're missing something, like we stole a token from them'.
+ */
+function jsAdjacencyReject(j: RawJob, params: JsParams): string | null {
+  const title = (j.title || '').toLowerCase();
+  const desc = (j.description || '').toLowerCase();
+  const blob = `${title}\n${desc}`;
+
+  // Looser keyword: ANY ONE of the user's words appears (instead of ALL).
+  if (params.keywords?.trim()) {
+    const words = params.keywords.trim().toLowerCase()
+      .split(/\s+/)
+      .filter((w) => w.length >= 2);
+    if (words.length > 0) {
+      const anyMatch = words.some((word) => {
+        const escaped = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        return new RegExp(`\\b${escaped}\\b`, 'i').test(blob);
+      });
+      if (!anyMatch) return `no keyword overlap`;
+    }
+  }
+  // workMode + salary still STRICT — these are hard user constraints,
+  // not preferences. Even an 'adjacent' role must respect them.
+  if (params.workMode !== 'any' && j.workMode && j.workMode !== params.workMode) {
+    return `workMode '${j.workMode}' != requested '${params.workMode}'`;
+  }
+  if (params.salaryMin && params.salaryMin > 0) {
+    const jobMax = j.salaryMax;
+    if (typeof jobMax === 'number' && jobMax > 0 && jobMax < params.salaryMin) {
+      return `salaryMax ${jobMax} < requested ${params.salaryMin}`;
+    }
+  }
   return null;
 }
 
@@ -1613,18 +1640,45 @@ async function handleJobSearch(request: any, response: any) {
     // Garbage in → garbage out. Without this the AI gets fed Sales
     // Consultant jobs when the user asked for Marketing remote.
     const rejectionLog: Record<string, number> = {};
-    const relevant = fetchResult.rawJobs.filter((j: any) => {
+    const strictRelevant: RawJob[] = [];
+    const failedStrict: RawJob[] = [];
+    for (const j of fetchResult.rawJobs as RawJob[]) {
       const reason = jsRelevanceReject(j, params);
       if (reason) {
         rejectionLog[reason] = (rejectionLog[reason] || 0) + 1;
-        return false;
+        failedStrict.push(j);
+      } else {
+        strictRelevant.push(j);
       }
-      return true;
-    });
+    }
     if (Object.keys(rejectionLog).length > 0) {
       const summary = Object.entries(rejectionLog).map(([r, n]) => `${n}×${r}`).join(', ');
-      console.log(`jobsearch relevance: kept ${relevant.length}/${fetchResult.rawJobs.length} for user ${user.id} — rejected: ${summary}`);
+      console.log(`jobsearch relevance: kept ${strictRelevant.length}/${fetchResult.rawJobs.length} for user ${user.id} — rejected: ${summary}`);
     }
+
+    // STAGE 0b: ADJACENCY BACKFILL. If the strict filter left us with
+    // fewer than 10 jobs to feed the AI, try the looser jsAdjacencyReject
+    // gate over the jobs that failed strict. workMode + salary are still
+    // hard-blocked; only keyword strictness is relaxed (ANY word vs ALL).
+    // Adjacent jobs are flagged isAdjacent:true so the UI can render them
+    // under a 'Related roles' header with a toggle.
+    //
+    // User asked 2026-05-13: 'if it only shows 10 results, there should
+    // be an option to populate AFTER THE SEARCH with more adjacent roles,
+    // so that the user always gets 10 results per search'.
+    const ADJACENCY_TARGET = 15; // Want at least 15 raw to feed AI for top-10 cut
+    const adjacent: RawJob[] = [];
+    if (strictRelevant.length < ADJACENCY_TARGET && failedStrict.length > 0) {
+      for (const j of failedStrict) {
+        if (jsAdjacencyReject(j, params)) continue;
+        adjacent.push({ ...j, isAdjacent: true });
+        if (strictRelevant.length + adjacent.length >= ADJACENCY_TARGET) break;
+      }
+      if (adjacent.length > 0) {
+        console.log(`jobsearch adjacency: backfilled ${adjacent.length} adjacent jobs (strict had ${strictRelevant.length}, target ${ADJACENCY_TARGET})`);
+      }
+    }
+    const relevant: RawJob[] = [...strictRelevant, ...adjacent];
 
     // STAGE 1: Per-user dedupe against seen_job_searches (last 30 days).
     const freshJobs = seenIds.size > 0
@@ -1835,15 +1889,30 @@ Penalize ghost-tells heavily. NEVER invent skills/companies not in CV/JD. STRICT
       // STAGE 4 (final gate): post-AI relevance recheck. Even after the
       // pre-filter at Stage 0, Gemini occasionally returns items it
       // 'liked' but that don't match the user's keyword/workMode/salary.
-      // Re-run the same jsRelevanceReject against every scored item.
-      // Tighter than pre-filter: also drops matchScore < 25 (very weak
-      // fits) so the user never sees obviously irrelevant 18% matches.
+      // For strict-tier jobs, re-run the SAME jsRelevanceReject. For
+      // adjacent-tier jobs (isAdjacent:true), use the looser jsAdjacencyReject
+      // — keyword overlap only, workMode + salary still strict. Tighter
+      // than pre-filter: also drops matchScore < 25 (very weak fits) so
+      // the user never sees obviously irrelevant 18% matches. Adjacency
+      // is given a lower floor (15) since by definition they're weaker.
       .filter((scoredJob: any) => {
-        if (jsRelevanceReject(scoredJob, params)) return false;
-        if (typeof scoredJob.matchScore === 'number' && scoredJob.matchScore < 25) return false;
+        const gate = scoredJob.isAdjacent ? jsAdjacencyReject : jsRelevanceReject;
+        if (gate(scoredJob, params)) return false;
+        const floor = scoredJob.isAdjacent ? 15 : 25;
+        if (typeof scoredJob.matchScore === 'number' && scoredJob.matchScore < floor) return false;
         return true;
       })
-      .sort((a: any, b: any) => b.matchScore - a.matchScore)
+      // Tier-aware sort: strict matches first (high to low), then adjacent
+      // matches second (high to low). So if AI returns mixed list, user
+      // always sees the strongest strong-matches at top of the page, with
+      // adjacent listings clustered below — letting the UI cleanly split
+      // them with a 'Related roles' divider.
+      .sort((a: any, b: any) => {
+        const aAdj = a.isAdjacent ? 1 : 0;
+        const bAdj = b.isAdjacent ? 1 : 0;
+        if (aAdj !== bAdj) return aAdj - bAdj;
+        return b.matchScore - a.matchScore;
+      })
       .slice(0, 10);
 
     if (scored.length === 0) {

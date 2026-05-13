@@ -425,6 +425,11 @@ export interface ScoredJob {
   ghostProbability: number;
   timeToApply: string;
   atsPassLikelihood: JobAtsLikelihood;
+  // True if this match passed only the looser adjacency gate (one keyword
+  // overlap rather than all). Backfilled to ensure the user always gets
+  // 10 results — UI renders these under 'Related roles you might also
+  // consider' with a toggle to hide them.
+  isAdjacent?: boolean;
 }
 
 export interface JobSearchResponse {
