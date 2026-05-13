@@ -200,14 +200,32 @@ export default function JobSearchSection({ embedded = false, className = '' }: P
   // Order matters: clearDraft() suppresses the next auto-save, then we
   // call the setters, so the post-reset render won't immediately
   // re-persist the defaults (no-op, but cleaner).
+  //
+  // Full reset clears form filters + result-related state + visibility
+  // toggles. Previously only cleared form filters — user clicked 'Reset
+  // filters' and was confused that the old results + their settings
+  // (e.g. 'hide adjacent' or expanded job card) persisted. Now this is
+  // a true clean slate that ALSO clears any error/needsTopUp banners
+  // so they don't linger after the user widens search params.
   function resetFilters() {
     clearSearchDraft();
+    // Form filters
     setKeywords('');
     setLocation('');
     setCountry('gb');
     setWorkMode('any');
     setPostedWithin(30);
     setSalaryMin('');
+    // Visibility toggles back to defaults
+    setHideGhost(true);
+    setHideAdjacent(false);
+    // Result-related state — clear so the user gets a truly fresh slate
+    setResults(null);
+    setMeta({});
+    setError(null);
+    setNeedsTopUp(false);
+    setHoursToFreeReset(undefined);
+    setExpandedId(null);
   }
   // On mount only: silently restore the last search if one exists.
   // No prompt — search filters are utility data, not a sensitive draft.
@@ -645,8 +663,8 @@ export default function JobSearchSection({ embedded = false, className = '' }: P
                 onClick={resetFilters}
                 disabled={loading}
                 className="text-xs text-white/50 hover:text-white/80 underline-offset-2 hover:underline disabled:opacity-40 disabled:cursor-not-allowed transition px-2 py-1 min-h-[36px]"
-                aria-label="Reset all search filters to defaults"
-                title="Clear keywords, location, country, work mode, salary, and posted-within filters"
+                aria-label="Reset all filters and clear current results"
+                title="Clears all filter fields, current results, and any error banners — a fresh start. Saved tracker entries are not touched."
               >
                 Reset filters
               </button>
