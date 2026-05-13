@@ -177,8 +177,8 @@ export default function Dashboard() {
   // and "now I want to follow up". Without this, users had to scroll
   // up, find the same job in search results, click Save, then come
   // back — major flow break.
-  const { add: addAnalysisToTracker } = useApplicationTracker({ userScope: user?.id });
-  const [analysisTrackerToast, setAnalysisTrackerToast] = useState<null | { mode: 'saved' | 'error'; company: string; role: string }>(null);
+  const { entries: trackerEntriesForAnalyzer, add: addAnalysisToTracker } = useApplicationTracker({ userScope: user?.id });
+  const [analysisTrackerToast, setAnalysisTrackerToast] = useState<null | { mode: 'saved' | 'error' | 'duplicate'; company: string; role: string }>(null);
   useEffect(() => {
     if (!analysisTrackerToast) return;
     const t = setTimeout(() => setAnalysisTrackerToast(null), 5000);
@@ -990,19 +990,29 @@ export default function Dashboard() {
             className={`fixed bottom-6 right-6 z-50 w-[340px] max-w-[calc(100vw-3rem)] p-4 rounded-2xl backdrop-blur-xl shadow-[0_12px_48px_rgba(0,0,0,0.6)] flex items-start gap-3 ${
               analysisTrackerToast.mode === 'saved'
                 ? 'bg-emerald-500/20 border-2 border-emerald-500/60'
+                : analysisTrackerToast.mode === 'duplicate'
+                ? 'bg-amber-500/20 border-2 border-amber-500/60'
                 : 'bg-rose-500/20 border-2 border-rose-500/60'
             }`}
           >
             {analysisTrackerToast.mode === 'saved'
               ? <Bookmark className="w-5 h-5 flex-shrink-0 mt-0.5 text-emerald-300" aria-hidden="true" />
+              : analysisTrackerToast.mode === 'duplicate'
+              ? <Bookmark className="w-5 h-5 flex-shrink-0 mt-0.5 text-amber-300" aria-hidden="true" />
               : <AlertTriangle className="w-5 h-5 flex-shrink-0 mt-0.5 text-rose-300" aria-hidden="true" />}
             <div className="flex-1 min-w-0">
               <p className="text-sm font-bold text-white mb-0.5">
-                {analysisTrackerToast.mode === 'saved' ? 'Saved to tracker' : 'Couldn\'t save to tracker'}
+                {analysisTrackerToast.mode === 'saved'
+                  ? 'Saved to tracker'
+                  : analysisTrackerToast.mode === 'duplicate'
+                  ? 'Already in tracker'
+                  : 'Couldn\'t save to tracker'}
               </p>
               <p className="text-xs text-white/80">
                 {analysisTrackerToast.mode === 'saved'
                   ? <>{analysisTrackerToast.role} at {analysisTrackerToast.company}</>
+                  : analysisTrackerToast.mode === 'duplicate'
+                  ? <>{analysisTrackerToast.role} at {analysisTrackerToast.company} is already saved. Find it in the tracker to update the status or add notes.</>
                   : <>Browser storage may be full or blocked. Try again from the tracker section directly.</>}
               </p>
             </div>
@@ -1952,6 +1962,18 @@ export default function Dashboard() {
                           }
                           if (!role) {
                             setAnalysisTrackerToast({ mode: 'error', company, role: '' });
+                            return;
+                          }
+                          // Duplicate guard — same company + role already
+                          // in the tracker (case-insensitive). Stops users
+                          // accidentally creating multiple entries by
+                          // clicking the button twice.
+                          const dup = trackerEntriesForAnalyzer.some((e) =>
+                            e.company.toLowerCase() === company.toLowerCase() &&
+                            e.role.toLowerCase() === role.toLowerCase()
+                          );
+                          if (dup) {
+                            setAnalysisTrackerToast({ mode: 'duplicate', company, role });
                             return;
                           }
                           const newId = addAnalysisToTracker({
