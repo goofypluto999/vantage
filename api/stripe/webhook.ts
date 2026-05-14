@@ -155,7 +155,15 @@ export default async function handler(request: any, response: any) {
   }
 
   const sig = request.headers['stripe-signature'] as string;
-  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  // BOTH secrets supported. STRIPE_WEBHOOK_SECRET = live mode (production).
+  // STRIPE_WEBHOOK_SECRET_TEST = test mode (CLI-driven synthetic events).
+  // If both are set, signature is tried against each in turn — the FIRST one
+  // that verifies wins. Test events that match the live secret would be
+  // implausible (different HMAC keys), so this can't be exploited to bypass
+  // signature checks. Lets us run `stripe trigger` against production code
+  // without spending real money.
+  const webhookSecretLive = process.env.STRIPE_WEBHOOK_SECRET;
+  const webhookSecretTest = process.env.STRIPE_WEBHOOK_SECRET_TEST;
 
   let event: Stripe.Event;
 
@@ -163,11 +171,24 @@ export default async function handler(request: any, response: any) {
     // Read the raw body from the request stream (bodyParser is disabled)
     const rawBody = await getRawBody(request);
     const isDeployed = process.env.VERCEL || process.env.NODE_ENV === 'production';
+    const candidateSecrets = [webhookSecretLive, webhookSecretTest].filter(Boolean) as string[];
 
-    if (sig && webhookSecret) {
-      // Verify signature using raw body — parsed JSON would break HMAC
-      event = stripe.webhooks.constructEvent(rawBody, sig, webhookSecret);
-    } else if (!isDeployed && !webhookSecret) {
+    if (sig && candidateSecrets.length > 0) {
+      // Verify signature using raw body — parsed JSON would break HMAC.
+      // Try each candidate secret in turn; first success wins.
+      let verifiedEvent: Stripe.Event | null = null;
+      let lastErr: Error | null = null;
+      for (const secret of candidateSecrets) {
+        try {
+          verifiedEvent = stripe.webhooks.constructEvent(rawBody, sig, secret);
+          break;
+        } catch (err: any) {
+          lastErr = err;
+        }
+      }
+      if (!verifiedEvent) throw lastErr || new Error('Signature did not match any configured secret');
+      event = verifiedEvent;
+    } else if (!isDeployed && candidateSecrets.length === 0) {
       // ONLY accept unsigned events in local development without a secret configured
       console.warn('Webhook: accepting unsigned event (local development only)');
       event = JSON.parse(rawBody.toString()) as Stripe.Event;
