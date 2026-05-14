@@ -114,8 +114,8 @@ export default function SearchPage() {
   return (
     <div className="min-h-screen" style={{ background: t.pageBg }}>
       <SEO
-        title={query ? `Search: ${query} | Vantage` : 'Search Vantage'}
-        description="Search across Vantage's free tools, pricing, ATS guides, interview prep packs, and trust audit."
+        title={query ? `Search: ${query}` : 'Search'}
+        description="Search across AimVantage's free tools, pricing, ATS guides, interview prep packs, and trust audit."
         path="/search"
         jsonLd={[breadcrumbSchema]}
         noindex={true}
@@ -128,7 +128,7 @@ export default function SearchPage() {
           <span>Search</span>
         </div>
 
-        <h1 className={`text-3xl md:text-4xl font-bold ${t.text} mb-6`}>Search Vantage</h1>
+        <h1 className={`text-3xl md:text-4xl font-bold ${t.text} mb-6`}>Search AimVantage</h1>
 
         <div className={`${t.glass} rounded-2xl p-4 md:p-5 mb-6 flex items-center gap-3`}>
           <Search className="w-5 h-5 text-violet-400 flex-shrink-0" />
@@ -139,7 +139,7 @@ export default function SearchPage() {
             placeholder="e.g. workday parser, jobscan vs vantage, openai interview…"
             className="w-full bg-transparent border-none outline-none text-white placeholder-white/30 text-base"
             autoFocus
-            aria-label="Search Vantage"
+            aria-label="Search AimVantage"
           />
         </div>
 
@@ -203,7 +203,7 @@ export default function SearchPage() {
         )}
 
         <div className={`text-xs ${t.textMuted} text-center mt-8`}>
-          Tip: add Vantage as a browser search provider so you can search from the address bar.
+          Tip: add AimVantage as a browser search provider so you can search from the address bar.
         </div>
       </div>
     </div>

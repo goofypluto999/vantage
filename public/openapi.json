@@ -1,10 +1,10 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "Vantage AI — Public API",
+    "title": "AimVantage — Public API",
     "version": "0.1.0",
-    "summary": "Public free-tool endpoints for the Vantage AI job-prep platform.",
-    "description": "Vantage AI is an AI-powered job-preparation tool operated by Giovanni Sizino Ennes (UK sole trader). This spec documents the **public free** endpoints (cover letter roast, rejection decoder, ghost job detector, search suggest). Paid endpoints (full prep pack creation, fit-score, mock interview) require authentication and are not yet exposed via a public API — they are accessible only through the web UI at https://aimvantage.uk/dashboard. Planned paid endpoints are listed under `x-planned: true`.\n\nNo CV files are stored on Vantage servers for any of the public endpoints listed here. Privacy by architecture: each request is processed in-memory and discarded.",
+    "summary": "Public free-tool endpoints for the AimVantage job-prep platform.",
+    "description": "AimVantage (formerly branded 'Vantage') is an AI-powered job-preparation tool operated by Giovanni Sizino Ennes (UK sole trader). This spec documents the **public free** endpoints (cover letter roast, rejection decoder, ghost job detector, search suggest). Paid endpoints (full prep pack creation, fit-score, mock interview) require authentication and are not yet exposed via a public API — they are accessible only through the web UI at https://aimvantage.uk/dashboard. Planned paid endpoints are listed under `x-planned: true`.\n\nNo CV files are stored on AimVantage servers for any of the public endpoints listed here. Privacy by architecture: each request is processed in-memory and discarded.",
     "termsOfService": "https://aimvantage.uk/terms",
     "contact": {
       "name": "Giovanni Sizino Ennes",
@@ -12,12 +12,12 @@
       "url": "https://aimvantage.uk/about"
     },
     "license": {
-      "name": "Proprietary (Vantage AI)",
-      "identifier": "LicenseRef-Vantage-Proprietary"
+      "name": "Proprietary (AimVantage)",
+      "identifier": "LicenseRef-AimVantage-Proprietary"
     }
   },
   "externalDocs": {
-    "description": "Vantage AI documentation",
+    "description": "AimVantage documentation",
     "url": "https://aimvantage.uk/docs/api"
   },
   "servers": [
@@ -37,7 +37,7 @@
         "tags": ["free-tools"],
         "operationId": "roastCoverLetter",
         "summary": "Generate a savage but constructive AI roast of a cover letter.",
-        "description": "Takes pasted cover letter text, returns a structured roast: a one-line verdict, three numbered roasts each quoting a specific cliché in the input, a severity score (0-5), and one closing line of advice.\n\nNo signup required. Rate-limited to 30 requests / 5 minutes / IP. The cover letter is sent to Gemini 2.5 Flash for the roast and is **not persisted** on Vantage servers.",
+        "description": "Takes pasted cover letter text, returns a structured roast: a one-line verdict, three numbered roasts each quoting a specific cliché in the input, a severity score (0-5), and one closing line of advice.\n\nNo signup required. Rate-limited to 30 requests / 5 minutes / IP. The cover letter is sent to Gemini 2.5 Flash for the roast and is **not persisted** on AimVantage servers.",
         "x-rate-limit": {
           "window-seconds": 300,
           "max-requests": 30,

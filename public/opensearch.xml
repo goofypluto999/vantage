@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
-  <ShortName>Vantage</ShortName>
-  <Description>Search Vantage AI: job prep packs, ATS guides, interview-prep packs, free tools (cover letter roast, ghost-job detector, no-interviews diagnostic, cost calculator).</Description>
+  <ShortName>AimVantage</ShortName>
+  <Description>Search AimVantage (formerly Vantage): job prep packs, ATS guides, interview-prep packs, free tools (cover letter roast, ghost-job detector, no-interviews diagnostic, cost calculator).</Description>
   <InputEncoding>UTF-8</InputEncoding>
   <Image width="32" height="32" type="image/x-icon">https://aimvantage.uk/favicon.ico</Image>
   <Url type="text/html" template="https://aimvantage.uk/search?q={searchTerms}&amp;source=opensearch"/>
   <Url type="application/x-suggestions+json" template="https://aimvantage.uk/api/search-suggest?q={searchTerms}"/>
   <Url type="application/opensearchdescription+xml" rel="self" template="https://aimvantage.uk/opensearch.xml"/>
-  <Developer>Giovanni Sizino Ennes (Vantage AI)</Developer>
+  <Developer>Giovanni Sizino Ennes (AimVantage)</Developer>
   <Contact>hello@aimvantage.uk</Contact>
   <Tags>job prep cv interview ats cover-letter</Tags>
   <SyndicationRight>open</SyndicationRight>

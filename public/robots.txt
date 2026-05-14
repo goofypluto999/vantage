@@ -1,6 +1,6 @@
-# robots.txt for Vantage AI
+# robots.txt for AimVantage (formerly Vantage AI)
 # https://aimvantage.uk
-# Last updated: 2026-05-07
+# Last updated: 2026-05-14
 
 # ---------- Default: allow all search + AI crawlers ----------
 User-agent: *

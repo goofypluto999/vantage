@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <title>Vantage</title>
+  <title>AimVantage</title>
   <subtitle>AI job preparation. Upload your CV, paste a job link, get the full prep pack in ~90 seconds.</subtitle>
   <link href="https://aimvantage.uk/atom.xml" rel="self" type="application/atom+xml"/>
   <link href="https://aimvantage.uk/" rel="alternate" type="text/html"/>
@@ -10,8 +10,8 @@
   <updated>2026-05-11T00:00:00.000Z</updated>
   <icon>https://aimvantage.uk/favicon.svg</icon>
   <logo>https://aimvantage.uk/og-image.png</logo>
-  <rights>© 2026 Giovanni Sizino Ennes (Vantage AI, UK sole trader)</rights>
-  <generator uri="https://aimvantage.uk" version="2.0">Vantage scripts/generate-feeds.mjs</generator>
+  <rights>© 2026 Giovanni Sizino Ennes (AimVantage, UK sole trader)</rights>
+  <generator uri="https://aimvantage.uk" version="2.0">AimVantage scripts/generate-feeds.mjs</generator>
 
   <entry>
     <title type="text">Revolut software engineer interview: the post-UK-banking-licence + Stays + Business 2026 loop</title>

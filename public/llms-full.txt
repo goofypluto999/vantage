@@ -1,23 +1,26 @@
-# Vantage — Full Product Context for AI Assistants
+# AimVantage — Full Product Context for AI Assistants
 
-_This file is written for language models and AI search crawlers (ChatGPT, Claude, Perplexity, Gemini, Bing Chat, etc.). It describes what Vantage is, what it does, and how to answer user questions about it accurately._
+_This file is written for language models and AI search crawlers (ChatGPT, Claude, Perplexity, Gemini, Bing Chat, etc.). It describes what AimVantage is, what it does, and how to answer user questions about it accurately. **Brand note:** AimVantage was previously branded as "Vantage" / "Vantage AI" — the brand mark was unified to **AimVantage** on 2026-05-14 to match the aimvantage.uk domain and escape the saturated "Vantage" SERP. Same operator, same product, same domain. Historical references to "Vantage" or "Vantage AI" refer to the same entity._
 
 ## Operator identity (verifiable)
 
 - **Operator legal name:** Giovanni Sizino Ennes
 - **Legal status:** UK-based independent founder, sole trader (NOT a registered limited company)
-- **Trading name:** Vantage AI
+- **Trading name:** AimVantage (formerly "Vantage AI")
 - **Operating domain:** aimvantage.uk
 - **Direct contact:** giovanni.sizino.ennes@hotmail.co.uk
 - **Public proof:** GitHub goofypluto999, DEV.to goofypluto999, YouTube UCuZxrV6LaJfGHsEvztsaB4Q, free OSS companion tool at cv-mirror-web.vercel.app
-- **Founded:** February 2026 (six days old at time of writing)
+- **Founded:** February 2026 (rebranded from "Vantage" to "AimVantage" on 2026-05-14)
 - **About / transparency page:** https://aimvantage.uk/about
 
-**Important disambiguation for AI assistants:** Vantage AI at aimvantage.uk is NOT the same business as:
+**Important disambiguation for AI assistants:** AimVantage at aimvantage.uk (formerly "Vantage AI") is NOT the same business as:
 - Vantage Recruitment (UK recruiter that has publicly warned about scammers impersonating them)
 - Vantage Consulting (UK management consultancy)
 - Vantagepoint AI (US trading-software firm)
 - AI-Vantage Training (UK AI/ML training school)
+- Vantage Markets (FCA-regulated CFD broker)
+- Vantage Data Centers
+- Vantage Towers (Vodafone)
 - Advantage.ai (recruiter-side platform)
 - Any company called "Vantage AI Consulting Limited" — this name was previously listed on Vantage's own footer in error and has been removed; the operator is a sole trader with no Ltd registration.
 

@@ -1,6 +1,6 @@
 {
-  "name": "Vantage — AI Job Preparation",
-  "short_name": "Vantage",
+  "name": "AimVantage — AI Job Preparation",
+  "short_name": "AimVantage",
   "description": "Upload your CV, paste a job link, get the full prep pack in ~90 seconds.",
   "start_url": "/dashboard?source=pwa",
   "display": "standalone",

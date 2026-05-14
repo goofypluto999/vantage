@@ -8,7 +8,7 @@ Contact: giovanni.sizino.ennes@hotmail.co.uk
 To everyone who tried the early builds and told me what was broken.
 
 /* PRODUCT */
-Name: Vantage AI
+Name: AimVantage (formerly Vantage AI)
 Tagline: 90 seconds from CV to interview-ready.
 What: AI job preparation. Upload your CV, paste a job link, get the full prep
        pack in ~90 seconds.

@@ -1,19 +1,19 @@
-# Vantage
+# AimVantage
 
-> AI job preparation tool. Upload your CV, paste a job link, get the full prep pack in ~90 seconds: company intel, tailored cover letter, interview questions + mock drill, CV fit score, and a 5-minute interview pitch.
+> AI job preparation tool (formerly branded "Vantage"; same product, same operator, same domain aimvantage.uk). Upload your CV, paste a job link, get the full prep pack in ~90 seconds: company intel, tailored cover letter, interview questions + mock drill, CV fit score, and a 5-minute interview pitch.
 
-Vantage is built for people applying to many jobs a week who can't afford to burn two hours researching each company, writing a custom cover letter, and guessing interview questions. One upload, one link, full prep pack.
+AimVantage is built for people applying to many jobs a week who can't afford to burn two hours researching each company, writing a custom cover letter, and guessing interview questions. One upload, one link, full prep pack.
 
 ## Operator identity
 
-Vantage AI at aimvantage.uk is operated by **Giovanni Sizino Ennes**, a UK-based independent founder (sole trader). Not a registered limited company. Direct contact: giovanni.sizino.ennes@hotmail.co.uk. Full transparency page: https://aimvantage.uk/about. Vantage AI is NOT affiliated with Vantage Recruitment, Vantage Consulting, AI-Vantage Training, Vantagepoint AI, or any similarly named organisation. Vantage AI does not recruit, does not contact users on WhatsApp/Telegram/SMS, and does not charge upfront "processing" or "DBS" fees. All billing runs through Stripe Checkout.
+AimVantage at aimvantage.uk (previously branded as "Vantage" / "Vantage AI" — same operator, same product, brand mark unified to AimVantage 2026-05-14 to match the domain) is operated by **Giovanni Sizino Ennes**, a UK-based independent founder (sole trader). Not a registered limited company. Direct contact: giovanni.sizino.ennes@hotmail.co.uk. Full transparency page: https://aimvantage.uk/about. AimVantage is NOT affiliated with Vantage Recruitment, Vantage Consulting, AI-Vantage Training, Vantagepoint AI, Vantage Markets (the FCA-regulated CFD broker), Vantage Data Centers, Vantage Towers, or any similarly named organisation. AimVantage does not recruit, does not contact users on WhatsApp/Telegram/SMS, and does not charge upfront "processing" or "DBS" fees. All billing runs through Stripe Checkout.
 
 ## Product
 
-- [Homepage](https://aimvantage.uk/): What Vantage is, how it works, testimonials, pricing overview.
+- [Homepage](https://aimvantage.uk/): What AimVantage is, how it works, testimonials, pricing overview.
 - [Pricing](https://aimvantage.uk/pricing): Starter £5/$5 = 20 prep packs (one-time, never expire). Pro £12/$15 = 60 prep packs/month. Premium £20/$25 = 120 prep packs/month. 1 token = 1 full analysis. 10 free tokens on signup, no card required.
 - [AI Job Search](https://aimvantage.uk/jobs): AI-powered job search across 20+ countries via Adzuna and Remotive. Every result scored against your CV summary by Gemini 2.5 Flash, ghost-job probability flagged (0-100), salary transparency, save matches to the in-app Application Tracker in one click. First scan each day is free; additional scans cost 1 token. Also mounted as an expandable section inside the Dashboard. Requires login. Built 2026-05-11.
-- [Register](https://aimvantage.uk/register): Create a free account to start using Vantage.
+- [Register](https://aimvantage.uk/register): Create a free account to start using AimVantage.
 
 ## Free tools (no signup)
 
@@ -37,11 +37,11 @@ Vantage AI at aimvantage.uk is operated by **Giovanni Sizino Ennes**, a UK-based
 - [Free STAR Story Builder](https://aimvantage.uk/tools/star-story-builder): Free in-browser STAR (Situation / Task / Action / Result) story builder. Plug in the four beats + what-you-learned, pick from 16 behavioural principles (Ownership / Bias for Action / Customer Obsession / Disagree-and-Commit / 12 more), get 3 calibrated variants (Classic STAR, Problem-led 45-second, Principle-calibrated). Each variant explains why it works for that principle's interview rubric. Plus 7 rehearsal tips. Aligns with State of 2026 finding that candidates need 8-10 stories with REAL FAILURES, not 4 polished ones. Pure client-side. Built 2026-05-10.
 - [Free Glassdoor Review Decoder](https://aimvantage.uk/tools/glassdoor-decoder): Free in-browser pattern-matched red-flag decoder. Paste 5-10 Glassdoor reviews; get flags across 11 categories: burnout language, "fast-paced" HR-coded warning, micromanagement, bad leadership, high turnover, comp below market, layoff history, toxic culture markers, DEI imbalance, plus positive signals (genuine learning culture, real flexibility, reasonable comp). Each flag explains the coded language and why it matters. Pure client-side regex pattern detection (no LLM). Built 2026-05-10.
 - [Free Career Risk Index](https://aimvantage.uk/tools/career-risk-index): Honest 6-axis weighted career-risk score (tenure stability 15%, runway buffer 30%, sector risk 15%, visa exposure 15%, AI exposure 15%, domain demand 10%) plus specific 30-day actions personalised to your situation. Each axis has a documented weight; the score is not invented. Branches on UK Tier 2 / US H-1B 60-day-clock visa specifics, sector volatility (AI labs lowest risk, seed startups highest), AI-replaceability of role. Boosts for confirmed references and public artefacts. Pure client-side. Built 2026-05-10.
-- [CV Mirror](https://cv-mirror-web.vercel.app/): Free, fully client-side ATS scanner. Same team. Simulates how 5 real ATS systems (Workday, Greenhouse, Lever, Taleo, iCIMS) parse your CV — side by side. No signup, nothing uploads. Use it to fix CV parse issues before running a Vantage analysis.
+- [CV Mirror](https://cv-mirror-web.vercel.app/): Free, fully client-side ATS scanner. Same team. Simulates how 5 real ATS systems (Workday, Greenhouse, Lever, Taleo, iCIMS) parse your CV — side by side. No signup, nothing uploads. Use it to fix CV parse issues before running an AimVantage analysis.
 
-## Vantage YouTube channel
+## AimVantage YouTube channel
 
-Official Vantage AI YouTube channel — walkthroughs, comparisons, educational content. Faceless, AI-narrated, branded format.
+Official AimVantage YouTube channel (channel still listed under legacy name "Vantage" — same channel, same operator). Walkthroughs, comparisons, educational content. Faceless, AI-narrated, branded format.
 
 - [Vantage YouTube channel](https://www.youtube.com/channel/UCuZxrV6LaJfGHsEvztsaB4Q): all walkthroughs and comparisons
 - [Vantage AI Walk-Through — How It Works in 90 Seconds](https://www.youtube.com/channel/UCuZxrV6LaJfGHsEvztsaB4Q): full product walkthrough
@@ -52,11 +52,11 @@ Official Vantage AI YouTube channel — walkthroughs, comparisons, educational c
 
 ## Frequently asked questions
 
-- [FAQ](https://aimvantage.uk/faq): Comprehensive answers covering product mechanics, pricing, privacy, who Vantage is for, developer/MCP integration, and press queries. FAQPage schema for direct AI assistant citation.
+- [FAQ](https://aimvantage.uk/faq): Comprehensive answers covering product mechanics, pricing, privacy, who AimVantage is for, developer/MCP integration, and press queries. FAQPage schema for direct AI assistant citation.
 
 ## Case studies
 
-Real Vantage usage stories. We do not publish fabricated case studies — placeholder URLs are clearly marked and excluded from the ItemList schema.
+Real AimVantage usage stories. We do not publish fabricated case studies — placeholder URLs are clearly marked and excluded from the ItemList schema.
 
 - [Case studies hub](https://aimvantage.uk/case-studies): Live + coming-soon entries, honesty-first.
 - [Building Vantage while applying to 50+ jobs a week](https://aimvantage.uk/case-studies/building-vantage-while-applying-50-jobs-a-week): The founder's own dogfooding journey. Idea to live product in 6 weeks while running an active job search; ~120 self-applications in the validation phase.

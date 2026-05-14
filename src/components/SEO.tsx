@@ -1,7 +1,14 @@
 import { Helmet } from 'react-helmet-async';
 
 const SITE_URL = 'https://aimvantage.uk';
-const SITE_NAME = 'Vantage';
+// Brand mark unified to closed-compound "AimVantage" 2026-05-14 (matches the
+// aimvantage.uk domain and escapes the saturated "Vantage" SERP — owned by
+// Vantage Markets, Vantage Data Centers, Aston Martin Vantage, Vantage
+// Towers, Lenovo Vantage, etc. See Codex audit + LLM Council in
+// docs/rebrand-2026-05-14.md). The legacy form "Vantage" is preserved as
+// an alternateName in JSON-LD so the Google Knowledge Graph entity does
+// not fragment.
+const SITE_NAME = 'AimVantage';
 const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.png`;
 
 interface SEOProps {
@@ -40,15 +47,16 @@ export default function SEO({
   markdownAlternate,
 }: SEOProps) {
   const canonical = `${SITE_URL}${path}`;
-  // Idempotent suffixing — if a caller already includes '| Vantage' in their
-  // title prop (regression spotted on /receipts and /tools/no-interviews-
-  // diagnostic on 2026-05-09 producing 'Title | Vantage | Vantage' in the
-  // browser tab), skip the second suffix.
+  // Idempotent suffixing — if a caller already includes '| AimVantage' or
+  // '| Vantage' (legacy) in their title prop, skip the second suffix.
+  // Original regression: '/receipts' and '/tools/no-interviews-diagnostic'
+  // 2026-05-09 produced 'Title | Vantage | Vantage'. Now tolerates both
+  // brand forms during the transition.
   const fullTitle = title
-    ? /\|\s*Vantage(\s|$)/i.test(title)
+    ? /\|\s*(Aim)?Vantage(\s|$)/i.test(title)
       ? title
       : `${title} | ${SITE_NAME}`
-    : 'Vantage | AI Job Preparation: CV Fit, Cover Letters, Interview Prep in 90 Seconds';
+    : 'AimVantage | AI Job Preparation: CV Fit, Cover Letters, Interview Prep in 90 Seconds';
   const metaDescription = description
     ?? 'Upload your CV, paste a job link, and get the full prep pack in ~90 seconds: company intel, tailored cover letter, mock interview questions, and a CV fit score.';
 

@@ -5,13 +5,13 @@
   xmlns:dc="http://purl.org/dc/elements/1.1/"
   xmlns:media="http://search.yahoo.com/mrss/">
   <channel>
-    <title>Vantage Blog — AI Job Prep, CV Optimisation, Interview Strategy</title>
+    <title>AimVantage Blog — AI Job Prep, CV Optimisation, Interview Strategy</title>
     <link>https://aimvantage.uk/blog</link>
     <atom:link href="https://aimvantage.uk/rss.xml" rel="self" type="application/rss+xml" />
     <atom:link href="https://pubsubhubbub.appspot.com/" rel="hub" />
-    <description>Practical, current guides on AI job preparation, CV optimisation, ATS-friendly resumes, cover letters, and interview strategy. Long-form, from a solo founder building Vantage in public.</description>
+    <description>Practical, current guides on AI job preparation, CV optimisation, ATS-friendly resumes, cover letters, and interview strategy. Long-form, from a solo founder building AimVantage (formerly Vantage) in public.</description>
     <language>en-gb</language>
-    <copyright>Vantage 2026</copyright>
+    <copyright>AimVantage 2026</copyright>
     <lastBuildDate>Mon, 11 May 2026 00:00:00 +0000</lastBuildDate>
     <managingEditor>noreply@aimvantage.uk (Gio)</managingEditor>
     <webMaster>noreply@aimvantage.uk (Gio)</webMaster>
