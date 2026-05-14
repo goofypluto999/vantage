@@ -282,7 +282,13 @@ export default async function handler(request: any, response: any) {
         break;
       }
 
+      case 'invoice.paid':
       case 'invoice.payment_succeeded': {
+        // BOTH event names handled because Stripe fires both for the same
+        // transitions and a user's Dashboard may be subscribed to either.
+        // Idempotency check at the top of the handler (processed_stripe_events
+        // table) means double-fire from both events is safe — second one
+        // 409s and short-circuits.
         // Handles monthly subscription RENEWALS.
         //
         // billing_reason values we see:
@@ -461,6 +467,48 @@ export default async function handler(request: any, response: any) {
           console.log(`dispute.closed (won): restored user ${profile.id} to ${newStatus}`);
         } catch (e: any) {
           console.error(`dispute.closed: failed:`, e?.message || '');
+        }
+        break;
+      }
+
+      case 'customer.subscription.created': {
+        // Safety net handler. Normally checkout.session.completed already
+        // captured the new subscription + added tokens. But Stripe's event
+        // delivery order is NOT guaranteed — if subscription.created lands
+        // FIRST (or if checkout.session.completed is lost in retry chain),
+        // this handler ensures the dates land on the profile so the UI
+        // doesn't show stale state.
+        //
+        // We do NOT add tokens here — that's checkout.session.completed's
+        // job (and double-credit would be bad). Profile idempotency on
+        // stripe_subscription_id handles the race where both fire close
+        // together.
+        const subscription = event.data.object as Stripe.Subscription;
+        const customerId = subscription.customer as string;
+        const profiles = await supabaseGet(
+          `stripe_customer_id=eq.${customerId}&select=id,stripe_subscription_id`
+        );
+        if (profiles.length === 0) {
+          console.warn(`subscription.created: no profile for customer ${customerId} (race with checkout.session.completed?)`);
+          break;
+        }
+        const profile = profiles[0];
+        const priceId = subscription.items?.data[0]?.price?.id;
+        const plan = priceId ? getPlanFromPriceId(priceId) : undefined;
+        const dates = extractSubscriptionDates(subscription);
+        const status = subscription.cancel_at_period_end ? 'cancelling' :
+                      subscription.status === 'active' ? 'active' :
+                      subscription.status === 'canceled' ? 'cancelled' : 'past_due';
+        const patch: Record<string, any> = {
+          subscription_status: status,
+          stripe_subscription_id: subscription.id,
+          subscription_renews_at: dates.renewsAt,
+          subscription_cancel_at: dates.cancelAt,
+        };
+        if (plan) patch.plan = plan;
+        const ok = await supabasePatch(`id=eq.${profile.id}`, patch);
+        if (!ok) {
+          console.error(`subscription.created: profile patch failed for user ${profile.id}`);
         }
         break;
       }
