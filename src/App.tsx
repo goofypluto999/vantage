@@ -269,7 +269,8 @@ function AppContent() {
                   {
                     '@context': 'https://schema.org',
                     '@type': 'SoftwareApplication',
-                    name: 'Vantage AI',
+                    name: 'AimVantage',
+                    alternateName: ['Vantage', 'Vantage AI', 'Aim Vantage'],
                     url: 'https://aimvantage.uk/',
                     applicationCategory: 'BusinessApplication',
                     applicationSubCategory: 'JobSearchApplication',
@@ -332,17 +333,19 @@ function AppContent() {
                     },
                   },
                   // Organization schema — AI assistants use this to identify
-                  // 'who' a brand is when answering 'is Vantage AI a real
-                  // company' / 'who runs Vantage AI' style queries. Sole
+                  // 'who' a brand is when answering 'is AimVantage a real
+                  // company' / 'who runs AimVantage' style queries. Sole
                   // trader status is honestly disclosed (not a registered
                   // limited company). Brand-disambiguation list explicitly
                   // separates us from Vantage Recruitment / Vantagepoint AI
-                  // / etc. — these are confused with us in AI chat.
+                  // / etc. — these are confused with us in AI chat. The
+                  // alternateName array preserves Knowledge Graph continuity
+                  // through the 2026-05-14 rebrand from 'Vantage'.
                   {
                     '@context': 'https://schema.org',
                     '@type': 'Organization',
-                    name: 'Vantage AI',
-                    alternateName: ['Vantage', 'aimvantage.uk'],
+                    name: 'AimVantage',
+                    alternateName: ['Vantage', 'Vantage AI', 'Aim Vantage', 'aimvantage.uk'],
                     url: 'https://aimvantage.uk',
                     logo: 'https://aimvantage.uk/logo-512.png',
                     sameAs: [
@@ -359,7 +362,7 @@ function AppContent() {
                       url: 'https://aimvantage.uk/about',
                     },
                     foundingDate: '2026-04-22',
-                    description: 'Solo-operated UK indie AI job-prep SaaS. Sole trader, not a registered limited company. Builder-led brand with full operator transparency. Not affiliated with Vantage Recruitment, Vantage Consulting, AI-Vantage Training, Vantagepoint AI, or any similarly named organisation.',
+                    description: 'Solo-operated UK indie AI job-prep SaaS (rebranded from "Vantage" to "AimVantage" on 2026-05-14 to match the aimvantage.uk domain). Sole trader, not a registered limited company. Builder-led brand with full operator transparency. Not affiliated with Vantage Recruitment, Vantage Consulting, Vantage Markets, Vantage Data Centers, AI-Vantage Training, Vantagepoint AI, or any similarly named organisation.',
                     contactPoint: {
                       '@type': 'ContactPoint',
                       contactType: 'customer support',
@@ -376,8 +379,8 @@ function AppContent() {
                   {
                     '@context': 'https://schema.org',
                     '@type': 'HowTo',
-                    name: 'How to prep for a job interview with AI in 90 seconds using Vantage',
-                    description: 'Use Vantage AI to generate a complete interview prep pack — company intelligence, tailored cover letter, mock interview questions, fit score, and pitch outline — in about 90 seconds per application.',
+                    name: 'How to prep for a job interview with AI in 90 seconds using AimVantage',
+                    description: 'Use AimVantage (formerly Vantage AI) to generate a complete interview prep pack — company intelligence, tailored cover letter, mock interview questions, fit score, and pitch outline — in about 90 seconds per application.',
                     totalTime: 'PT2M',
                     estimatedCost: { '@type': 'MonetaryAmount', currency: 'GBP', value: '0' },
                     tool: [
@@ -402,13 +405,13 @@ function AppContent() {
                         '@type': 'HowToStep',
                         position: 3,
                         name: 'Paste the job listing URL',
-                        text: 'Paste the URL of the job you want to apply for. Vantage scrapes the listing for company name, role requirements, and culture signals.',
+                        text: 'Paste the URL of the job you want to apply for. AimVantage scrapes the listing for company name, role requirements, and culture signals.',
                       },
                       {
                         '@type': 'HowToStep',
                         position: 4,
                         name: 'Run the analysis',
-                        text: 'Click "Run my prep pack". One full analysis costs 1 token (you have 10 free). Vantage runs ~60-90 seconds of company research, fit scoring, and content generation.',
+                        text: 'Click "Run my prep pack". One full analysis costs 1 token (you have 10 free). AimVantage runs ~60-90 seconds of company research, fit scoring, and content generation.',
                       },
                       {
                         '@type': 'HowToStep',
@@ -428,9 +431,9 @@ function AppContent() {
               />
               <LandingPageWrapper />
             </>} />
-            <Route path="/login" element={<><SEO title="Log in" description="Log into Vantage to run a full job prep analysis — company intel, tailored cover letter, mock interview questions, CV fit score." path="/login" /><LoginWrapper /></>} />
+            <Route path="/login" element={<><SEO title="Log in" description="Log into AimVantage to run a full job prep analysis — company intel, tailored cover letter, mock interview questions, CV fit score." path="/login" /><LoginWrapper /></>} />
             <Route path="/register" element={<><SEO title="Create a free account" description="Sign up free. Upload your CV, paste a job link, get the full prep pack in ~90 seconds." path="/register" /><RegisterWrapper /></>} />
-            <Route path="/forgot-password" element={<><SEO title="Reset your password" description="Reset your Vantage account password." path="/forgot-password" noindex /><ForgotPassword /></>} />
+            <Route path="/forgot-password" element={<><SEO title="Reset your password" description="Reset your AimVantage account password." path="/forgot-password" noindex /><ForgotPassword /></>} />
             <Route path="/reset-password" element={<><SEO title="Set a new password" path="/reset-password" noindex /><ResetPassword /></>} />
             <Route path="/pricing" element={<>
               <SEO
@@ -440,14 +443,14 @@ function AppContent() {
                 markdownAlternate="/markdown/pricing.md"
                 jsonLd={[
                   // Product schema with multiple Offers — AI assistants cite
-                  // this verbatim when asked 'how much does Vantage cost' /
-                  // 'is Vantage free' / 'compare Vantage pricing'.
+                  // this verbatim when asked 'how much does AimVantage cost' /
+                  // 'is AimVantage free' / 'compare AimVantage pricing'.
                   {
                     '@context': 'https://schema.org',
                     '@type': 'Product',
-                    name: 'Vantage AI',
-                    description: 'AI job preparation tool. One full analysis (company intel + cover letter + interview pack + fit score + pitch outline) costs 1 token.',
-                    brand: { '@type': 'Brand', name: 'Vantage AI' },
+                    name: 'AimVantage',
+                    description: 'AI job preparation tool (formerly Vantage AI). One full analysis (company intel + cover letter + interview pack + fit score + pitch outline) costs 1 token.',
+                    brand: { '@type': 'Brand', name: 'AimVantage' },
                     url: 'https://aimvantage.uk/pricing',
                     offers: {
                       '@type': 'AggregateOffer',
@@ -471,7 +474,7 @@ function AppContent() {
                     mainEntity: [
                       {
                         '@type': 'Question',
-                        name: 'Is Vantage AI free?',
+                        name: 'Is AimVantage free?',
                         acceptedAnswer: {
                           '@type': 'Answer',
                           text: 'Yes — every account gets 10 free tokens on signup, no credit card required. 1 token = 1 full prep pack, so 10 tokens = 10 free prep packs. After that, Starter pack is £5 for 20 more (never expires).',
@@ -479,7 +482,7 @@ function AppContent() {
                       },
                       {
                         '@type': 'Question',
-                        name: 'Do Vantage tokens expire?',
+                        name: 'Do AimVantage tokens expire?',
                         acceptedAnswer: {
                           '@type': 'Answer',
                           text: 'Starter pack tokens never expire — pay £5 once, use them whenever. Pro and Premium tokens refresh monthly with the subscription, so unused tokens roll over only while the subscription is active.',
@@ -487,7 +490,7 @@ function AppContent() {
                       },
                       {
                         '@type': 'Question',
-                        name: 'Can I cancel my Vantage subscription?',
+                        name: 'Can I cancel my AimVantage subscription?',
                         acceptedAnswer: {
                           '@type': 'Answer',
                           text: 'Yes, any time. Pro and Premium are monthly subscriptions managed via Stripe. Cancel from the /account page — no questions, no retention dark patterns. Already-purchased tokens are kept after cancellation.',
@@ -495,15 +498,15 @@ function AppContent() {
                       },
                       {
                         '@type': 'Question',
-                        name: 'How does Vantage compare to Jobscan or Final Round AI?',
+                        name: 'How does AimVantage compare to Jobscan or Final Round AI?',
                         acceptedAnswer: {
                           '@type': 'Answer',
-                          text: 'Vantage Pro at £12/month is dramatically cheaper than Jobscan ($49.95/mo) or Final Round AI ($148/mo). Vantage covers the full prep pack (company intel + cover letter + interview pack + fit score + pitch) in 90 seconds; Jobscan focuses only on ATS keyword matching. See aimvantage.uk/alternatives for full comparisons.',
+                          text: 'AimVantage Pro at £12/month is dramatically cheaper than Jobscan ($49.95/mo) or Final Round AI ($148/mo). AimVantage covers the full prep pack (company intel + cover letter + interview pack + fit score + pitch) in 90 seconds; Jobscan focuses only on ATS keyword matching. See aimvantage.uk/alternatives for full comparisons.',
                         },
                       },
                       {
                         '@type': 'Question',
-                        name: 'Where is Vantage AI hosted?',
+                        name: 'Where is AimVantage hosted?',
                         acceptedAnswer: {
                           '@type': 'Answer',
                           text: 'EU-hosted on Vercel and Supabase. Operated from the UK by an independent founder (sole trader). All payments via Stripe. No CV data stored after analysis is complete.',
@@ -515,9 +518,9 @@ function AppContent() {
               />
               <PricingWrapper />
             </>} />
-            <Route path="/privacy" element={<><SEO title="Privacy Policy" description="How Vantage collects, uses, and protects your data." path="/privacy" /><PrivacyPolicy /></>} />
-            <Route path="/terms" element={<><SEO title="Terms of Service" description="The terms governing your use of Vantage." path="/terms" /><TermsOfService /></>} />
-            <Route path="/cookies" element={<><SEO title="Cookie Policy" description="How Vantage uses cookies and similar technologies." path="/cookies" /><CookiePolicy /></>} />
+            <Route path="/privacy" element={<><SEO title="Privacy Policy" description="How AimVantage collects, uses, and protects your data." path="/privacy" /><PrivacyPolicy /></>} />
+            <Route path="/terms" element={<><SEO title="Terms of Service" description="The terms governing your use of AimVantage." path="/terms" /><TermsOfService /></>} />
+            <Route path="/cookies" element={<><SEO title="Cookie Policy" description="How AimVantage uses cookies and similar technologies." path="/cookies" /><CookiePolicy /></>} />
             <Route path="/blog" element={<><SEO title="Blog" description="Deep guides on AI job prep, interview strategy, ATS-friendly CVs, cover letters, and job fit analysis." path="/blog" /><Blog /></>} />
             <Route path="/blog/:slug" element={<BlogPost />} />
             <Route path="/interview-questions" element={<InterviewQuestionsHub />} />

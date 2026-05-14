@@ -53,7 +53,7 @@ const storyCards = [
   {
     tag: '02', accent: '#10B981',
     title: 'The Solution is Signal.',
-    body: "Vantage cuts through the noise. We analyse the company's latest goals, financials, and mission — aligning them precisely with your exact experience.",
+    body: "AimVantage cuts through the noise. We analyse the company's latest goals, financials, and mission — aligning them precisely with your exact experience.",
   },
   {
     tag: '03', accent: '#6366F1',
@@ -80,7 +80,7 @@ function StorySection() {
           viewport={{ once: true }}
           transition={{ duration: 0.7 }}
         >
-          <p className="text-xs font-bold text-[#4F46E5] uppercase tracking-widest mb-3">The Vantage Story</p>
+          <p className="text-xs font-bold text-[#4F46E5] uppercase tracking-widest mb-3">The AimVantage Story</p>
           <h2 className="text-4xl lg:text-5xl font-display font-bold text-[#2D2B4E]">Four Truths About Hiring</h2>
         </motion.div>
 
@@ -202,7 +202,7 @@ function Navbar({ onStart, showLogin }: { onStart: () => void; showLogin?: () =>
             <BrainCircuit className="w-4 h-4 text-white" />
           </div>
           <span className="font-display font-[800] text-[#2D2B4E] text-lg tracking-tight uppercase">
-            Vantage
+            AimVantage
           </span>
         </button>
 
@@ -364,7 +364,7 @@ function Navbar({ onStart, showLogin }: { onStart: () => void; showLogin?: () =>
                 onClick={() => setMobileOpen(false)}
                 className="px-4 py-2.5 text-sm font-semibold text-[#3B3A5C] hover:text-[#4F46E5] rounded-xl hover:bg-white/40 transition-all"
               >
-                Jobscan vs Vantage cost
+                Jobscan vs AimVantage cost
               </Link>
               <Link
                 to="/receipts"
@@ -435,7 +435,7 @@ function HowItWorksModal({ onClose, onStart }: { onClose: () => void; onStart: (
       title: 'AI Synthesises Intelligence',
       color: '#10B981',
       icon: '🧠',
-      desc: 'Vantage searches the web for the company, cross-references your CV against the role, and builds your complete intelligence package.',
+      desc: 'AimVantage searches the web for the company, cross-references your CV against the role, and builds your complete intelligence package.',
       features: ['Live company research', 'CV-to-role mapping', 'Brand voice analysis'],
     },
     {
@@ -486,7 +486,7 @@ function HowItWorksModal({ onClose, onStart }: { onClose: () => void; onStart: (
       <div className="flex items-center justify-between px-8 py-5 border-b border-white/10 flex-shrink-0">
         <div>
           <div className="text-[10px] font-bold text-[#A8A5E6] uppercase tracking-widest mb-1">Product Overview</div>
-          <h2 id="hiw-title" className="text-2xl font-display font-bold text-white">How Vantage Works</h2>
+          <h2 id="hiw-title" className="text-2xl font-display font-bold text-white">How AimVantage Works</h2>
         </div>
         <div className="flex items-center gap-3">
           <button
@@ -684,15 +684,15 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
     '@type': 'FAQPage',
     mainEntity: [
       { '@type': 'Question', name: 'Is this right for me?', acceptedAnswer: { '@type': 'Answer', text: 'If you are applying for jobs and want to walk in prepared with real company intelligence, role alignment evidence, and confident answers — yes, this is for you.' } },
-      { '@type': 'Question', name: 'How is this different from just using ChatGPT?', acceptedAnswer: { '@type': 'Answer', text: "ChatGPT writes generic cover letters from a blank prompt. Vantage scrapes the actual job page (LinkedIn, Greenhouse, Lever, company careers), extracts company intel, scores your CV against the role, then writes a cover letter grounded in those specifics — plus mock interview Qs and a 5-minute pitch outline. Same model under the hood (Gemini 2.5 Flash), but with the research, structure, and tone-switching that the blank prompt is missing." } },
-      { '@type': 'Question', name: 'Will recruiters be able to tell my cover letter was AI-written?', acceptedAnswer: { '@type': 'Answer', text: "If you submit verbatim, possibly. If you do what works — pick a tone, read it once, swap one sentence for something only you would say, then send — they can't. Vantage gives you a 90% draft. You add the human 10%." } },
-      { '@type': 'Question', name: 'How is this different from Jobscan or Teal?', acceptedAnswer: { '@type': 'Answer', text: 'Jobscan tells you keywords your CV is missing. Teal organises your job board. Both are useful but neither writes the cover letter, generates mock interview Qs, or produces a strategic brief. Vantage is the prep-pack layer that comes after you decide to apply — the deliverable, not the tracker.' } },
+      { '@type': 'Question', name: 'How is this different from just using ChatGPT?', acceptedAnswer: { '@type': 'Answer', text: "ChatGPT writes generic cover letters from a blank prompt. AimVantage scrapes the actual job page (LinkedIn, Greenhouse, Lever, company careers), extracts company intel, scores your CV against the role, then writes a cover letter grounded in those specifics — plus mock interview Qs and a 5-minute pitch outline. Same model under the hood (Gemini 2.5 Flash), but with the research, structure, and tone-switching that the blank prompt is missing." } },
+      { '@type': 'Question', name: 'Will recruiters be able to tell my cover letter was AI-written?', acceptedAnswer: { '@type': 'Answer', text: "If you submit verbatim, possibly. If you do what works — pick a tone, read it once, swap one sentence for something only you would say, then send — they can't. AimVantage gives you a 90% draft. You add the human 10%." } },
+      { '@type': 'Question', name: 'How is this different from Jobscan or Teal?', acceptedAnswer: { '@type': 'Answer', text: 'Jobscan tells you keywords your CV is missing. Teal organises your job board. Both are useful but neither writes the cover letter, generates mock interview Qs, or produces a strategic brief. AimVantage is the prep-pack layer that comes after you decide to apply — the deliverable, not the tracker.' } },
       { '@type': 'Question', name: 'How long does it take?', acceptedAnswer: { '@type': 'Answer', text: 'Under 5 minutes from upload to full brief. The AI does the heavy research while you review the output.' } },
       { '@type': 'Question', name: 'Do I need any experience with AI?', acceptedAnswer: { '@type': 'Answer', text: 'None. Upload your CV, paste a job URL, and click generate. It handles everything else.' } },
       { '@type': 'Question', name: 'Is my CV data private?', acceptedAnswer: { '@type': 'Answer', text: 'Completely. Your data is never stored on our servers, never used for training, and never shared. The CV is sent once to Gemini for the analysis, the analysis is returned to you, and the CV content is dropped. Each session is ephemeral.' } },
       { '@type': 'Question', name: 'How do tokens work?', acceptedAnswer: { '@type': 'Answer', text: '1 token = 1 full prep pack (company intel + cover letter + interview pack + fit score + pitch). Cover letter tone rewrites cost 1 extra token each. Starter tokens are a one-time top-up and never expire. Pro and Premium tokens refresh each month with your subscription.' } },
       { '@type': 'Question', name: 'What if the output is not right?', acceptedAnswer: { '@type': 'Answer', text: 'You can regenerate or refine with additional context. Tokens are only consumed on successful generations — if the AI fails, we refund them automatically.' } },
-      { '@type': 'Question', name: 'Does Vantage also help me find jobs, or only prep for ones I find?', acceptedAnswer: { '@type': 'Answer', text: 'Both. AI Job Search lives inside your Dashboard — it scans 20+ countries via Adzuna and Remotive, scores every result against your CV, flags likely ghost jobs with a probability score, and saves matches to your Application Tracker in one click. Your first scan each day is free; additional scans cost 1 token. After you pick a role, the rest of Vantage takes over: strategic brief, cover letter, mock interview, follow-up emails, negotiation.' } },
+      { '@type': 'Question', name: 'Does AimVantage also help me find jobs, or only prep for ones I find?', acceptedAnswer: { '@type': 'Answer', text: 'Both. AI Job Search lives inside your Dashboard — it scans 20+ countries via Adzuna and Remotive, scores every result against your CV, flags likely ghost jobs with a probability score, and saves matches to your Application Tracker in one click. Your first scan each day is free; additional scans cost 1 token. After you pick a role, the rest of AimVantage takes over: strategic brief, cover letter, mock interview, follow-up emails, negotiation.' } },
       { '@type': 'Question', name: 'Can I cancel anytime?', acceptedAnswer: { '@type': 'Answer', text: "Yes. Subscriptions cancel from the Account Billing portal in one click — managed via Stripe so it's instant. No retention emails, no friction. Tokens you already paid for never expire even after cancelling." } },
     ],
   };
@@ -830,7 +830,7 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
             </Link>
 
             {/* Free-tool chip cluster — added 2026-05-08. Three free tools
-                live on Vantage. Skeptics who don't want to sign up have a
+                live on AimVantage. Skeptics who don't want to sign up have a
                 second doorway: try a free tool first, get value, come back
                 for the paid analysis. Each chip links to a tool route. */}
             <div className="flex flex-wrap items-center justify-center gap-2 pt-2 pointer-events-auto">
@@ -875,7 +875,7 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
                 to="/tools/jobscan-cost-calculator"
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/45 backdrop-blur-[20px] border border-white/55 text-[#2D2B4E] text-xs font-semibold hover:bg-white/65 transition-all"
               >
-                Jobscan vs Vantage cost
+                Jobscan vs AimVantage cost
               </Link>
             </div>
             <p className="text-xs text-[#3B3A5C] uppercase tracking-widest flex items-center gap-2 font-bold">
@@ -1018,7 +1018,7 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
               Drag this button to your bookmarks bar.
             </h2>
             <p className="text-[#4A4870] max-w-xl mx-auto mb-7 leading-relaxed">
-              Click it on any job listing — LinkedIn, Greenhouse, Lever, the company careers page — and Vantage opens with the URL captured. Skip the copy-paste forever.
+              Click it on any job listing — LinkedIn, Greenhouse, Lever, the company careers page — and AimVantage opens with the URL captured. Skip the copy-paste forever.
             </p>
             {/* Bookmarklet — audit 2026-05-08: React blocks plain
                 javascript: hrefs as a security warning, and clicking a
@@ -1047,7 +1047,7 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
                     onClick={() => setShowBookmarkletHelp((s) => !s)}
                     className="inline-flex items-center gap-2 px-7 py-3.5 bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] text-white rounded-full font-bold text-base hover:-translate-y-0.5 hover:shadow-[0_12px_32px_rgba(79,70,229,0.4)] transition-all cursor-grab active:cursor-grabbing select-none"
                   >
-                    📌 Prep with Vantage
+                    📌 Prep with AimVantage
                   </button>
                   <p className="text-[11px] text-[#6B6B8D] mt-4 font-medium">
                     Drag the button up to your browser's bookmarks bar.{' '}
@@ -1066,8 +1066,8 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
                       </p>
                       <ol className="text-sm text-[#3B3A5C] space-y-1 list-decimal pl-5 mb-3">
                         <li>Make sure your bookmarks bar is visible (Ctrl/Cmd-Shift-B in most browsers).</li>
-                        <li>Drag the purple <span className="font-semibold">📌 Prep with Vantage</span> button onto the bookmarks bar.</li>
-                        <li>On any job page (LinkedIn, Greenhouse, Lever, company careers page), click the bookmark — Vantage opens with that URL pre-filled.</li>
+                        <li>Drag the purple <span className="font-semibold">📌 Prep with AimVantage</span> button onto the bookmarks bar.</li>
+                        <li>On any job page (LinkedIn, Greenhouse, Lever, company careers page), click the bookmark — AimVantage opens with that URL pre-filled.</li>
                       </ol>
                       <details className="text-xs text-[#6B6B8D]">
                         <summary className="cursor-pointer hover:text-[#4F46E5]">Manual install (drag not working?)</summary>
@@ -1213,7 +1213,7 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
       ================================================================ */}
       <section id="features" className="py-12 px-6 max-w-6xl mx-auto relative z-20">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-16">
-          <p className="text-xs font-bold text-[#4F46E5] uppercase tracking-widest mb-3">Why Vantage</p>
+          <p className="text-xs font-bold text-[#4F46E5] uppercase tracking-widest mb-3">Why AimVantage</p>
           <h2 className="text-4xl lg:text-5xl font-display font-bold text-[#2D2B4E]">Why You'll Love It</h2>
         </motion.div>
 
@@ -1644,15 +1644,15 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
         <div className="space-y-3">
           {[
             { q: "Is this right for me?",             a: "If you are applying for jobs and want to walk in prepared with real company intelligence, role alignment evidence, and confident answers — yes, this is for you." },
-            { q: "How is this different from just using ChatGPT?", a: "ChatGPT writes generic cover letters from a blank prompt. Vantage scrapes the actual job page (LinkedIn / Greenhouse / Lever / company careers), extracts company intel, scores your CV against the role, then writes a cover letter grounded in those specifics — plus mock interview Qs and a 5-minute pitch outline. Same model under the hood (Gemini 2.5 Flash), but with the research, structure, and tone-switching that the blank prompt is missing." },
-            { q: "Will recruiters be able to tell my cover letter was AI-written?", a: "If you submit verbatim, possibly. If you do what works — pick a tone, read it once, swap one sentence for something only you would say, then send — they can't. Vantage gives you a 90% draft. You add the human 10%. The pattern that fails is sending generic AI letters to 50 jobs at once; the pattern that works is using AI to compress prep time per application so you can spend the saved time on tailoring." },
-            { q: "How is this different from Jobscan or Teal?",  a: "Jobscan tells you keywords your CV is missing. Teal organises your job board. Both are useful but neither writes the cover letter, generates mock interview Qs, or produces a strategic brief. Vantage is the prep-pack layer that comes after you decide to apply — the deliverable, not the tracker. Compare specifics on /alternatives." },
+            { q: "How is this different from just using ChatGPT?", a: "ChatGPT writes generic cover letters from a blank prompt. AimVantage scrapes the actual job page (LinkedIn / Greenhouse / Lever / company careers), extracts company intel, scores your CV against the role, then writes a cover letter grounded in those specifics — plus mock interview Qs and a 5-minute pitch outline. Same model under the hood (Gemini 2.5 Flash), but with the research, structure, and tone-switching that the blank prompt is missing." },
+            { q: "Will recruiters be able to tell my cover letter was AI-written?", a: "If you submit verbatim, possibly. If you do what works — pick a tone, read it once, swap one sentence for something only you would say, then send — they can't. AimVantage gives you a 90% draft. You add the human 10%. The pattern that fails is sending generic AI letters to 50 jobs at once; the pattern that works is using AI to compress prep time per application so you can spend the saved time on tailoring." },
+            { q: "How is this different from Jobscan or Teal?",  a: "Jobscan tells you keywords your CV is missing. Teal organises your job board. Both are useful but neither writes the cover letter, generates mock interview Qs, or produces a strategic brief. AimVantage is the prep-pack layer that comes after you decide to apply — the deliverable, not the tracker. Compare specifics on /alternatives." },
             { q: "How long does it take?",            a: "Under 5 minutes from upload to full brief. The AI does the heavy research while you review the output." },
             { q: "Do I need any experience with AI?", a: "None. Upload your CV, paste a job URL, and click generate. It handles everything else." },
             { q: "Is my CV data private?",            a: "Completely. Your data is never stored on our servers, never used for training, and never shared. The CV is sent once to Gemini for the analysis, the analysis is returned to you, and the CV content is dropped. Each session is ephemeral." },
             { q: "How do tokens work?",               a: "1 token = 1 full prep pack (company intel + cover letter + interview pack + fit score + pitch). Cover letter tone rewrites cost 1 extra token each. Starter tokens are a one-time top-up and never expire. Pro and Premium tokens refresh each month with your subscription." },
             { q: "What if the output is not right?",  a: "You can regenerate or refine with additional context. Tokens are only consumed on successful generations — if the AI fails, we refund them automatically." },
-            { q: "Does Vantage also help me find jobs, or only prep for ones I find?",  a: "Both. AI Job Search lives inside your Dashboard — it scans 20+ countries via Adzuna and Remotive, scores every result against your CV, flags likely ghost jobs with a probability score, and saves matches to your Application Tracker in one click. Your first scan each day is free; additional scans cost 1 token. After you pick a role, the rest of Vantage takes over: strategic brief, cover letter, mock interview, follow-up emails, negotiation." },
+            { q: "Does AimVantage also help me find jobs, or only prep for ones I find?",  a: "Both. AI Job Search lives inside your Dashboard — it scans 20+ countries via Adzuna and Remotive, scores every result against your CV, flags likely ghost jobs with a probability score, and saves matches to your Application Tracker in one click. Your first scan each day is free; additional scans cost 1 token. After you pick a role, the rest of AimVantage takes over: strategic brief, cover letter, mock interview, follow-up emails, negotiation." },
             { q: "Can I cancel anytime?",  a: "Yes. Subscriptions cancel from the Account → Billing portal in one click — managed via Stripe so it's instant. No retention emails, no friction. Tokens you already paid for never expire even after cancelling." },
           ].map(({ q, a }, i) => (
             <FaqItem key={q} index={i} question={q} answer={a} />
@@ -1696,7 +1696,7 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
               onClick={() => { ctaClick('landing-final-cta'); onStart(); }}
               className="mt-10 relative z-10 inline-flex items-center gap-3 px-12 py-5 bg-[#4F46E5] text-white rounded-full font-bold text-lg hover:-translate-y-1 hover:shadow-[0_12px_32px_rgba(79,70,229,0.45)] active:scale-95 transition-all"
             >
-              Initialize Vantage <ChevronRight className="w-5 h-5" />
+              Initialize AimVantage <ChevronRight className="w-5 h-5" />
             </button>
             <p className="mt-5 text-sm text-[#6B6B8D] font-medium relative z-10">
               Free signup. 10 tokens on us — that's 10 full prep packs. No credit card needed.
@@ -1716,7 +1716,7 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
                 <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#4F46E5] to-[#7C3AED] flex items-center justify-center">
                   <BrainCircuit className="w-3.5 h-3.5 text-white" />
                 </div>
-                <span className="font-display font-[800] text-xl text-[#2D2B4E] tracking-tight uppercase">Vantage</span>
+                <span className="font-display font-[800] text-xl text-[#2D2B4E] tracking-tight uppercase">AimVantage</span>
               </div>
               <p className="text-[#6B6B8D] font-medium text-sm">90 seconds from CV to interview-ready.</p>
             </div>
@@ -1794,7 +1794,7 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
               flags raised by search assistants without claiming any company
               registration that does not exist. */}
           <div className="border-t border-[#6B6B8D]/20 mt-8 pt-6 text-[11px] text-[#6B6B8D] leading-relaxed">
-            <p className="font-semibold text-[#3B3A5C] mb-1">Vantage AI</p>
+            <p className="font-semibold text-[#3B3A5C] mb-1">AimVantage <span className="font-normal text-[#6B6B8D]">(formerly Vantage AI)</span></p>
             <p>
               An AI-powered job-preparation SaaS operated by Giovanni Sizino Ennes,
               a UK-based independent founder (sole trader) building in public. Full operator
@@ -1806,8 +1806,8 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
               {' '}· Operating domain: aimvantage.uk
             </p>
             <p className="mt-2 italic">
-              Not affiliated with Vantage Consulting, Vantage Recruitment, Vantagepoint AI, or any other
-              organisation using a similar name. Vantage AI is a software product only — we do not recruit,
+              Not affiliated with Vantage Consulting, Vantage Recruitment, Vantage Markets, Vantage Data Centers, Vantagepoint AI, or any other
+              organisation using a similar name. AimVantage is a software product only — we do not recruit,
               do not contact candidates over WhatsApp or Telegram, do not collect financial information from
               applicants, and never charge users for "processing", "admin", or "DBS check" fees. All payments
               are billed transparently through Stripe for AI usage tokens.
@@ -1815,7 +1815,7 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
           </div>
 
           <div className="flex flex-col md:flex-row justify-between items-center text-[11px] text-[#6B6B8D] mt-6 font-bold tracking-wider gap-3">
-            <span>© 2026 VANTAGE AI · GIOVANNI SIZINO ENNES. ALL RIGHTS RESERVED.</span>
+            <span>© 2026 AIMVANTAGE · GIOVANNI SIZINO ENNES. ALL RIGHTS RESERVED.</span>
             <span className="text-center">ALL OUTPUTS ARE AI-GENERATED | <Link to="/terms" className="underline hover:text-[#4F46E5]">TERMS APPLY</Link></span>
           </div>
         </div>
@@ -1837,7 +1837,7 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
             <button
               onClick={() => { ctaClick('landing-sticky-bottom-pill'); onStart(); }}
               className="flex items-center gap-2 font-bold text-sm pr-3"
-              aria-label="Try Vantage free — ten prep packs, no card"
+              aria-label="Try AimVantage free — ten prep packs, no card"
             >
               Try free — 10 prep packs, no card
               <ChevronRight className="w-4 h-4" />
