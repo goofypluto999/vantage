@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 // motion entrance animation removed 2026-05-07 — same pattern that broke
 // Pricing cards. Auth surfaces must always paint.
 import { Mail, ArrowLeft, BrainCircuit, CheckCircle } from 'lucide-react';
-import { supabase } from '../lib/supabase';
+import { supabase, mapAuthError } from '../lib/supabase';
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState('');
@@ -23,7 +23,7 @@ export default function ForgotPassword() {
       if (error) throw error;
       setSent(true);
     } catch (err: any) {
-      setError(err.message || 'Failed to send reset link');
+      setError(mapAuthError(err?.message || ''));
     } finally {
       setLoading(false);
     }

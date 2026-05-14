@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 // motion entrance animation removed 2026-05-07 (same pattern that broke
 // Pricing). Auth surfaces must always paint.
 import { Lock, Eye, EyeOff, ArrowLeft, BrainCircuit, CheckCircle } from 'lucide-react';
-import { supabase } from '../lib/supabase';
+import { supabase, mapAuthError } from '../lib/supabase';
 
 export default function ResetPassword() {
   const [password, setPassword] = useState('');
@@ -57,7 +57,7 @@ export default function ResetPassword() {
       ) {
         setError('LINK_EXPIRED');
       } else {
-        setError(err.message || 'Failed to update password');
+        setError(mapAuthError(err?.message || ''));
       }
     } finally {
       setLoading(false);

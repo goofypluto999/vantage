@@ -119,6 +119,8 @@ export function mapAuthError(rawMessage: string): string {
   if (m.includes('password') && m.includes('too short')) return 'Password must be at least 8 characters.';
   if (m.includes('password') && m.includes('weak')) return 'Password is too weak. Use a mix of letters, numbers, and symbols.';
   if (m.includes('rate limit') || m.includes('too many requests')) return 'Too many attempts. Please wait a moment and try again.';
+  if (m.includes('once every') && m.includes('seconds')) return 'You requested this too recently. Please wait about a minute before trying again.';
+  if (m.includes('same') && m.includes('password')) return 'New password must be different from your current one.';
   if (m.includes('email') && m.includes('invalid')) return 'Please enter a valid email address.';
   if (m.includes('network') || m.includes('fetch')) return 'Connection error. Please check your internet and try again.';
   return 'Something went wrong. Please try again.';
