@@ -24,7 +24,7 @@ export default function CookiePolicy() {
               <Star className="w-4 h-4 text-white" />
             </div>
             <span className="text-lg font-display font-bold text-white">
-              Vantage
+              AimVantage
             </span>
           </Link>
           <Link
@@ -73,7 +73,7 @@ export default function CookiePolicy() {
           <section className={sectionClass}>
             <h2 className={headingClass}>2. How We Use Cookies</h2>
             <p className={textClass}>
-              Vantage uses cookies to authenticate your sessions, remember your
+              AimVantage uses cookies to authenticate your sessions, remember your
               preferences, process payments securely, and record your cookie
               consent choice. We do not use cookies for advertising or
               behavioural tracking.
@@ -91,7 +91,7 @@ export default function CookiePolicy() {
                   Essential Cookies
                 </h3>
                 <p className={`${textClass} mb-3`}>
-                  Required for Vantage to function. These cannot be disabled.
+                  Required for AimVantage to function. These cannot be disabled.
                 </p>
                 <ul className={listClass}>
                   <li>
@@ -134,7 +134,7 @@ export default function CookiePolicy() {
                   Analytics Cookies
                 </h3>
                 <p className={textClass}>
-                  Vantage does not currently use any analytics cookies. If we
+                  AimVantage does not currently use any analytics cookies. If we
                   introduce analytics in the future, we will update this policy
                   and request your consent before setting any analytics cookies.
                 </p>
@@ -147,7 +147,7 @@ export default function CookiePolicy() {
                 </h3>
                 <p className={`${textClass} mb-3`}>
                   The following third-party services may set cookies when you use
-                  Vantage:
+                  AimVantage:
                 </p>
                 <ul className={listClass}>
                   <li>
@@ -220,7 +220,7 @@ export default function CookiePolicy() {
               5. What Happens If You Disable Cookies
             </h2>
             <p className={`${textClass} mb-3`}>
-              Disabling cookies will affect your experience on Vantage:
+              Disabling cookies will affect your experience on AimVantage:
             </p>
             <ul className={listClass}>
               <li>

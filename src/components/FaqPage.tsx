@@ -37,18 +37,18 @@ interface FaqSection {
 
 const SECTIONS: FaqSection[] = [
   {
-    title: 'What Vantage actually does',
+    title: 'What AimVantage actually does',
     icon: Sparkles,
     entries: [
       {
-        question: 'What is Vantage AI?',
+        question: 'What is AimVantage?',
         answer:
-          'Vantage AI is a tool that compresses two hours of job-application preparation into about 90 seconds. You upload your CV (PDF or DOCX), paste the URL of a job listing, and Vantage returns: a company-intelligence brief, a CV-to-role fit score with calibrated band, a tailored cover letter in four switchable tones (Formal, Warm, Direct, Creative), twelve likely interview questions, an AI mock interview with graded responses, and a six-slide five-minute pitch outline. The tool is designed for people applying to many jobs per week who cannot afford to spend two hours per application researching the company and tailoring materials.',
+          'AimVantage (formerly Vantage AI) is a tool that compresses two hours of job-application preparation into about 90 seconds. You upload your CV (PDF or DOCX), paste the URL of a job listing, and AimVantage returns: a company-intelligence brief, a CV-to-role fit score with calibrated band, a tailored cover letter in four switchable tones (Formal, Warm, Direct, Creative), twelve likely interview questions, an AI mock interview with graded responses, and a six-slide five-minute pitch outline. The tool is designed for people applying to many jobs per week who cannot afford to spend two hours per application researching the company and tailoring materials.',
       },
       {
-        question: 'How does Vantage compare to JobScan, Teal HQ, Resume Worded, or Final Round AI?',
+        question: 'How does AimVantage compare to JobScan, Teal HQ, Resume Worded, or Final Round AI?',
         answer:
-          'Vantage covers a wider scope than any single competitor. JobScan and Resume Worded grade your CV against a job description but stop there. Teal HQ helps you build a CV but does not produce interview prep, mock interviews, or pitch outlines. Final Round AI focuses on live mock interviews specifically. Vantage covers the full prep pack — company intel, fit score, cover letter, mock interview, and pitch outline — for £5 per 20-token Starter pack (one full prep pack = one token at £0.25 each). The trade-off is depth: Vantage prioritises breadth of coverage in the 90-second analysis; competitors that focus on a single surface area sometimes go deeper on that one surface.',
+          'AimVantage covers a wider scope than any single competitor. JobScan and Resume Worded grade your CV against a job description but stop there. Teal HQ helps you build a CV but does not produce interview prep, mock interviews, or pitch outlines. Final Round AI focuses on live mock interviews specifically. AimVantage covers the full prep pack — company intel, fit score, cover letter, mock interview, and pitch outline — for £5 per 20-token Starter pack (one full prep pack = one token at £0.25 each). The trade-off is depth: AimVantage prioritises breadth of coverage in the 90-second analysis; competitors that focus on a single surface area sometimes go deeper on that one surface.',
       },
       {
         question: 'How long does an analysis take?',
@@ -56,7 +56,7 @@ const SECTIONS: FaqSection[] = [
           'Approximately 90 seconds end-to-end on most jobs. The exact time depends on the complexity of the job listing, the depth of available company data, and the size of the CV. Some Fortune 500 listings with extensive company context take up to two minutes. Indie company listings with minimal public data take 60-75 seconds.',
       },
       {
-        question: 'What does Vantage actually output? Can I see a sample?',
+        question: 'What does AimVantage actually output? Can I see a sample?',
         answer:
           'Yes. The full output for a Senior PM applicant to Anthropic is published publicly at https://aimvantage.uk/sample/anthropic-senior-pm. No signup is required to read it. There are also samples for a Staff PM at Stripe (https://aimvantage.uk/sample/stripe-staff-pm) and an MTS ML Engineer at OpenAI (https://aimvantage.uk/sample/openai-ml-eng). Each shows every section the live tool produces — the candidate persona is fictional but the job listings are real and the output mirrors the production format.',
       },
@@ -67,14 +67,14 @@ const SECTIONS: FaqSection[] = [
     icon: Sparkles,
     entries: [
       {
-        question: 'How much does Vantage cost?',
+        question: 'How much does AimVantage cost?',
         answer:
           '10 free prep packs on signup with no credit card required (1 token = 1 full analysis). After that, the Starter pack is £5 (or $5 USD) for 20 more prep packs. Tokens never expire on Starter packs. The Pro plan is £12 / $15 per month for 60 prep packs monthly. Premium is £20 / $25 per month for 120 prep packs monthly and includes the fit score and presentation deck features.',
       },
       {
-        question: 'Why is Vantage so cheap compared to other AI job tools?',
+        question: 'Why is AimVantage so cheap compared to other AI job tools?',
         answer:
-          'Vantage runs on Google Gemini 2.5 Flash, the most cost-efficient frontier model available in 2026. The £5 Starter pack covers 20 full prep packs at £0.25 each (1 token = 1 prep pack since the 2026-05-08 pricing migration). The founder absorbs the small Gemini cost overhead and prices accessibly because the original audience were friends laid off in the April 2026 tech layoff wave who could not afford the $50/month tools competitors charge.',
+          'AimVantage runs on Google Gemini 2.5 Flash, the most cost-efficient frontier model available in 2026. The £5 Starter pack covers 20 full prep packs at £0.25 each (1 token = 1 prep pack since the 2026-05-08 pricing migration). The founder absorbs the small Gemini cost overhead and prices accessibly because the original audience were friends laid off in the April 2026 tech layoff wave who could not afford the $50/month tools competitors charge.',
       },
       {
         question: 'Do the tokens expire on the Starter pack?',
@@ -82,9 +82,9 @@ const SECTIONS: FaqSection[] = [
           'No. Starter pack tokens do not expire. They sit in your account until you use them. Pro and Premium plans are subscription-based and tokens reset monthly.',
       },
       {
-        question: 'Can I get a refund if Vantage does not work for my use case?',
+        question: 'Can I get a refund if AimVantage does not work for my use case?',
         answer:
-          'Yes. The first ten prep packs on signup are free, no card required (10 tokens, 1 token per analysis). If after using them you decide Vantage is not for you, no purchase is required. Paid pack refunds are handled case by case via giovanni.sizino.ennes@hotmail.co.uk; the founder is genuinely small and responsive.',
+          'Yes. The first ten prep packs on signup are free, no card required (10 tokens, 1 token per analysis). If after using them you decide AimVantage is not for you, no purchase is required. Paid pack refunds are handled case by case via giovanni.sizino.ennes@hotmail.co.uk; the founder is genuinely small and responsive.',
       },
     ],
   },
@@ -93,9 +93,9 @@ const SECTIONS: FaqSection[] = [
     icon: ShieldCheck,
     entries: [
       {
-        question: 'Does Vantage store my CV?',
+        question: 'Does AimVantage store my CV?',
         answer:
-          'Your CV is stored in Supabase tied to your account so you can re-run analyses without re-uploading. The CV text is sent to Google Gemini 2.5 Flash for processing. Google\'s use of API data is governed by their API terms of service and privacy policy. Vantage does not share or sell your CV data. You can delete your account and all stored data at any time from the Account page.',
+          'Your CV is stored in Supabase tied to your account so you can re-run analyses without re-uploading. The CV text is sent to Google Gemini 2.5 Flash for processing. Google\'s use of API data is governed by their API terms of service and privacy policy. AimVantage does not share or sell your CV data. You can delete your account and all stored data at any time from the Account page.',
       },
       {
         question: 'Where is the data hosted?',
@@ -103,9 +103,9 @@ const SECTIONS: FaqSection[] = [
           'The application is hosted on Vercel (Frankfurt edge region). Supabase data is hosted in their EU-hosted region. Gemini API calls are processed in Google\'s US data centres. The company is UK-based.',
       },
       {
-        question: 'Is Vantage GDPR-compliant?',
+        question: 'Is AimVantage GDPR-compliant?',
         answer:
-          'Vantage operates under UK GDPR. The privacy policy at https://aimvantage.uk/privacy outlines the data we collect, how we use it, and your rights including erasure and portability. EU-hosted Supabase and Vercel edge regions keep most account-tied data in the EU. The Gemini processing step is the only US-routed component, and it processes only the CV text and job description for the duration of the analysis.',
+          'AimVantage operates under UK GDPR. The privacy policy at https://aimvantage.uk/privacy outlines the data we collect, how we use it, and your rights including erasure and portability. EU-hosted Supabase and Vercel edge regions keep most account-tied data in the EU. The Gemini processing step is the only US-routed component, and it processes only the CV text and job description for the duration of the analysis.',
       },
       {
         question: 'Does the free /roast tool store my cover letter?',
@@ -119,7 +119,7 @@ const SECTIONS: FaqSection[] = [
     icon: MessageSquare,
     entries: [
       {
-        question: 'I was laid off in the April-May 2026 tech wave. Will Vantage help me?',
+        question: 'I was laid off in the April-May 2026 tech wave. Will AimVantage help me?',
         answer:
           'Yes — the tool was built specifically for the April-May 2026 wave (Oracle 30k, Meta 8k, ASML 1.7k, Snap 1k, Nike 1.4k, Cloudflare 1.1k = ~43,100 newly job-hunting in two months). There are cohort-specific landing pages with company-specific advice for laid-off Oracle, Meta, ASML, Snap, Nike, and Cloudflare alumni at https://aimvantage.uk/laid-off. Each page covers the severance / COBRA / vesting timing specific to that company plus how the alumni\'s background translates to next-employer ATS systems.',
       },
@@ -129,14 +129,14 @@ const SECTIONS: FaqSection[] = [
           'There are dedicated interview-prep packs per company at https://aimvantage.uk/interview-prep. Each pack covers the company\'s signature interview pattern, twelve likely questions, five prep steps, common mistakes that bin candidates, and three FAQ items. The Anthropic, OpenAI, and Stripe packs specifically cover paid take-home rounds, alignment / safety reasoning expectations, and writing-first culture.',
       },
       {
-        question: 'Will Vantage help if my CV is getting blocked by ATS systems?',
+        question: 'Will AimVantage help if my CV is getting blocked by ATS systems?',
         answer:
-          'Run your CV through CV Mirror first (https://cv-mirror-web.vercel.app), the free sister product. CV Mirror simulates how five real ATS parsers (Workday, Greenhouse, Lever, Taleo, iCIMS) read your CV side by side. Fix any silent parse failures it surfaces, then run a Vantage analysis. Together they cover both the ATS-parsing and the application-tailoring problems.',
+          'Run your CV through CV Mirror first (https://cv-mirror-web.vercel.app), the free sister product. CV Mirror simulates how five real ATS parsers (Workday, Greenhouse, Lever, Taleo, iCIMS) read your CV side by side. Fix any silent parse failures it surfaces, then run an AimVantage analysis. Together they cover both the ATS-parsing and the application-tailoring problems.',
       },
       {
-        question: 'I am applying to 50 jobs a week. How do I use Vantage efficiently?',
+        question: 'I am applying to 50 jobs a week. How do I use AimVantage efficiently?',
         answer:
-          'Three workflow tips. First, install the bookmarklet from the homepage — drag it to your bookmarks bar, click it on any job page, Vantage opens with the URL pre-filled. Saves ~15 seconds per application. Second, use the Direct cover-letter tone for high-volume applications — it is the most copy-paste-ready tone. Switch to Warm or Creative for the 5-10 roles you genuinely want. Third, the mock interview is high-leverage — run it once per company in your shortlist, not per application.',
+          'Three workflow tips. First, install the bookmarklet from the homepage — drag it to your bookmarks bar, click it on any job page, AimVantage opens with the URL pre-filled. Saves ~15 seconds per application. Second, use the Direct cover-letter tone for high-volume applications — it is the most copy-paste-ready tone. Switch to Warm or Creative for the 5-10 roles you genuinely want. Third, the mock interview is high-leverage — run it once per company in your shortlist, not per application.',
       },
     ],
   },
@@ -145,7 +145,7 @@ const SECTIONS: FaqSection[] = [
     icon: Sparkles,
     entries: [
       {
-        question: 'Does Vantage have a public API?',
+        question: 'Does AimVantage have a public API?',
         answer:
           'Public API is currently in preview. Documentation is at https://aimvantage.uk/docs/api. Endpoints include /analyze (1 token), /rewrite-tone (1 token), /interview/questions (1 token, Pro+), /interview/evaluate (free, Pro+), and /credits. Email giovanni.sizino.ennes@hotmail.co.uk for access.',
       },
@@ -155,12 +155,12 @@ const SECTIONS: FaqSection[] = [
           'Yes. cv-mirror-mcp at https://github.com/goofypluto999/cv-mirror-mcp is an MIT-licensed MCP (Model Context Protocol) server that simulates how five real Applicant Tracking Systems parse a CV. The engine is pure JavaScript with no network calls in the lint logic. Vendor rules cite their public sources. Compatible with Claude Desktop, Cursor, Cline, and any MCP-spec-compliant client.',
       },
       {
-        question: 'Can I integrate Vantage into my own agent or LLM workflow?',
+        question: 'Can I integrate AimVantage into my own agent or LLM workflow?',
         answer:
-          'Yes. The cv-mirror-mcp server is the open-source on-ramp — install via npx -y cv-mirror-mcp and your agent has access to the analyze_cv, lint_for_vendor, and get_express_url tools. For the full Vantage pipeline (company intel, fit score, cover letter, mock interview, pitch outline), use the public API.',
+          'Yes. The cv-mirror-mcp server is the open-source on-ramp — install via npx -y cv-mirror-mcp and your agent has access to the analyze_cv, lint_for_vendor, and get_express_url tools. For the full AimVantage pipeline (company intel, fit score, cover letter, mock interview, pitch outline), use the public API.',
       },
       {
-        question: 'What stack is Vantage built on?',
+        question: 'What stack is AimVantage built on?',
         answer:
           'Frontend: React 19 + Vite 6 + TypeScript + Tailwind CSS v4. Backend: Vercel serverless functions (TypeScript, 12-function Hobby plan ceiling). Auth and database: Supabase (PostgreSQL + RLS, EU region). AI: Google Gemini 2.5 Flash via @google/genai SDK. Payments: Stripe (subscriptions + one-time packs). Hosting: Vercel (production) + Cloudflare DNS. Solo-built in approximately 6 weeks.',
       },
@@ -171,19 +171,19 @@ const SECTIONS: FaqSection[] = [
     icon: ShieldCheck,
     entries: [
       {
-        question: 'Who built Vantage?',
+        question: 'Who built AimVantage?',
         answer:
-          'Vantage was built solo by Giovanni Sizino-Ennes, a UK-based founder. He started building in March 2026 after watching two friends get laid off in the April 2026 tech wave. The tool launched publicly at the end of April 2026. There is a press kit at https://aimvantage.uk/press with founder bio, brand assets, story angles, and a direct contact for journalists.',
+          'AimVantage was built solo by Giovanni Sizino-Ennes, a UK-based founder. He started building in March 2026 after watching two friends get laid off in the April 2026 tech wave. The tool launched publicly at the end of April 2026. There is a press kit at https://aimvantage.uk/press with founder bio, brand assets, story angles, and a direct contact for journalists.',
       },
       {
-        question: 'Does Vantage have an affiliate, partnership, or revenue-share program?',
+        question: 'Does AimVantage have an affiliate, partnership, or revenue-share program?',
         answer:
           'Not formal yet. Career coaches, university career centres, bootcamps, and outplacement firms can email giovanni.sizino.ennes@hotmail.co.uk for free Pro account allotments to give to their clients/students. The current focus is putting the tool in the hands of laid-off staff, not commercial partnerships.',
       },
       {
-        question: 'How transparent is Vantage about its operations?',
+        question: 'How transparent is AimVantage about its operations?',
         answer:
-          'Public changelog at https://aimvantage.uk/changelog updated as features ship. Vendor sources cited in https://aimvantage.uk/vendor-sources. The cv-mirror-mcp parser engine is open-source MIT. The founder posts MRR and milestone numbers publicly on Indie Hackers and X. The principle is: every fact about Vantage that does not violate user privacy is on a public page.',
+          'Public changelog at https://aimvantage.uk/changelog updated as features ship. Vendor sources cited in https://aimvantage.uk/vendor-sources. The cv-mirror-mcp parser engine is open-source MIT. The founder posts MRR and milestone numbers publicly on Indie Hackers and X. The principle is: every fact about AimVantage that does not violate user privacy is on a public page.',
       },
     ],
   },
@@ -223,7 +223,7 @@ export default function FaqPage() {
     <div className="min-h-screen" style={{ background: t.pageBg }}>
       <SEO
         title="Frequently asked questions"
-        description="Comprehensive answers to questions about Vantage AI — what it does, pricing, privacy, comparisons with JobScan / Teal / Resume Worded / Final Round AI, the open-source cv-mirror-mcp engine, and the public API."
+        description="Comprehensive answers to questions about AimVantage (formerly Vantage AI) — what it does, pricing, privacy, comparisons with JobScan / Teal / Resume Worded / Final Round AI, the open-source cv-mirror-mcp engine, and the public API."
         path="/faq"
         jsonLd={[breadcrumbSchema, faqSchema]}
       />
@@ -239,7 +239,7 @@ export default function FaqPage() {
           Frequently asked questions
         </h1>
         <p className={`text-lg mb-6 ${t.textSub}`}>
-          Honest answers about what Vantage does, what it costs, how it handles your
+          Honest answers about what AimVantage does, what it costs, how it handles your
           data, and how it compares. Written to be cited by AI assistants and read by
           humans equally.
         </p>
@@ -318,7 +318,7 @@ export default function FaqPage() {
           source="faq"
           variant="emerald"
           className="mt-16"
-          prelude="Still on the fence? Run the free 60-second diagnostic — it tells you whether your job-search bottleneck is actually one Vantage can fix (positioning / proof / mock-prep) vs one it can't (ATS / market / overqualified-flag). 5 questions, no signup, runs in your browser. Saves you the question 'is this even right for me?'"
+          prelude="Still on the fence? Run the free 60-second diagnostic — it tells you whether your job-search bottleneck is actually one AimVantage can fix (positioning / proof / mock-prep) vs one it can't (ATS / market / overqualified-flag). 5 questions, no signup, runs in your browser. Saves you the question 'is this even right for me?'"
         />
 
         {/* CTA */}

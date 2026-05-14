@@ -31,9 +31,9 @@ export default function PressPage() {
     alternateName: 'Gio',
     url: SITE_URL,
     image: `${SITE_URL}/logo-512.png`,
-    jobTitle: 'Independent founder · Vantage AI',
+    jobTitle: 'Independent founder · AimVantage',
     description:
-      'UK-based independent founder (sole trader) building AI tools for job seekers. Operates Vantage AI (paid job-prep SaaS) and the free open-source CV Mirror.',
+      'UK-based independent founder (sole trader) building AI tools for job seekers. Operates AimVantage (formerly Vantage AI, paid job-prep SaaS) and the free open-source CV Mirror.',
     sameAs: [
       'https://dev.to/goofypluto999',
       'https://github.com/goofypluto999',
@@ -50,8 +50,8 @@ export default function PressPage() {
   return (
     <div className="min-h-screen" style={{ background: t.pageBg }}>
       <SEO
-        title="Press kit — Vantage AI"
-        description="Press kit for journalists covering Vantage AI and CV Mirror. Independent founder Giovanni Sizino Ennes (UK sole trader). Bio, key facts, brand assets, story angles, and direct contact."
+        title="Press kit — AimVantage"
+        description="Press kit for journalists covering AimVantage (formerly Vantage AI) and CV Mirror. Independent founder Giovanni Sizino Ennes (UK sole trader). Bio, key facts, brand assets, story angles, and direct contact."
         path="/press"
       />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
@@ -60,7 +60,7 @@ export default function PressPage() {
       {/* Nav */}
       <nav className={`${t.nav} border-b border-white/10 sticky top-0 z-50 backdrop-blur-xl`}>
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link to="/" className={`text-xl font-bold ${t.text}`}>Vantage</Link>
+          <Link to="/" className={`text-xl font-bold ${t.text}`}>AimVantage</Link>
           <div className="flex items-center gap-4 text-sm">
             <Link to="/blog" className={`${t.textSub} hover:${t.text}`}>Blog</Link>
             <Link to="/ats" className={`${t.textSub} hover:${t.text}`}>ATS Guide</Link>
@@ -76,10 +76,10 @@ export default function PressPage() {
           Press kit
         </h1>
         <p className={`text-lg ${t.textSub} max-w-3xl leading-relaxed`}>
-          Vantage AI is operated by Giovanni Sizino Ennes, a UK-based independent founder
+          AimVantage (formerly Vantage AI) is operated by Giovanni Sizino Ennes, a UK-based independent founder
           (sole trader) building AI tools for job seekers. The two live products are
-          Vantage AI (paid job-prep SaaS) and CV Mirror (free, open-source ATS scanner).
-          Vantage Labs is the umbrella name used informally for the project portfolio,
+          AimVantage (paid job-prep SaaS) and CV Mirror (free, open-source ATS scanner).
+          AimVantage Labs is the umbrella name used informally for the project portfolio,
           not a registered company. Below is everything a journalist or analyst needs in one page.
         </p>
       </section>
@@ -95,7 +95,7 @@ export default function PressPage() {
             </div>
             <div>
               <dt className={`text-xs font-semibold uppercase tracking-widest ${t.textMuted}`}>Project umbrella</dt>
-              <dd className={`text-sm ${t.text}`}>Vantage AI (paid SaaS) + CV Mirror (free OSS)</dd>
+              <dd className={`text-sm ${t.text}`}>AimVantage (paid SaaS) + CV Mirror (free OSS)</dd>
             </div>
             <div>
               <dt className={`text-xs font-semibold uppercase tracking-widest ${t.textMuted}`}>HQ</dt>
@@ -144,7 +144,7 @@ export default function PressPage() {
           <div className={`${t.glass} rounded-2xl p-6`}>
             <div className="flex items-center gap-2 mb-3">
               <Briefcase className="w-5 h-5 text-[#4F46E5]" />
-              <h3 className={`font-bold ${t.text}`}>Vantage AI</h3>
+              <h3 className={`font-bold ${t.text}`}>AimVantage</h3>
             </div>
             <p className={`text-sm ${t.textSub} mb-3`}>
               Paid AI job application prep tool. Upload CV, paste job link, get back the full
@@ -209,7 +209,7 @@ export default function PressPage() {
             },
             {
               title: 'Open-sourcing the engine behind a paid product',
-              detail: 'CV Mirror MCP is the open-source engine that powers the paid Vantage AI product. The decision to open-source the part that should be free, and paywall the part that costs real compute.',
+              detail: 'CV Mirror MCP is the open-source engine that powers the paid AimVantage product. The decision to open-source the part that should be free, and paywall the part that costs real compute.',
             },
             {
               title: 'AI tools for laid-off employees in 2026',
@@ -230,7 +230,7 @@ export default function PressPage() {
         <div className={`${t.glass} rounded-2xl p-6`}>
           <h3 className={`text-lg font-bold ${t.text} mb-2`}>Giovanni Sizino Ennes</h3>
           <p className={`text-sm ${t.textSub} mb-3`}>
-            UK-based independent founder (sole trader). Built Vantage AI and CV Mirror solo over 60 days
+            UK-based independent founder (sole trader). Built AimVantage and CV Mirror solo over 60 days
             of evenings after burning out twice from manually applying to 30+ jobs a week. Operates as a
             sole trader, not a registered company — building in public on a tight personal budget.
           </p>
@@ -285,7 +285,7 @@ export default function PressPage() {
             quotes on the record, dataset shares, or written Q&amp;A. UK time zone.
           </p>
           <a
-            href="mailto:giovanni.sizino.ennes@hotmail.co.uk?subject=Press%20inquiry%20%E2%80%94%20Vantage"
+            href="mailto:giovanni.sizino.ennes@hotmail.co.uk?subject=Press%20inquiry%20%E2%80%94%20AimVantage"
             className="inline-flex items-center gap-2 px-6 py-3 bg-[#4F46E5] text-white rounded-full font-semibold hover:-translate-y-0.5 transition-all"
           >
             <Mail className="w-4 h-4" /> Email Gio directly

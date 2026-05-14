@@ -145,7 +145,7 @@ const ENTRIES: ChangelogEntry[] = [
     date: '2026-04-29',
     kind: 'feature',
     title: 'AI agent ecosystem hub at /skills',
-    body: 'Curated registry of MCP servers and Claude Skills that pair with the Vantage workflow. Includes the open-source cv-mirror-mcp.',
+    body: 'Curated registry of MCP servers and Claude Skills that pair with the AimVantage workflow. Includes the open-source cv-mirror-mcp.',
     links: [{ label: '/skills', href: '/skills' }],
   },
   {
@@ -209,7 +209,7 @@ const ENTRIES: ChangelogEntry[] = [
     date: '2026-04-10',
     kind: 'feature',
     title: 'Public launch',
-    body: 'Vantage AI launched. Upload a CV, paste a job link, get a complete prep pack — company intel, tailored cover letter, mock interview questions, fit score, and a 5-minute pitch outline — in approximately 90 seconds.',
+    body: 'AimVantage (formerly Vantage AI) launched. Upload a CV, paste a job link, get a complete prep pack — company intel, tailored cover letter, mock interview questions, fit score, and a 5-minute pitch outline — in approximately 90 seconds.',
   },
 ];
 
@@ -240,7 +240,7 @@ export default function ChangelogPage() {
     <div className="min-h-screen" style={{ background: t.pageBg }}>
       <SEO
         title="Changelog — what shipped recently"
-        description="Vantage AI changelog. New features, fixes, security updates, and content additions. Updated weekly."
+        description="AimVantage changelog. New features, fixes, security updates, and content additions. Updated weekly."
         path="/changelog"
         jsonLd={[breadcrumbSchema, itemListSchema]}
       />
@@ -254,7 +254,7 @@ export default function ChangelogPage() {
 
         <h1 className={`text-4xl md:text-5xl font-bold mb-4 ${t.text}`}>Changelog</h1>
         <p className={`text-lg mb-12 ${t.textSub}`}>
-          What's shipped on Vantage. Public log, updated as we ship — no marketing fluff.
+          What's shipped on AimVantage. Public log, updated as we ship — no marketing fluff.
         </p>
 
         <div className="space-y-6">
@@ -316,7 +316,7 @@ export default function ChangelogPage() {
         <div className="mt-16 grid sm:grid-cols-3 gap-4">
           <Link to="/" className={`${t.glass} rounded-xl p-5 hover:scale-[1.02] transition-transform`}>
             <div className={`text-xs uppercase tracking-wider mb-1 ${t.textMuted}`}>Home</div>
-            <div className={`font-semibold ${t.text}`}>Vantage AI</div>
+            <div className={`font-semibold ${t.text}`}>AimVantage</div>
           </Link>
           <Link to="/playbook" className={`${t.glass} rounded-xl p-5 hover:scale-[1.02] transition-transform`}>
             <div className={`text-xs uppercase tracking-wider mb-1 ${t.textMuted}`}>Playbook</div>

@@ -8,7 +8,7 @@ const sections = [
   {
     id: 'who-we-are',
     title: '1. Who Operates This Service',
-    content: `Vantage ("we", "us", "our") is operated by Giovanni Sizino Ennes, an independent UK-based software developer trading as a sole trader. We are not a registered company. We sell our services worldwide.`,
+    content: `AimVantage ("we", "us", "our"), formerly Vantage AI, is operated by Giovanni Sizino Ennes, an independent UK-based software developer trading as a sole trader. We are not a registered company. We sell our services worldwide.`,
   },
   {
     id: 'ico-registration',
@@ -68,7 +68,7 @@ const sections = [
   {
     id: 'how-we-use',
     title: '5. How We Use Your Data',
-    content: `We use your data to:\n\n- Provide and operate the Vantage service, including AI-powered job preparation analyses\n- Process payments and manage subscriptions\n- Communicate with you about your account, service updates, and support requests\n- Improve the service through aggregated, anonymised usage analysis\n- Comply with legal obligations`,
+    content: `We use your data to:\n\n- Provide and operate the AimVantage service, including AI-powered job preparation analyses\n- Process payments and manage subscriptions\n- Communicate with you about your account, service updates, and support requests\n- Improve the service through aggregated, anonymised usage analysis\n- Comply with legal obligations`,
   },
   {
     id: 'third-parties',
@@ -89,14 +89,14 @@ const sections = [
       },
       {
         title: 'Vercel (Hosting)',
-        text: 'Hosts the Vantage web application. Servers located in the US and globally via edge network. Privacy policy: https://vercel.com/legal/privacy-policy',
+        text: 'Hosts the AimVantage web application. Servers located in the US and globally via edge network. Privacy policy: https://vercel.com/legal/privacy-policy',
       },
     ],
   },
   {
     id: 'ai-processing',
     title: '7. AI Processing Disclosure',
-    content: `When you use Vantage, the text content of your CV/resume and job descriptions are sent to Google's Gemini AI for analysis. This processing generates your company intelligence, strategic briefs, cover letters, interview preparation materials, and fit scores.\n\nImportant points about AI processing:\n\n- CV text is sent to Google's API servers in the US for processing\n- We do not permanently store the raw CV text after analysis is complete; structured results are retained for your access\n- AI-generated content (cover letters, briefs, interview packs) may contain inaccuracies, and we do not guarantee the accuracy, completeness, or suitability of any AI-generated output\n- You are responsible for reviewing all AI-generated content before using it in job applications or interviews\n- Google's use of data sent via the Gemini API is governed by their API terms of service and privacy policy`,
+    content: `When you use AimVantage, the text content of your CV/resume and job descriptions are sent to Google's Gemini AI for analysis. This processing generates your company intelligence, strategic briefs, cover letters, interview preparation materials, and fit scores.\n\nImportant points about AI processing:\n\n- CV text is sent to Google's API servers in the US for processing\n- We do not permanently store the raw CV text after analysis is complete; structured results are retained for your access\n- AI-generated content (cover letters, briefs, interview packs) may contain inaccuracies, and we do not guarantee the accuracy, completeness, or suitability of any AI-generated output\n- You are responsible for reviewing all AI-generated content before using it in job applications or interviews\n- Google's use of data sent via the Gemini API is governed by their API terms of service and privacy policy`,
   },
   {
     id: 'data-retention',
@@ -124,7 +124,7 @@ const sections = [
   {
     id: 'international-transfers',
     title: '9. International Data Transfers',
-    content: `Your data may be processed outside the United Kingdom and European Economic Area, primarily in the United States, by our third-party service providers (Supabase, Stripe, Google, and Vercel).\n\nThese providers maintain appropriate safeguards for international data transfers, including Standard Contractual Clauses (SCCs) approved by the European Commission and the UK Information Commissioner's Office, and compliance with applicable data protection frameworks.\n\nBy using Vantage, you acknowledge that your data may be transferred to and processed in countries outside the UK/EEA.`,
+    content: `Your data may be processed outside the United Kingdom and European Economic Area, primarily in the United States, by our third-party service providers (Supabase, Stripe, Google, and Vercel).\n\nThese providers maintain appropriate safeguards for international data transfers, including Standard Contractual Clauses (SCCs) approved by the European Commission and the UK Information Commissioner's Office, and compliance with applicable data protection frameworks.\n\nBy using AimVantage, you acknowledge that your data may be transferred to and processed in countries outside the UK/EEA.`,
   },
   {
     id: 'your-rights',
@@ -134,7 +134,7 @@ const sections = [
   {
     id: 'children',
     title: '11. Children',
-    content: `Vantage is not intended for use by anyone under the age of 16. We do not knowingly collect personal data from children under 16. If you believe we have inadvertently collected data from a child under 16, please contact us immediately at giovanni.sizino.ennes@hotmail.co.uk and we will delete it promptly.`,
+    content: `AimVantage is not intended for use by anyone under the age of 16. We do not knowingly collect personal data from children under 16. If you believe we have inadvertently collected data from a child under 16, please contact us immediately at giovanni.sizino.ennes@hotmail.co.uk and we will delete it promptly.`,
   },
   {
     id: 'security',
@@ -144,7 +144,7 @@ const sections = [
   {
     id: 'changes',
     title: '13. Changes to This Policy',
-    content: `We may update this Privacy Policy from time to time to reflect changes in our practices, technologies, legal requirements, or other factors. When we make material changes, we will update the "Last Updated" date at the top of this page.\n\nWe encourage you to review this policy periodically. Your continued use of Vantage after any changes constitutes acceptance of the updated policy.`,
+    content: `We may update this Privacy Policy from time to time to reflect changes in our practices, technologies, legal requirements, or other factors. When we make material changes, we will update the "Last Updated" date at the top of this page.\n\nWe encourage you to review this policy periodically. Your continued use of AimVantage after any changes constitutes acceptance of the updated policy.`,
   },
   {
     id: 'contact',
@@ -171,7 +171,7 @@ export default function PrivacyPolicy() {
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-600 to-purple-600 flex items-center justify-center">
               <Star className="w-4 h-4 text-white" />
             </div>
-            <span className="text-lg font-display font-bold text-white">Vantage</span>
+            <span className="text-lg font-display font-bold text-white">AimVantage</span>
           </Link>
           <Link
             to="/"
@@ -202,7 +202,7 @@ export default function PrivacyPolicy() {
               </div>
             </div>
             <p className="text-white/60 leading-relaxed mt-4">
-              This Privacy Policy explains how Vantage collects, uses, stores, and protects your
+              This Privacy Policy explains how AimVantage collects, uses, stores, and protects your
               personal data when you use our AI-powered job preparation service. We are committed to
               protecting your privacy and handling your data in accordance with the UK General Data
               Protection Regulation (UK GDPR) and the Data Protection Act 2018.

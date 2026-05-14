@@ -6,8 +6,8 @@ import { track } from '../lib/track';
 
 const PRICING_FAQ = [
   {
-    q: 'What if Vantage doesn\'t work for me?',
-    a: 'You start with 10 free prep packs — no card. If those don\'t convince you Vantage is worth £5, you don\'t pay. For paid plans, you can cancel from the Stripe billing portal in one click — no retention emails, no friction. Tokens you already paid for never expire.',
+    q: 'What if AimVantage doesn\'t work for me?',
+    a: 'You start with 10 free prep packs — no card. If those don\'t convince you AimVantage is worth £5, you don\'t pay. For paid plans, you can cancel from the Stripe billing portal in one click — no retention emails, no friction. Tokens you already paid for never expire.',
   },
   {
     q: 'Why subscription vs. one-time top-up?',
@@ -15,7 +15,7 @@ const PRICING_FAQ = [
   },
   {
     q: 'What payment methods do you accept?',
-    a: 'Card (Visa, Mastercard, Amex), Apple Pay, Google Pay, Link, and bank transfer where Stripe supports it. All processed by Stripe — Vantage never sees or stores your card details.',
+    a: 'Card (Visa, Mastercard, Amex), Apple Pay, Google Pay, Link, and bank transfer where Stripe supports it. All processed by Stripe — AimVantage never sees or stores your card details.',
   },
   {
     q: 'Can I switch between plans?',
@@ -145,7 +145,7 @@ export default function Pricing({ onLogin, onRegister, onCheckout, isAuthenticat
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-600 to-purple-600 flex items-center justify-center">
               <Star className="w-4 h-4 text-white" aria-hidden="true" />
             </div>
-            <span className="text-lg font-display font-bold text-white">Vantage</span>
+            <span className="text-lg font-display font-bold text-white">AimVantage</span>
           </a>
           <div className="flex items-center gap-4">
             {/* Currency toggle */}
@@ -187,12 +187,12 @@ export default function Pricing({ onLogin, onRegister, onCheckout, isAuthenticat
           </p>
           {/* Pricing-page diagnostic onramp: visitors who land on /pricing
               are commitment-curious but not all of them will benefit from
-              Vantage. The diagnostic confirms whether their bottleneck is
-              one Vantage actually solves (positioning / proof / mock-prep)
+              AimVantage. The diagnostic confirms whether their bottleneck is
+              one AimVantage actually solves (positioning / proof / mock-prep)
               vs one it can't (ATS / market / overqualified-flag). Saves
               both us and them from a refund. */}
           <p className="text-sm text-white/50 mt-4">
-            Not sure Vantage is the right fix for your specific bottleneck?{' '}
+            Not sure AimVantage is the right fix for your specific bottleneck?{' '}
             <Link
               to="/tools/no-interviews-diagnostic?source=pricing"
               onClick={() => track('pricing_diagnostic_click', {})}
@@ -235,13 +235,13 @@ export default function Pricing({ onLogin, onRegister, onCheckout, isAuthenticat
               number ("GBP 12") not the value delivered. A concrete time
               comparison closes the gap: tailoring 1 application by hand
               (research + cover letter + interview prep) is 55-60 minutes
-              for most engineers/PMs/designers. Vantage: 90 seconds. The
+              for most engineers/PMs/designers. AimVantage: 90 seconds. The
               ratio matters more than the absolute price. */}
           <div className="mt-6 max-w-2xl mx-auto rounded-xl bg-emerald-500/10 border border-emerald-500/30 px-5 py-4">
             <p className="text-sm text-white/80">
               <span className="font-bold text-emerald-300">1 prep pack</span> = the company
               research, fit scoring, cover letter, and interview-question prep that takes most
-              applicants 55-60 minutes by hand. Vantage runs it in about 90 seconds. At the Pro
+              applicants 55-60 minutes by hand. AimVantage runs it in about 90 seconds. At the Pro
               rate, a daily applicant pays roughly{' '}
               <span className="font-bold text-white">{symbol === '£' ? '20p' : '$0.25'} per application</span> for the
               tailoring work.

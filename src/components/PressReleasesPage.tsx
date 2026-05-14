@@ -35,7 +35,7 @@ export function PressReleasesHub() {
   const itemListSchema = {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
-    name: 'Vantage AI press releases',
+    name: 'AimVantage press releases',
     itemListElement: pressReleases.map((p, i) => ({
       '@type': 'ListItem',
       position: i + 1,
@@ -47,8 +47,8 @@ export function PressReleasesHub() {
   return (
     <div className="min-h-screen" style={{ background: t.pageBg }}>
       <SEO
-        title="Press releases — Vantage AI"
-        description="Official Vantage AI press releases. Product launches, milestones, and announcements from Giovanni Sizino Ennes (UK independent founder, sole trader)."
+        title="Press releases — AimVantage"
+        description="Official AimVantage (formerly Vantage AI) press releases. Product launches, milestones, and announcements from Giovanni Sizino Ennes (UK independent founder, sole trader)."
         path="/press-releases"
         jsonLd={[breadcrumbSchema, itemListSchema]}
       />
@@ -56,10 +56,10 @@ export function PressReleasesHub() {
       <nav className={`${t.nav} sticky top-0 z-40`}>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <Link to="/" className={`flex items-center gap-2 ${t.text}`}>
-            <span className="font-bold tracking-tight">Vantage</span>
+            <span className="font-bold tracking-tight">AimVantage</span>
           </Link>
           <Link to="/register" className="text-sm px-4 py-2 rounded-full bg-violet-600 hover:bg-violet-500 text-white font-semibold transition">
-            Try Vantage free
+            Try AimVantage free
           </Link>
         </div>
       </nav>
@@ -73,7 +73,7 @@ export function PressReleasesHub() {
             Press releases
           </h1>
           <p className={`mt-4 text-lg ${t.textSub} max-w-2xl`}>
-            Every published announcement from Vantage AI. Each release lists verifiable facts at the bottom — feel free to
+            Every published announcement from AimVantage (formerly Vantage AI). Each release lists verifiable facts at the bottom — feel free to
             cite, syndicate, or fact-check directly. Operator transparency at <Link to="/about" className="text-violet-400 underline">/about</Link>.
           </p>
         </header>
@@ -163,7 +163,8 @@ export default function PressReleasePage() {
     },
     publisher: {
       '@type': 'Organization',
-      name: 'Vantage AI',
+      name: 'AimVantage',
+      alternateName: ['Vantage', 'Vantage AI', 'Aim Vantage'],
       url: SITE_URL,
       logo: {
         '@type': 'ImageObject',
@@ -188,7 +189,7 @@ export default function PressReleasePage() {
   return (
     <div className="min-h-screen" style={{ background: t.pageBg }}>
       <SEO
-        title={`${release.title} — Vantage AI press release`}
+        title={`${release.title} — AimVantage press release`}
         description={release.description}
         path={`/press-releases/${release.slug}`}
         jsonLd={[newsArticleSchema, breadcrumbSchema]}
@@ -197,10 +198,10 @@ export default function PressReleasePage() {
       <nav className={`${t.nav} sticky top-0 z-40`}>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <Link to="/" className={`flex items-center gap-2 ${t.text}`}>
-            <span className="font-bold tracking-tight">Vantage</span>
+            <span className="font-bold tracking-tight">AimVantage</span>
           </Link>
           <Link to="/register" className="text-sm px-4 py-2 rounded-full bg-violet-600 hover:bg-violet-500 text-white font-semibold transition">
-            Try Vantage free
+            Try AimVantage free
           </Link>
         </div>
       </nav>

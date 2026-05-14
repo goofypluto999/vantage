@@ -39,7 +39,8 @@ export default function ReceiptsPage() {
   const orgSchema = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    name: 'Vantage AI',
+    name: 'AimVantage',
+    alternateName: ['Vantage', 'Vantage AI', 'Aim Vantage'],
     url: SITE_URL,
     description: 'AI job preparation tool operated by Giovanni Sizino Ennes (sole trader, UK).',
     founder: { '@type': 'Person', name: 'Giovanni Sizino Ennes' },
@@ -57,7 +58,7 @@ export default function ReceiptsPage() {
       icon: CreditCard,
       title: 'Stripe-only billing. No exceptions.',
       body:
-        'Every payment goes through Stripe Checkout. No bank transfers, no PayPal, no crypto, no invoicing. If anyone DMs you claiming to bill on behalf of Vantage, it is a scam — please forward the message to hello@aimvantage.uk.',
+        'Every payment goes through Stripe Checkout. No bank transfers, no PayPal, no crypto, no invoicing. If anyone DMs you claiming to bill on behalf of AimVantage, it is a scam — please forward the message to hello@aimvantage.uk.',
       link: { to: '/pricing', label: 'See pricing' },
     },
     {
@@ -85,13 +86,13 @@ export default function ReceiptsPage() {
       icon: MessageSquareOff,
       title: 'No WhatsApp. No Telegram. No DM outreach.',
       body:
-        'Vantage will never WhatsApp you, Telegram you, DM you on LinkedIn, or text your phone. The only outbound email is the signup confirmation and (rarely) a transactional receipt. If anyone contacts you on those channels claiming to be from Vantage, it is impersonation — please report it.',
+        'AimVantage will never WhatsApp you, Telegram you, DM you on LinkedIn, or text your phone. The only outbound email is the signup confirmation and (rarely) a transactional receipt. If anyone contacts you on those channels claiming to be from AimVantage, it is impersonation — please report it.',
     },
     {
       icon: Building2,
       title: 'Operated by a sole trader, not a registered company.',
       body:
-        'Vantage AI is a trading name, operated by Giovanni Sizino Ennes (UK independent founder). We are explicitly NOT a registered limited company. This is on the about page, the press kit, the FAQ, and our signup flow because we think it matters for trust. You are buying from a person, not a corporation.',
+        'AimVantage (formerly Vantage AI) is a trading name, operated by Giovanni Sizino Ennes (UK independent founder). We are explicitly NOT a registered limited company. This is on the about page, the press kit, the FAQ, and our signup flow because we think it matters for trust. You are buying from a person, not a corporation.',
       link: { to: '/about', label: 'Operator transparency page' },
     },
     {
@@ -105,7 +106,7 @@ export default function ReceiptsPage() {
       icon: ShieldCheck,
       title: 'Recruitment is not a revenue line.',
       body:
-        'Vantage will never charge you a recruitment fee, take a percentage of your offer, sell your CV to recruiters, or move you into a "premium recruiter network" tier. Our only revenue is the prep-pack tokens you buy directly. If you don\'t want to pay, the 10 free tokens on signup are real free.',
+        'AimVantage will never charge you a recruitment fee, take a percentage of your offer, sell your CV to recruiters, or move you into a "premium recruiter network" tier. Our only revenue is the prep-pack tokens you buy directly. If you don\'t want to pay, the 10 free tokens on signup are real free.',
     },
     {
       icon: Eye,
@@ -132,7 +133,7 @@ export default function ReceiptsPage() {
       icon: BookOpen,
       title: 'Built in public. Vendor sources documented.',
       body:
-        'Every external claim on Vantage (ATS vendor behaviours, layoff numbers, competitor pricing) links to a primary source. The Vendor Sources page is the index of those citations. If you find a claim that isn\'t cited, email Gio and it gets fixed or removed.',
+        'Every external claim on AimVantage (ATS vendor behaviours, layoff numbers, competitor pricing) links to a primary source. The Vendor Sources page is the index of those citations. If you find a claim that isn\'t cited, email Gio and it gets fixed or removed.',
       link: { to: '/vendor-sources', label: 'Vendor sources index' },
     },
   ];
@@ -140,8 +141,8 @@ export default function ReceiptsPage() {
   return (
     <div className="min-h-screen" style={{ background: t.pageBg }}>
       <SEO
-        title="Receipts — every trust claim Vantage AI makes, with the evidence"
-        description="Single-page audit of Vantage AI: Stripe-only billing, no auto-renew traps, no DM outreach, sole-trader operator transparency, public bug history, public token math, EU hosting. If a claim isn't here, we don't make it elsewhere."
+        title="Receipts — every trust claim AimVantage makes, with the evidence"
+        description="Single-page audit of AimVantage (formerly Vantage AI): Stripe-only billing, no auto-renew traps, no DM outreach, sole-trader operator transparency, public bug history, public token math, EU hosting. If a claim isn't here, we don't make it elsewhere."
         path="/receipts"
         jsonLd={[breadcrumbSchema, orgSchema]}
       />
@@ -211,7 +212,7 @@ export default function ReceiptsPage() {
 
         {/* Closing — what we don't do */}
         <div className="rounded-2xl p-6 md:p-8 mb-8 bg-gradient-to-br from-rose-500/10 to-orange-500/10 border border-rose-500/30">
-          <div className={`text-xs uppercase tracking-wider mb-3 text-rose-300/80`}>What Vantage explicitly is NOT</div>
+          <div className={`text-xs uppercase tracking-wider mb-3 text-rose-300/80`}>What AimVantage explicitly is NOT</div>
           <ul className={`space-y-2 text-sm ${t.text}`}>
             <li>• Not a recruitment agency. We don't place candidates.</li>
             <li>• Not a CV-writing service. We give you the tools; you keep the writing.</li>

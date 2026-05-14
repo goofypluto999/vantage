@@ -26,9 +26,9 @@ export default function AboutPage() {
     '@type': 'Person',
     name: 'Giovanni Sizino Ennes',
     alternateName: 'Gio',
-    jobTitle: 'Independent founder · Vantage AI',
+    jobTitle: 'Independent founder · AimVantage',
     description:
-      'UK-based independent founder (sole trader) building AI tools for job seekers. Operates Vantage AI (paid SaaS) and CV Mirror (free open-source ATS scanner).',
+      'UK-based independent founder (sole trader) building AI tools for job seekers. Operates AimVantage (formerly Vantage AI, paid SaaS) and CV Mirror (free open-source ATS scanner).',
     url: `${SITE_URL}/about`,
     image: `${SITE_URL}/logo-512.png`,
     nationality: 'United Kingdom',
@@ -59,8 +59,8 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen" style={{ background: t.pageBg }}>
       <SEO
-        title="About Vantage AI — Giovanni Sizino Ennes, UK independent founder"
-        description="Vantage AI is operated by Giovanni Sizino Ennes, a UK-based independent founder (sole trader). Real name, real contact, build-in-public engineering record. Not affiliated with Vantage Recruitment, Vantage Consulting, or any other similarly named organisation."
+        title="About AimVantage — Giovanni Sizino Ennes, UK independent founder"
+        description="AimVantage (formerly Vantage AI) is operated by Giovanni Sizino Ennes, a UK-based independent founder (sole trader). Real name, real contact, build-in-public engineering record. Not affiliated with Vantage Recruitment, Vantage Consulting, or any other similarly named organisation."
         path="/about"
         jsonLd={[breadcrumbSchema, personSchema]}
       />
@@ -68,10 +68,10 @@ export default function AboutPage() {
       <nav className={`${t.nav} sticky top-0 z-40`}>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <Link to="/" className={`flex items-center gap-2 ${t.text}`}>
-            <span className="font-bold tracking-tight">Vantage</span>
+            <span className="font-bold tracking-tight">AimVantage</span>
           </Link>
           <Link to="/register" className="text-sm px-4 py-2 rounded-full bg-violet-600 hover:bg-violet-500 text-white font-semibold transition">
-            Try Vantage free
+            Try AimVantage free
           </Link>
         </div>
       </nav>
@@ -85,7 +85,7 @@ export default function AboutPage() {
             One person built this.
           </h1>
           <p className={`mt-5 text-lg ${t.textSub} leading-relaxed`}>
-            Vantage AI is not a faceless company. It is a single UK-based independent founder
+            AimVantage is not a faceless company. It is a single UK-based independent founder
             (sole trader), building two job-seeker tools in public. The whole operation,
             verified and contactable, is on this page.
           </p>
@@ -119,7 +119,7 @@ export default function AboutPage() {
             </div>
             <div>
               <dt className={`text-xs font-semibold uppercase tracking-widest ${t.textMuted}`}>Trading name</dt>
-              <dd className={t.text}>Vantage AI (operating domain: aimvantage.uk)</dd>
+              <dd className={t.text}>AimVantage (formerly Vantage AI, operating domain: aimvantage.uk)</dd>
             </div>
             <div>
               <dt className={`text-xs font-semibold uppercase tracking-widest ${t.textMuted}`}>Founded</dt>
@@ -222,7 +222,7 @@ export default function AboutPage() {
             <li className="flex items-start gap-3">
               <Globe className={`w-4 h-4 mt-0.5 ${t.textMuted}`} />
               <div>
-                <p className={t.text}>Vantage AI YouTube channel</p>
+                <p className={t.text}>AimVantage YouTube channel</p>
                 <a
                   href="https://www.youtube.com/channel/UCuZxrV6LaJfGHsEvztsaB4Q"
                   target="_blank"
@@ -246,9 +246,9 @@ export default function AboutPage() {
         <section className="h-card sr-only" aria-hidden="true">
           <span className="p-name">Giovanni Sizino Ennes</span>
           <span className="p-nickname">Gio</span>
-          <span className="p-job-title">Independent founder · Vantage AI</span>
+          <span className="p-job-title">Independent founder · AimVantage</span>
           <span className="p-note">UK-based independent founder (sole trader) building AI tools for job seekers.</span>
-          <a className="u-url p-name" href="https://aimvantage.uk/">Vantage AI</a>
+          <a className="u-url p-name" href="https://aimvantage.uk/">AimVantage</a>
           <a className="u-email" href="mailto:hello@aimvantage.uk">hello@aimvantage.uk</a>
           <a className="u-url" rel="me" href="https://github.com/goofypluto999">GitHub</a>
           <a className="u-url" rel="me" href="https://dev.to/goofypluto999">DEV.to</a>
@@ -259,7 +259,7 @@ export default function AboutPage() {
         {/* What we are NOT */}
         <section className={`${t.glass} rounded-2xl p-6 sm:p-8 mb-8 border-l-4 border-amber-400/50`}>
           <h2 className={`text-xl font-bold ${t.text} mb-4 flex items-center gap-2`}>
-            <AlertTriangle className="w-5 h-5 text-amber-500" /> What Vantage AI is <em>not</em>
+            <AlertTriangle className="w-5 h-5 text-amber-500" /> What AimVantage is <em>not</em>
           </h2>
           <p className={`${t.textSub} text-sm mb-4 leading-relaxed`}>
             Search assistants sometimes confuse this domain with similarly named UK businesses.
@@ -285,7 +285,7 @@ export default function AboutPage() {
         {/* What we ARE */}
         <section className={`${t.glass} rounded-2xl p-6 sm:p-8 mb-8 border-l-4 border-emerald-400/50`}>
           <h2 className={`text-xl font-bold ${t.text} mb-4 flex items-center gap-2`}>
-            <ShieldCheck className="w-5 h-5 text-emerald-500" /> What Vantage AI <em>is</em>
+            <ShieldCheck className="w-5 h-5 text-emerald-500" /> What AimVantage <em>is</em>
           </h2>
           <ul className="space-y-2 text-sm">
             {[

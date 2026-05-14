@@ -880,7 +880,7 @@ export default function Dashboard() {
                   Welcome — 22-second walkthrough
                 </p>
                 <h2 id="demo-popup-title" className="text-2xl md:text-3xl font-display font-bold text-white">
-                  Here's what Vantage does in 90 seconds.
+                  Here's what AimVantage does in 90 seconds.
                 </h2>
                 <p className="text-sm text-white/60 mt-2">
                   Quick visual tour. Press ESC or click outside to skip.
@@ -924,7 +924,7 @@ export default function Dashboard() {
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-600 to-purple-600 flex items-center justify-center">
               <Sparkles className="w-4 h-4 text-white" />
             </div>
-            <span className="text-lg font-display font-bold text-white">Vantage</span>
+            <span className="text-lg font-display font-bold text-white">AimVantage</span>
           </div>
 
           <div className="flex items-center gap-4">
@@ -1328,7 +1328,7 @@ export default function Dashboard() {
             </button>
           </div>
           <p className="text-white/60 text-sm mt-2">
-            Search 20 countries + global remote, AI-scored against your CV, ghost-filtered, salary-transparent. <strong className="text-white/80">First scan today is free</strong>, then 1 token per scan. Save results to your tracker or click "Apply via Vantage" to drop the JD URL straight into the analyzer.
+            Search 20 countries + global remote, AI-scored against your CV, ghost-filtered, salary-transparent. <strong className="text-white/80">First scan today is free</strong>, then 1 token per scan. Save results to your tracker or click "Apply via AimVantage" to drop the JD URL straight into the analyzer.
           </p>
           <AnimatePresence>
             {showJobSearch && (
@@ -1423,7 +1423,7 @@ export default function Dashboard() {
                       <p className="text-emerald-200 font-semibold text-base">We've got your roasted cover letter.</p>
                       <p className="text-white/70 text-sm mt-1 leading-relaxed">
                         Severity {pendingRoast.severityScore}/5 · {pendingRoast.coverLetter.length.toLocaleString()} characters preserved.
-                        Drop your CV in Step 1 and paste the job URL in Step 2 — Vantage will rewrite that letter
+                        Drop your CV in Step 1 and paste the job URL in Step 2 — AimVantage will rewrite that letter
                         against your actual CV and the role, with company intel + fit score + mock interview included.
                       </p>
                     </div>
@@ -2013,7 +2013,7 @@ export default function Dashboard() {
                           ? `Save ${company} to your application tracker`
                           : 'Save to tracker disabled because the company name could not be reliably identified'}
                         title={companyOk
-                          ? `Add ${company} to your application tracker so you can follow up after applying. Role title is auto-filled if you came via Apply-via-Vantage, otherwise you'll be asked.`
+                          ? `Add ${company} to your application tracker so you can follow up after applying. Role title is auto-filled if you came via Apply-via-AimVantage, otherwise you'll be asked.`
                           : 'Company name could not be reliably identified — save manually from the tracker instead.'}
                       >
                         <Bookmark className="w-4 h-4" /> Save to tracker
@@ -2132,7 +2132,7 @@ export default function Dashboard() {
                       // No @-handle — Vantage AI doesn't have a verified Twitter account
                       // yet; an @-tag pointing at a non-existent or squatted handle would
                       // break the share. Plain brand name reads cleanly either way.
-                      const shareText = `Just got a ${results.cvFitScore}/100 CV fit score for ${role} at ${company} using Vantage AI's free 90-second analysis — full company intel + tailored cover letter + interview pack. Try it:`;
+                      const shareText = `Just got a ${results.cvFitScore}/100 CV fit score for ${role} at ${company} using AimVantage's free 90-second analysis — full company intel + tailored cover letter + interview pack. Try it:`;
                       const shareUrl = 'https://aimvantage.uk/?utm_source=share&utm_medium=fitscore';
                       return (
                         <>

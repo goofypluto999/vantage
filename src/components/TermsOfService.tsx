@@ -23,7 +23,7 @@ export default function TermsOfService() {
             <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-600 to-purple-600 flex items-center justify-center">
               <BrainCircuit className="w-4.5 h-4.5 text-white" />
             </div>
-            <span className="text-lg font-display font-bold text-white">Vantage</span>
+            <span className="text-lg font-display font-bold text-white">AimVantage</span>
           </Link>
           <Link
             to="/"
@@ -63,10 +63,10 @@ export default function TermsOfService() {
             <section className={sectionClass}>
               <h2 className={headingClass}>1. Acceptance of Terms</h2>
               <p className={bodyClass}>
-                By accessing or using Vantage ("the Service"), you agree to be bound by these Terms of Service ("Terms"). If you do not agree to all of these Terms, you must not access or use the Service. Your continued use of the Service following any changes to these Terms constitutes your acceptance of those changes.
+                By accessing or using AimVantage ("the Service"), formerly known as Vantage AI, you agree to be bound by these Terms of Service ("Terms"). If you do not agree to all of these Terms, you must not access or use the Service. Your continued use of the Service following any changes to these Terms constitutes your acceptance of those changes.
               </p>
               <p className={`${bodyClass} mt-3`}>
-                These Terms constitute a legally binding agreement between you ("User", "you", "your") and the operator of Vantage ("Operator", "we", "us", "our").
+                These Terms constitute a legally binding agreement between you ("User", "you", "your") and the operator of AimVantage ("Operator", "we", "us", "our").
               </p>
             </section>
 
@@ -74,13 +74,13 @@ export default function TermsOfService() {
             <section className={sectionClass}>
               <h2 className={headingClass}>2. Service Description</h2>
               <p className={bodyClass}>
-                Vantage is an AI-powered job preparation tool. The Service generates company intelligence reports, cover letters, strategic briefs, interview preparation materials, CV fit analysis, and related content using artificial intelligence.
+                AimVantage is an AI-powered job preparation tool. The Service generates company intelligence reports, cover letters, strategic briefs, interview preparation materials, CV fit analysis, and related content using artificial intelligence.
               </p>
               <p className={`${bodyClass} mt-3 ${emphasisClass}`}>
                 You expressly acknowledge and agree that:
               </p>
               <ul className={`${listClass} mt-2`}>
-                <li>Vantage is a <span className={emphasisClass}>software tool</span>, not a recruitment agency, employment service, or career consultancy.</li>
+                <li>AimVantage is a <span className={emphasisClass}>software tool</span>, not a recruitment agency, employment service, or career consultancy.</li>
                 <li>The Service does not provide professional career advice, legal advice, financial advice, or any other form of professional advice.</li>
                 <li>The Service does not guarantee, promise, or imply any specific job outcome, interview result, application success, or career advancement.</li>
                 <li>All AI-generated content is produced algorithmically and must be independently reviewed by you before use.</li>
@@ -95,7 +95,7 @@ export default function TermsOfService() {
                   <Shield className="w-5 h-5 text-violet-400 flex-shrink-0 mt-0.5" />
                   <div className={bodyClass}>
                     <p>
-                      Vantage is operated by an individual based in England, United Kingdom, as a personal project. It is <span className={emphasisClass}>not</span> a registered company, limited liability entity, or incorporated business. There is no formal support team, dedicated customer service department, or guaranteed response infrastructure.
+                      AimVantage is operated by an individual based in England, United Kingdom, as a personal project. It is <span className={emphasisClass}>not</span> a registered company, limited liability entity, or incorporated business. There is no formal support team, dedicated customer service department, or guaranteed response infrastructure.
                     </p>
                     <p className="mt-2">
                       The Service is provided on a <span className={emphasisClass}>best-effort basis</span>. By using the Service, you acknowledge and accept that you are engaging with a product developed and maintained by a sole individual.
@@ -216,7 +216,7 @@ export default function TermsOfService() {
             <section className={sectionClass}>
               <h2 className={headingClass}>10. Intellectual Property</h2>
               <p className={bodyClass}>
-                The Vantage name, brand, logo, user interface design, visual elements, code, and all other proprietary materials are the intellectual property of the Operator and are protected by applicable intellectual property laws. You may not copy, modify, distribute, sell, or lease any part of our proprietary materials without our prior written consent.
+                The AimVantage name, brand, logo, user interface design, visual elements, code, and all other proprietary materials are the intellectual property of the Operator and are protected by applicable intellectual property laws. You may not copy, modify, distribute, sell, or lease any part of our proprietary materials without our prior written consent.
               </p>
               <p className={`${bodyClass} mt-3`}>
                 AI-generated output produced by the Service from your User Content belongs to you, subject to these Terms. However, such output is provided <span className={emphasisClass}>without any warranty</span> of originality, non-infringement, or fitness for any particular purpose. You are solely responsible for ensuring that your use of AI-generated output does not infringe upon the rights of any third party.
@@ -384,7 +384,7 @@ export default function TermsOfService() {
             <section className={sectionClass}>
               <h2 className={headingClass}>21. No Support Guarantee</h2>
               <p className={bodyClass}>
-                Vantage is a personal passion project. We do not guarantee customer support response times, availability, or resolution. Support enquiries are handled on a <span className={emphasisClass}>best-effort basis</span> and may be subject to significant delays. There is no service-level agreement (SLA) for support. We are under no obligation to provide technical support, troubleshooting, or assistance of any kind, although we will endeavour to help where we reasonably can.
+                AimVantage is a personal passion project. We do not guarantee customer support response times, availability, or resolution. Support enquiries are handled on a <span className={emphasisClass}>best-effort basis</span> and may be subject to significant delays. There is no service-level agreement (SLA) for support. We are under no obligation to provide technical support, troubleshooting, or assistance of any kind, although we will endeavour to help where we reasonably can.
               </p>
             </section>
 
