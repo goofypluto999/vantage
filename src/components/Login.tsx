@@ -49,7 +49,7 @@ export default function Login() {
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-600 to-purple-600 flex items-center justify-center">
                 <BrainCircuit className="w-5 h-5 text-white" aria-hidden="true" />
               </div>
-              <span className="text-2xl font-display font-bold text-white">Vantage</span>
+              <span className="text-2xl font-display font-bold text-white">AimVantage</span>
             </Link>
             <Link to="/" className="flex items-center gap-1.5 text-white/60 hover:text-white/70 text-sm transition-colors">
               <ArrowLeft className="w-4 h-4" aria-hidden="true" />
