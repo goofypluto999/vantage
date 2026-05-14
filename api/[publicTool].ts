@@ -178,7 +178,7 @@ async function handleWebmention(req: any, res: any) {
   if (req.method === 'GET') {
     res.status(200).setHeader('Content-Type', 'text/plain; charset=utf-8');
     res.send(
-      'Vantage AI Webmention endpoint.\n' +
+      'AimVantage Webmention endpoint.\n' +
       'POST application/x-www-form-urlencoded with source= and target=.\n' +
       'Spec: https://www.w3.org/TR/webmention/\n'
     );
