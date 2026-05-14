@@ -301,15 +301,20 @@ async function handleSync(request: any, response: any) {
       }
     }
 
-    for (const sub of activeSubs) {
-      if (sub.id !== bestSubId) {
-        try {
-          await stripe.subscriptions.cancel(sub.id);
-          console.log(`Sync: cancelled extra subscription ${sub.id}`);
-        } catch (e: any) {
-          console.warn(`Sync: could not cancel ${sub.id}: ${e.message}`);
-        }
-      }
+    // CRITICAL SECURITY FIX 2026-05-14 (CRIT-01 from Codex audit):
+    // The previous version of this block called stripe.subscriptions.cancel()
+    // for every active subscription except the chosen 'best' one. Because
+    // Account.tsx invokes syncSubscription() on every mount, this turned a
+    // passive page-load into a DESTRUCTIVE Stripe mutation that could cancel
+    // a real paying customer's subscription without any click, confirmation,
+    // or Portal flow.
+    //
+    // SYNC IS NOW STRICTLY READ-ONLY. If a user has duplicate active subs
+    // and we need to clean them up, that's a one-off admin task — never an
+    // automatic side-effect of visiting /account.
+    if (activeSubs.length > 1) {
+      const extraIds = activeSubs.filter((s) => s.id !== bestSubId).map((s) => s.id);
+      console.warn(`Sync: user ${user.id} has ${extraIds.length} duplicate active subscriptions (${extraIds.join(', ')}) — NOT auto-cancelling. Manual admin review required.`);
     }
 
     const alreadySynced = profile.stripe_subscription_id === bestSubId;
