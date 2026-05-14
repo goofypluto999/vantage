@@ -57,7 +57,7 @@ export default function LaidOffPage() {
         name: 'How long should I expect the job search to take after a tech layoff?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Median time to next role for laid-off tech workers in 2026 is 3-6 months. Faster if you compress prep time per application (current average is 1+ hour per application, manual). Vantage AI compresses that to ~90 seconds per application, which is why people applying to 30+ jobs a week use it.',
+          text: 'Median time to next role for laid-off tech workers in 2026 is 3-6 months. Faster if you compress prep time per application (current average is 1+ hour per application, manual). AimVantage compresses that to ~90 seconds per application, which is why people applying to 30+ jobs a week use it.',
         },
       },
     ],
@@ -76,7 +76,7 @@ export default function LaidOffPage() {
       {/* Nav */}
       <nav className={`${t.nav} border-b border-white/10 sticky top-0 z-50 backdrop-blur-xl`}>
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link to="/" className={`text-xl font-bold ${t.text}`}>Vantage</Link>
+          <Link to="/" className={`text-xl font-bold ${t.text}`}>AimVantage</Link>
           <div className="flex items-center gap-4">
             <Link to="/blog" className={`text-sm ${t.textSub} hover:${t.text}`}>Blog</Link>
             <Link to="/register" className="px-4 py-2 bg-[#4F46E5] text-white rounded-full text-sm font-semibold hover:bg-[#3F36D5] transition-all">
@@ -114,11 +114,11 @@ export default function LaidOffPage() {
             to="/register"
             className={`inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full font-semibold border-2 border-[#4F46E5]/30 ${t.text} hover:bg-[#4F46E5]/10 transition-all`}
           >
-            10 free Vantage prep packs
+            10 free AimVantage prep packs
           </Link>
         </div>
         <p className={`mt-6 text-xs ${t.textMuted} flex items-center justify-center gap-2`}>
-          <Lock className="w-3 h-3" /> No signup for ATS scan · No card needed for Vantage trial
+          <Lock className="w-3 h-3" /> No signup for ATS scan · No card needed for AimVantage trial
         </p>
       </section>
 
@@ -249,7 +249,7 @@ export default function LaidOffPage() {
         </div>
       </section>
 
-      {/* What Vantage does */}
+      {/* What AimVantage does */}
       <section className="max-w-5xl mx-auto px-6 py-12">
         <div className={`${t.glass} rounded-2xl p-8 md:p-12 text-center`}>
           <p className="text-xs font-bold tracking-widest uppercase text-[#4F46E5] mb-3">
@@ -260,7 +260,7 @@ export default function LaidOffPage() {
           </h2>
           <p className={`${t.textSub} max-w-2xl mx-auto mb-8`}>
             That's another hour per application. At 30 applications a week, that's your whole
-            weekend. Vantage compresses it to ~90 seconds per application: company brief,
+            weekend. AimVantage compresses it to ~90 seconds per application: company brief,
             tailored cover letter (4 tones), mock interview Qs with model answers, fit score,
             5-minute pitch outline.
           </p>
@@ -282,7 +282,7 @@ export default function LaidOffPage() {
             to="/register"
             className="inline-flex items-center gap-2 px-8 py-4 bg-[#4F46E5] text-white rounded-full font-bold hover:-translate-y-0.5 transition-all"
           >
-            Get 10 free Vantage prep packs <ArrowRight className="w-4 h-4" />
+            Get 10 free AimVantage prep packs <ArrowRight className="w-4 h-4" />
           </Link>
           <p className={`mt-4 text-xs ${t.textMuted}`}>
             No card. £5 starter pack if you want more. No subscription.
@@ -307,11 +307,11 @@ export default function LaidOffPage() {
         <p className={`${t.textSub} leading-relaxed`}>
           The volume is real, the pain is real, and the system is dumber than it should be.
           We built CV Mirror free because the parser-check should never cost money. We built
-          Vantage paid because the rest of the prep takes real compute. If neither helps,
+          AimVantage paid because the rest of the prep takes real compute. If neither helps,
           that's fine. If they do, it took 60 days of evenings to ship and we'd love your
           honest feedback.
         </p>
-        <p className={`mt-4 text-sm ${t.textMuted}`}>— Gio (Giovanni Sizino Ennes), Vantage AI · UK independent founder, building in public</p>
+        <p className={`mt-4 text-sm ${t.textMuted}`}>— Gio (Giovanni Sizino Ennes), AimVantage · UK independent founder, building in public</p>
       </section>
     </div>
   );

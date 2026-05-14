@@ -5,9 +5,9 @@ import { FileText, Loader2 } from 'lucide-react';
 /**
  * /open-cv — landing route for PWA file_handlers manifest entry.
  *
- * When a user has Vantage installed as a PWA and uses the OS's "Open
+ * When a user has AimVantage installed as a PWA and uses the OS's "Open
  * with…" menu on a CV file (.pdf / .docx / .txt), the browser launches
- * Vantage at this route and exposes the file via window.launchQueue.
+ * AimVantage at this route and exposes the file via window.launchQueue.
  *
  * What we do: set up a launchQueue consumer, grab the first FileSystem-
  * Handle, read the file into a Blob, store a base64 representation in
@@ -97,13 +97,13 @@ export default function PwaOpenCv() {
         {status === 'waiting' && (
           <>
             <Loader2 className="w-6 h-6 animate-spin mx-auto mb-3 text-violet-400" />
-            <p className="text-white/80 text-base font-semibold">Opening your CV in Vantage…</p>
+            <p className="text-white/80 text-base font-semibold">Opening your CV in AimVantage…</p>
           </>
         )}
         {status === 'unsupported' && (
           <>
             <p className="text-white/80 text-base font-semibold mb-2">This browser doesn't support the file-handler API.</p>
-            <p className="text-white/50 text-sm mb-4">Open Vantage normally and upload your CV from the dashboard.</p>
+            <p className="text-white/50 text-sm mb-4">Open AimVantage normally and upload your CV from the dashboard.</p>
             <button onClick={() => navigate('/dashboard')} className="px-5 py-2.5 rounded-xl bg-violet-600 text-white font-semibold">Go to dashboard</button>
           </>
         )}
@@ -116,7 +116,7 @@ export default function PwaOpenCv() {
         )}
         {status === 'wrong-type' && (
           <>
-            <p className="text-white/80 text-base font-semibold mb-2">Vantage accepts PDF, DOCX, or TXT only.</p>
+            <p className="text-white/80 text-base font-semibold mb-2">AimVantage accepts PDF, DOCX, or TXT only.</p>
             <button onClick={() => navigate('/dashboard')} className="px-5 py-2.5 rounded-xl bg-violet-600 text-white font-semibold">Go to dashboard</button>
           </>
         )}

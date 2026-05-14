@@ -22,7 +22,7 @@ export default function ReferPage() {
 
   const links = [
     {
-      label: 'Vantage AI (full prep tool)',
+      label: 'AimVantage (full prep tool)',
       url: `${SITE_URL}/?utm_source=referral&utm_medium=user&utm_campaign=share&ref=${userTag}`,
     },
     {
@@ -47,11 +47,11 @@ export default function ReferPage() {
 
   return (
     <div className="min-h-screen" style={{ background: t.pageBg }}>
-      <SEO title="Refer a friend" description="Share your personal Vantage referral link with friends and contacts who could use job-prep help." path="/refer" noindex />
+      <SEO title="Refer a friend" description="Share your personal AimVantage referral link with friends and contacts who could use job-prep help." path="/refer" noindex />
 
       <nav className={`${t.nav} border-b border-white/10 sticky top-0 z-50 backdrop-blur-xl`}>
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link to="/" className={`text-xl font-bold ${t.text}`}>Vantage</Link>
+          <Link to="/" className={`text-xl font-bold ${t.text}`}>AimVantage</Link>
           <Link to="/dashboard" className={`text-sm ${t.textSub} hover:${t.text}`}>Dashboard</Link>
         </div>
       </nav>
@@ -60,7 +60,7 @@ export default function ReferPage() {
         <Gift className="w-12 h-12 text-[#4F46E5] mx-auto mb-4" />
         <h1 className={`text-4xl font-bold tracking-tight ${t.text} mb-4`}>Share with a friend</h1>
         <p className={`text-lg ${t.textSub} max-w-2xl mx-auto mb-3`}>
-          If Vantage helped you, send the link to someone job-hunting. The links below
+          If AimVantage helped you, send the link to someone job-hunting. The links below
           carry a tag so we can see traffic from your share — useful for us, no profile
           tracking on the recipient.
         </p>
@@ -78,7 +78,7 @@ export default function ReferPage() {
         <div className="space-y-4">
           {links.map((l) => {
             // One-click share helpers per link. Tweet text is short and
-            // doesn't claim things Vantage doesn't deliver — describes the
+            // doesn't claim things AimVantage doesn't deliver — describes the
             // tool and links the personalised URL.
             const shareText = l.label.includes('CV Mirror')
               ? 'Free, fully client-side ATS scanner — see how 5 major parsers actually read your CV. No signup, nothing uploads:'

@@ -8,7 +8,7 @@ import { track } from '../lib/track';
  *
  * Reusable conversion callout that promotes the free 60-second No
  * Interviews diagnostic on any page. Drop it anywhere — the diagnostic
- * is the lowest-friction onramp Vantage offers (no signup, no upload,
+ * is the lowest-friction onramp AimVantage offers (no signup, no upload,
  * no LLM call) and most cold visitors arrive frustrated by their
  * job-search bottleneck, which is exactly what the diagnostic
  * pinpoints.

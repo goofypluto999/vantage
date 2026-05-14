@@ -1,5 +1,5 @@
 /**
- * LiveDemoReel — 22-second animated walkthrough of the Vantage product.
+ * LiveDemoReel — 22-second animated walkthrough of the AimVantage product.
  *
  * Built to mirror the REAL dashboard exactly:
  * - Same card markup (`p-6 rounded-2xl bg-white/5 border border-white/10`)
@@ -268,7 +268,7 @@ export default function LiveDemoReel({ autoplay = true, aspectRatio = '16/10' }:
                 className="text-center"
               >
                 <p className="text-[11px] md:text-sm uppercase tracking-[0.2em] text-violet-300/80 mb-3 md:mb-5">
-                  Vantage AI
+                  AimVantage
                 </p>
                 <h2 className="text-2xl md:text-5xl lg:text-7xl font-bold text-white leading-[1.05] tracking-tight">
                   From CV to interview-ready
@@ -580,7 +580,7 @@ export default function LiveDemoReel({ autoplay = true, aspectRatio = '16/10' }:
                   transition={{ duration: 1.4, repeat: Infinity }}
                   className="inline-flex items-center gap-2 px-7 md:px-9 py-3 md:py-4 rounded-xl bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] text-white font-semibold text-sm md:text-base"
                 >
-                  Try Vantage free
+                  Try AimVantage free
                   <ArrowRight className="w-4 h-4 md:w-5 md:h-5" />
                 </motion.button>
                 <p className="text-[10px] md:text-xs text-white/40 mt-3 md:mt-4">

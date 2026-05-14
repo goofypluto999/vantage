@@ -41,7 +41,7 @@ export default function SalaryPage() {
     description: `Median, 25th, 75th, and 90th percentile compensation for ${profile.role} roles in the UK and US, sourced from public salary data.`,
     creator: {
       '@type': 'Organization',
-      name: 'Vantage',
+      name: 'AimVantage',
       url: SITE_URL,
     },
     distribution: [
@@ -101,10 +101,10 @@ export default function SalaryPage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <Link to="/" className={`flex items-center gap-2 ${t.text}`}>
             <Star className="w-5 h-5 text-violet-500" />
-            <span className="font-bold tracking-tight">Vantage</span>
+            <span className="font-bold tracking-tight">AimVantage</span>
           </Link>
           <Link to="/register" className="text-sm px-4 py-2 rounded-full bg-violet-600 hover:bg-violet-500 text-white font-semibold transition">
-            Try Vantage free
+            Try AimVantage free
           </Link>
         </div>
       </nav>
@@ -240,10 +240,10 @@ export default function SalaryPage() {
         </section>
 
         <section className={`mb-10 ${t.glass} rounded-2xl p-6 sm:p-8`}>
-          <h2 className={`text-xl font-bold ${t.text} mb-3`}>Use Vantage to position yourself within the band</h2>
+          <h2 className={`text-xl font-bold ${t.text} mb-3`}>Use AimVantage to position yourself within the band</h2>
           <p className={`${t.textSub} leading-relaxed mb-4`}>
             Knowing the median is the easy part. The harder question — which percentile of the band
-            does your CV justify for the specific role you're applying for? Vantage analyses your CV
+            does your CV justify for the specific role you're applying for? AimVantage analyses your CV
             against the actual job posting and tells you the gaps to close first. Pair it with the
             data above to walk in knowing exactly what to ask for.
           </p>

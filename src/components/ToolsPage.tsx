@@ -7,7 +7,7 @@ const SITE_URL = 'https://aimvantage.uk';
 
 /**
  * /tools — hub page listing every free tool built by Giovanni Sizino Ennes
- * under the Vantage AI project umbrella (informally "Vantage Labs", not a
+ * under the AimVantage project umbrella (informally "AimVantage Labs", not a
  * registered company).
  * Currently features CV Mirror (free ATS scanner). Designed to be
  * extended with future free tools by appending entries to the TOOLS array.
@@ -18,7 +18,7 @@ export default function ToolsPage() {
   const itemListSchema = {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
-    name: 'Free job search tools by Vantage AI',
+    name: 'Free job search tools by AimVantage',
     numberOfItems: 9,
     itemListElement: [
       {
@@ -67,7 +67,7 @@ export default function ToolsPage() {
         '@type': 'ListItem',
         position: 8,
         url: `${SITE_URL}/tools/jobscan-cost-calculator`,
-        name: 'Job Tool Cost Calculator — Jobscan vs Vantage',
+        name: 'Job Tool Cost Calculator — Jobscan vs AimVantage',
       },
       {
         '@type': 'ListItem',
@@ -181,7 +181,7 @@ export default function ToolsPage() {
     <div className="min-h-screen" style={{ background: t.pageBg }}>
       <SEO
         title="Free Job Search AI Tools — Cover Letter Roast, Rejection Decoder, Ghost Job Detector"
-        description="Five free AI tools by Vantage AI: ATS resume checker (CV Mirror), cover letter roast, rejection email decoder, ghost-job detector, interview prep by company / role, layoff recovery guide. No signup, no upsell wall."
+        description="Five free AI tools by AimVantage: ATS resume checker (CV Mirror), cover letter roast, rejection email decoder, ghost-job detector, interview prep by company / role, layoff recovery guide. No signup, no upsell wall."
         path="/tools"
         jsonLd={[itemListSchema, breadcrumbSchema]}
       />
@@ -190,10 +190,10 @@ export default function ToolsPage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <Link to="/" className={`flex items-center gap-2 ${t.text}`}>
             <Star className="w-5 h-5 text-violet-500" />
-            <span className="font-bold tracking-tight">Vantage</span>
+            <span className="font-bold tracking-tight">AimVantage</span>
           </Link>
           <Link to="/register" className="text-sm px-4 py-2 rounded-full bg-violet-600 hover:bg-violet-500 text-white font-semibold transition">
-            Try Vantage free
+            Try AimVantage free
           </Link>
         </div>
       </nav>
@@ -202,14 +202,14 @@ export default function ToolsPage() {
         {/* Header */}
         <header className="text-center mb-16">
           <span className={`inline-block text-xs uppercase tracking-widest ${t.textMuted} font-semibold mb-3`}>
-            Vantage AI · Free tools
+            AimVantage · Free tools
           </span>
           <h1 className={`text-4xl sm:text-5xl font-extrabold tracking-tight ${t.text}`}>
             Free tools for job seekers
           </h1>
           <p className={`mt-5 text-lg ${t.textSub} max-w-2xl mx-auto`}>
             Standalone tools we built and gave away. No signup, no upsell wall.
-            Use them on their own, or as the front-end of a full Vantage analysis.
+            Use them on their own, or as the front-end of a full AimVantage analysis.
           </p>
         </header>
 
@@ -748,7 +748,7 @@ export default function ToolsPage() {
                   </h3>
                   <p className={`text-sm ${t.textSub} mt-2 leading-relaxed`}>
                     What a year of Jobscan, Resume Worded, Final Round AI, Teal, and LiveCareer would actually cost
-                    — versus Vantage's £5 one-time top-up. Drag the sliders and see the spread for yourself.
+                    — versus AimVantage's £5 one-time top-up. Drag the sliders and see the spread for yourself.
                   </p>
                 </div>
                 <Calculator className="w-5 h-5 text-violet-400 flex-shrink-0" />
@@ -783,7 +783,7 @@ export default function ToolsPage() {
                     Free PDF playbook
                   </div>
                   <h3 className={`text-lg font-bold ${t.text} mt-1 group-hover:text-violet-500 transition`}>
-                    The Vantage Playbook
+                    The AimVantage Playbook
                   </h3>
                   <p className={`text-sm ${t.textSub} mt-2 leading-relaxed`}>
                     The exact 6-step routine I used when applying to 50 jobs a week. CV format, parse-test, application prep, mock interview, follow-up.
@@ -815,7 +815,7 @@ export default function ToolsPage() {
               {' '}— fix any parse issues a real ATS would have.
             </li>
             <li>
-              Open <Link to="/" className="text-violet-500 hover:underline font-semibold">Vantage</Link>,
+              Open <Link to="/" className="text-violet-500 hover:underline font-semibold">AimVantage</Link>,
               upload the (now ATS-clean) CV, paste the job link.
             </li>
             <li>
@@ -828,13 +828,13 @@ export default function ToolsPage() {
         <div className={`mt-16 ${t.glass} rounded-2xl p-8 text-center`}>
           <h3 className={`text-2xl font-bold ${t.text}`}>Ready for the full pack?</h3>
           <p className={`mt-2 ${t.textSub} max-w-xl mx-auto`}>
-            CV Mirror gets your CV past the parser. Vantage gets you ready for the interview.
+            CV Mirror gets your CV past the parser. AimVantage gets you ready for the interview.
           </p>
           <Link
             to="/register"
             className="mt-5 inline-flex items-center gap-2 px-6 py-3 rounded-full bg-violet-600 hover:bg-violet-500 text-white font-semibold transition"
           >
-            Try Vantage free <ArrowRight className="w-4 h-4" />
+            Try AimVantage free <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
       </main>

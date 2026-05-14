@@ -101,7 +101,7 @@ export default function DemoWalkthrough({ onClose, onStartReal }: DemoWalkthroug
       ref={containerRef}
       role="dialog"
       aria-modal="true"
-      aria-label="Vantage demo walkthrough"
+      aria-label="AimVantage demo walkthrough"
       onClick={(e) => { if (e.target === e.currentTarget && onClose) onClose(); }}
       className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8"
       style={{ backdropFilter: 'blur(20px)', background: 'rgba(20,18,48,0.85)' }}

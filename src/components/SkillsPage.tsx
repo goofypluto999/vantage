@@ -60,7 +60,7 @@ const TOOLS: ToolEntry[] = [
 
 /**
  * /skills — directory of MCP servers and Claude Skills relevant to the
- * Vantage / job-prep audience.
+ * AimVantage / job-prep audience.
  *
  * Targets the searches "best mcp servers for job search", "mcp ats lint",
  * "claude skills for cv". Underexploited keyword cluster.
@@ -98,7 +98,7 @@ export default function SkillsPage() {
     <div className="min-h-screen" style={{ background: t.pageBg }}>
       <SEO
         title="MCP servers and Claude Skills for job search and CV prep"
-        description="A curated list of Model Context Protocol servers and Claude Skills that integrate with Vantage's job-application workflow. cv-mirror-mcp, filesystem-mcp, github-mcp, and more."
+        description="A curated list of Model Context Protocol servers and Claude Skills that integrate with AimVantage's job-application workflow. cv-mirror-mcp, filesystem-mcp, github-mcp, and more."
         path="/skills"
       />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
@@ -106,7 +106,7 @@ export default function SkillsPage() {
 
       <nav className={`${t.nav} border-b border-white/10 sticky top-0 z-50 backdrop-blur-xl`}>
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link to="/" className={`text-xl font-bold ${t.text}`}>Vantage</Link>
+          <Link to="/" className={`text-xl font-bold ${t.text}`}>AimVantage</Link>
           <div className="flex items-center gap-4 text-sm">
             <Link to="/ats" className={`${t.textSub} hover:${t.text}`}>ATS Guide</Link>
             <Link to="/laid-off" className="text-[#4F46E5] font-semibold hover:underline">Just laid off?</Link>
@@ -182,7 +182,7 @@ export default function SkillsPage() {
         </div>
       </section>
 
-      {/* Vantage CTA — added 2026-05-08. Skills-page audience is MCP/Claude-
+      {/* AimVantage CTA — added 2026-05-08. Skills-page audience is MCP/Claude-
           curious developers and CV-prep skeptics who landed here from the
           MCP/Claude search cluster. They came for tooling info, but the
           actual prep-pack product is the orchestrator these tools fit
@@ -195,14 +195,14 @@ export default function SkillsPage() {
             Where these tools fit
           </p>
           <h2 className={`text-xl md:text-2xl font-bold ${t.text} mb-3`}>
-            Vantage AI is the orchestrator. The tools above are the pipes.
+            AimVantage is the orchestrator. The tools above are the pipes.
           </h2>
           <p className={`${t.textSub} mb-5 leading-relaxed`}>
             cv-mirror-mcp is the ATS lint layer. github-mcp + brave-search-mcp
-            are the company-research substrate. Vantage AI bundles all of it
+            are the company-research substrate. AimVantage bundles all of it
             into one ~90-second prep pack: company intel, fit score, tailored
             cover letter, mock interview questions, pitch outline. If you're
-            already orchestrating MCP servers, Vantage saves you the prompt-
+            already orchestrating MCP servers, AimVantage saves you the prompt-
             engineering for the application layer.
           </p>
           <div className="flex flex-wrap items-center gap-3">

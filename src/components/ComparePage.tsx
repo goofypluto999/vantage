@@ -8,7 +8,7 @@ const SITE_URL = 'https://aimvantage.uk';
 /**
  * /compare — comparison page targeting "vs" queries.
  *
- * "Vantage vs Teal" / "Vantage vs Jobscan" / "Vantage vs Resume.io" — all high
+ * "AimVantage vs Teal" / "AimVantage vs Jobscan" / "AimVantage vs Resume.io" — all high
  * commercial intent. The visitor is researching to buy. This page is built for
  * that moment.
  *
@@ -20,7 +20,7 @@ export default function ComparePage() {
 
   // -------- Comparison matrix --------
   const competitors = [
-    { name: 'Vantage', us: true },
+    { name: 'AimVantage', us: true },
     { name: 'Teal', us: false },
     { name: 'Resume.io', us: false },
     { name: 'Jobscan', us: false },
@@ -65,34 +65,34 @@ export default function ComparePage() {
     mainEntity: [
       {
         '@type': 'Question',
-        name: 'What is the difference between Vantage and Teal?',
+        name: 'What is the difference between AimVantage and Teal?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Teal is primarily a CV builder and job tracker — you organise your CV and applications inside it. Vantage is an AI prep tool — you upload your existing CV and a job URL, and Vantage generates company intel, a tailored cover letter, mock interview questions, a fit score, and a 5-minute pitch outline. Different problem space. Use Teal to build the CV; use Vantage to prepare to apply with it.',
+          text: 'Teal is primarily a CV builder and job tracker — you organise your CV and applications inside it. AimVantage is an AI prep tool — you upload your existing CV and a job URL, and AimVantage generates company intel, a tailored cover letter, mock interview questions, a fit score, and a 5-minute pitch outline. Different problem space. Use Teal to build the CV; use AimVantage to prepare to apply with it.',
         },
       },
       {
         '@type': 'Question',
-        name: 'Vantage vs Jobscan — which is better?',
+        name: 'AimVantage vs Jobscan — which is better?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Jobscan is a paid CV-vs-JD keyword matcher with a $49.95/month plan. Vantage covers the same use case (CV-vs-role fit) but adds the rest of the prep pack — cover letter, mock interview, presentation outline — and lets you start at £5 one-time, no subscription. We also ship a separate free tool, CV Mirror, which gives you the multi-vendor ATS parse view Jobscan does not.',
+          text: 'Jobscan is a paid CV-vs-JD keyword matcher with a $49.95/month plan. AimVantage covers the same use case (CV-vs-role fit) but adds the rest of the prep pack — cover letter, mock interview, presentation outline — and lets you start at £5 one-time, no subscription. We also ship a separate free tool, CV Mirror, which gives you the multi-vendor ATS parse view Jobscan does not.',
         },
       },
       {
         '@type': 'Question',
-        name: 'Is Vantage cheaper than Resume.io?',
+        name: 'Is AimVantage cheaper than Resume.io?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Yes. Resume.io leads with a $2.95 7-day trial that converts to ~$24.95/month. Vantage starts at £5 / $5 for 20 tokens that never expire — pay once, use until exhausted. There are also monthly plans (Pro £12, Premium £20) for heavy users.',
+          text: 'Yes. Resume.io leads with a $2.95 7-day trial that converts to ~$24.95/month. AimVantage starts at £5 / $5 for 20 tokens that never expire — pay once, use until exhausted. There are also monthly plans (Pro £12, Premium £20) for heavy users.',
         },
       },
       {
         '@type': 'Question',
-        name: 'Does Vantage include an ATS scanner?',
+        name: 'Does AimVantage include an ATS scanner?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Yes — we built CV Mirror as the free ATS scanner. It is a separate, fully client-side tool at cv-mirror-web.vercel.app that simulates how 5 real ATS systems (Workday, Greenhouse, Lever, Taleo, iCIMS) parse a CV. Free, no signup, nothing uploads. Vantage focuses on the rest of the application prep flow.',
+          text: 'Yes — we built CV Mirror as the free ATS scanner. It is a separate, fully client-side tool at cv-mirror-web.vercel.app that simulates how 5 real ATS systems (Workday, Greenhouse, Lever, Taleo, iCIMS) parse a CV. Free, no signup, nothing uploads. AimVantage focuses on the rest of the application prep flow.',
         },
       },
     ],
@@ -101,8 +101,8 @@ export default function ComparePage() {
   return (
     <div className="min-h-screen" style={{ background: t.pageBg }}>
       <SEO
-        title="Vantage vs Teal vs Resume.io vs Jobscan — feature comparison"
-        description="Side-by-side comparison of Vantage with Teal, Resume.io, and Jobscan across cover letter, mock interview, fit score, ATS scan, and pricing. Updated 2026."
+        title="AimVantage vs Teal vs Resume.io vs Jobscan — feature comparison"
+        description="Side-by-side comparison of AimVantage with Teal, Resume.io, and Jobscan across cover letter, mock interview, fit score, ATS scan, and pricing. Updated 2026."
         path="/compare"
         jsonLd={[breadcrumbSchema, faqSchema]}
       />
@@ -111,10 +111,10 @@ export default function ComparePage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <Link to="/" className={`flex items-center gap-2 ${t.text}`}>
             <Star className="w-5 h-5 text-violet-500" />
-            <span className="font-bold tracking-tight">Vantage</span>
+            <span className="font-bold tracking-tight">AimVantage</span>
           </Link>
           <Link to="/register" className="text-sm px-4 py-2 rounded-full bg-violet-600 hover:bg-violet-500 text-white font-semibold transition">
-            Try Vantage free
+            Try AimVantage free
           </Link>
         </div>
       </nav>
@@ -122,15 +122,15 @@ export default function ComparePage() {
       <main className="max-w-5xl mx-auto px-4 sm:px-6 pt-12 pb-24">
         <header className="text-center mb-12">
           <span className={`inline-block text-xs uppercase tracking-widest ${t.textMuted} font-semibold mb-3`}>
-            How Vantage compares
+            How AimVantage compares
           </span>
           <h1 className={`text-4xl sm:text-5xl font-extrabold tracking-tight ${t.text}`}>
-            Vantage vs Teal vs Resume.io vs Jobscan
+            AimVantage vs Teal vs Resume.io vs Jobscan
           </h1>
           <p className={`mt-5 text-lg ${t.textSub} max-w-2xl mx-auto`}>
-            Honest side-by-side. We make Vantage. We're not pretending the
+            Honest side-by-side. We make AimVantage. We're not pretending the
             alternatives are bad — they all do something useful. We're showing
-            you what each one optimises for, and where Vantage wins.
+            you what each one optimises for, and where AimVantage wins.
           </p>
         </header>
 
@@ -196,10 +196,10 @@ export default function ComparePage() {
             </p>
           </article>
           <article className={`${t.glass} rounded-xl p-6 border-2 border-violet-500/40`}>
-            <h3 className={`text-lg font-bold ${t.text}`}>When Vantage wins</h3>
+            <h3 className={`text-lg font-bold ${t.text}`}>When AimVantage wins</h3>
             <p className={`mt-2 text-sm ${t.textSub} leading-relaxed`}>
               When you want the whole application prep done in 90 seconds, not
-              broken into four tools. Vantage covers company intel, cover
+              broken into four tools. AimVantage covers company intel, cover
               letter, mock interview, fit score, and pitch outline in one
               flow. Plus we ship a free ATS scanner (CV Mirror) for the
               parser side. Lowest barrier to entry: £5 once, no subscription.
@@ -233,7 +233,7 @@ export default function ComparePage() {
 
         {/* CTA */}
         <div className={`mt-12 ${t.glass} rounded-2xl p-8 text-center`}>
-          <h3 className={`text-2xl font-bold ${t.text}`}>Try Vantage on a real job link</h3>
+          <h3 className={`text-2xl font-bold ${t.text}`}>Try AimVantage on a real job link</h3>
           <p className={`mt-2 ${t.textSub} max-w-xl mx-auto`}>
             One upload. One paste. Full prep pack in 90 seconds. £5 starter, no subscription.
           </p>

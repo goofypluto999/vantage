@@ -229,7 +229,7 @@ export default function JdDecoderPage() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <Link to="/" className={`flex items-center gap-2 ${t.text}`}>
             <Star className="w-5 h-5 text-violet-500" />
-            <span className="font-bold tracking-tight">Vantage</span>
+            <span className="font-bold tracking-tight">AimVantage</span>
           </Link>
           <Link
             to="/register"
@@ -449,7 +449,7 @@ export default function JdDecoderPage() {
                 Now run the full prep on this exact JD.
               </h3>
               <p className={`mt-2 ${t.textSub} max-w-xl mx-auto`}>
-                Vantage takes your CV plus the live job link, scores the fit, drafts a tailored cover
+                AimVantage takes your CV plus the live job link, scores the fit, drafts a tailored cover
                 letter, and generates the interview questions specific to this role. 90 seconds. 10
                 free packs on signup.
               </p>

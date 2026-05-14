@@ -27,8 +27,8 @@ export default function DocsApiPage() {
   return (
     <div className="min-h-screen" style={{ background: t.pageBg }}>
       <SEO
-        title="Vantage API documentation"
-        description="Public API for the Vantage AI job-prep engine. Endpoint surface, authentication, rate limits, request shapes for /analyze, /rewrite-tone, /interview-questions."
+        title="AimVantage API documentation"
+        description="Public API for the AimVantage job-prep engine. Endpoint surface, authentication, rate limits, request shapes for /analyze, /rewrite-tone, /interview-questions."
         path="/docs/api"
         markdownAlternate="/markdown/api.md"
       />
@@ -36,7 +36,7 @@ export default function DocsApiPage() {
 
       <nav className={`${t.nav} border-b border-white/10 sticky top-0 z-50 backdrop-blur-xl`}>
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link to="/" className={`text-xl font-bold ${t.text}`}>Vantage</Link>
+          <Link to="/" className={`text-xl font-bold ${t.text}`}>AimVantage</Link>
           <div className="flex items-center gap-4 text-sm">
             <Link to="/skills" className={`${t.textSub} hover:${t.text}`}>Skills</Link>
             <Link to="/ats" className={`${t.textSub} hover:${t.text}`}>ATS Guide</Link>
@@ -48,10 +48,10 @@ export default function DocsApiPage() {
       <section className="max-w-4xl mx-auto px-6 pt-16 pb-10">
         <p className="text-xs font-bold tracking-widest uppercase text-[#4F46E5] mb-3">API documentation · v1 preview</p>
         <h1 className={`text-4xl md:text-5xl font-bold tracking-tight ${t.text} leading-[1.05] mb-5`}>
-          Vantage API
+          AimVantage API
         </h1>
         <p className={`text-lg ${t.textSub} max-w-3xl leading-relaxed`}>
-          The Vantage analysis engine, exposed as a public REST API. Currently in preview — issuing API keys
+          The AimVantage analysis engine, exposed as a public REST API. Currently in preview — issuing API keys
           to existing paid users on request. Full self-serve API key management ships in v1.0.
         </p>
         <div className={`mt-6 ${t.glass} rounded-xl p-4 flex items-start gap-3`}>
@@ -119,7 +119,7 @@ export default function DocsApiPage() {
         <div className={`${t.glass} rounded-xl p-5`}>
           <p className={`text-sm ${t.textSub} mb-3`}>
             All authenticated endpoints expect an <code className={`${t.cardInner} px-1 rounded`}>Authorization: Bearer &lt;key&gt;</code> header.
-            Keys are scoped to your Vantage account and inherit your token balance.
+            Keys are scoped to your AimVantage account and inherit your token balance.
           </p>
           <pre className={`${t.cardInner} rounded-md p-3 text-xs ${t.text} overflow-x-auto`}>
 {`curl -X POST https://aimvantage.uk/api/v1/analyze \\
@@ -144,7 +144,7 @@ export default function DocsApiPage() {
           <Code className="w-10 h-10 text-[#4F46E5] mx-auto mb-3" />
           <h2 className={`text-2xl font-bold ${t.text} mb-3`}>Request preview API access</h2>
           <p className={`${t.textSub} max-w-xl mx-auto mb-5`}>
-            Email with your use case and we'll provision a key. Existing paid Vantage users get priority.
+            Email with your use case and we'll provision a key. Existing paid AimVantage users get priority.
           </p>
           <a
             href="mailto:giovanni.sizino.ennes@hotmail.co.uk?subject=API%20preview%20access"

@@ -86,7 +86,7 @@ export default function LaidOffFromCompanyPage() {
       {/* Nav */}
       <nav className={`${t.nav} border-b border-white/10 sticky top-0 z-50 backdrop-blur-xl`}>
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link to="/" className={`text-xl font-bold ${t.text}`}>Vantage</Link>
+          <Link to="/" className={`text-xl font-bold ${t.text}`}>AimVantage</Link>
           <div className="flex items-center gap-4 text-sm">
             <Link to="/laid-off" className={`${t.textSub} hover:${t.text}`}>All cohorts</Link>
             <Link to="/ats" className={`${t.textSub} hover:${t.text}`}>ATS Guide</Link>
@@ -126,7 +126,7 @@ export default function LaidOffFromCompanyPage() {
             to="/register"
             className={`inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold border-2 border-[#4F46E5]/30 ${t.text} hover:bg-[#4F46E5]/10`}
           >
-            10 free Vantage prep packs
+            10 free AimVantage prep packs
           </Link>
         </div>
         <div className="max-w-2xl mx-auto mt-8">
@@ -189,7 +189,7 @@ export default function LaidOffFromCompanyPage() {
           ))}
         </div>
         <p className={`text-sm ${t.textMuted} mt-4`}>
-          Each of these has a dedicated <Link to="/interview-questions" className="text-[#4F46E5] hover:underline">interview-prep pack</Link> on Vantage with the 12 most-asked questions and a 5-step prep routine.
+          Each of these has a dedicated <Link to="/interview-questions" className="text-[#4F46E5] hover:underline">interview-prep pack</Link> on AimVantage with the 12 most-asked questions and a 5-step prep routine.
         </p>
       </section>
 
@@ -234,7 +234,7 @@ export default function LaidOffFromCompanyPage() {
             We built this for the moment you're in
           </h2>
           <p className={`${t.textSub} max-w-xl mx-auto mb-6`}>
-            CV Mirror gets your CV past the parser (free). Vantage compresses cover-letter +
+            CV Mirror gets your CV past the parser (free). AimVantage compresses cover-letter +
             interview prep + fit score into ~90 seconds per application (3 free, no card).
             Built solo, in 60 days, by someone who burned out twice from job-hunting at scale.
           </p>

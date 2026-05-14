@@ -97,7 +97,8 @@ export default function CaseStudyPage() {
           mainEntityOfPage: { '@type': 'WebPage', '@id': `${SITE_URL}${path}` },
           publisher: {
             '@type': 'Organization',
-            name: 'Vantage',
+            name: 'AimVantage',
+            alternateName: ['Vantage', 'Vantage AI', 'Aim Vantage'],
             logo: { '@type': 'ImageObject', url: `${SITE_URL}/favicon.svg` },
           },
           image: `${SITE_URL}/og-image.png`,
@@ -119,10 +120,10 @@ export default function CaseStudyPage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <Link to="/" className={`flex items-center gap-2 ${t.text}`}>
             <Star className="w-5 h-5 text-violet-500" />
-            <span className="font-bold tracking-tight">Vantage</span>
+            <span className="font-bold tracking-tight">AimVantage</span>
           </Link>
           <Link to="/register" className="text-sm px-4 py-2 rounded-full bg-violet-600 hover:bg-violet-500 text-white font-semibold transition">
-            Try Vantage free
+            Try AimVantage free
           </Link>
         </div>
       </nav>
@@ -191,14 +192,14 @@ export default function CaseStudyPage() {
           <div className={`mt-16 ${t.glass} rounded-2xl p-8 text-center`}>
             <h3 className={`text-2xl font-bold ${t.text}`}>Want to be the next case study?</h3>
             <p className={`mt-2 ${t.textSub} max-w-xl mx-auto`}>
-              Ten free prep packs on signup. No card. If Vantage helps you land
+              Ten free prep packs on signup. No card. If AimVantage helps you land
               a role, we'd love to feature your story (anonymised if needed).
             </p>
             <Link
               to="/register"
               className="mt-5 inline-flex items-center gap-2 px-6 py-3 rounded-full bg-violet-600 hover:bg-violet-500 text-white font-semibold transition"
             >
-              Try Vantage free <ArrowRight className="w-4 h-4" />
+              Try AimVantage free <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
         )}

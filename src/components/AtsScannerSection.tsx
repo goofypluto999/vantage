@@ -1,7 +1,7 @@
 /**
  * AtsScannerSection — compact, free, client-side ATS preview.
  *
- * Reads the CV file the user already uploaded to Vantage, extracts plain
+ * Reads the CV file the user already uploaded to AimVantage, extracts plain
  * text (DOCX via lazy mammoth, PDF via lazy pdfjs-dist, TXT via direct
  * read), and runs the same heuristics that power CV Mirror. Renders 5
  * vendor pills with pass/issue counts and a one-line top issue.
@@ -165,13 +165,13 @@ export default function AtsScannerSection({ cvFile }: Props) {
       {state.kind === 'too-thin' && (
         <p className="text-xs text-white/50">
           Only {state.words} words detected. The preview needs ≥60 words to be reliable —
-          this could mean an image-based file or empty extraction. Your full Vantage analysis is unaffected.
+          this could mean an image-based file or empty extraction. Your full AimVantage analysis is unaffected.
         </p>
       )}
 
       {state.kind === 'error' && (
         <p className="text-xs text-amber-300/80">
-          Couldn't run the preview ({state.message}). Your full Vantage analysis still works.
+          Couldn't run the preview ({state.message}). Your full AimVantage analysis still works.
         </p>
       )}
 

@@ -193,7 +193,7 @@ export default function AtsKeywordScannerPage() {
 
   /** Build a shareable plain-text summary of the scan result. The user
    * can paste it into Slack / X / LinkedIn / a colleague's DM. The
-   * Vantage attribution at the bottom is the lightweight distribution
+   * AimVantage attribution at the bottom is the lightweight distribution
    * lever -- when readers see the summary, they see where to run their
    * own. We do NOT include the user's CV or the JD text -- only the
    * coverage % and the top 8 missing keywords (which leak no PII). */
@@ -208,7 +208,7 @@ export default function AtsKeywordScannerPage() {
       lines.push(`Top gaps to close before applying: ${topMissing}`);
     }
     lines.push('');
-    lines.push('Scanned with Vantage AI free in-browser tool: aimvantage.uk/ats/scanner');
+    lines.push('Scanned with AimVantage free in-browser tool: aimvantage.uk/ats/scanner');
     return lines.join('\n');
   };
 
@@ -271,7 +271,7 @@ export default function AtsKeywordScannerPage() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <Link to="/" className={`flex items-center gap-2 ${t.text}`}>
             <Star className="w-5 h-5 text-violet-500" />
-            <span className="font-bold tracking-tight">Vantage</span>
+            <span className="font-bold tracking-tight">AimVantage</span>
           </Link>
           <div className="flex items-center gap-3 text-sm">
             <Link to="/ats" className={`${t.textSub} hover:opacity-80`}>ATS Guide</Link>
@@ -526,7 +526,7 @@ export default function AtsKeywordScannerPage() {
                 Want a cover letter that closes those gaps?
               </h3>
               <p className={`mt-2 ${t.textSub} max-w-xl mx-auto`}>
-                Vantage takes your CV and the actual job link, scores the fit, drafts a tailored
+                AimVantage takes your CV and the actual job link, scores the fit, drafts a tailored
                 cover letter that addresses your top missing keywords, and generates likely
                 interview questions. 90 seconds. 10 free prep packs on signup. No card.
               </p>
@@ -602,7 +602,7 @@ export default function AtsKeywordScannerPage() {
             </div>
             <p className={`text-sm ${t.textSub}`}>
               An invented 0-100 ATS score. A guarantee you will pass Workday or Greenhouse. The
-              correct cover letter wording. For all of those, run a full Vantage prep pack -- which
+              correct cover letter wording. For all of those, run a full AimVantage prep pack -- which
               uses Gemini 2.5 Flash to read context, not just match keywords.
             </p>
           </div>

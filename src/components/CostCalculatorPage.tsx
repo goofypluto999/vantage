@@ -13,7 +13,7 @@ const SITE_URL = 'https://aimvantage.uk';
  * Cold visitors arrive convinced "all job-prep tools cost $20-50/mo so I'll
  * subscribe somewhere." This page does the math for them. It surfaces what a
  * year of Jobscan / Resume Worded / Final Round AI / Teal actually costs at
- * their search duration, and contrasts it against Vantage's £5 one-time
+ * their search duration, and contrasts it against AimVantage's £5 one-time
  * top-up (£0.25/analysis). The number is so far apart it stops being an
  * arithmetic question and becomes a "wait — really?" question.
  *
@@ -67,11 +67,11 @@ const PRICING_TABLE = [
 ];
 
 // Approx GBP rate as of 2026-05-08. Updated annually; the spread is small
-// enough that a stale rate doesn't change the conclusion (Vantage is still
+// enough that a stale rate doesn't change the conclusion (AimVantage is still
 // 50-300x cheaper). If GBP/USD moves >20%, refresh.
 const USD_TO_GBP = 0.79;
 
-// Vantage's actual cost-per-analysis at the £5/20-token top-up.
+// AimVantage's actual cost-per-analysis at the £5/20-token top-up.
 const VANTAGE_COST_PER_ANALYSIS_GBP = 0.25;
 
 export default function CostCalculatorPage() {
@@ -98,7 +98,7 @@ export default function CostCalculatorPage() {
     }
   }, [monthsSearching, appsPerWeek, hasInteracted]);
 
-  // Total Vantage spend = 1 analysis per app, plus the initial 10-token
+  // Total AimVantage spend = 1 analysis per app, plus the initial 10-token
   // freebie that lasts the first ~10 apps.
   const totalApps = useMemo(() => Math.max(0, appsPerWeek * 4 * monthsSearching), [appsPerWeek, monthsSearching]);
   const billableApps = Math.max(0, totalApps - 10); // first 10 are free
@@ -137,10 +137,10 @@ export default function CostCalculatorPage() {
       },
       {
         '@type': 'Question',
-        name: 'Why is Vantage so much cheaper than Jobscan or Resume Worded?',
+        name: 'Why is AimVantage so much cheaper than Jobscan or Resume Worded?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Vantage runs on Gemini 2.5 Flash (one of the cheapest commercial models per token) and is operated as a sole trader from the UK. There is no sales team, no enterprise tier, no marketing department. £5 buys 20 full prep packs, with the first 10 free on signup. The marginal cost per analysis is pennies.',
+          text: 'AimVantage runs on Gemini 2.5 Flash (one of the cheapest commercial models per token) and is operated as a sole trader from the UK. There is no sales team, no enterprise tier, no marketing department. £5 buys 20 full prep packs, with the first 10 free on signup. The marginal cost per analysis is pennies.',
         },
       },
       {
@@ -148,7 +148,7 @@ export default function CostCalculatorPage() {
         name: 'Does the cost calculator include hidden fees?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'No. Vantage tokens do not expire and there are no auto-renew traps. The £5 top-up is one-time. Competitor pricing on this page is taken from each vendor’s public pricing page; click through to verify before subscribing anywhere.',
+          text: 'No. AimVantage tokens do not expire and there are no auto-renew traps. The £5 top-up is one-time. Competitor pricing on this page is taken from each vendor’s public pricing page; click through to verify before subscribing anywhere.',
         },
       },
     ],
@@ -158,7 +158,7 @@ export default function CostCalculatorPage() {
     <div className="min-h-screen" style={{ background: t.pageBg }}>
       <SEO
         title="Jobscan Cost Calculator — what a year of job-prep tools actually costs"
-        description="Honest 12-month cost calculator for Jobscan, Resume Worded, Final Round AI, Teal, and LiveCareer vs Vantage's one-time £5 top-up. No subscriptions, no upsells — just the math."
+        description="Honest 12-month cost calculator for Jobscan, Resume Worded, Final Round AI, Teal, and LiveCareer vs AimVantage's one-time £5 top-up. No subscriptions, no upsells — just the math."
         path="/tools/jobscan-cost-calculator"
         markdownAlternate="/markdown/jobscan-alternative.md"
         jsonLd={[breadcrumbSchema, faqSchema]}
@@ -186,7 +186,7 @@ export default function CostCalculatorPage() {
         <p className={`text-base md:text-lg mb-8 ${t.textSub}`}>
           Tell us how long you'll be hunting and how many apps you send per week. We'll show what
           Jobscan, Resume Worded, Final Round AI, Teal and LiveCareer would charge — versus what
-          Vantage charges for the same thing (and more).
+          AimVantage charges for the same thing (and more).
         </p>
 
         <div className={`${t.glass} rounded-2xl p-6 md:p-8 mb-6`}>
@@ -233,7 +233,7 @@ export default function CostCalculatorPage() {
           </div>
           <div className={`mt-4 text-sm ${t.textSub}`}>
             That's <strong className={t.text}>{totalApps.toLocaleString()} applications</strong> over the search.
-            With Vantage you'd run a tailored prep pack for each one.
+            With AimVantage you'd run a tailored prep pack for each one.
           </div>
         </div>
 
@@ -243,7 +243,7 @@ export default function CostCalculatorPage() {
             <TrendingDown className="w-6 h-6 text-emerald-400 mt-0.5 flex-shrink-0" />
             <div className="flex-1">
               <div className={`text-xs uppercase tracking-wider mb-1 text-emerald-300/80`}>
-                Vantage total over {monthsSearching} {monthsSearching === 1 ? 'month' : 'months'}
+                AimVantage total over {monthsSearching} {monthsSearching === 1 ? 'month' : 'months'}
               </div>
               <div className={`text-4xl md:text-5xl font-bold ${t.text}`}>
                 £{vantageSpendGBP.toFixed(2)}
@@ -269,7 +269,7 @@ export default function CostCalculatorPage() {
                   <th className="pb-3">Tool</th>
                   <th className="pb-3">What it covers</th>
                   <th className="pb-3 text-right">Their cost</th>
-                  <th className="pb-3 text-right">vs Vantage</th>
+                  <th className="pb-3 text-right">vs AimVantage</th>
                 </tr>
               </thead>
               <tbody>
@@ -311,7 +311,7 @@ export default function CostCalculatorPage() {
 
         {/* What you actually get for £5 */}
         <div className={`${t.glass} rounded-2xl p-6 md:p-8 mb-8`}>
-          <h2 className={`text-xl md:text-2xl font-bold ${t.text} mb-2`}>What £5 of Vantage actually buys</h2>
+          <h2 className={`text-xl md:text-2xl font-bold ${t.text} mb-2`}>What £5 of AimVantage actually buys</h2>
           <p className={`text-sm mb-4 ${t.textSub}`}>
             Each of the 20 prep packs in a £5 top-up includes everything below. No tier walls, no upsells.
           </p>
@@ -338,7 +338,7 @@ export default function CostCalculatorPage() {
         <div className="rounded-2xl p-6 md:p-8 mb-8 bg-gradient-to-br from-violet-600/15 to-purple-600/15 border border-violet-500/30">
           <h2 className={`text-xl md:text-2xl font-bold ${t.text} mb-2`}>Try it before you decide.</h2>
           <p className={`text-sm mb-4 ${t.textSub}`}>
-            10 free prep packs on signup. No card. If Vantage doesn't deliver, you've spent nothing.
+            10 free prep packs on signup. No card. If AimVantage doesn't deliver, you've spent nothing.
             If it does, £5 covers the next 20.
           </p>
           <Link

@@ -29,7 +29,7 @@ export default function CaseStudiesHub() {
   const itemListSchema = {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
-    name: 'Vantage case studies',
+    name: 'AimVantage case studies',
     numberOfItems: live.length, // only count live entries to avoid misleading Google
     itemListElement: live.map((c, i) => ({
       '@type': 'ListItem',
@@ -42,8 +42,8 @@ export default function CaseStudiesHub() {
   return (
     <div className="min-h-screen" style={{ background: t.pageBg }}>
       <SEO
-        title="Case studies — real Vantage usage stories"
-        description="Real case studies from Vantage's launch. The founder's own dogfooding journey, plus customer stories as they happen. No fabricated case studies — placeholder URLs are clearly marked."
+        title="Case studies — real AimVantage usage stories"
+        description="Real case studies from AimVantage's launch. The founder's own dogfooding journey, plus customer stories as they happen. No fabricated case studies — placeholder URLs are clearly marked."
         path={path}
         jsonLd={[breadcrumbSchema, itemListSchema]}
       />
@@ -52,10 +52,10 @@ export default function CaseStudiesHub() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <Link to="/" className={`flex items-center gap-2 ${t.text}`}>
             <Star className="w-5 h-5 text-violet-500" />
-            <span className="font-bold tracking-tight">Vantage</span>
+            <span className="font-bold tracking-tight">AimVantage</span>
           </Link>
           <Link to="/register" className="text-sm px-4 py-2 rounded-full bg-violet-600 hover:bg-violet-500 text-white font-semibold transition">
-            Try Vantage free
+            Try AimVantage free
           </Link>
         </div>
       </nav>
@@ -66,7 +66,7 @@ export default function CaseStudiesHub() {
             Case studies · Real usage
           </span>
           <h1 className={`text-4xl sm:text-5xl font-extrabold tracking-tight ${t.text}`}>
-            How Vantage gets used
+            How AimVantage gets used
           </h1>
           <p className={`mt-5 text-lg ${t.textSub} max-w-2xl mx-auto leading-relaxed`}>
             We do not publish fabricated case studies. Live entries below are real
@@ -121,7 +121,7 @@ export default function CaseStudiesHub() {
               These slots are reserved for real customer case studies as they happen.
               We do not write fictional stories to fill the gap. In the meantime,
               the public <Link to="/sample/anthropic-senior-pm" className="text-violet-400 hover:underline">sample analyses</Link>{' '}
-              show what a complete Vantage output looks like for real job postings.
+              show what a complete AimVantage output looks like for real job postings.
             </p>
             <div className="grid md:grid-cols-2 gap-4">
               {upcoming.map((c) => (
@@ -151,7 +151,7 @@ export default function CaseStudiesHub() {
         <div className={`mt-12 ${t.glass} rounded-2xl p-8 text-center`}>
           <h3 className={`text-2xl font-bold ${t.text}`}>Want to be the next case study?</h3>
           <p className={`mt-2 ${t.textSub} max-w-xl mx-auto`}>
-            If Vantage helps you land a role and you're willing to share the story,
+            If AimVantage helps you land a role and you're willing to share the story,
             we'd love to feature it (anonymised if needed). Ten free prep packs on
             signup, no card required.
           </p>
@@ -159,7 +159,7 @@ export default function CaseStudiesHub() {
             to="/register"
             className="mt-5 inline-flex items-center gap-2 px-6 py-3 rounded-full bg-violet-600 hover:bg-violet-500 text-white font-semibold transition"
           >
-            Try Vantage free <ArrowRight className="w-4 h-4" />
+            Try AimVantage free <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
       </main>

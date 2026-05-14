@@ -220,7 +220,7 @@ export default function RecruiterReplyPage() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <Link to="/" className={`flex items-center gap-2 ${t.text}`}>
             <Star className="w-5 h-5 text-violet-500" />
-            <span className="font-bold tracking-tight">Vantage</span>
+            <span className="font-bold tracking-tight">AimVantage</span>
           </Link>
           <Link to="/register" className="text-sm px-4 py-2 rounded-full bg-violet-600 hover:bg-violet-500 text-white font-semibold transition">
             10 free prep packs
@@ -376,7 +376,7 @@ export default function RecruiterReplyPage() {
                 Got a real interview from this? Run the prep in 90 seconds.
               </h3>
               <p className={`mt-2 ${t.textSub} max-w-xl mx-auto`}>
-                Vantage takes your CV + the actual job link, drafts a tailored cover letter,
+                AimVantage takes your CV + the actual job link, drafts a tailored cover letter,
                 generates likely interview questions, and builds a 5-min pitch outline. 10 free
                 packs on signup.
               </p>

@@ -161,7 +161,7 @@ export default function RoastPage() {
 
   function copyRoast() {
     if (!roast) return;
-    const shareText = `My cover letter just got roasted by Vantage AI:\n\n${roast.roast}\n\nGet yours roasted at ${SITE_URL}/roast`;
+    const shareText = `My cover letter just got roasted by AimVantage:\n\n${roast.roast}\n\nGet yours roasted at ${SITE_URL}/roast`;
     navigator.clipboard.writeText(shareText).catch(() => {});
   }
 
@@ -169,7 +169,7 @@ export default function RoastPage() {
     if (!roast) return;
     // Keep the roast short enough to fit; X gives ~280 chars excluding URL
     const verdictLine = roast.roast.split('\n')[0].slice(0, 200);
-    const text = `My cover letter just got roasted by Vantage AI:\n\n"${verdictLine}"\n\nGet yours roasted →`;
+    const text = `My cover letter just got roasted by AimVantage:\n\n"${verdictLine}"\n\nGet yours roasted →`;
     const url = `${SITE_URL}/roast`;
     const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
     window.open(tweetUrl, '_blank', 'noopener,noreferrer');
@@ -191,7 +191,7 @@ export default function RoastPage() {
   // GOLDEN GOSPEL Tactic 3 (2026-05-08): the roast itself doesn't convert
   // anyone — getting savaged ends the user's day. The fix is to preserve the
   // roasted letter + the verdict and hand it through signup so the dashboard
-  // can prompt: "you got roasted, now drop your CV + a job link and Vantage
+  // can prompt: "you got roasted, now drop your CV + a job link and AimVantage
   // writes the version that wins". Single-click path from public free tool to
   // signed-up user with intent. Stored in sessionStorage (not localStorage)
   // so it dies with the browser tab — no persistent state leakage.
@@ -223,7 +223,7 @@ export default function RoastPage() {
   const softwareSchema = {
     '@context': 'https://schema.org',
     '@type': 'SoftwareApplication',
-    name: 'Vantage Cover Letter Roast',
+    name: 'AimVantage Cover Letter Roast',
     applicationCategory: 'BusinessApplication',
     operatingSystem: 'Any',
     description: 'Free AI tool that roasts your cover letter — savage but constructive feedback in 10 seconds. No signup.',
@@ -238,11 +238,11 @@ export default function RoastPage() {
       {
         '@type': 'Question',
         name: 'Is the cover letter roast tool free?',
-        acceptedAnswer: { '@type': 'Answer', text: 'Yes. The cover letter roast is fully free, with no signup required. Vantage AI runs the roast on Gemini 2.5 Flash and absorbs the cost.' },
+        acceptedAnswer: { '@type': 'Answer', text: 'Yes. The cover letter roast is fully free, with no signup required. AimVantage runs the roast on Gemini 2.5 Flash and absorbs the cost.' },
       },
       {
         '@type': 'Question',
-        name: 'Does Vantage store my cover letter?',
+        name: 'Does AimVantage store my cover letter?',
         acceptedAnswer: { '@type': 'Answer', text: 'No. The cover letter is sent to the roast endpoint, processed by the AI model, and the response is returned to your browser. Nothing is persisted on our servers.' },
       },
       {
@@ -257,7 +257,7 @@ export default function RoastPage() {
     <div className="min-h-screen" style={{ background: t.pageBg }}>
       <SEO
         title="AI Cover Letter Roast — savage, free, no signup"
-        description="Paste your cover letter, get a savage but constructive roast in 10 seconds. Free, no signup. Built by Vantage AI."
+        description="Paste your cover letter, get a savage but constructive roast in 10 seconds. Free, no signup. Built by AimVantage."
         path="/roast"
         jsonLd={[breadcrumbSchema, softwareSchema, faqSchema]}
       />
@@ -451,7 +451,7 @@ export default function RoastPage() {
             <div className="mt-8 pt-6 border-t border-white/10">
               <div className={`text-xs uppercase tracking-wider mb-2 ${t.textMuted}`}>Now write the better one</div>
               <p className={`text-sm mb-4 ${t.textSub}`}>
-                The roast tells you what's broken. Vantage writes the version that wins — tailored to the company,
+                The roast tells you what's broken. AimVantage writes the version that wins — tailored to the company,
                 with company intel, fit score, mock interview, and 5-minute pitch. 90 seconds. 10 free tokens on signup
                 (1 token = 1 full analysis, no card needed).
               </p>
@@ -507,7 +507,7 @@ export default function RoastPage() {
         <div className={`text-xs ${t.textMuted} text-center mt-12`}>
           Your cover letter is sent to Gemini 2.5 Flash for the roast and not persisted on our servers.{' '}
           <Link to="/privacy" className="underline">Privacy policy</Link> · Built by{' '}
-          <Link to="/" className="underline">Vantage AI</Link>.
+          <Link to="/" className="underline">AimVantage</Link>.
         </div>
       </div>
     </div>

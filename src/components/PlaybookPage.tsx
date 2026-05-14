@@ -75,7 +75,7 @@ const STEPS: Step[] = [
     icon: Briefcase,
     description: 'Once you start applying, the bottleneck is prep time per application. Manually it\'s about an hour: company research, cover letter, interview Qs, fit check. At 30 applications a week, that\'s your whole weekend. Compress this with tooling.',
     actions: [
-      'Bookmark Vantage AI for the prep automation (90 sec / application)',
+      'Bookmark AimVantage for the prep automation (90 sec / application)',
       'Set up your "boring" CV optimised for ATS parse',
       'Decide on 3-5 cover letter templates by tone (Professional / Warm / Direct / Creative)',
       'Pick a daily applications target (10-15 is sustainable; 30+ burns out)',
@@ -144,7 +144,7 @@ export default function PlaybookPage() {
 
       <nav className={`${t.nav} border-b border-white/10 sticky top-0 z-50 backdrop-blur-xl`}>
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link to="/" className={`text-xl font-bold ${t.text}`}>Vantage</Link>
+          <Link to="/" className={`text-xl font-bold ${t.text}`}>AimVantage</Link>
           <div className="flex items-center gap-4 text-sm">
             <Link to="/laid-off" className={`${t.textSub} hover:${t.text}`}>Cohort guide</Link>
             <Link to="/ats" className={`${t.textSub} hover:${t.text}`}>ATS Guide</Link>
@@ -204,7 +204,7 @@ export default function PlaybookPage() {
         <div className={`${t.glass} rounded-2xl p-8 text-center`}>
           <h2 className={`text-2xl font-bold ${t.text} mb-3`}>Ready to start the system?</h2>
           <p className={`${t.textSub} max-w-xl mx-auto mb-6`}>
-            Vantage compresses cover letter + interview prep + fit score into ~90 seconds per application. 10 free prep packs on signup, no card.
+            AimVantage compresses cover letter + interview prep + fit score into ~90 seconds per application. 10 free prep packs on signup, no card.
           </p>
           <Link
             to="/register"

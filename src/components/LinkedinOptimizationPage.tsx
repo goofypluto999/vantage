@@ -9,8 +9,8 @@ const SITE_URL = 'https://aimvantage.uk';
  * /linkedin-optimization — fills a competitor SERP gap.
  *
  * Resume Worded ranks for "LinkedIn profile review" and "LinkedIn
- * optimization" — Vantage previously had no surface for those queries.
- * This page pairs Vantage's CV-fit logic with a concrete LinkedIn
+ * optimization" — AimVantage previously had no surface for those queries.
+ * This page pairs AimVantage's CV-fit logic with a concrete LinkedIn
  * audit checklist that's actually useful, not generic.
  */
 export default function LinkedinOptimizationPage() {
@@ -74,10 +74,10 @@ export default function LinkedinOptimizationPage() {
       },
       {
         '@type': 'Question',
-        name: 'Do Vantage tools optimize LinkedIn directly?',
+        name: 'Do AimVantage tools optimize LinkedIn directly?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Vantage does not edit your LinkedIn profile. It analyzes a CV against a job posting and produces a fit score, cover letter, and prep pack. The CV-vs-role fit score from Vantage is the right input for an Experience-section bullet rewrite — once you know the gap between your CV and a target role, the same gap exists on your LinkedIn. Use the Vantage gap analysis as the diff and apply it to both.',
+          text: 'AimVantage does not edit your LinkedIn profile. It analyzes a CV against a job posting and produces a fit score, cover letter, and prep pack. The CV-vs-role fit score from AimVantage is the right input for an Experience-section bullet rewrite — once you know the gap between your CV and a target role, the same gap exists on your LinkedIn. Use the AimVantage gap analysis as the diff and apply it to both.',
         },
       },
     ],
@@ -96,10 +96,10 @@ export default function LinkedinOptimizationPage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <Link to="/" className={`flex items-center gap-2 ${t.text}`}>
             <Star className="w-5 h-5 text-violet-500" />
-            <span className="font-bold tracking-tight">Vantage</span>
+            <span className="font-bold tracking-tight">AimVantage</span>
           </Link>
           <Link to="/register" className="text-sm px-4 py-2 rounded-full bg-violet-600 hover:bg-violet-500 text-white font-semibold transition">
-            Try Vantage free
+            Try AimVantage free
           </Link>
         </div>
       </nav>
@@ -249,10 +249,10 @@ export default function LinkedinOptimizationPage() {
         </section>
 
         <section className={`mt-12 ${t.glass} rounded-2xl p-8`}>
-          <h2 className={`text-2xl font-bold ${t.text} mb-3`}>Use Vantage's gap analysis to rewrite your LinkedIn</h2>
+          <h2 className={`text-2xl font-bold ${t.text} mb-3`}>Use AimVantage's gap analysis to rewrite your LinkedIn</h2>
           <p className={`${t.textSub} leading-relaxed mb-4`}>
-            Once you have a target role, run a Vantage analysis to get the
-            CV-vs-role fit score and the specific gaps to close. The gaps Vantage
+            Once you have a target role, run a AimVantage analysis to get the
+            CV-vs-role fit score and the specific gaps to close. The gaps AimVantage
             identifies in your CV are the same gaps your LinkedIn has — fix both
             with the same edits, in one pass.
           </p>
@@ -270,7 +270,7 @@ export default function LinkedinOptimizationPage() {
             <Link to="/blog/the-30-second-cv-review-recruiters-actually-run" className={`${t.text} hover:text-violet-400`}>→ The 30-second CV review test recruiters actually run</Link>
             <Link to="/blog/what-ats-actually-checks-in-2026" className={`${t.text} hover:text-violet-400`}>→ What ATS screening actually checks in 2026</Link>
             <Link to="/blog/the-4-cover-letter-tones-and-when-to-use-each" className={`${t.text} hover:text-violet-400`}>→ The 4 cover letter tones and when each one wins</Link>
-            <Link to="/playbook" className={`${t.text} hover:text-violet-400`}>→ The Vantage Playbook</Link>
+            <Link to="/playbook" className={`${t.text} hover:text-violet-400`}>→ The AimVantage Playbook</Link>
           </div>
         </section>
       </main>

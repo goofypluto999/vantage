@@ -61,7 +61,7 @@ export default function BlogPost() {
         name: 'Giovanni Sizino Ennes',
         alternateName: 'Gio',
         url: `${SITE_URL}/about`,
-        jobTitle: 'Independent founder · Vantage AI',
+        jobTitle: 'Independent founder · AimVantage',
         sameAs: [
           'https://dev.to/goofypluto999',
           'https://github.com/goofypluto999',
@@ -89,7 +89,8 @@ export default function BlogPost() {
     },
     publisher: {
       '@type': 'Organization',
-      name: 'Vantage',
+      name: 'AimVantage',
+      alternateName: ['Vantage', 'Vantage AI', 'Aim Vantage'],
       logo: {
         '@type': 'ImageObject',
         url: `${SITE_URL}/favicon.svg`,
@@ -227,7 +228,7 @@ export default function BlogPost() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <Link to="/" className={`flex items-center gap-2 ${t.text}`}>
             <Star className="w-5 h-5 text-violet-500" />
-            <span className="font-bold tracking-tight">Vantage</span>
+            <span className="font-bold tracking-tight">AimVantage</span>
           </Link>
           <Link
             to="/blog"
@@ -390,7 +391,7 @@ export default function BlogPost() {
                       Reading this for a specific role? Run the prep on the actual job link.
                     </p>
                     <p className={`mt-2 text-sm ${t.textSub}`}>
-                      Vantage scrapes the job page, scores your CV against it, drafts a tailored
+                      AimVantage scrapes the job page, scores your CV against it, drafts a tailored
                       cover letter (4 tones), and generates the likely interview questions.
                       90 seconds. 10 free packs on signup, no card.
                     </p>
@@ -413,7 +414,7 @@ export default function BlogPost() {
         <div className={`mt-16 ${t.glass} rounded-2xl p-8 text-center`}>
           <h3 className={`text-2xl font-bold ${t.text}`}>Do all this in 90 seconds, not 20 minutes.</h3>
           <p className={`mt-2 ${t.textSub} max-w-xl mx-auto`}>
-            Upload your CV. Paste a job link. Full prep pack back. That is Vantage.
+            Upload your CV. Paste a job link. Full prep pack back. That is AimVantage.
           </p>
           <Link
             to="/register"
@@ -428,7 +429,7 @@ export default function BlogPost() {
             relevant to this post's tags. Tag-overlap-scored so different
             posts surface different links. */}
         <section className="mt-16">
-          <h3 className={`text-sm uppercase tracking-widest ${t.textMuted} mb-4`}>Related on Vantage</h3>
+          <h3 className={`text-sm uppercase tracking-widest ${t.textMuted} mb-4`}>Related on AimVantage</h3>
           <div className="grid sm:grid-cols-2 gap-3">
             {getCrossLinks(post.tags, 4).map((link) => {
               const isExternal = link.href.startsWith('http');

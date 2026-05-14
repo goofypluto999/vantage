@@ -24,7 +24,7 @@ export default function DemoPreviewPage() {
     <div className="min-h-screen bg-[#06040d]">
       <SEO
         title="Demo preview"
-        description="Animated walkthrough of the Vantage product. Internal preview page."
+        description="Animated walkthrough of the AimVantage product. Internal preview page."
         path="/demo-preview"
         noindex
       />
@@ -50,7 +50,7 @@ export default function DemoPreviewPage() {
             Live demo reel — preview
           </p>
           <h1 className="text-3xl md:text-4xl font-bold text-white mb-3">
-            See Vantage do its thing — in 22 seconds.
+            See AimVantage do its thing — in 22 seconds.
           </h1>
           <p className="text-sm md:text-base text-white/60 max-w-xl mx-auto">
             A coded walkthrough of the real product flow. Mirrors the actual
@@ -71,7 +71,7 @@ export default function DemoPreviewPage() {
             <li>· Cover Letter writes out, tone switcher pills (Direct active)</li>
             <li>· Mock Interview question + recording mic pulse</li>
             <li>· 5-Minute Pitch Outline staggered slides</li>
-            <li>· Done in 1:32 + "Try Vantage free" CTA</li>
+            <li>· Done in 1:32 + "Try AimVantage free" CTA</li>
           </ul>
           <p className="pt-4 text-xs text-white/40">
             Click the play/pause icon top-right of the reel to control playback.

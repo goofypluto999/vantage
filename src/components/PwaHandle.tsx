@@ -7,7 +7,7 @@ import { Loader2 } from 'lucide-react';
  * web+vantage://… protocol handler.
  *
  * Per the manifest's protocol_handlers entry, when a user clicks a
- * web+vantage: link AND has Vantage installed as a PWA, the OS
+ * web+vantage: link AND has AimVantage installed as a PWA, the OS
  * routes them here with the original URL placed in the `payload`
  * query string parameter (URL-encoded).
  *
@@ -82,7 +82,7 @@ export default function PwaHandle() {
     <div className="min-h-screen flex items-center justify-center bg-[#0d0b1e]">
       <div className="text-center text-white/70 text-sm">
         <Loader2 className="w-6 h-6 animate-spin mx-auto mb-3 text-violet-400" />
-        Routing your Vantage link…
+        Routing your AimVantage link…
       </div>
     </div>
   );

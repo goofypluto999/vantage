@@ -15,7 +15,7 @@ const SITE_URL = 'https://aimvantage.uk';
  * is the highest-intent moment in the funnel.
  *
  * Pages are intentionally honest: we acknowledge what the competitor
- * does well, then make the specific case where Vantage is a better
+ * does well, then make the specific case where AimVantage is a better
  * choice. Honesty earns trust at a comparison page; pretending the
  * incumbent is bad insults the reader's intelligence.
  *
@@ -61,25 +61,25 @@ const PROFILES: Record<CompetitorSlug, CompetitorProfile> = {
     whereItFalls:
       'The score is invented — there is no industry-standard ATS percentage. The $49.95/month price for what is structurally a keyword diff feels steep, especially when you only need it during an active job hunt.',
     vantageEdge: [
-      'Vantage gives you the same CV-vs-role fit score plus a tailored cover letter, mock interview questions, company intel, and a 5-minute pitch outline — one flow, ~90 seconds.',
+      'AimVantage gives you the same CV-vs-role fit score plus a tailored cover letter, mock interview questions, company intel, and a 5-minute pitch outline — one flow, ~90 seconds.',
       'Pay £5 once for 20 tokens that never expire instead of $49.95/month. Stop paying when you stop hunting.',
       'CV Mirror (our free companion tool) gives you a multi-vendor ATS parse view that no Jobscan tier offers — see exactly how Workday, Greenhouse, Lever, Taleo, and iCIMS each render your CV.',
       'No CV upload required for the ATS scan — CV Mirror runs entirely client-side.',
     ],
     whyChoose:
-      'If you only need a keyword score, Jobscan is fine but expensive. If you want the full prep pack — fit score plus cover letter plus interview prep plus company intel — for one quarter the price, switch to Vantage.',
+      'If you only need a keyword score, Jobscan is fine but expensive. If you want the full prep pack — fit score plus cover letter plus interview prep plus company intel — for one quarter the price, switch to AimVantage.',
     faq: [
       {
-        q: 'Is Vantage a free Jobscan alternative?',
-        a: 'Vantage has a free trial (10 prep packs, no card required) and a £5 one-time pack of 20 tokens. That is a free starting point and a much cheaper paid tier than Jobscan\'s $49.95/month, but Vantage is not free forever — running an analysis costs tokens because we pay Gemini compute fees per run.',
+        q: 'Is AimVantage a free Jobscan alternative?',
+        a: 'AimVantage has a free trial (10 prep packs, no card required) and a £5 one-time pack of 20 tokens. That is a free starting point and a much cheaper paid tier than Jobscan\'s $49.95/month, but AimVantage is not free forever — running an analysis costs tokens because we pay Gemini compute fees per run.',
       },
       {
-        q: 'Does Vantage check ATS compatibility like Jobscan?',
+        q: 'Does AimVantage check ATS compatibility like Jobscan?',
         a: 'Yes — through our free companion tool CV Mirror at cv-mirror-web.vercel.app. CV Mirror simulates how 5 real ATS systems parse your CV (Workday, Greenhouse, Lever, Taleo, iCIMS) and shows them side by side. No score is invented; you see the actual parsed text.',
       },
       {
-        q: 'Why would I pay for Vantage if Jobscan is the more established tool?',
-        a: 'Established does not mean best fit for your situation. Jobscan optimises for one number (the keyword match). Vantage optimises for the whole application — what to write, what to say, what they care about. Different problem, different tool.',
+        q: 'Why would I pay for AimVantage if Jobscan is the more established tool?',
+        a: 'Established does not mean best fit for your situation. Jobscan optimises for one number (the keyword match). AimVantage optimises for the whole application — what to write, what to say, what they care about. Different problem, different tool.',
       },
     ],
   },
@@ -96,25 +96,25 @@ const PROFILES: Record<CompetitorSlug, CompetitorProfile> = {
     whereItFalls:
       'Teal does not generate a tailored cover letter beyond a basic AI draft, does not run mock interviews, and does not produce a pitch outline. The tracker overhead is wasted on someone who already has a job and applies to one specific role they care about.',
     vantageEdge: [
-      'Vantage is built for the moment-of-application — paste a job link, get the full prep pack (cover letter, mock interview, fit score, pitch). No Kanban setup needed.',
+      'AimVantage is built for the moment-of-application — paste a job link, get the full prep pack (cover letter, mock interview, fit score, pitch). No Kanban setup needed.',
       'Cover letter has a 4-tone switcher (Direct, Formal, Warm, Creative) — each rewrite preserves the same evidence but matches the company\'s voice.',
       'Mock interview questions are generated from the actual job, then graded live with feedback. Teal does not have an interview module.',
-      'Pay-per-use £5 starter never expires, so you can use Vantage on one important application without committing to a subscription.',
+      'Pay-per-use £5 starter never expires, so you can use AimVantage on one important application without committing to a subscription.',
     ],
     whyChoose:
-      'Use Teal if you have 50 saved jobs and need somewhere to track them. Use Vantage if you have one specific role you really want and need to nail the application end-to-end. The two tools work well together — Teal for organisation, Vantage for execution.',
+      'Use Teal if you have 50 saved jobs and need somewhere to track them. Use AimVantage if you have one specific role you really want and need to nail the application end-to-end. The two tools work well together — Teal for organisation, AimVantage for execution.',
     faq: [
       {
-        q: 'Should I use Teal or Vantage?',
-        a: 'They solve different problems. Teal is a job tracker — best when you are actively applying to dozens of roles and need to organise the search. Vantage is an application prep tool — best when you have a specific role and need a tailored cover letter, mock interview, and fit analysis in one go. Many users keep Teal for tracking and use Vantage when they actually apply.',
+        q: 'Should I use Teal or AimVantage?',
+        a: 'They solve different problems. Teal is a job tracker — best when you are actively applying to dozens of roles and need to organise the search. AimVantage is an application prep tool — best when you have a specific role and need a tailored cover letter, mock interview, and fit analysis in one go. Many users keep Teal for tracking and use AimVantage when they actually apply.',
       },
       {
-        q: 'Is Vantage cheaper than Teal+?',
-        a: 'Teal+ is $29/month or $9/week. Vantage is £5 one-time for 20 tokens (~6 full analyses) that never expire, or £12/month for Pro. Cheaper start, no commitment. Heavy applicants on a Pro subscription land roughly even.',
+        q: 'Is AimVantage cheaper than Teal+?',
+        a: 'Teal+ is $29/month or $9/week. AimVantage is £5 one-time for 20 tokens (~6 full analyses) that never expire, or £12/month for Pro. Cheaper start, no commitment. Heavy applicants on a Pro subscription land roughly even.',
       },
       {
-        q: 'Does Vantage have a Chrome extension like Teal?',
-        a: 'Not yet — we ship a bookmarklet you can drag to your bookmark bar instead. Click it on any job page to send the URL to Vantage and start a prep pack instantly. No install required.',
+        q: 'Does AimVantage have a Chrome extension like Teal?',
+        a: 'Not yet — we ship a bookmarklet you can drag to your bookmark bar instead. Click it on any job page to send the URL to AimVantage and start a prep pack instantly. No install required.',
       },
     ],
   },
@@ -131,24 +131,24 @@ const PROFILES: Record<CompetitorSlug, CompetitorProfile> = {
     whereItFalls:
       'Live AI coaching during an interview is ethically grey. Many companies prohibit it explicitly. The price is steep ($148/month at the top tier) for what is fundamentally a high-risk during-the-call tool. It does nothing for the 95% of work that happens before the interview — the application, the cover letter, the role-fit analysis, the prep questions.',
     vantageEdge: [
-      'Vantage prepares you to walk in confident, instead of cheating with a transcript window during the call. Mock interview questions generated from the actual JD, with live AI grading.',
+      'AimVantage prepares you to walk in confident, instead of cheating with a transcript window during the call. Mock interview questions generated from the actual JD, with live AI grading.',
       'Full prep pack (CV fit, cover letter, company intel, pitch outline) covers everything before the interview, not the interview itself.',
       'Lowest barrier to entry £5 vs Final Round\'s $58/month minimum.',
-      'Ethical: nothing about Vantage is hidden from the interviewer. You arrive prepared the legitimate way.',
+      'Ethical: nothing about AimVantage is hidden from the interviewer. You arrive prepared the legitimate way.',
     ],
     whyChoose:
-      'If you need to game a single live interview, Final Round AI is the tool — but be aware many companies treat it as cheating and may rescind offers. If you want to actually be the right candidate for the role and walk in genuinely prepared, use Vantage.',
+      'If you need to game a single live interview, Final Round AI is the tool — but be aware many companies treat it as cheating and may rescind offers. If you want to actually be the right candidate for the role and walk in genuinely prepared, use AimVantage.',
     faq: [
       {
         q: 'Is using Final Round AI considered cheating?',
-        a: 'Most companies treat undisclosed AI assistance during interviews as a serious ethical violation, comparable to taking exam answers from a hidden helper. Several major employers have rescinded offers when they detected it. We do not recommend it. Vantage focuses on preparation before the call, which is uncontroversial.',
+        a: 'Most companies treat undisclosed AI assistance during interviews as a serious ethical violation, comparable to taking exam answers from a hidden helper. Several major employers have rescinded offers when they detected it. We do not recommend it. AimVantage focuses on preparation before the call, which is uncontroversial.',
       },
       {
-        q: 'Does Vantage work during live interviews like Final Round AI?',
+        q: 'Does AimVantage work during live interviews like Final Round AI?',
         a: 'No, and that is intentional. We run AI-graded mock interviews so you walk in prepared, not so you cheat in real time. That is the difference between training and doping.',
       },
       {
-        q: 'What is the Vantage AI mock interview like?',
+        q: 'What is the AimVantage mock interview like?',
         a: 'Generated from the real job description: 8-12 likely questions across behavioural, technical, and role-specific. You answer either by typing or by speaking (browser speech-to-text). Each answer gets graded with feedback on structure, evidence, and gaps. Free during your trial; included in Pro and Premium.',
       },
     ],
@@ -166,25 +166,25 @@ const PROFILES: Record<CompetitorSlug, CompetitorProfile> = {
     whereItFalls:
       'It only addresses the CV. There is no cover letter generation, no mock interview, no role-fit analysis against a specific job, no company intelligence. You finish a Resume Worded session with a better CV but no closer to having applied to a role.',
     vantageEdge: [
-      'Vantage runs a CV-vs-role fit score (not a generic CV score) — the comparison is against the specific job you want, not against an average benchmark.',
+      'AimVantage runs a CV-vs-role fit score (not a generic CV score) — the comparison is against the specific job you want, not against an average benchmark.',
       'Tailored cover letter generated for the role, with 4 tone variants. Resume Worded does not write cover letters.',
       'Mock interview questions and live AI-graded practice. Resume Worded does not cover interviews.',
-      '£5 starter pack vs $49/month subscription. Use Vantage for one job, stop paying.',
+      '£5 starter pack vs $49/month subscription. Use AimVantage for one job, stop paying.',
     ],
     whyChoose:
-      'Use Resume Worded if you want to overhaul your CV in isolation. Use Vantage when you have a specific job in mind and need every part of the application prepared — including the CV-fit pass — in one flow.',
+      'Use Resume Worded if you want to overhaul your CV in isolation. Use AimVantage when you have a specific job in mind and need every part of the application prepared — including the CV-fit pass — in one flow.',
     faq: [
       {
-        q: 'Does Vantage replace Resume Worded?',
-        a: 'For most users yes. Resume Worded scores your CV in isolation; Vantage scores it against the specific role you are applying to, which is a more useful number when you are about to hit Apply. If you also want general CV polish before any specific application, Resume Worded\'s rubric is good — but it is solving a different problem.',
+        q: 'Does AimVantage replace Resume Worded?',
+        a: 'For most users yes. Resume Worded scores your CV in isolation; AimVantage scores it against the specific role you are applying to, which is a more useful number when you are about to hit Apply. If you also want general CV polish before any specific application, Resume Worded\'s rubric is good — but it is solving a different problem.',
       },
       {
-        q: 'How does Vantage\'s fit score differ from Resume Worded\'s CV score?',
-        a: 'Resume Worded: "your CV is a 78/100 against an industry benchmark." Vantage: "your CV is a 78/100 fit for this Stripe Staff PM role at Stripe — here are your 6 match points and 4 closing moves." We tie the score to a specific JD, so the actions are concrete.',
+        q: 'How does AimVantage\'s fit score differ from Resume Worded\'s CV score?',
+        a: 'Resume Worded: "your CV is a 78/100 against an industry benchmark." AimVantage: "your CV is a 78/100 fit for this Stripe Staff PM role at Stripe — here are your 6 match points and 4 closing moves." We tie the score to a specific JD, so the actions are concrete.',
       },
       {
-        q: 'Is Vantage better than Resume Worded for cover letters?',
-        a: 'Vantage writes the cover letter; Resume Worded does not have a cover letter generator at all. So yes — different category of tool.',
+        q: 'Is AimVantage better than Resume Worded for cover letters?',
+        a: 'AimVantage writes the cover letter; Resume Worded does not have a cover letter generator at all. So yes — different category of tool.',
       },
     ],
   },
@@ -201,25 +201,25 @@ const PROFILES: Record<CompetitorSlug, CompetitorProfile> = {
     whereItFalls:
       'The AI cover letter is template-shaped. It reads like a generated cover letter — not because the model is weak, but because Kickresume optimises for "fits the template", not "sounds like the candidate". You will spend 10 minutes editing the voice afterwards. No mock interview, no fit score, no company intel.',
     vantageEdge: [
-      'Vantage cover letter has 4 tone variants (Direct, Formal, Warm, Creative) — pick the one that matches the company\'s voice instead of editing template-shaped output.',
+      'AimVantage cover letter has 4 tone variants (Direct, Formal, Warm, Creative) — pick the one that matches the company\'s voice instead of editing template-shaped output.',
       'Output is grounded in the actual job description and your CV evidence, not just a job title and company name. Less generic, less to rewrite.',
       'Includes mock interview, fit score, company intel, and pitch outline — Kickresume only writes documents.',
       '£5 one-time pack vs $8–19/month subscription. Stop paying when you stop applying.',
     ],
     whyChoose:
-      'If you need a visually polished CV + cover letter pair from scratch and you have time to edit the voice, Kickresume is solid. If you already have a CV and want a tailored, role-specific application package — cover letter, mock interview, fit analysis — in one go, use Vantage.',
+      'If you need a visually polished CV + cover letter pair from scratch and you have time to edit the voice, Kickresume is solid. If you already have a CV and want a tailored, role-specific application package — cover letter, mock interview, fit analysis — in one go, use AimVantage.',
     faq: [
       {
-        q: 'Is Vantage cheaper than Kickresume?',
-        a: 'On a per-application basis, yes. Vantage is £5 for 20 full prep packs (CV fit + cover letter + mock interview + pitch). Kickresume is $8/month minimum on the annual plan, $19/month rolling. If you apply to a few roles per quarter, Vantage is significantly cheaper. Heavy users on Pro ($12/month for 60 prep packs/month) land far ahead.',
+        q: 'Is AimVantage cheaper than Kickresume?',
+        a: 'On a per-application basis, yes. AimVantage is £5 for 20 full prep packs (CV fit + cover letter + mock interview + pitch). Kickresume is $8/month minimum on the annual plan, $19/month rolling. If you apply to a few roles per quarter, AimVantage is significantly cheaper. Heavy users on Pro ($12/month for 60 prep packs/month) land far ahead.',
       },
       {
-        q: 'Does Vantage produce designed CV templates like Kickresume?',
-        a: 'No — Vantage is not a CV builder. We assume you already have a CV in DOCX or PDF and we work with the content, not the layout. If you need a designed CV from scratch, Kickresume or Canva are the right tools. After that, bring the CV to Vantage for the role-specific tailoring.',
+        q: 'Does AimVantage produce designed CV templates like Kickresume?',
+        a: 'No — AimVantage is not a CV builder. We assume you already have a CV in DOCX or PDF and we work with the content, not the layout. If you need a designed CV from scratch, Kickresume or Canva are the right tools. After that, bring the CV to AimVantage for the role-specific tailoring.',
       },
       {
-        q: 'Can I use Kickresume and Vantage together?',
-        a: 'Yes — the workflow we recommend: build the CV in Kickresume, run the parsed PDF through CV Mirror to confirm the ATS reads it cleanly, then upload to Vantage to generate the cover letter, fit score, and interview pack for each specific role.',
+        q: 'Can I use Kickresume and AimVantage together?',
+        a: 'Yes — the workflow we recommend: build the CV in Kickresume, run the parsed PDF through CV Mirror to confirm the ATS reads it cleanly, then upload to AimVantage to generate the cover letter, fit score, and interview pack for each specific role.',
       },
     ],
   },
@@ -242,19 +242,19 @@ const PROFILES: Record<CompetitorSlug, CompetitorProfile> = {
       'Pay-per-use £5 starter never expires. Enhancv\'s monthly subscription burns whether you applied or not.',
     ],
     whyChoose:
-      'Use Enhancv if you need a polished CV builder and an emergency cover letter draft. Use Vantage when you have a specific role and want a full prep package with multiple voice options, plus the interview practice that Enhancv does not cover.',
+      'Use Enhancv if you need a polished CV builder and an emergency cover letter draft. Use AimVantage when you have a specific role and want a full prep package with multiple voice options, plus the interview practice that Enhancv does not cover.',
     faq: [
       {
-        q: 'How is Vantage\'s cover letter different from Enhancv\'s?',
-        a: 'Enhancv generates one draft and you edit it. Vantage generates the same evidence in 4 tones (Formal, Warm, Direct, Creative) so you pick the register that matches the company instead of rewriting voice from scratch. Both pull from your CV; Vantage also pulls from retrieved company intel.',
+        q: 'How is AimVantage\'s cover letter different from Enhancv\'s?',
+        a: 'Enhancv generates one draft and you edit it. AimVantage generates the same evidence in 4 tones (Formal, Warm, Direct, Creative) so you pick the register that matches the company instead of rewriting voice from scratch. Both pull from your CV; AimVantage also pulls from retrieved company intel.',
       },
       {
-        q: 'Is Vantage a CV builder like Enhancv?',
-        a: 'No. Vantage works on a CV you already have. If you need to build a CV from scratch, Enhancv or Kickresume are good. Once your CV is built, bring it to Vantage for role-specific tailoring.',
+        q: 'Is AimVantage a CV builder like Enhancv?',
+        a: 'No. AimVantage works on a CV you already have. If you need to build a CV from scratch, Enhancv or Kickresume are good. Once your CV is built, bring it to AimVantage for role-specific tailoring.',
       },
       {
-        q: 'Can I cancel Enhancv and still get cover letters from Vantage?',
-        a: 'Yes — the £5 Vantage starter pack gives you 20 full prep packs that never expire, no subscription. If your hunt is intermittent, this is a meaningfully cheaper way to get cover letters than $9.99–24.99/month.',
+        q: 'Can I cancel Enhancv and still get cover letters from AimVantage?',
+        a: 'Yes — the £5 AimVantage starter pack gives you 20 full prep packs that never expire, no subscription. If your hunt is intermittent, this is a meaningfully cheaper way to get cover letters than $9.99–24.99/month.',
       },
     ],
   },
@@ -277,19 +277,19 @@ const PROFILES: Record<CompetitorSlug, CompetitorProfile> = {
       '£5 one-time vs Yoodli\'s $20–40/month. Affordable to use on a single interview.',
     ],
     whyChoose:
-      'Use Yoodli when you know your delivery is the problem — pace, fillers, confidence — and you want a speech coach. Use Vantage when you want to be sure your answer is right for this specific role, with structure and evidence grading. Many users do both: Yoodli for delivery, Vantage for content.',
+      'Use Yoodli when you know your delivery is the problem — pace, fillers, confidence — and you want a speech coach. Use AimVantage when you want to be sure your answer is right for this specific role, with structure and evidence grading. Many users do both: Yoodli for delivery, AimVantage for content.',
     faq: [
       {
-        q: 'Does Vantage give speech feedback like Yoodli?',
-        a: 'No, Vantage does not grade delivery (pace, filler words). It grades the substance of the answer — structure, evidence, gaps, role-fit. If delivery is your weakness, Yoodli is the better tool. If you want to know whether your answer is the right answer, use Vantage.',
+        q: 'Does AimVantage give speech feedback like Yoodli?',
+        a: 'No, AimVantage does not grade delivery (pace, filler words). It grades the substance of the answer — structure, evidence, gaps, role-fit. If delivery is your weakness, Yoodli is the better tool. If you want to know whether your answer is the right answer, use AimVantage.',
       },
       {
-        q: 'Is Vantage\'s mock interview live like Yoodli\'s?',
-        a: 'Yes — questions are presented one at a time, you answer either by typing or by speaking (Web Speech API), and grading happens immediately. The difference is the question source: Vantage generates questions from the actual JD; Yoodli uses a generic question library.',
+        q: 'Is AimVantage\'s mock interview live like Yoodli\'s?',
+        a: 'Yes — questions are presented one at a time, you answer either by typing or by speaking (Web Speech API), and grading happens immediately. The difference is the question source: AimVantage generates questions from the actual JD; Yoodli uses a generic question library.',
       },
       {
-        q: 'Can I use both Yoodli and Vantage?',
-        a: 'Yes, and many users do. Run Vantage first to learn the right answers for the role, then run those same answers through Yoodli to fix delivery. Belt-and-braces approach for a high-stakes interview.',
+        q: 'Can I use both Yoodli and AimVantage?',
+        a: 'Yes, and many users do. Run AimVantage first to learn the right answers for the role, then run those same answers through Yoodli to fix delivery. Belt-and-braces approach for a high-stakes interview.',
       },
     ],
   },
@@ -306,25 +306,25 @@ const PROFILES: Record<CompetitorSlug, CompetitorProfile> = {
     whereItFalls:
       'Huntr is a tracker first, application-prep tool second. The CV-tailoring AI is solid but transactional — there is no mock interview, no full company intel pull, no pitch outline, no tone-switched cover letter. The tracker overhead is wasted on someone applying to one specific role.',
     vantageEdge: [
-      'Vantage is built for the moment-of-application — paste one job link, get the full prep pack in ~90 seconds. No Kanban setup, no extension install, no per-role CV variant management.',
+      'AimVantage is built for the moment-of-application — paste one job link, get the full prep pack in ~90 seconds. No Kanban setup, no extension install, no per-role CV variant management.',
       '4-tone cover letter switcher. Mock interview generated from the actual JD, graded live. 5-minute pitch outline. Huntr does not cover any of these.',
       'CV Mirror (free, no signup) shows multi-vendor ATS parse for the CV before you tailor it — nothing in Huntr is equivalent.',
       '£5 one-time starter never expires. Huntr Pro is $20/month, billed monthly.',
     ],
     whyChoose:
-      'Use Huntr if your bottleneck is organising the search — many open applications, follow-ups slipping, no clear pipeline. Use Vantage when your bottleneck is the application itself — making each one count. The tools are complementary: Huntr for tracking, Vantage for execution.',
+      'Use Huntr if your bottleneck is organising the search — many open applications, follow-ups slipping, no clear pipeline. Use AimVantage when your bottleneck is the application itself — making each one count. The tools are complementary: Huntr for tracking, AimVantage for execution.',
     faq: [
       {
-        q: 'Should I use Huntr or Vantage?',
-        a: 'They are not direct substitutes. Huntr is a tracker — best for high-volume searches. Vantage is an application prep tool — best when you have one specific role to nail. Many users keep Huntr open for tracking and switch to Vantage when they actually sit down to write the application.',
+        q: 'Should I use Huntr or AimVantage?',
+        a: 'They are not direct substitutes. Huntr is a tracker — best for high-volume searches. AimVantage is an application prep tool — best when you have one specific role to nail. Many users keep Huntr open for tracking and switch to AimVantage when they actually sit down to write the application.',
       },
       {
-        q: 'Does Vantage tailor my CV like Huntr?',
-        a: 'Vantage does not modify your CV file. It generates a fit score (CV vs role), highlights match points and gaps, and uses your CV evidence to write the cover letter. If you want a per-role CV file variant saved alongside the application, Huntr or Teal is the better tool. If you want a fast role-specific score and tailored cover letter, Vantage.',
+        q: 'Does AimVantage tailor my CV like Huntr?',
+        a: 'AimVantage does not modify your CV file. It generates a fit score (CV vs role), highlights match points and gaps, and uses your CV evidence to write the cover letter. If you want a per-role CV file variant saved alongside the application, Huntr or Teal is the better tool. If you want a fast role-specific score and tailored cover letter, AimVantage.',
       },
       {
-        q: 'Is Vantage cheaper than Huntr Pro?',
-        a: 'Substantially. Huntr Pro is $20/month rolling. Vantage is £5 one-time for 20 prep packs that never expire, or £12/month for Vantage Pro (60 prep packs/month). If you apply heavily, Pro is dramatically cheaper; if you apply intermittently, the £5 pack is unbeatable.',
+        q: 'Is AimVantage cheaper than Huntr Pro?',
+        a: 'Substantially. Huntr Pro is $20/month rolling. AimVantage is £5 one-time for 20 prep packs that never expire, or £12/month for AimVantage Pro (60 prep packs/month). If you apply heavily, Pro is dramatically cheaper; if you apply intermittently, the £5 pack is unbeatable.',
       },
     ],
   },
@@ -347,19 +347,19 @@ const PROFILES: Record<CompetitorSlug, CompetitorProfile> = {
       '£5 starter pack vs $39/month minimum. Affordable to use on one specific interview rather than committing to a curriculum.',
     ],
     whyChoose:
-      'Use Big Interview if you want a structured curriculum to lift your overall interviewing baseline over a few weeks. Use Vantage when you have a specific role next Tuesday and need targeted prep — questions from this JD, graded answers, plus everything else on the application side.',
+      'Use Big Interview if you want a structured curriculum to lift your overall interviewing baseline over a few weeks. Use AimVantage when you have a specific role next Tuesday and need targeted prep — questions from this JD, graded answers, plus everything else on the application side.',
     faq: [
       {
-        q: 'Is Vantage a substitute for Big Interview\'s curriculum?',
-        a: 'Not really — they solve different problems. Big Interview is a learning platform; Vantage is an application tool. If your goal is "become a better interviewer over 6 weeks", Big Interview\'s curriculum is the right shape. If your goal is "ace the interview I have next Tuesday", Vantage is more useful.',
+        q: 'Is AimVantage a substitute for Big Interview\'s curriculum?',
+        a: 'Not really — they solve different problems. Big Interview is a learning platform; AimVantage is an application tool. If your goal is "become a better interviewer over 6 weeks", Big Interview\'s curriculum is the right shape. If your goal is "ace the interview I have next Tuesday", AimVantage is more useful.',
       },
       {
-        q: 'Does Vantage have video / recorded answers like Big Interview?',
-        a: 'No, Vantage does not record video. Mock interviews are typed or spoken (browser speech-to-text) with live AI grading on the answer text. If you need to see yourself on camera, Big Interview or Yoodli is the better tool.',
+        q: 'Does AimVantage have video / recorded answers like Big Interview?',
+        a: 'No, AimVantage does not record video. Mock interviews are typed or spoken (browser speech-to-text) with live AI grading on the answer text. If you need to see yourself on camera, Big Interview or Yoodli is the better tool.',
       },
       {
-        q: 'Can I use Big Interview and Vantage together?',
-        a: 'Yes — Big Interview to build the underlying interviewing skill set, Vantage to apply those skills to specific roles. Many users do exactly this: curriculum once, then targeted prep per interview.',
+        q: 'Can I use Big Interview and AimVantage together?',
+        a: 'Yes — Big Interview to build the underlying interviewing skill set, AimVantage to apply those skills to specific roles. Many users do exactly this: curriculum once, then targeted prep per interview.',
       },
     ],
   },
@@ -398,7 +398,7 @@ export function AlternativesHub() {
       '@type': 'ListItem',
       position: i + 1,
       url: `${SITE_URL}/alternatives/${slug}`,
-      name: `${PROFILES[slug].name} alternative — Vantage`,
+      name: `${PROFILES[slug].name} alternative — AimVantage`,
     })),
   };
 
@@ -406,7 +406,7 @@ export function AlternativesHub() {
     <div className="min-h-screen" style={{ background: t.pageBg }}>
       <SEO
         title="Alternatives to Jobscan, Teal, Kickresume, Enhancv, Yoodli & more"
-        description="Honest, side-by-side comparisons of Vantage with the most-searched job application AI tools — Jobscan, Teal, Kickresume, Enhancv, Yoodli, Huntr, Big Interview, Final Round AI, Resume Worded. Pick the right tool for your stage of the hunt."
+        description="Honest, side-by-side comparisons of AimVantage with the most-searched job application AI tools — Jobscan, Teal, Kickresume, Enhancv, Yoodli, Huntr, Big Interview, Final Round AI, Resume Worded. Pick the right tool for your stage of the hunt."
         path="/alternatives"
         jsonLd={[breadcrumbSchema, itemListSchema]}
       />
@@ -415,10 +415,10 @@ export function AlternativesHub() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <Link to="/" className={`flex items-center gap-2 ${t.text}`}>
             <Star className="w-5 h-5 text-violet-500" />
-            <span className="font-bold tracking-tight">Vantage</span>
+            <span className="font-bold tracking-tight">AimVantage</span>
           </Link>
           <Link to="/register" className="text-sm px-4 py-2 rounded-full bg-violet-600 hover:bg-violet-500 text-white font-semibold transition">
-            Try Vantage free
+            Try AimVantage free
           </Link>
         </div>
       </nav>
@@ -432,7 +432,7 @@ export function AlternativesHub() {
             Looking for an alternative?
           </h1>
           <p className={`mt-5 text-lg ${t.textSub} max-w-2xl mx-auto`}>
-            We make Vantage. We're not pretending the alternatives are bad —
+            We make AimVantage. We're not pretending the alternatives are bad —
             they all do something useful. Pick the one that fits your stage.
           </p>
         </header>
@@ -478,21 +478,21 @@ export function AlternativesHub() {
               <h3 className={`text-base font-bold ${t.text}`}>If you want CV scoring</h3>
               <p className={`mt-2 text-sm ${t.textSub}`}>
                 Resume Worded for general CV polish; Jobscan for keyword match
-                against a specific JD. Vantage covers both as part of its fit
+                against a specific JD. AimVantage covers both as part of its fit
                 score, plus cover letter and interview prep in the same flow.
               </p>
             </article>
             <article className={`${t.cardInner} rounded-xl p-5`}>
               <h3 className={`text-base font-bold ${t.text}`}>If you want job tracking</h3>
               <p className={`mt-2 text-sm ${t.textSub}`}>
-                Teal is purpose-built for that. Use it alongside Vantage —
-                Teal organises the search, Vantage prepares each application.
+                Teal is purpose-built for that. Use it alongside AimVantage —
+                Teal organises the search, AimVantage prepares each application.
               </p>
             </article>
             <article className={`${t.cardInner} rounded-xl p-5`}>
               <h3 className={`text-base font-bold ${t.text}`}>If you want interview help</h3>
               <p className={`mt-2 text-sm ${t.textSub}`}>
-                Vantage runs AI-graded mocks before the call. Final Round AI
+                AimVantage runs AI-graded mocks before the call. Final Round AI
                 offers live in-call coaching — but be aware many employers
                 consider it cheating.
               </p>
@@ -569,7 +569,7 @@ export function AlternativesHub() {
             to="/register"
             className="mt-5 inline-flex items-center gap-2 px-6 py-3 rounded-full bg-violet-600 hover:bg-violet-500 text-white font-semibold transition"
           >
-            Try Vantage free <ArrowRight className="w-4 h-4" />
+            Try AimVantage free <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
 
@@ -577,7 +577,7 @@ export function AlternativesHub() {
           <DiagnosticCallout
             source="alternatives-hub"
             variant="emerald"
-            prelude="Comparing Jobscan / Resume Worded / Final Round AI / Vantage but not sure which fits your situation? Run the free 60-second diagnostic FIRST — it tells you which job-search bottleneck you have (ATS / positioning / proof / market / overqualified). The right tool depends on the verdict; the diagnostic saves you a $50 subscription on the wrong fix."
+            prelude="Comparing Jobscan / Resume Worded / Final Round AI / AimVantage but not sure which fits your situation? Run the free 60-second diagnostic FIRST — it tells you which job-search bottleneck you have (ATS / positioning / proof / market / overqualified). The right tool depends on the verdict; the diagnostic saves you a $50 subscription on the wrong fix."
           />
         </div>
       </main>
@@ -620,8 +620,8 @@ export default function AlternativesPage() {
   return (
     <div className="min-h-screen" style={{ background: t.pageBg }}>
       <SEO
-        title={`${p.name} alternative — Vantage`}
-        description={`Honest comparison of Vantage and ${p.name}. ${p.oneLiner} See where each tool wins and which is the better fit for your job hunt.`}
+        title={`${p.name} alternative — AimVantage`}
+        description={`Honest comparison of AimVantage and ${p.name}. ${p.oneLiner} See where each tool wins and which is the better fit for your job hunt.`}
         path={path}
         jsonLd={[breadcrumbSchema, faqSchema]}
       />
@@ -630,10 +630,10 @@ export default function AlternativesPage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <Link to="/" className={`flex items-center gap-2 ${t.text}`}>
             <Star className="w-5 h-5 text-violet-500" />
-            <span className="font-bold tracking-tight">Vantage</span>
+            <span className="font-bold tracking-tight">AimVantage</span>
           </Link>
           <Link to="/register" className="text-sm px-4 py-2 rounded-full bg-violet-600 hover:bg-violet-500 text-white font-semibold transition">
-            Try Vantage free
+            Try AimVantage free
           </Link>
         </div>
       </nav>
@@ -648,7 +648,7 @@ export default function AlternativesPage() {
 
         <header className="mb-10">
           <span className={`inline-block text-xs uppercase tracking-widest ${t.textMuted} font-semibold mb-3`}>
-            Vantage as an alternative to
+            AimVantage as an alternative to
           </span>
           <h1 className={`text-4xl sm:text-5xl font-extrabold tracking-tight ${t.text}`}>
             {p.name} alternative
@@ -678,7 +678,7 @@ export default function AlternativesPage() {
         </section>
 
         <section className={`mb-10 ${t.glass} rounded-2xl p-6 sm:p-8 border-2 border-violet-500/30`}>
-          <h2 className={`text-2xl font-bold ${t.text} mb-4`}>Why pick Vantage instead</h2>
+          <h2 className={`text-2xl font-bold ${t.text} mb-4`}>Why pick AimVantage instead</h2>
           <ul className="space-y-3">
             {p.vantageEdge.map((edge, i) => (
               <li key={i} className="flex items-start gap-3">
@@ -718,7 +718,7 @@ export default function AlternativesPage() {
             to="/register"
             className="mt-5 inline-flex items-center gap-2 px-6 py-3 rounded-full bg-violet-600 hover:bg-violet-500 text-white font-semibold transition"
           >
-            Try Vantage free <ArrowRight className="w-4 h-4" />
+            Try AimVantage free <ArrowRight className="w-4 h-4" />
           </Link>
           <p className={`mt-3 text-xs ${t.textMuted}`}>
             <Link to="/compare" className="underline hover:text-violet-400">

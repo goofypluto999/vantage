@@ -215,7 +215,7 @@ export default function Waitlist({ launchDate, onSignUpClick }: WaitlistProps) {
                 className="flex items-center gap-2 text-sm font-semibold text-[#4F46E5] hover:text-[#4338CA] transition-colors"
               >
                 <Zap className="w-4 h-4" />
-                <span>Start using Vantage now &rarr;</span>
+                <span>Start using AimVantage now &rarr;</span>
               </button>
             </div>
           </motion.div>
@@ -233,7 +233,7 @@ export default function Waitlist({ launchDate, onSignUpClick }: WaitlistProps) {
               You're in!
             </h3>
             <p className="text-[#6B6B8D] mb-8 max-w-md mx-auto">
-              We'll notify you when AI Mock Interview drops. In the meantime, start using Vantage now — it's live and ready.
+              We'll notify you when AI Mock Interview drops. In the meantime, start using AimVantage now — it's live and ready.
             </p>
             <div className="inline-flex items-center gap-3 px-5 py-3 rounded-2xl bg-white/40 border border-[#4F46E5]/10">
               <span className="text-[#6B6B8D] text-sm">Share with friends:</span>

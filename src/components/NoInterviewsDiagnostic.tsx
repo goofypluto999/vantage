@@ -25,7 +25,7 @@ const SITE_URL = 'https://aimvantage.uk';
  *   4. PROOF — JD-aligned achievements aren't visible enough on the CV
  *   5. MARKET — the role-and-region combination is genuinely cold right now
  *
- * Each verdict points to a concrete Vantage tool (or external when honest).
+ * Each verdict points to a concrete AimVantage tool (or external when honest).
  * SEO target: "I have 200 applications and no interviews", "no interviews
  * after 100 applications", "why am I not getting interviews".
  *
@@ -166,7 +166,7 @@ function diagnose(a: Answers): Verdict {
         'Standard advice ("just apply more") is the worst advice — it accelerates burnout without changing the math. ' +
         'You need to switch from volume to extreme tailoring on a small number of high-fit roles, AND start working warm-intro channels in parallel.',
       fix:
-        'Cut your volume in half. For each application, write a fully-tailored prep pack (Vantage does the heavy lifting in 90 seconds). ' +
+        'Cut your volume in half. For each application, write a fully-tailored prep pack (AimVantage does the heavy lifting in 90 seconds). ' +
         'Read the layoff playbook for the cohort approach to warm-intro outreach.',
       cta: { to: '/playbook', label: 'Layoff playbook (warm-intro tactics) →' },
       icon: TrendingDown,
@@ -189,8 +189,8 @@ function diagnose(a: Answers): Verdict {
         'When the CV stays generic, the recruiter reads "applicable but not specifically suited" and moves on. ' +
         'Cover-only tailoring also scores badly with most ATS systems because the CV is the document that gets keyword-scored.',
       fix:
-        'Run a full Vantage prep pack on your next application. The fit-score card tells you exactly which CV bullets are below the JD\'s required-keyword bar before you submit. Fix those, then write the cover.',
-      cta: { to: '/register', label: 'Try Vantage free (10 prep packs) →' },
+        'Run a full AimVantage prep pack on your next application. The fit-score card tells you exactly which CV bullets are below the JD\'s required-keyword bar before you submit. Fix those, then write the cover.',
+      cta: { to: '/register', label: 'Try AimVantage free (10 prep packs) →' },
       icon: Target,
       color: 'violet',
     };
@@ -226,9 +226,9 @@ function diagnose(a: Answers): Verdict {
         'Recruiters auto-reject candidates one full level above the role on the assumption they\'ll leave for a better offer in 6 months. ' +
         'If you genuinely want the down-level role, you have to address it directly in the cover letter — and your CV needs to NOT scream "former senior" at the top.',
       fix:
-        'Use Vantage to write a cover letter with the "Direct" tone selected — it lets you address the level question head-on. ' +
+        'Use AimVantage to write a cover letter with the "Direct" tone selected — it lets you address the level question head-on. ' +
         'Pair it with a re-framed CV that leads with the role-relevant work, not the title.',
-      cta: { to: '/register', label: 'Try Vantage free (10 prep packs) →' },
+      cta: { to: '/register', label: 'Try AimVantage free (10 prep packs) →' },
       icon: Briefcase,
       color: 'pink',
     };
@@ -248,7 +248,7 @@ function diagnose(a: Answers): Verdict {
         'The biggest risk in your spot is panic-applying to weak-fit roles, which dilutes the signal recruiters get from your applications. ' +
         'Keep your hit-rate high; don\'t chase volume.',
       fix:
-        'Sharpen interview prep on the roles you ARE getting. The Vantage interview pack generates 8-12 likely questions from the JD plus a 5-minute pitch you can rehearse out loud.',
+        'Sharpen interview prep on the roles you ARE getting. The AimVantage interview pack generates 8-12 likely questions from the JD plus a 5-minute pitch you can rehearse out loud.',
       cta: { to: '/interview-prep', label: 'Interview prep packs →' },
       icon: Activity,
       color: 'emerald',
@@ -262,8 +262,8 @@ function diagnose(a: Answers): Verdict {
     body:
       'Your inputs don\'t cluster cleanly into a single failure mode. The most likely path forward is to test where the leak actually is: parser, positioning, or proof. The fastest way to tell is to run one application end-to-end with a tailored prep pack and compare against your standard one.',
     fix:
-      'Run one full Vantage prep pack on a high-fit role this week. If you still get filtered, the bottleneck is ATS — not writing.',
-    cta: { to: '/register', label: 'Try Vantage free (10 prep packs) →' },
+      'Run one full AimVantage prep pack on a high-fit role this week. If you still get filtered, the bottleneck is ATS — not writing.',
+    cta: { to: '/register', label: 'Try AimVantage free (10 prep packs) →' },
     icon: AlertTriangle,
     color: 'violet',
   };
@@ -332,7 +332,7 @@ export default function NoInterviewsDiagnostic() {
         name: 'I sent 200 applications and have zero interviews — what does that mean?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: '200 applications with zero interviews almost always means an ATS filter problem (your CV is being dumped into a low-match pile by Workday, Greenhouse, or Taleo before any human sees it) OR a targeting problem (you\'re applying for roles 2 steps above your last title). The Vantage diagnostic asks 5 questions and tells you which of 7 likely failure modes is yours, with a concrete next step.',
+          text: '200 applications with zero interviews almost always means an ATS filter problem (your CV is being dumped into a low-match pile by Workday, Greenhouse, or Taleo before any human sees it) OR a targeting problem (you\'re applying for roles 2 steps above your last title). The AimVantage diagnostic asks 5 questions and tells you which of 7 likely failure modes is yours, with a concrete next step.',
         },
       },
       {
@@ -350,7 +350,7 @@ export default function NoInterviewsDiagnostic() {
     <div className="min-h-screen" style={{ background: t.pageBg }}>
       <SEO
         title="No Interviews After 100 Applications? Free 60-Second Diagnostic"
-        description="200 applications, zero interviews? Run the free Vantage diagnostic. 5 questions, 60 seconds, deterministic verdict — ATS filter, positioning, targeting, proof, market, or overqualified. No signup. Built by a UK indie founder."
+        description="200 applications, zero interviews? Run the free AimVantage diagnostic. 5 questions, 60 seconds, deterministic verdict — ATS filter, positioning, targeting, proof, market, or overqualified. No signup. Built by a UK indie founder."
         path="/tools/no-interviews-diagnostic"
         jsonLd={[breadcrumbSchema, faqSchema]}
       />
@@ -479,7 +479,7 @@ export default function NoInterviewsDiagnostic() {
                 </button>
               </div>
               {/* Secondary path: every verdict points the user at the SPECIFIC
-                  matching Vantage tool, but the full Vantage prep pack solves
+                  matching AimVantage tool, but the full AimVantage prep pack solves
                   most of these failure modes (ATS via CV Mirror integration,
                   positioning/proof via tailored cover letter + fit score,
                   targeting via company intelligence). The full prep pack is
@@ -488,7 +488,7 @@ export default function NoInterviewsDiagnostic() {
                   signups back to which diagnostic verdict drove them. */}
               <div className="mt-4 pt-3 border-t border-white/10 space-y-2">
                 <p className={`text-xs ${t.textMuted}`}>
-                  Or run a full Vantage prep pack against your next application:{' '}
+                  Or run a full AimVantage prep pack against your next application:{' '}
                   <Link
                     to={`/register?source=diagnostic&verdict=${encodeURIComponent(verdict.key)}`}
                     onClick={() => track('diagnostic_secondary_register_click', { verdict: verdict.key })}
@@ -522,7 +522,7 @@ export default function NoInterviewsDiagnostic() {
 
         {/* Trust + cross-link */}
         <div className={`text-xs ${t.textMuted} text-center mt-12`}>
-          Built by Vantage AI · See <Link to="/receipts" className="underline">receipts</Link> for the
+          Built by AimVantage · See <Link to="/receipts" className="underline">receipts</Link> for the
           full trust audit · <Link to="/tools" className="underline ml-1">All free tools</Link>
         </div>
 

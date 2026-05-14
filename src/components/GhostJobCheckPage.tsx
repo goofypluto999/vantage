@@ -98,14 +98,14 @@ export default function GhostJobCheckPage() {
   const shareUrl = `${SITE_URL}/ghost-job-check?utm_source=share&utm_medium=ghost`;
   const shareText = result
     ? `AI told me this job listing is ${result.ghostProbability}% likely to be a ghost. Free tool, paste any JD: `
-    : `Free tool: paste a job listing, AI tells you how likely it's a ghost job. No signup. Built by Vantage AI:`;
+    : `Free tool: paste a job listing, AI tells you how likely it's a ghost job. No signup. Built by AimVantage:`;
   const xUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
   const liUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`;
 
   const copyResult = async () => {
     if (!result) return;
     try {
-      const text = `Vantage AI Ghost-Job Check\nGhost probability: ${result.ghostProbability}%\nVerdict: ${VERDICT_LABEL[result.verdict] || result.verdict}\n\nSummary:\n${result.summary}\n\nTells:\n${result.tells.map(tt => `  - ${tt}`).join('\n')}\n\nYour move:\n${result.yourMove}\n\nTry it: ${shareUrl}`;
+      const text = `AimVantage Ghost-Job Check\nGhost probability: ${result.ghostProbability}%\nVerdict: ${VERDICT_LABEL[result.verdict] || result.verdict}\n\nSummary:\n${result.summary}\n\nTells:\n${result.tells.map(tt => `  - ${tt}`).join('\n')}\n\nYour move:\n${result.yourMove}\n\nTry it: ${shareUrl}`;
       await navigator.clipboard.writeText(text);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
@@ -130,7 +130,7 @@ export default function GhostJobCheckPage() {
   const softwareSchema = {
     '@context': 'https://schema.org',
     '@type': 'SoftwareApplication',
-    name: 'Vantage AI — Ghost Job Detector',
+    name: 'AimVantage — Ghost Job Detector',
     applicationCategory: 'BusinessApplication',
     operatingSystem: 'Web',
     description: 'Free AI tool that scores job listings on ghost-job probability (0-100). Paste the JD, get a verdict + the specific tells + your concrete next move. No signup.',
@@ -148,17 +148,17 @@ export default function GhostJobCheckPage() {
       {
         '@type': 'Question',
         name: 'How does the Ghost Job Detector work?',
-        acceptedAnswer: { '@type': 'Answer', text: 'Paste the JD text. Vantage runs it through Gemini 2.5 Flash with a strict pattern-matching prompt that scores against known ghost-job tells: cliche phrases (highly motivated, self-starter), suspiciously wide salary bands, multiple seniority levels in one role, no concrete deliverables or tech stack, generic team-introduction copy. Returns a 0-100 probability + the specific phrases that informed the score.' },
+        acceptedAnswer: { '@type': 'Answer', text: 'Paste the JD text. AimVantage runs it through Gemini 2.5 Flash with a strict pattern-matching prompt that scores against known ghost-job tells: cliche phrases (highly motivated, self-starter), suspiciously wide salary bands, multiple seniority levels in one role, no concrete deliverables or tech stack, generic team-introduction copy. Returns a 0-100 probability + the specific phrases that informed the score.' },
       },
       {
         '@type': 'Question',
         name: 'Is the Ghost Job Detector free?',
-        acceptedAnswer: { '@type': 'Answer', text: 'Yes — fully free, no signup, no credit card. Built by Vantage AI as a viral-loop tool. Vantage absorbs the AI cost.' },
+        acceptedAnswer: { '@type': 'Answer', text: 'Yes — fully free, no signup, no credit card. Built by AimVantage as a viral-loop tool. AimVantage absorbs the AI cost.' },
       },
       {
         '@type': 'Question',
-        name: 'Does Vantage store the job description I paste?',
-        acceptedAnswer: { '@type': 'Answer', text: 'No. The text is sent to the check endpoint, processed by Gemini, and the response is returned to your browser. Nothing is persisted on Vantage servers.' },
+        name: 'Does AimVantage store the job description I paste?',
+        acceptedAnswer: { '@type': 'Answer', text: 'No. The text is sent to the check endpoint, processed by Gemini, and the response is returned to your browser. Nothing is persisted on AimVantage servers.' },
       },
     ],
   };
@@ -174,7 +174,7 @@ export default function GhostJobCheckPage() {
 
       <nav className={`${t.nav} border-b border-white/10 sticky top-0 z-40 backdrop-blur-xl`}>
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link to="/" className={`text-xl font-bold ${t.text}`}>Vantage</Link>
+          <Link to="/" className={`text-xl font-bold ${t.text}`}>AimVantage</Link>
           <div className="flex items-center gap-4 text-sm">
             <Link to="/roast" className={`${t.textSub} hover:${t.text}`}>Roast cover letter</Link>
             <Link to="/decode-rejection" className={`${t.textSub} hover:${t.text}`}>Decode rejection</Link>
@@ -402,7 +402,7 @@ export default function GhostJobCheckPage() {
             <div className="pt-6 border-t border-white/10">
               <div className={`text-xs uppercase tracking-wider mb-2 ${t.textMuted}`}>For real jobs, win them properly</div>
               <p className={`text-sm mb-4 ${t.textSub}`}>
-                If the listing IS real, don't waste it on a generic application. Vantage takes your CV + the job link and produces the full prep pack — company intel, tailored cover letter (4 tones), mock interview questions, fit score, 5-minute pitch — in 90 seconds. 10 free analyses on signup, no card.
+                If the listing IS real, don't waste it on a generic application. AimVantage takes your CV + the job link and produces the full prep pack — company intel, tailored cover letter (4 tones), mock interview questions, fit score, 5-minute pitch — in 90 seconds. 10 free analyses on signup, no card.
               </p>
               <Link
                 to="/register"

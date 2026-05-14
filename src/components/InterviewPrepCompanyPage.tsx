@@ -61,13 +61,14 @@ export default function InterviewPrepCompanyPage() {
     '@type': 'Article',
     headline: title,
     description,
-    author: { '@type': 'Person', name: 'Vantage' },
+    author: { '@type': 'Person', name: 'AimVantage' },
     datePublished: pack.updated,
     dateModified: pack.updated,
     mainEntityOfPage: { '@type': 'WebPage', '@id': `${SITE_URL}${path}` },
     publisher: {
       '@type': 'Organization',
-      name: 'Vantage',
+      name: 'AimVantage',
+      alternateName: ['Vantage', 'Vantage AI', 'Aim Vantage'],
       logo: { '@type': 'ImageObject', url: `${SITE_URL}/favicon.svg` },
     },
     image: `${SITE_URL}/og-image.png`,
@@ -86,7 +87,7 @@ export default function InterviewPrepCompanyPage() {
         articleMeta={{
           publishedTime: pack.updated,
           modifiedTime: pack.updated,
-          author: 'Vantage',
+          author: 'AimVantage',
           tags: [pack.company, 'Interview Questions', 'Job Search', 'Career'],
         }}
         jsonLd={[articleSchema, breadcrumbSchema, faqSchema, howToSchema]}
@@ -96,7 +97,7 @@ export default function InterviewPrepCompanyPage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <Link to="/" className={`flex items-center gap-2 ${t.text}`}>
             <Star className="w-5 h-5 text-violet-500" />
-            <span className="font-bold tracking-tight">Vantage</span>
+            <span className="font-bold tracking-tight">AimVantage</span>
           </Link>
           <Link
             to="/interview-prep"
@@ -231,7 +232,7 @@ export default function InterviewPrepCompanyPage() {
             Want this prep tailored to a specific {pack.company} role?
           </h3>
           <p className={`mt-2 ${t.textSub} max-w-xl mx-auto`}>
-            Vantage takes your CV + a real {pack.company} job link and generates the
+            AimVantage takes your CV + a real {pack.company} job link and generates the
             company-specific prep, the cover letter, mock interview, fit score, and a
             5-minute pitch outline — all in 90 seconds.
           </p>
@@ -239,7 +240,7 @@ export default function InterviewPrepCompanyPage() {
             to="/register"
             className="mt-5 inline-flex items-center gap-2 px-6 py-3 rounded-full bg-violet-600 hover:bg-violet-500 text-white font-semibold transition"
           >
-            Try Vantage free <ArrowRight className="w-4 h-4" />
+            Try AimVantage free <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
 

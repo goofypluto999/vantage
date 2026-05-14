@@ -108,8 +108,8 @@ export default function DecodeRejectionPage() {
 
   const shareUrl = `${SITE_URL}/decode-rejection?utm_source=share&utm_medium=decode`;
   const shareText = result
-    ? `Got my rejection email decoded by Vantage AI. Verdict: ${VERDICT_LABEL[result.verdict] || result.verdict}. Severity ${result.severity}/5. Free tool — paste yours:`
-    : `Paste your job rejection email, get the brutal-honesty translation. Free, no signup. Built by Vantage AI:`;
+    ? `Got my rejection email decoded by AimVantage. Verdict: ${VERDICT_LABEL[result.verdict] || result.verdict}. Severity ${result.severity}/5. Free tool — paste yours:`
+    : `Paste your job rejection email, get the brutal-honesty translation. Free, no signup. Built by AimVantage:`;
 
   const xUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
   const liUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`;
@@ -117,7 +117,7 @@ export default function DecodeRejectionPage() {
   const copyResult = async () => {
     if (!result) return;
     try {
-      const text = `Vantage AI Rejection Decoder\nVerdict: ${VERDICT_LABEL[result.verdict] || result.verdict}\nSeverity: ${result.severity}/5\n\nTranslation:\n${result.translation}\n\nClues:\n${result.specificClues.map(c => `  - ${c}`).join('\n')}\n\nNext move:\n${result.nextMove}\n\nTry it: ${shareUrl}`;
+      const text = `AimVantage Rejection Decoder\nVerdict: ${VERDICT_LABEL[result.verdict] || result.verdict}\nSeverity: ${result.severity}/5\n\nTranslation:\n${result.translation}\n\nClues:\n${result.specificClues.map(c => `  - ${c}`).join('\n')}\n\nNext move:\n${result.nextMove}\n\nTry it: ${shareUrl}`;
       await navigator.clipboard.writeText(text);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
@@ -142,7 +142,7 @@ export default function DecodeRejectionPage() {
   const softwareSchema = {
     '@context': 'https://schema.org',
     '@type': 'SoftwareApplication',
-    name: 'Vantage AI — Rejection Email Decoder',
+    name: 'AimVantage — Rejection Email Decoder',
     applicationCategory: 'BusinessApplication',
     operatingSystem: 'Web',
     description: 'Free AI tool that decodes job-rejection emails. Paste the email, get the brutal-honesty translation of what the recruiter actually meant + your concrete next move.',
@@ -155,12 +155,12 @@ export default function DecodeRejectionPage() {
       {
         '@type': 'Question',
         name: 'Is the Rejection Email Decoder free?',
-        acceptedAnswer: { '@type': 'Answer', text: 'Yes — fully free, no signup, no credit card. Built by Vantage AI as a viral-loop tool. Vantage absorbs the AI cost.' },
+        acceptedAnswer: { '@type': 'Answer', text: 'Yes — fully free, no signup, no credit card. Built by AimVantage as a viral-loop tool. AimVantage absorbs the AI cost.' },
       },
       {
         '@type': 'Question',
-        name: 'Does Vantage store my rejection email?',
-        acceptedAnswer: { '@type': 'Answer', text: 'No. The email text is sent to the decode endpoint, processed by Gemini 2.5 Flash, and the response is returned to your browser. Nothing is persisted on Vantage servers.' },
+        name: 'Does AimVantage store my rejection email?',
+        acceptedAnswer: { '@type': 'Answer', text: 'No. The email text is sent to the decode endpoint, processed by Gemini 2.5 Flash, and the response is returned to your browser. Nothing is persisted on AimVantage servers.' },
       },
       {
         '@type': 'Question',
@@ -169,8 +169,8 @@ export default function DecodeRejectionPage() {
       },
       {
         '@type': 'Question',
-        name: 'What does Vantage AI do beyond this tool?',
-        acceptedAnswer: { '@type': 'Answer', text: 'Vantage AI is a paid AI job preparation tool: upload your CV + paste a job link, get a full prep pack in 90 seconds (company intel, tailored cover letter, mock interview questions, fit score, 5-minute pitch outline). 10 free analyses on signup. £5 starter pack for 20 more, never expires.' },
+        name: 'What does AimVantage do beyond this tool?',
+        acceptedAnswer: { '@type': 'Answer', text: 'AimVantage is a paid AI job preparation tool: upload your CV + paste a job link, get a full prep pack in 90 seconds (company intel, tailored cover letter, mock interview questions, fit score, 5-minute pitch outline). 10 free analyses on signup. £5 starter pack for 20 more, never expires.' },
       },
     ],
   };
@@ -186,7 +186,7 @@ export default function DecodeRejectionPage() {
 
       <nav className={`${t.nav} border-b border-white/10 sticky top-0 z-40 backdrop-blur-xl`}>
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link to="/" className={`text-xl font-bold ${t.text}`}>Vantage</Link>
+          <Link to="/" className={`text-xl font-bold ${t.text}`}>AimVantage</Link>
           <div className="flex items-center gap-4 text-sm">
             <Link to="/roast" className={`${t.textSub} hover:${t.text}`}>Cover letter roast</Link>
             <Link to="/register" className="px-4 py-2 bg-[#4F46E5] text-white rounded-full font-semibold hover:bg-[#3F36D5]">
@@ -404,7 +404,7 @@ export default function DecodeRejectionPage() {
             <div className="pt-6 border-t border-white/10">
               <div className={`text-xs uppercase tracking-wider mb-2 ${t.textMuted}`}>Now write the cover letter that wins the next one</div>
               <p className={`text-sm mb-4 ${t.textSub}`}>
-                Vantage takes your CV + a job link and produces the full prep pack — company intel, tailored cover letter (4 tones), mock interview questions, fit score, 5-minute pitch — in 90 seconds. 10 free analyses on signup, no card.
+                AimVantage takes your CV + a job link and produces the full prep pack — company intel, tailored cover letter (4 tones), mock interview questions, fit score, 5-minute pitch — in 90 seconds. 10 free analyses on signup, no card.
               </p>
               <Link
                 to="/register"

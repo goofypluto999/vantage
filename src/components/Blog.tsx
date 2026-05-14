@@ -217,7 +217,7 @@ export default function Blog() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <Link to="/" className={`flex items-center gap-2 ${t.text}`}>
             <Star className="w-5 h-5 text-violet-500" />
-            <span className="font-bold tracking-tight">Vantage</span>
+            <span className="font-bold tracking-tight">AimVantage</span>
           </Link>
           <Link
             to="/"
@@ -232,11 +232,11 @@ export default function Blog() {
           stuck-at-opacity bug pattern, fixed elsewhere today). */}
       <header className="max-w-4xl mx-auto px-4 sm:px-6 pt-16 pb-8">
         <h1 className={`text-4xl sm:text-5xl font-extrabold tracking-tight ${t.text}`}>
-          The Vantage Blog
+          The AimVantage Blog
         </h1>
         <p className={`mt-3 text-lg ${t.textSub} max-w-2xl`}>
           Guides on AI job application prep, interview strategy, ATS-friendly CVs, cover letters,
-          and job fit analysis. Written by the team building Vantage, for the people using it.
+          and job fit analysis. Written by the team building AimVantage, for the people using it.
         </p>
 
         {/* Above-the-fold CTA — added 2026-05-07 (same pattern as
@@ -455,7 +455,7 @@ export default function Blog() {
             to="/register"
             className="mt-5 inline-flex items-center gap-2 px-6 py-3 rounded-full bg-violet-600 hover:bg-violet-500 text-white font-semibold transition"
           >
-            Try Vantage free <ArrowRight className="w-4 h-4" />
+            Try AimVantage free <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
       </main>

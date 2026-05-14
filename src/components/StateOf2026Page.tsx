@@ -68,7 +68,7 @@ export default function StateOf2026Page() {
     },
     publisher: {
       '@type': 'Organization',
-      name: 'Vantage',
+      name: 'AimVantage',
       logo: {
         '@type': 'ImageObject',
         url: `${SITE_URL}/favicon.svg`,
@@ -115,7 +115,7 @@ export default function StateOf2026Page() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <Link to="/" className={`flex items-center gap-2 ${t.text}`}>
             <Star className="w-5 h-5 text-violet-500" />
-            <span className="font-bold tracking-tight">Vantage</span>
+            <span className="font-bold tracking-tight">AimVantage</span>
           </Link>
           <Link to="/register" className="text-sm px-4 py-2 rounded-full bg-violet-600 hover:bg-violet-500 text-white font-semibold transition">
             Try free
@@ -589,7 +589,7 @@ export default function StateOf2026Page() {
           </p>
           <p className={`${t.text} text-sm font-mono leading-relaxed`}>
             Sizino-Ennes, G. (2026). The State of 2026 Tech Interview Hiring (data from 34
-            deep-dives). Vantage. {SITE_URL}/state-of-2026
+            deep-dives). AimVantage. {SITE_URL}/state-of-2026
           </p>
           <p className={`${t.textSub} text-xs mt-3`}>
             Methodology and the underlying 34 deep-dives are publicly accessible at the URLs
@@ -603,7 +603,7 @@ export default function StateOf2026Page() {
             Now run the prep on your actual job link.
           </h3>
           <p className={`mt-2 ${t.textSub} max-w-xl mx-auto`}>
-            Vantage takes your CV and the actual job link and gives you the company-specific
+            AimVantage takes your CV and the actual job link and gives you the company-specific
             prep, the AI-thesis-aware questions, and the cover letter — in about 90 seconds.
             10 free packs on signup, no card.
           </p>
@@ -611,7 +611,7 @@ export default function StateOf2026Page() {
             to="/register?source=state-of-2026"
             className="mt-5 inline-flex items-center gap-2 px-6 py-3 rounded-full bg-violet-600 hover:bg-violet-500 text-white font-semibold transition"
           >
-            Try Vantage free <ArrowRight className="w-4 h-4" />
+            Try AimVantage free <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
       </main>

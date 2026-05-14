@@ -52,10 +52,10 @@ export default function SalaryHubPage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <Link to="/" className={`flex items-center gap-2 ${t.text}`}>
             <Star className="w-5 h-5 text-violet-500" />
-            <span className="font-bold tracking-tight">Vantage</span>
+            <span className="font-bold tracking-tight">AimVantage</span>
           </Link>
           <Link to="/register" className="text-sm px-4 py-2 rounded-full bg-violet-600 hover:bg-violet-500 text-white font-semibold transition">
-            Try Vantage free
+            Try AimVantage free
           </Link>
         </div>
       </nav>
@@ -143,7 +143,7 @@ export default function SalaryHubPage() {
         <div className={`mt-12 ${t.glass} rounded-2xl p-8 text-center`}>
           <h3 className={`text-2xl font-bold ${t.text}`}>Going for a specific role?</h3>
           <p className={`mt-2 ${t.textSub} max-w-xl mx-auto`}>
-            Vantage analyses your CV against the actual job posting and tells you the gaps to close
+            AimVantage analyses your CV against the actual job posting and tells you the gaps to close
             before the interview. Paired with the salary data here, you walk in knowing exactly
             what you bring and what to ask for.
           </p>
@@ -151,7 +151,7 @@ export default function SalaryHubPage() {
             to="/register"
             className="mt-5 inline-flex items-center gap-2 px-6 py-3 rounded-full bg-violet-600 hover:bg-violet-500 text-white font-semibold transition"
           >
-            Try Vantage free <ArrowRight className="w-4 h-4" />
+            Try AimVantage free <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
       </main>

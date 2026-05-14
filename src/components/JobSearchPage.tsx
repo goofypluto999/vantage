@@ -8,7 +8,7 @@
 // users hitting /jobs get the same visual treatment as the in-Dashboard
 // section.
 //
-// Previous version used `t.pageBg` which on the light Vantage landing
+// Previous version used `t.pageBg` which on the light AimVantage landing
 // theme rendered the dark-themed form text invisibly ("nothing loads").
 // Fixed by hardcoding the dark gradient matching Dashboard.tsx exactly.
 
@@ -58,7 +58,7 @@ export default function JobSearchPage() {
     >
       <SEO
         title="AI Job Search — find roles that fit you"
-        description="Vantage AI searches 20+ countries and scores every result against your CV. Ghost-job filtered. Salary-transparent. Save to tracker. First scan free."
+        description="AimVantage searches 20+ countries and scores every result against your CV. Ghost-job filtered. Salary-transparent. Save to tracker. First scan free."
         path="/jobs"
       />
 
@@ -69,7 +69,7 @@ export default function JobSearchPage() {
       >
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Link to="/" className="font-bold tracking-tight text-white">Vantage</Link>
+            <Link to="/" className="font-bold tracking-tight text-white">AimVantage</Link>
             <Link
               to="/dashboard"
               className="hidden sm:inline-flex items-center gap-1 text-xs font-semibold text-violet-300 hover:text-violet-200 transition"

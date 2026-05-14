@@ -10,7 +10,7 @@
 // (`linear-gradient(135deg, #0d0b1e 0%, #1a1635 100%)` ambient). All
 // text/borders use white/X opacity tokens that work on dark, not
 // theme-aware `t.glass`-style tokens (those proved to render
-// invisibly on the light Vantage landing theme).
+// invisibly on the light AimVantage landing theme).
 //
 // Built 2026-05-11 as the third refinement of the Job Search milestone.
 
@@ -455,7 +455,7 @@ export default function JobSearchSection({ embedded = false, className = '' }: P
     setToast(null);
   }
 
-  function applyViaVantage(job: ScoredJob) {
+  function applyViaAimVantage(job: ScoredJob) {
     const href = safeHref(job.url);
     if (!href) return;
     // Pass the JD description text along so the analyzer can skip the
@@ -709,7 +709,7 @@ export default function JobSearchSection({ embedded = false, className = '' }: P
         <div className="mt-4 pt-4 border-t border-white/10 flex flex-wrap items-center justify-between gap-3">
           <label
             className="inline-flex items-center gap-2 text-sm text-white/80 cursor-pointer"
-            title="Ghost jobs are listings that look real but have no actual role behind them — old roles posted to inflate hiring funnels, ATS test posts, or résumé harvesting. Vantage scores each result for ghost probability (0-100) using posting age, vague requirements, missing salary, and reposting patterns. With this on, listings scoring ≥75% are hidden from view."
+            title="Ghost jobs are listings that look real but have no actual role behind them — old roles posted to inflate hiring funnels, ATS test posts, or résumé harvesting. AimVantage scores each result for ghost probability (0-100) using posting age, vague requirements, missing salary, and reposting patterns. With this on, listings scoring ≥75% are hidden from view."
           >
             <input type="checkbox" checked={hideGhost} onChange={(e) => setHideGhost(e.target.checked)}
               className="rounded border-white/20 bg-white/5 text-violet-600 focus:ring-violet-500" />
@@ -1053,9 +1053,9 @@ export default function JobSearchSection({ embedded = false, className = '' }: P
                             <Bookmark className="w-3.5 h-3.5" aria-hidden="true" />
                             {isSaved ? 'Saved ✓' : 'Save to tracker'}
                           </button>
-                          <button type="button" onClick={() => applyViaVantage(job)} disabled={!href}
+                          <button type="button" onClick={() => applyViaAimVantage(job)} disabled={!href}
                             className="inline-flex items-center gap-1 px-3.5 py-2 rounded-md text-xs font-bold bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white transition disabled:opacity-40 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-violet-400 min-h-[44px]">
-                            <Sparkles className="w-3.5 h-3.5" aria-hidden="true" /> Apply via Vantage
+                            <Sparkles className="w-3.5 h-3.5" aria-hidden="true" /> Apply via AimVantage
                           </button>
                           {href && (
                             <a href={href} target="_blank" rel="noopener noreferrer nofollow"

@@ -112,7 +112,8 @@ export default function InterviewPrepCompanySeniorityPage() {
     mainEntityOfPage: { '@type': 'WebPage', '@id': `${SITE_URL}${path}` },
     publisher: {
       '@type': 'Organization',
-      name: 'Vantage',
+      name: 'AimVantage',
+      alternateName: ['Vantage', 'Vantage AI', 'Aim Vantage'],
       logo: { '@type': 'ImageObject', url: `${SITE_URL}/favicon.svg` },
     },
     image: `${SITE_URL}/og-image.png`,
@@ -132,10 +133,10 @@ export default function InterviewPrepCompanySeniorityPage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <Link to="/" className={`flex items-center gap-2 ${t.text}`}>
             <Star className="w-5 h-5 text-violet-500" />
-            <span className="font-bold tracking-tight">Vantage</span>
+            <span className="font-bold tracking-tight">AimVantage</span>
           </Link>
           <Link to="/register" className="text-sm px-4 py-2 rounded-full bg-violet-600 hover:bg-violet-500 text-white font-semibold transition">
-            Try Vantage free
+            Try AimVantage free
           </Link>
         </div>
       </nav>
@@ -240,7 +241,7 @@ export default function InterviewPrepCompanySeniorityPage() {
         <section className={`mb-10 ${t.glass} rounded-2xl p-6 sm:p-8`}>
           <h2 className={`text-xl font-bold ${t.text} mb-3`}>Run a calibrated prep pack on your real CV</h2>
           <p className={`${t.textSub} leading-relaxed mb-4`}>
-            Knowing the rubric is the easy part. Vantage analyses your CV against the actual {companyName}
+            Knowing the rubric is the easy part. AimVantage analyses your CV against the actual {companyName}
             job posting and tells you which {variant.label}-band gaps to close before the loop. Pair it
             with the questions above for the full prep pass.
           </p>

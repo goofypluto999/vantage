@@ -5,8 +5,8 @@ import { Loader2 } from 'lucide-react';
 /**
  * /share-target — landing route for PWA share_target manifest entry.
  *
- * When a user has Vantage installed as a PWA on Android (or ChromeOS) and
- * shares text/url/title from another app to Vantage, the OS sends them
+ * When a user has AimVantage installed as a PWA on Android (or ChromeOS) and
+ * shares text/url/title from another app to AimVantage, the OS sends them
  * here with the share data in URL params (because we declared method:
  * "GET" in site.webmanifest's share_target).
  *
