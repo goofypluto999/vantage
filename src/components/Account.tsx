@@ -385,7 +385,7 @@ export default function Account() {
                     type={showPassword ? 'text' : 'password'}
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
-                    placeholder="Min. 6 characters"
+                    placeholder="Min. 8 characters"
                     autoComplete="new-password"
                     className="w-full px-3 py-2 pr-10 rounded-lg bg-white/5 border border-white/10 text-white text-sm outline-none focus:border-violet-500/50 transition-colors placeholder-white/20"
                   />

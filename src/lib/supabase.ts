@@ -116,7 +116,7 @@ export function mapAuthError(rawMessage: string): string {
   if (m.includes('email not confirmed')) return 'Please check your email and confirm your account before signing in.';
   if (m.includes('user already registered')) return 'An account with this email already exists. Try signing in instead.';
   if (m.includes('signup is not allowed') || m.includes('signups not allowed')) return 'New registrations are temporarily disabled. Please try again later.';
-  if (m.includes('password') && m.includes('too short')) return 'Password must be at least 6 characters.';
+  if (m.includes('password') && m.includes('too short')) return 'Password must be at least 8 characters.';
   if (m.includes('password') && m.includes('weak')) return 'Password is too weak. Use a mix of letters, numbers, and symbols.';
   if (m.includes('rate limit') || m.includes('too many requests')) return 'Too many attempts. Please wait a moment and try again.';
   if (m.includes('email') && m.includes('invalid')) return 'Please enter a valid email address.';
