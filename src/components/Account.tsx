@@ -392,6 +392,9 @@ export default function Account() {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                    aria-pressed={showPassword}
+                    title={showPassword ? 'Hide password' : 'Show password'}
                     className="absolute right-2.5 top-1/2 -translate-y-1/2 text-white/55 hover:text-white/60 transition-colors"
                   >
                     {showPassword ? <EyeOff className="w-4 h-4" aria-hidden="true" /> : <Eye className="w-4 h-4" aria-hidden="true" />}

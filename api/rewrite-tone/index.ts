@@ -27,11 +27,19 @@ async function deductTokens(userId: string, amount: number): Promise<number> {
   return res.json();
 }
 
-async function refundTokens(userId: string, amount: number): Promise<void> {
-  // Best-effort refund via add_tokens RPC. If this fails we log but don't crash
-  // the request — the user will see the generation error and we'll eat the cost.
+/**
+ * Refunds tokens to a user. Returns true on confirmed success, false on
+ * any failure (network, HTTP non-200). Callers must use the boolean to
+ * gate user-facing copy that promises 'token refunded'.
+ *
+ * Codex audit HIGH-03 (2026-05-14): the previous version of this helper
+ * never checked res.ok and treated 4xx/5xx as success. A user could lose
+ * a token if Gemini failed and the refund RPC then errored. Now aligned
+ * with the analyze + interview refund helpers.
+ */
+async function refundTokens(userId: string, amount: number): Promise<boolean> {
   try {
-    await fetch(`${SUPABASE_URL}/rest/v1/rpc/add_tokens`, {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/add_tokens`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -40,8 +48,14 @@ async function refundTokens(userId: string, amount: number): Promise<void> {
       },
       body: JSON.stringify({ p_user_id: userId, p_amount: amount }),
     });
+    if (!res.ok) {
+      console.error('rewrite-tone refund non-ok for user', userId, 'status', res.status);
+      return false;
+    }
+    return true;
   } catch (err: any) {
-    console.error('Refund failed for user', userId, 'amount', amount, err?.message || '');
+    console.error('rewrite-tone refund failed for user', userId, 'amount', amount, err?.message || '');
+    return false;
   }
 }
 
@@ -56,6 +70,11 @@ export default async function handler(request: any, response: any) {
   }
 
   const token = authHeader.replace('Bearer ', '');
+
+  // Lifted out so the outer catch can refund + report honestly if an
+  // exception escapes the inner try. Parity with analyze + interview.
+  let didCharge = false;
+  let chargedUserId: string | null = null;
 
   try {
     const userRes = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
@@ -89,6 +108,8 @@ export default async function handler(request: any, response: any) {
     let newBalance: number;
     try {
       newBalance = await deductTokens(user.id, COST);
+      didCharge = true;
+      chargedUserId = user.id;
     } catch (err: any) {
       if (err.message?.includes('Insufficient')) {
         return response.status(403).json({ error: 'Insufficient tokens' });
@@ -130,11 +151,16 @@ Return ONLY the rewritten cover letter text. No explanation, no preamble, no mar
       });
       if (!aiResponse.text) throw new Error('No response from AI');
     } catch (err) {
-      // Refund on AI failure so the user isn't charged for nothing
-      await refundTokens(user.id, COST);
+      // Refund on AI failure so the user isn't charged for nothing.
+      // didCharge is set to false if refund actually succeeded, so the
+      // outer catch knows the user is square. If refund fails, the
+      // outer catch surfaces an honest "contact support" message.
+      const refundOk = await refundTokens(user.id, COST);
+      didCharge = !refundOk;
       throw err;
     }
 
+    didCharge = false; // success — legitimately earned
     return response.status(200).json({
       success: true,
       coverLetter: aiResponse.text.trim(),
@@ -142,7 +168,19 @@ Return ONLY the rewritten cover letter text. No explanation, no preamble, no mar
     });
   } catch (error: any) {
     console.error('Rewrite tone error:', error?.message || 'Unknown error');
-    const msg = error.message?.includes('Insufficient') ? error.message : 'Failed to rewrite cover letter';
-    return response.status(500).json({ error: msg });
+    if (error.message?.includes('Insufficient')) {
+      return response.status(500).json({ error: error.message });
+    }
+    let refundSucceeded = false;
+    if (didCharge && chargedUserId) {
+      refundSucceeded = await refundTokens(chargedUserId, COST);
+    }
+    return response.status(500).json({
+      error: !didCharge
+        ? 'Failed to rewrite cover letter. Please try again.'
+        : refundSucceeded
+          ? 'Failed to rewrite cover letter. Your token was refunded — please try again.'
+          : 'Failed to rewrite cover letter AND token refund failed. Please contact support@aimvantage.uk to have your token restored.',
+    });
   }
 }

@@ -326,6 +326,11 @@ export function useApplicationTracker(
       try {
         window.localStorage.removeItem(key);
       } catch { /* ignore */ }
+      // Codex audit MED-04: writes broadcast same-tab changes via
+      // CustomEvent but clear() didn't. Other mounted hook instances
+      // (e.g. the tracker chip on JobSearchSection vs. the full tracker
+      // panel) saw stale counts until refresh after a Clear or Replace-import.
+      broadcastChange(key);
     }
   }, [key, enabled]);
 

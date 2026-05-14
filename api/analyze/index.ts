@@ -33,31 +33,79 @@ function looksLikeBlockedPage(text: string): boolean {
   return false;
 }
 
+/**
+ * Normalise a URL-parsed hostname to a plain string the regex / startsWith
+ * checks can reason about. URL parses '[::1]' as hostname '[::1]' (brackets
+ * preserved), which is why the previous version of the check missed bracketed
+ * IPv6 literals — `'[::1]' === '::1'` is false. Strip the brackets, lowercase,
+ * collapse the IPv4-mapped-in-IPv6 prefix.
+ */
+function normaliseHost(hostname: string): string {
+  let h = (hostname || '').toLowerCase();
+  if (h.startsWith('[') && h.endsWith(']')) h = h.slice(1, -1);
+  // IPv4-mapped IPv6: ::ffff:127.0.0.1 → 127.0.0.1
+  const mapped = h.match(/^::ffff:(\d+\.\d+\.\d+\.\d+)$/);
+  if (mapped) return mapped[1];
+  return h;
+}
+
 function isPrivateHostname(hostname: string): boolean {
-  const h = hostname.toLowerCase();
-  // Localhost variants
-  if (h === 'localhost' || h === '127.0.0.1' || h === '0.0.0.0' || h === '::1') return true;
+  const h = normaliseHost(hostname);
+  // Localhost variants (now catches bracketed IPv6 via normalise)
+  if (h === 'localhost' || h === '127.0.0.1' || h === '0.0.0.0' || h === '::1' || h === '::') return true;
   // IPv4 private ranges
   if (h.startsWith('10.') || h.startsWith('192.168.')) return true;
   if (/^172\.(1[6-9]|2\d|3[01])\./.test(h)) return true; // 172.16.0.0/12
+  // 127.0.0.0/8 (all loopback, not just 127.0.0.1)
+  if (/^127\./.test(h)) return true;
   // AWS/cloud metadata
   if (h.startsWith('169.254.')) return true;
-  // IPv6 private
-  if (h.startsWith('fc') || h.startsWith('fd') || h.startsWith('fe80')) return true;
-  // IPv4-mapped IPv6
+  // IPv6 link-local / ULA
+  if (h.startsWith('fc') || h.startsWith('fd') || h.startsWith('fe80') || h.startsWith('fe9') || h.startsWith('fea') || h.startsWith('feb')) return true;
+  // IPv6 unspecified + loopback in full form
+  if (h === '0:0:0:0:0:0:0:0' || h === '0:0:0:0:0:0:0:1') return true;
+  // IPv4-mapped IPv6 prefix (already partially normalised above, but keep fallthrough check)
   if (h.startsWith('::ffff:')) return true;
   // Internal TLDs
   if (h.endsWith('.internal') || h.endsWith('.local') || h.endsWith('.localhost')) return true;
   // Block bare IPs that could be decimal/octal encoding of private ranges
   if (/^\d+$/.test(h)) return true; // decimal IP like 2130706433
+  // Octal IPv4 (e.g. 0177.0.0.1 = 127.0.0.1)
+  if (/^0[0-7]+\./.test(h)) return true;
+  // Hex IPv4 (e.g. 0x7f.0.0.1 = 127.0.0.1)
+  if (/^0x[0-9a-f]+\./.test(h)) return true;
   return false;
 }
 
-function isUrlSafe(url: string): boolean {
+/**
+ * Additionally resolve the hostname via DNS and re-check every returned IP.
+ * Stops the "evil.attacker.com → A 127.0.0.1" trick where a hostname looks
+ * public but its A/AAAA records point to private space. Codex audit HIGH-01.
+ */
+async function isPrivateAfterDnsResolution(hostname: string): Promise<boolean> {
+  try {
+    // Only import dns when needed — Vercel functions strip unused imports.
+    const dns = await import('node:dns/promises');
+    const records = await dns.lookup(hostname, { all: true, verbatim: true });
+    for (const rec of records) {
+      if (isPrivateHostname(rec.address)) return true;
+    }
+    return false;
+  } catch {
+    // DNS resolution failed — be safe, treat as not-private (the actual fetch
+    // will fail anyway if hostname is unreachable). Returning true here would
+    // cause false rejections for transient DNS hiccups.
+    return false;
+  }
+}
+
+async function isUrlSafe(url: string): Promise<boolean> {
   try {
     const parsed = new URL(url);
     if (!['http:', 'https:'].includes(parsed.protocol)) return false;
     if (isPrivateHostname(parsed.hostname)) return false;
+    // DNS-level check: even a public-looking hostname might resolve to private IPs.
+    if (await isPrivateAfterDnsResolution(normaliseHost(parsed.hostname))) return false;
     return true;
   } catch {
     return false;
@@ -127,8 +175,9 @@ async function fetchPage(url: string, headers: Record<string, string>, maxRedire
   let currentUrl = url;
   for (let i = 0; i <= maxRedirects; i++) {
     try {
-      // Validate every URL in the redirect chain against SSRF
-      if (!isUrlSafe(currentUrl)) return null;
+      // Validate every URL in the redirect chain against SSRF (now async due
+      // to DNS resolution check — HIGH-01 hardening from Codex audit)
+      if (!(await isUrlSafe(currentUrl))) return null;
 
       const res = await fetch(currentUrl, {
         headers,
@@ -831,7 +880,7 @@ export default async function handler(request: any, response: any) {
     if (!cvText && !cvBase64) {
       return response.status(400).json({ error: 'CV content is required' });
     }
-    if (jobUrl && !isUrlSafe(jobUrl)) {
+    if (jobUrl && !(await isUrlSafe(jobUrl))) {
       return response.status(400).json({ error: 'Invalid job URL' });
     }
     if (cvText && cvText.length > 200000) {

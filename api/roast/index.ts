@@ -86,11 +86,27 @@ function looksLikeBot(userAgent: string): boolean {
 
 // ─── IP extraction ────────────────────────────────────────────────────────
 function getClientIp(req: any): string {
-  // Vercel's edge sets x-forwarded-for; trust the FIRST hop (the real client).
-  // Subsequent values can be spoofed, but the first is set by Vercel itself.
+  // SECURITY (HIGH-02 from Codex audit 2026-05-14):
+  // Vercel sets x-vercel-forwarded-for with the verified client IP — this
+  // header is NOT spoofable because Vercel's edge writes it. Plain
+  // x-forwarded-for is attacker-controllable: the first entry on inbound
+  // requests is whatever the client sent. Reading xff[0] was rate-limit
+  // bypass via header rotation.
+  //
+  // Pattern aligned with api/ghost-job-check, api/decode-rejection,
+  // api/waitlist which already use this approach.
+  const vercelXff = req.headers['x-vercel-forwarded-for'];
+  if (typeof vercelXff === 'string' && vercelXff.length > 0) {
+    return vercelXff.split(',')[0].trim();
+  }
   const xff = req.headers['x-forwarded-for'];
-  if (typeof xff === 'string') return xff.split(',')[0].trim();
-  if (Array.isArray(xff) && xff.length > 0) return xff[0];
+  if (typeof xff === 'string' && xff.length > 0) {
+    // Fallback for non-Vercel hosting: use the LAST entry which is the
+    // closest verified proxy hop. Still spoofable if the entire chain is
+    // attacker-controlled, but that's a different threat model.
+    const parts = xff.split(',').map((s) => s.trim()).filter(Boolean);
+    return parts[parts.length - 1] || 'unknown';
+  }
   if (req.headers['x-real-ip']) return String(req.headers['x-real-ip']);
   return req.connection?.remoteAddress || 'unknown';
 }

@@ -200,7 +200,12 @@ export default function ApplicationTracker({ userScope }: Props) {
     // such fields so spreadsheets render them as text but the original
     // value is still visible. Council review 2026-05-13 flagged this
     // as critical before the export feature shipped.
-    if (/^[=+\-@\t\r]/.test(s)) {
+    //
+    // Codex audit LOW-02 (2026-05-14): also catch values where the
+    // formula char appears AFTER leading whitespace or a line feed —
+    // some spreadsheets normalise whitespace before parsing the first
+    // non-space character.
+    if (/^[\s]*[=+\-@]/.test(s) || /^[\t\r\n]/.test(s)) {
       s = "'" + s;
     }
     if (s.includes(',') || s.includes('"') || s.includes('\n') || s.includes('\r')) {
@@ -479,18 +484,49 @@ export default function ApplicationTracker({ userScope }: Props) {
     // (`add` prepends — calling it from the bottom of the array keeps order).
     // Track persistence failures so we can honest-report partial imports
     // (writeSafe returns '' on quota exhaustion — see council finding).
+    //
+    // DUP DETECTION (Codex audit HIGH-04 2026-05-14):
+    // Build a signature set from CURRENT entries; skip any incoming row
+    // that matches. Without this, "Export → Import same CSV → Append"
+    // duplicated every application. Signature = lowercased
+    // (company, role, sourceUrl) tuple — the strongest natural key
+    // available; appliedDate / notes / status / timestamps are mutable
+    // and shouldn't count toward identity.
+    const sigOf = (e: { company: string; role: string; sourceUrl?: string }) =>
+      `${(e.company || '').trim().toLowerCase()}|${(e.role || '').trim().toLowerCase()}|${(e.sourceUrl || '').trim().toLowerCase()}`;
+    const existingSigs = new Set<string>();
+    // On 'replace' the existing entries were just cleared, so the set is empty.
+    // On 'append' we need to seed from the current (pre-clear) entries.
+    if (mode === 'append') {
+      for (const e of entries) existingSigs.add(sigOf(e));
+    }
     let writeFailures = 0;
+    let skippedDuplicates = 0;
     for (let i = importPreview.valid.length - 1; i >= 0; i -= 1) {
-      const newId = add(importPreview.valid[i]);
+      const candidate = importPreview.valid[i];
+      const sig = sigOf(candidate);
+      if (existingSigs.has(sig)) {
+        skippedDuplicates += 1;
+        continue;
+      }
+      const newId = add(candidate);
       if (!newId) writeFailures += 1;
+      else existingSigs.add(sig); // prevent intra-import duplicates too
     }
     setImportPreview(null);
-    if (writeFailures > 0) {
-      window.alert(
-        `Imported ${importPreview.valid.length - writeFailures} of ${importPreview.valid.length} entries. ` +
-        `${writeFailures} couldn't be saved — your browser may be out of storage space, in private mode, ` +
-        `or have site storage disabled.`
-      );
+    if (skippedDuplicates > 0) {
+      console.log(`Tracker import: skipped ${skippedDuplicates} duplicate row${skippedDuplicates === 1 ? '' : 's'} (already in tracker by company+role+url match).`);
+    }
+    if (writeFailures > 0 || skippedDuplicates > 0) {
+      const added = importPreview.valid.length - writeFailures - skippedDuplicates;
+      const parts: string[] = [`Imported ${added} of ${importPreview.valid.length} entries.`];
+      if (skippedDuplicates > 0) {
+        parts.push(`${skippedDuplicates} skipped because they were already in your tracker (same company + role + URL).`);
+      }
+      if (writeFailures > 0) {
+        parts.push(`${writeFailures} couldn't be saved — your browser may be out of storage space, in private mode, or have site storage disabled.`);
+      }
+      window.alert(parts.join(' '));
     }
   }
 

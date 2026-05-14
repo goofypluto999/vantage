@@ -320,7 +320,12 @@ async function handleSync(request: any, response: any) {
     const alreadySynced = profile.stripe_subscription_id === bestSubId;
     const tokensToAdd = alreadySynced ? 0 : PLAN_CREDITS[bestPlan] || 10;
     if (tokensToAdd > 0) {
-      await fetch(`${SUPABASE_URL}/rest/v1/rpc/add_tokens`, {
+      // Codex audit MED-02: previously the response of add_tokens was
+      // never checked. A 5xx from Supabase would silently leave the
+      // user without their plan tokens while the rest of this function
+      // still patched the profile and returned synced:true. Abort the
+      // sync if token credit fails so the client retries.
+      const addRes = await fetch(`${SUPABASE_URL}/rest/v1/rpc/add_tokens`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -329,6 +334,12 @@ async function handleSync(request: any, response: any) {
         },
         body: JSON.stringify({ p_user_id: user.id, p_amount: tokensToAdd }),
       });
+      if (!addRes.ok) {
+        console.error(`Sync: add_tokens failed for user ${user.id}, status ${addRes.status} — aborting sync`);
+        return response.status(500).json({
+          error: 'Failed to credit subscription tokens. Please try again in a moment; if the issue persists, contact support@aimvantage.uk.',
+        });
+      }
     }
 
     // Extract renewal + cancellation dates from the chosen subscription.

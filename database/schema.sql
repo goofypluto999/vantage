@@ -15,13 +15,31 @@ CREATE TABLE IF NOT EXISTS profiles (
   stripe_customer_id TEXT,
   stripe_subscription_id TEXT,
   subscription_status TEXT DEFAULT 'inactive' CHECK (subscription_status IN ('inactive', 'active', 'cancelling', 'cancelled', 'past_due')),
+  -- Subscription renewal + cancellation timestamps (added 2026-05-14 via
+  -- migration-2026-05-14-subscription-dates.sql). Folded into the canonical
+  -- schema here so a fresh Supabase setup gets the right shape without
+  -- needing to manually run every migration after the fact.
+  subscription_renews_at TIMESTAMPTZ,
+  subscription_cancel_at TIMESTAMPTZ,
+  -- Auto-extracted compact CV summary used by AI Job Search scoring.
+  -- Empty until the user runs their first analysis.
+  cv_summary TEXT,
+  -- Timestamp of the most recent free AI Job Search scan (rate-limits the
+  -- one-per-day free tier).
+  last_free_jobsearch_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- Create index for faster queries
+-- Create indexes for faster queries
 CREATE INDEX IF NOT EXISTS idx_profiles_email ON profiles(email);
 CREATE INDEX IF NOT EXISTS idx_profiles_stripe_customer ON profiles(stripe_customer_id);
+CREATE INDEX IF NOT EXISTS idx_profiles_subscription_renews_at
+  ON profiles(subscription_renews_at)
+  WHERE subscription_renews_at IS NOT NULL;
+CREATE INDEX IF NOT EXISTS idx_profiles_subscription_cancel_at
+  ON profiles(subscription_cancel_at)
+  WHERE subscription_cancel_at IS NOT NULL;
 
 -- ============================================================================
 -- ANALYSES TABLE (user's saved job analyses)
