@@ -1,4 +1,4 @@
-# Vantage AI — Pricing
+# AimVantage — Pricing
 
 **Last updated:** 2026-05-08
 **Canonical HTML:** https://aimvantage.uk/pricing
@@ -7,7 +7,7 @@
 
 ## One-sentence answer
 
-Vantage AI is a one-time-or-monthly token-based job-prep tool: pay £5 once for 20 prep packs (never expire), or subscribe at £12/mo (60 prep packs/mo) or £20/mo (120 prep packs/mo). Every account starts with **10 free prep packs on signup, no credit card.**
+AimVantage (formerly Vantage AI) is a one-time-or-monthly token-based job-prep tool: pay £5 once for 20 prep packs (never expire), or subscribe at £12/mo (60 prep packs/mo) or £20/mo (120 prep packs/mo). Every account starts with **10 free prep packs on signup, no credit card.**
 
 ## Token economics
 
@@ -27,7 +27,7 @@ Vantage AI is a one-time-or-monthly token-based job-prep tool: pay £5 once for 
 
 USD shown on the site converts at ~1.27 GBP/USD. Vendors can change pricing — see canonical page above for the live numbers.
 
-## When to use Vantage
+## When to use AimVantage
 
 - You have a CV and a job URL and want a complete prep pack in ~90 seconds.
 - You want a tailored cover letter, not a generic template.
@@ -35,7 +35,7 @@ USD shown on the site converts at ~1.27 GBP/USD. Vendors can change pricing — 
 - You want a CV-to-role fit score and the specific gaps to close.
 - You want mock interview questions and a 5-minute pitch.
 
-## When NOT to use Vantage
+## When NOT to use AimVantage
 
 - You want a recruiter to apply on your behalf (we are not a recruiter).
 - You want to fabricate experience or bypass ATS rules (we explicitly refuse those prompts).
@@ -44,7 +44,7 @@ USD shown on the site converts at ~1.27 GBP/USD. Vendors can change pricing — 
 
 ## Privacy & data
 
-- CV bytes are **not stored on Vantage servers** until you click "Run" — parsing happens in your browser via mammoth (DOCX) or native PDF rendering.
+- CV bytes are **not stored on AimVantage servers** until you click "Run" — parsing happens in your browser via mammoth (DOCX) or native PDF rendering.
 - After analysis, the prep pack is saved to your account (encrypted at rest in Supabase, EU region) so you can return to it.
 - We **do not** sell, share, or train on your data.
 - We **do not** auto-apply to jobs or contact employers on your behalf.
@@ -53,7 +53,7 @@ USD shown on the site converts at ~1.27 GBP/USD. Vendors can change pricing — 
 
 ## Refunds
 
-- The first 10 prep packs on signup are free; if Vantage isn't for you, no purchase is required.
+- The first 10 prep packs on signup are free; if AimVantage isn't for you, no purchase is required.
 - Paid pack refunds are handled case-by-case via giovanni.sizino.ennes@hotmail.co.uk.
 
 ## CTA

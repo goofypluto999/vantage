@@ -27,7 +27,7 @@ export default function NotFoundPage() {
     <div className="min-h-screen" style={{ background: t.pageBg }}>
       <SEO
         title="Page not found"
-        description="The page you're looking for doesn't exist on Vantage AI."
+        description="The page you're looking for doesn't exist on AimVantage."
         path={location.pathname}
         noindex
       />
@@ -46,7 +46,7 @@ export default function NotFoundPage() {
             either the URL was mistyped or the page was moved.
           </p>
           <p className={`${t.textMuted} text-sm`}>
-            If you got here from a link inside Vantage that's broken, please email{' '}
+            If you got here from a link inside AimVantage that's broken, please email{' '}
             <a href="mailto:hello@aimvantage.uk?subject=Broken%20link" className="underline">
               hello@aimvantage.uk
             </a>{' '}
@@ -63,7 +63,7 @@ export default function NotFoundPage() {
             <Home className="w-5 h-5 text-violet-500 flex-shrink-0 mt-0.5" aria-hidden="true" />
             <div>
               <div className={`${t.text} font-semibold`}>Home</div>
-              <div className={`${t.textMuted} text-sm`}>The Vantage AI landing page</div>
+              <div className={`${t.textMuted} text-sm`}>The AimVantage landing page</div>
             </div>
           </Link>
           <Link

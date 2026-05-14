@@ -1,4 +1,4 @@
-# Vantage AI — API status
+# AimVantage — API status
 
 **Last updated:** 2026-05-08
 **Canonical HTML:** https://aimvantage.uk/docs/api
@@ -6,7 +6,7 @@
 
 ## One-sentence answer
 
-The Vantage AI public REST API is **planned but not generally available** as of 2026-05-08; existing functionality is exposed via the web UI today, with a public OpenAPI spec at `/openapi.json` (read-only schemas and example responses) and an MCP server in active development for agent-callable preview tools.
+AimVantage (formerly Vantage AI) public REST API is **planned but not generally available** as of 2026-05-08; existing functionality is exposed via the web UI today, with a public OpenAPI spec at `/openapi.json` (read-only schemas and example responses) and an MCP server in active development for agent-callable preview tools.
 
 ## Current state
 

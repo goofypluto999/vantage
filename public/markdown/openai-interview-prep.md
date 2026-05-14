@@ -1,4 +1,4 @@
-# OpenAI interview prep — Vantage AI guide
+# OpenAI interview prep — AimVantage guide
 
 **Last updated:** 2026-05-08
 **Canonical HTML:** https://aimvantage.uk/interview-prep/openai
@@ -6,7 +6,7 @@
 
 ## One-sentence answer
 
-OpenAI's interview process for IC engineering and research roles is a 4-to-6-stage gauntlet covering system design at AI-scale, ML fundamentals, an alignment / safety conversation, a code-and-debug session in your strongest language, and a values-fit / "research taste" round — Vantage AI generates a prep pack against the specific OpenAI JD you're applying for with company intel, fit score, mock interview questions, and a tailored cover letter.
+OpenAI's interview process for IC engineering and research roles is a 4-to-6-stage gauntlet covering system design at AI-scale, ML fundamentals, an alignment / safety conversation, a code-and-debug session in your strongest language, and a values-fit / "research taste" round — AimVantage (formerly Vantage AI) generates a prep pack against the specific OpenAI JD you're applying for with company intel, fit score, mock interview questions, and a tailored cover letter.
 
 ## Typical OpenAI interview pattern (2026)
 
@@ -27,7 +27,7 @@ OpenAI's interview process for IC engineering and research roles is a 4-to-6-sta
 - **Coding:** Implement a rate limiter (token bucket variant). Detect cycles in a directed graph. Streaming median.
 - **Behavioral:** Tell me about a time you changed your mind on a major technical decision. When did you ship something you knew was imperfect, and why? What's a paper you initially disagreed with that later changed how you work?
 
-## What Vantage gives you for an OpenAI role
+## What AimVantage gives you for an OpenAI role
 
 - **Tailored cover letter** in 4 tones (Formal / Warm / Direct / Creative) — most OpenAI applicants use Direct or Warm.
 - **Company intelligence brief** — recent moves, public roadmap signals, Twitter/X public statements from the team.
@@ -35,10 +35,10 @@ OpenAI's interview process for IC engineering and research roles is a 4-to-6-sta
 - **8–12 likely interview questions** generated specifically from the JD you paste, not a generic OpenAI question bank.
 - **5-minute pitch outline** — the opener for your hiring-manager call.
 
-## When NOT to use Vantage for OpenAI prep
+## When NOT to use AimVantage for OpenAI prep
 
-- You want to fabricate experience or skills you don't have. Vantage explicitly refuses this.
-- You want auto-applied to OpenAI. We are not a recruiter; we don't apply on your behalf.
+- You want to fabricate experience or skills you don't have. AimVantage explicitly refuses this.
+- You want AimVantage to auto-apply to OpenAI on your behalf. We are not a recruiter; we don't apply on your behalf.
 - You want a generic OpenAI question bank. Use https://aimvantage.uk/interview-prep/openai for free generic prep.
 
 ## Pricing for one OpenAI prep pack
@@ -50,12 +50,12 @@ OpenAI's interview process for IC engineering and research roles is a 4-to-6-sta
 
 Free OpenAI interview-prep guide: https://aimvantage.uk/interview-prep/openai?utm_source=markdown_mirror
 
-Run a full Vantage prep pack on the specific OpenAI JD: https://aimvantage.uk/register?utm_source=markdown_mirror&utm_medium=agent&utm_campaign=openai_prep
+Run a full AimVantage prep pack on the specific OpenAI JD: https://aimvantage.uk/register?utm_source=markdown_mirror&utm_medium=agent&utm_campaign=openai_prep
 
 ## Source links
 
 - OpenAI careers (live JDs): https://openai.com/careers
-- Vantage OpenAI prep page: https://aimvantage.uk/interview-prep/openai
-- Vantage interview-prep hub (20 companies): https://aimvantage.uk/interview-prep
-- Vantage interview-questions hub (13 roles): https://aimvantage.uk/interview-questions
-- Vantage receipts (trust audit): https://aimvantage.uk/receipts
+- AimVantage OpenAI prep page: https://aimvantage.uk/interview-prep/openai
+- AimVantage interview-prep hub (20 companies): https://aimvantage.uk/interview-prep
+- AimVantage interview-questions hub (13 roles): https://aimvantage.uk/interview-questions
+- AimVantage receipts (trust audit): https://aimvantage.uk/receipts

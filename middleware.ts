@@ -143,7 +143,7 @@ export default function middleware(request: Request): Response | undefined {
       return new Response(
         `<!doctype html><meta charset="utf-8"><title>404 — Not found</title>
 <style>body{font-family:system-ui,sans-serif;background:#0d0b1e;color:#fff;display:flex;min-height:100vh;align-items:center;justify-content:center;margin:0;padding:20px}.box{max-width:480px;text-align:center}.code{font-size:5rem;font-weight:800;background:linear-gradient(135deg,#7c3aed,#a855f7);-webkit-background-clip:text;background-clip:text;color:transparent;margin:0}.msg{color:#a0a0b0;font-size:1.1rem;margin:0.5rem 0 2rem}a{color:#a78bfa;text-decoration:none;font-weight:600;padding:.75rem 1.5rem;border:1px solid #6d28d9;border-radius:8px;display:inline-block}</style>
-<div class="box"><p class="code">404</p><p class="msg">This page doesn't exist on Vantage.</p><a href="/">Go home</a></div>`,
+<div class="box"><p class="code">404</p><p class="msg">This page doesn't exist on AimVantage.</p><a href="/">Go home</a></div>`,
         {
           status: 404,
           headers: {

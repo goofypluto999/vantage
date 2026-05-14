@@ -6,7 +6,7 @@
 
 ## One-sentence answer
 
-Workday's resume parser reads your CV in document-stream order (top to bottom, left to right of the underlying text layer), so two-column layouts, header/footer text, and tables can confuse it — use a single-column CV with standard section headings to maximize parse fidelity.
+This guide is published by AimVantage (formerly Vantage AI). Workday's resume parser reads your CV in document-stream order (top to bottom, left to right of the underlying text layer), so two-column layouts, header/footer text, and tables can confuse it — use a single-column CV with standard section headings to maximize parse fidelity.
 
 ## What Workday parses well
 
@@ -29,7 +29,7 @@ Workday's resume parser reads your CV in document-stream order (top to bottom, l
 
 ## How to test before applying
 
-Run your CV through **CV Mirror** — Vantage's free, fully client-side ATS scanner that simulates how Workday, Greenhouse, Lever, Taleo, and iCIMS each parse a CV. No signup, nothing uploads. https://cv-mirror-web.vercel.app/
+Run your CV through **CV Mirror** — AimVantage's free, fully client-side ATS scanner that simulates how Workday, Greenhouse, Lever, Taleo, and iCIMS each parse a CV. No signup, nothing uploads. https://cv-mirror-web.vercel.app/
 
 CV Mirror shows you:
 - The literal text-extraction order Workday will see.
@@ -52,8 +52,8 @@ Full prep pack (10 free on signup, no card): https://aimvantage.uk/register?utm_
 
 ## Source links
 
-- Vantage ATS guide hub: https://aimvantage.uk/ats
-- Vantage Workday-specific page: https://aimvantage.uk/ats/workday
+- AimVantage ATS guide hub: https://aimvantage.uk/ats
+- AimVantage Workday-specific page: https://aimvantage.uk/ats/workday
 - CV Mirror open-source repo: https://github.com/goofypluto999/cv-mirror-mcp
 - No-interviews diagnostic: https://aimvantage.uk/tools/no-interviews-diagnostic
 - Workday's official resume parser docs: https://doc.workday.com/ (search "resume parser")
