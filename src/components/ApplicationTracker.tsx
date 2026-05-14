@@ -628,8 +628,15 @@ export default function ApplicationTracker({ userScope }: Props) {
                   onChange={(e) => setDraftStatus(e.target.value as ApplicationStatus)}
                   className="w-full rounded-lg bg-white/5 border border-white/10 text-white px-3 py-2 text-sm outline-none focus:border-violet-500/50"
                 >
+                  {/* Inline styles on <option> because native dropdown menus
+                      inherit OS-level rendering, NOT the parent <select>'s
+                      Tailwind classes. Without these, Chrome/Edge on light-
+                      mode OS render the option text white-on-white (the
+                      parent's text-white inherits but the OS default
+                      background is white). User reported 2026-05-14: 'can't
+                      read the text unless you hover'. */}
                   {APPLICATION_STATUSES.map((s) => (
-                    <option key={s} value={s}>{STATUS_LABEL[s]}</option>
+                    <option key={s} value={s} style={{ backgroundColor: '#1a1635', color: '#ffffff' }}>{STATUS_LABEL[s]}</option>
                   ))}
                 </select>
               </div>
@@ -862,7 +869,7 @@ export default function ApplicationTracker({ userScope }: Props) {
                                 aria-label="Update status"
                               >
                                 {APPLICATION_STATUSES.map((s) => (
-                                  <option key={s} value={s}>{STATUS_LABEL[s]}</option>
+                                  <option key={s} value={s} style={{ backgroundColor: '#1a1635', color: '#ffffff' }}>{STATUS_LABEL[s]}</option>
                                 ))}
                               </select>
                               <input

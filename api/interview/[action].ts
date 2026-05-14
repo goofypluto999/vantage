@@ -874,7 +874,18 @@ Only return the JSON array, no other text. No markdown fences. No commentary.`;
       const aiResponse = await ai.models.generateContent({
         model: 'models/gemini-2.5-flash',
         contents: [{ parts: [{ text: prompt }] }],
-        config: {},
+        config: {
+          temperature: 0,
+          maxOutputTokens: 4000,
+          // CRITICAL: see jobsearch handler. Gemini 2.5 Flash thinking is on
+          // by default and burns the output token budget — silently
+          // truncating the JSON mid-second-item, causing 'Unmatched
+          // brackets' parse failure → 500 → frontend sees 'Unexpected
+          // server response'. User reported 2026-05-14 this crashes on
+          // the mock-interview question-generation step. Same fix the
+          // jobsearch path got in ec5aad8.
+          thinkingConfig: { thinkingBudget: 0 },
+        } as any,
       });
       if (!aiResponse.text) throw new Error('No response from AI');
       questions = extractJson(aiResponse.text);
@@ -962,10 +973,18 @@ Banned grader phrases — do NOT use any of these in summary or strengths or imp
 Return only the JSON object, no other text. No markdown fences. No commentary.`;
 
     // 2026-05-09: same responseMimeType fix — strip code fences before parse.
+    // 2026-05-14: thinkingBudget:0 to stop Gemini 2.5 Flash from burning the
+    // output budget on thinking tokens, which truncated the JSON evaluation
+    // mid-strengths-array and surfaced as 'Unexpected server response' to
+    // the user during a live interview session.
     const aiResponse = await ai.models.generateContent({
       model: 'models/gemini-2.5-flash',
       contents: [{ parts: [{ text: prompt }] }],
-      config: { temperature: 0 },
+      config: {
+        temperature: 0,
+        maxOutputTokens: 4000,
+        thinkingConfig: { thinkingBudget: 0 },
+      } as any,
     });
     if (!aiResponse.text) throw new Error('No response from AI');
     const evaluation = extractJson(aiResponse.text);
@@ -1161,7 +1180,12 @@ Return EXACTLY this JSON shape (no other text, no markdown fences):
       const aiResponse = await ai.models.generateContent({
         model: 'models/gemini-2.5-flash',
         contents: [{ parts: [{ text: prompt }] }],
-        config: {},
+        config: {
+          temperature: 0,
+          maxOutputTokens: 2000,
+          // thinkingBudget:0 — see jobsearch / questions / evaluate handlers.
+          thinkingConfig: { thinkingBudget: 0 },
+        } as any,
       });
       if (!aiResponse.text) throw new Error('No response from AI');
       parsed = extractJson(aiResponse.text);
@@ -1555,7 +1579,13 @@ Return EXACTLY this JSON shape (no other text, no markdown fences). All five fie
       const aiResponse = await ai.models.generateContent({
         model: 'models/gemini-2.5-flash',
         contents: [{ parts: [{ text: prompt }] }],
-        config: {},
+        config: {
+          temperature: 0,
+          // Negotiation brief is the longest output (email + phone script +
+          // talking points + warnings) — give it room. 6000 matches jobsearch.
+          maxOutputTokens: 6000,
+          thinkingConfig: { thinkingBudget: 0 },
+        } as any,
       });
       if (!aiResponse.text) throw new Error('No response from AI');
       parsed = extractJson(aiResponse.text);

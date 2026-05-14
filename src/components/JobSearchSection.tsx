@@ -652,7 +652,10 @@ export default function JobSearchSection({ embedded = false, className = '' }: P
             <label htmlFor="js-country" className="block text-xs font-semibold text-white/80 mb-1.5">Country</label>
             <select id="js-country" value={country} onChange={(e) => setCountry(e.target.value as JobSearchCountry)}
               className={inputCls}>
-              {COUNTRIES.map((c) => (<option key={c.code} value={c.code} className="bg-[#181530]">{c.flag} {c.label}</option>))}
+              {/* Inline styles on <option> for dropdown legibility — Tailwind
+                  classes don't reliably apply to native dropdown options in
+                  Chrome/Edge on light-mode OS (text would render white-on-white). */}
+              {COUNTRIES.map((c) => (<option key={c.code} value={c.code} style={{ backgroundColor: '#181530', color: '#ffffff' }}>{c.flag} {c.label}</option>))}
             </select>
           </div>
           <div>
@@ -667,13 +670,25 @@ export default function JobSearchSection({ embedded = false, className = '' }: P
                   }`}>{m.label}</button>
               ))}
             </div>
+            {/* Remote-mode results-thinness hint. Remote consistently returns
+                the smallest pool because most job listings don't explicitly
+                state remote-friendliness in title/description even when WFH
+                is an option. The fallback pipeline (Stage 3b/3c expansion)
+                helps but inventory is genuinely smaller. Setting expectation
+                here stops the 'why so few results?' confusion. */}
+            {workMode === 'remote' && (
+              <p className="mt-1.5 text-[11px] text-amber-200/80 leading-snug" role="note">
+                <AlertTriangle className="w-3 h-3 inline mr-1 -mt-0.5" aria-hidden="true" />
+                Remote searches typically return fewer results than "Any" — many roles allow remote but don't say so in the listing title. We'll automatically widen to UK-wide and 90 days if the pool is thin.
+              </p>
+            )}
           </div>
           <div>
             <label htmlFor="js-posted" className="block text-xs font-semibold text-white/80 mb-1.5">Posted within</label>
             <select id="js-posted" value={postedWithin}
               onChange={(e) => setPostedWithin(Number(e.target.value) as JobSearchPostedWithin)}
               className={inputCls}>
-              {POSTED_WITHIN.map((p) => (<option key={p.value} value={p.value} className="bg-[#181530]">Last {p.label}</option>))}
+              {POSTED_WITHIN.map((p) => (<option key={p.value} value={p.value} style={{ backgroundColor: '#181530', color: '#ffffff' }}>Last {p.label}</option>))}
             </select>
           </div>
           <div>

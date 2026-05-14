@@ -51,7 +51,25 @@ async function safeJson(response: Response): Promise<any> {
   try {
     return await response.json();
   } catch {
-    return { error: 'Unexpected server response' };
+    // Status === 0 means the response never actually arrived — CORS
+    // preflight blocked, fetch threw before getting a response, etc.
+    // Don't claim "token not consumed" because we genuinely don't know.
+    if (!response.status || response.status === 0) {
+      return { error: 'Network error — the request didn\'t reach the server (CORS blocked, browser extension, or offline). Check your connection and try again. If a token was consumed it will be refunded automatically.' };
+    }
+    // Non-JSON response usually means a Vercel function-timeout (60s) or
+    // upstream 502 — the gateway returns an HTML error page. Differentiate
+    // by HTTP status so the user knows whether to retry or check inputs.
+    if (response.status === 504 || response.status === 408) {
+      return { error: 'Analysis timed out. The AI took longer than 60 seconds — try again, or paste the job description text directly in Step 2 to skip the page scrape.' };
+    }
+    if (response.status === 502 || response.status === 503) {
+      return { error: 'Server is overloaded or restarting. Wait a few seconds and try again. Your token was not consumed.' };
+    }
+    if (response.status === 413) {
+      return { error: 'Request too large. Try uploading a smaller CV (under 7MB) or shortening the pasted job description.' };
+    }
+    return { error: `Server returned a non-JSON response (status ${response.status}). Your token was not consumed. Try again or contact support@aimvantage.uk if it repeats.` };
   }
 }
 
@@ -105,7 +123,18 @@ export async function analyzeJob(
     };
   }
 
-  const result = await response.json();
+  // Even on 200 we can get a non-JSON body if the gateway/proxy mangled
+  // the response. Wrap in safeJson too so the user gets a clear error
+  // instead of an uncaught SyntaxError bubbling to the UI.
+  let result: any;
+  try {
+    result = await response.json();
+  } catch {
+    return {
+      success: false,
+      error: 'Server returned a non-JSON success response (likely a gateway / cache issue). Your token may have been refunded by the server — please refresh and check your balance, or contact support@aimvantage.uk.',
+    };
+  }
   return {
     success: true,
     data: result.data,

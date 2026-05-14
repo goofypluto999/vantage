@@ -663,12 +663,29 @@ Requirements:
     // Prevents fit-score drift across re-runs. Creative variation is already
     // available to the user via the tone switcher (rewrite-tone endpoint),
     // which remains stochastic by design.
+    //
+    // 2026-05-14: thinkingBudget:0 on the JSON-mode path. The prep-pack
+    // response is large (companySnapshot + brief + cover letter + cv match
+    // + presentation deck) and Gemini 2.5 Flash's default thinking burns
+    // the output budget — silently truncating the JSON and surfacing as
+    // 'Unexpected server response' on the client. User reported this
+    // crashing analyses twice in a row. Same fix the interview/jobsearch
+    // path got in ec5aad8.
+    //
+    // googleSearch path: don't set thinkingBudget — googleSearch tools may
+    // not combine cleanly with thinkingConfig in all SDK versions, and the
+    // search-grounded path produces shorter structured text (less truncation
+    // risk) anyway.
     const res = await ai.models.generateContent({
       model: 'models/gemini-2.5-flash',
       contents: [{ parts }],
       config: useGoogleSearch
         ? { tools: [{ googleSearch: {} }], temperature: 0 }
-        : { responseMimeType: 'application/json', temperature: 0 },
+        : ({ responseMimeType: 'application/json', temperature: 0, maxOutputTokens: 12000, thinkingConfig: { thinkingBudget: 0 } } as any),
+        // ↑ 12K headroom because the full prep pack output (companySnapshot
+        // + briefSections + keyRequirements + cvMatchPoints + strategicBrief
+        // + coverLetter + presentation deck) can hit 5.5-7.5K tokens on
+        // dense JDs/CVs. Council review flagged 8K as a near-ceiling.
     });
     return res;
   };
