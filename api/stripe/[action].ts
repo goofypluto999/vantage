@@ -48,6 +48,35 @@ function getPriceForPlan(plan: string, currency: string): string {
   return PLAN_PRICES_GBP[plan];
 }
 
+/**
+ * Tolerant extractor for subscription renewal + cancellation dates.
+ * MIRRORS the helper in api/stripe/webhook.ts — kept in sync deliberately.
+ *
+ * Stripe MOVED `current_period_end` from the subscription top-level to
+ * per-item on their recent API versions. Old code reading
+ * `sub.current_period_end` silently gets `undefined` on modern APIs.
+ * Tolerant: try top-level first (legacy), then per-item (modern).
+ */
+function extractSubscriptionDates(sub: any): { renewsAt: string | null; cancelAt: string | null } {
+  if (!sub || typeof sub !== 'object') return { renewsAt: null, cancelAt: null };
+  let renewsEpoch: number | null = null;
+  if (typeof sub.current_period_end === 'number' && sub.current_period_end > 0) {
+    renewsEpoch = sub.current_period_end;
+  } else if (sub.items?.data?.[0]?.current_period_end && typeof sub.items.data[0].current_period_end === 'number') {
+    renewsEpoch = sub.items.data[0].current_period_end;
+  }
+  let cancelEpoch: number | null = null;
+  if (typeof sub.cancel_at === 'number' && sub.cancel_at > 0) {
+    cancelEpoch = sub.cancel_at;
+  } else if (sub.cancel_at_period_end === true && renewsEpoch) {
+    cancelEpoch = renewsEpoch;
+  }
+  return {
+    renewsAt: renewsEpoch ? new Date(renewsEpoch * 1000).toISOString() : null,
+    cancelAt: cancelEpoch ? new Date(cancelEpoch * 1000).toISOString() : null,
+  };
+}
+
 function getAllowedOrigin(requestOrigin: string | undefined): string {
   const allowed = process.env.APP_URL || process.env.VERCEL_URL;
   if (allowed) {
@@ -208,6 +237,7 @@ async function handleSync(request: any, response: any) {
       const mu = cleanEnv(process.env.STRIPE_PRICE_PREMIUM_USD);
       const latestPlan =
         latestPriceId === mg || latestPriceId === mu ? 'premium' : latestPriceId === pg || latestPriceId === pu ? 'pro' : 'starter';
+      const latestDates = extractSubscriptionDates(latest);
 
       await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${user.id}`, {
         method: 'PATCH',
@@ -217,9 +247,21 @@ async function handleSync(request: any, response: any) {
           Authorization: `Bearer ${SUPABASE_SERVICE_KEY}`,
           Prefer: 'return=minimal',
         },
-        body: JSON.stringify({ subscription_status: status, plan: latestPlan, stripe_subscription_id: latest.id }),
+        body: JSON.stringify({
+          subscription_status: status,
+          plan: latestPlan,
+          stripe_subscription_id: latest.id,
+          subscription_renews_at: latestDates.renewsAt,
+          subscription_cancel_at: latestDates.cancelAt,
+        }),
       });
-      return response.status(200).json({ synced: true, plan: latestPlan, subscription_status: status });
+      return response.status(200).json({
+        synced: true,
+        plan: latestPlan,
+        subscription_status: status,
+        subscription_renews_at: latestDates.renewsAt,
+        subscription_cancel_at: latestDates.cancelAt,
+      });
     }
 
     const activeSubs = subscriptions.data;
@@ -284,6 +326,12 @@ async function handleSync(request: any, response: any) {
       });
     }
 
+    // Extract renewal + cancellation dates from the chosen subscription.
+    // These drive the "Pro renews on X" / "Pro ends X — renewal cancelled"
+    // UI strings.
+    const bestSub = preferredSubs.find((s) => s.id === bestSubId) || preferredSubs[0];
+    const bestDates = extractSubscriptionDates(bestSub);
+
     const updateRes = await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${user.id}`, {
       method: 'PATCH',
       headers: {
@@ -296,13 +344,21 @@ async function handleSync(request: any, response: any) {
         plan: bestPlan,
         stripe_subscription_id: bestSubId,
         subscription_status: isCancelling ? 'cancelling' : 'active',
+        subscription_renews_at: bestDates.renewsAt,
+        subscription_cancel_at: bestDates.cancelAt,
       }),
     });
     if (!updateRes.ok) {
       console.error('Sync: failed to update profile');
       return response.status(500).json({ error: 'Failed to sync profile' });
     }
-    return response.status(200).json({ synced: true, plan: bestPlan });
+    return response.status(200).json({
+      synced: true,
+      plan: bestPlan,
+      subscription_status: isCancelling ? 'cancelling' : 'active',
+      subscription_renews_at: bestDates.renewsAt,
+      subscription_cancel_at: bestDates.cancelAt,
+    });
   } catch (error: any) {
     console.error('Sync error:', error?.message || 'Unknown error');
     return response.status(500).json({ error: 'Sync failed' });

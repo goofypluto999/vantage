@@ -42,6 +42,15 @@ interface PricingProps {
    *  accidental double-subscription. Undefined when signed-out or on
    *  the free/unsubscribed tier. */
   currentPlan?: string;
+  /** Current subscription status — 'active' | 'cancelling' | 'past_due'.
+   *  When 'cancelling', the current-plan card shows an end-date warning
+   *  instead of a green badge, and the Resubscribe button becomes active. */
+  currentPlanStatus?: string;
+  /** ISO timestamp of next renewal — shown on the current-plan card when active. */
+  currentPlanRenewsAt?: string;
+  /** ISO timestamp at which a cancellation takes effect — shown on the
+   *  current-plan card when status is 'cancelling'. */
+  currentPlanCancelAt?: string;
 }
 
 // 2026-05-08: pricing migrated to 1 token = 1 full prep pack.
@@ -109,7 +118,7 @@ const PLANS = [
   },
 ];
 
-export default function Pricing({ onLogin, onRegister, onCheckout, isAuthenticated, currentPlan }: PricingProps) {
+export default function Pricing({ onLogin, onRegister, onCheckout, isAuthenticated, currentPlan, currentPlanStatus, currentPlanRenewsAt, currentPlanCancelAt }: PricingProps) {
   const { currency, setCurrency, symbol } = useCurrency();
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
@@ -274,6 +283,16 @@ export default function Pricing({ onLogin, onRegister, onCheckout, isAuthenticat
             // comparison so 'Pro' / 'pro' / 'PRO' all match. Topup plans
             // are excluded (Starter top-up can be bought repeatedly).
             const isCurrent = !!currentPlan && currentPlan.toLowerCase() === plan.name.toLowerCase() && !plan.isTopup;
+            const isCancellingHere = isCurrent && currentPlanStatus === 'cancelling';
+            const isPastDueHere = isCurrent && currentPlanStatus === 'past_due';
+            const fmtDate = (iso: string | undefined) => {
+              if (!iso) return '';
+              try {
+                const d = new Date(iso);
+                if (Number.isNaN(d.getTime())) return '';
+                return d.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
+              } catch { return ''; }
+            };
             return (
               // Static card — previously used motion.div with initial:opacity-0 +
               // animate:opacity-1 entrance. The animation got stuck at opacity
@@ -286,14 +305,26 @@ export default function Pricing({ onLogin, onRegister, onCheckout, isAuthenticat
               <div
                 key={plan.name}
                 className={`relative p-8 rounded-3xl border ${
-                  isCurrent
+                  isCancellingHere
+                    ? 'bg-amber-500/10 border-amber-500/50'
+                    : isPastDueHere
+                    ? 'bg-rose-500/10 border-rose-500/50'
+                    : isCurrent
                     ? 'bg-emerald-500/10 border-emerald-500/50'
                     : plan.popular
                     ? 'bg-violet-500/10 border-violet-500/30'
                     : 'bg-white/5 border-white/10'
                 }`}
               >
-                {isCurrent ? (
+                {isCancellingHere ? (
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-amber-500 text-white text-xs font-bold uppercase tracking-wider whitespace-nowrap">
+                    Ends {fmtDate(currentPlanCancelAt || currentPlanRenewsAt) || 'at period end'}
+                  </div>
+                ) : isPastDueHere ? (
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-rose-500 text-white text-xs font-bold uppercase tracking-wider">
+                    Payment Failed
+                  </div>
+                ) : isCurrent ? (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-emerald-500 text-white text-xs font-bold uppercase tracking-wider">
                     Your Current Plan
                   </div>
@@ -301,6 +332,11 @@ export default function Pricing({ onLogin, onRegister, onCheckout, isAuthenticat
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-violet-500 text-white text-xs font-bold uppercase tracking-wider">
                     Most Popular
                   </div>
+                )}
+                {isCurrent && currentPlanRenewsAt && !isCancellingHere && !isPastDueHere && (
+                  <p className="text-xs text-emerald-300/80 text-center mt-2 mb-3">
+                    Renews {fmtDate(currentPlanRenewsAt)}
+                  </p>
                 )}
 
                 <div className="flex items-center gap-3 mb-4">
@@ -339,22 +375,53 @@ export default function Pricing({ onLogin, onRegister, onCheckout, isAuthenticat
 
                 <button
                   onClick={() => {
+                    // When the current plan is cancelling, the CTA becomes
+                    // "Resubscribe" — direct user to Account → Manage
+                    // Subscription where the Stripe Portal can re-enable
+                    // auto-renewal. We don't try to un-cancel here directly
+                    // because that requires the portal session anyway.
+                    if (isCancellingHere) {
+                      window.location.href = '/account';
+                      return;
+                    }
+                    if (isPastDueHere) {
+                      window.location.href = '/account';
+                      return;
+                    }
                     if (isCurrent) return;
                     if (isAuthenticated && onCheckout) onCheckout(plan.name.toLowerCase());
                     else onRegister?.();
                   }}
-                  disabled={isCurrent}
-                  aria-label={isCurrent ? `${plan.name} — your current plan. Manage from Account.` : undefined}
-                  title={isCurrent ? 'You’re already on this plan. Open Account → Manage Subscription to change or cancel.' : undefined}
+                  disabled={isCurrent && !isCancellingHere && !isPastDueHere}
+                  aria-label={
+                    isCancellingHere ? `Resubscribe to ${plan.name} — your cancellation takes effect on the date above`
+                    : isPastDueHere ? `Update payment to keep ${plan.name}`
+                    : isCurrent ? `${plan.name} — your current plan. Manage from Account.`
+                    : undefined
+                  }
+                  title={
+                    isCancellingHere ? 'You cancelled this plan but it\'s still active until the end-date shown. Click to resubscribe via the Stripe portal — keeps the same billing cycle.'
+                    : isPastDueHere ? 'Your last payment failed. Click to update your card via the Stripe portal.'
+                    : isCurrent ? 'You\'re already on this plan. Open Account → Manage Subscription to change or cancel.'
+                    : undefined
+                  }
                   className={`w-full py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 transition-all ${
-                    isCurrent
+                    isCancellingHere
+                      ? 'bg-amber-500/20 text-amber-100 border border-amber-500/40 hover:bg-amber-500/30'
+                      : isPastDueHere
+                      ? 'bg-rose-500/20 text-rose-100 border border-rose-500/40 hover:bg-rose-500/30'
+                      : isCurrent
                       ? 'bg-emerald-500/20 text-emerald-200 border border-emerald-500/40 cursor-not-allowed'
                       : plan.popular
                       ? 'bg-gradient-to-r from-violet-600 to-purple-600 text-white hover:from-violet-500 hover:to-purple-500'
                       : 'bg-white/10 text-white hover:bg-white/20'
                   }`}
                 >
-                  {isCurrent
+                  {isCancellingHere
+                    ? <>Resubscribe <ArrowRight className="w-5 h-5" aria-hidden="true" /></>
+                    : isPastDueHere
+                    ? <>Update payment <ArrowRight className="w-5 h-5" aria-hidden="true" /></>
+                    : isCurrent
                     ? <><Check className="w-5 h-5" aria-hidden="true" /> Current plan</>
                     : <>{isAuthenticated
                         ? (plan.isTopup ? `Buy ${plan.packs} prep packs` : `Subscribe to ${plan.name}`)

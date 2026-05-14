@@ -18,6 +18,15 @@ export interface Profile {
   stripe_customer_id?: string;
   stripe_subscription_id?: string;
   subscription_status: SubscriptionStatus;
+  /** ISO timestamp of the next renewal. Set by webhook on
+   *  checkout.session.completed and invoice.payment_succeeded. Null on
+   *  free / cancelled plans. Drives the "Pro renews on X" UI. */
+  subscription_renews_at?: string;
+  /** ISO timestamp at which a cancellation takes effect (set when user
+   *  hits Cancel in the Stripe Portal — subscription stays active until
+   *  this date, then becomes 'cancelled'). Null when not cancelling.
+   *  Distinguishes 'renewing' from 'cancellation pending' in the UI. */
+  subscription_cancel_at?: string;
   created_at: string;
   updated_at: string;
   /** Compact ~500-word summary of the user's CV, auto-extracted by

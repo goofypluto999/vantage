@@ -728,12 +728,15 @@ function PricingWrapper() {
 
   // Surface the user's current plan so the Pricing cards can render a
   // "Your current plan" badge — stops returning subscribers from
-  // accidentally double-subscribing (Stripe will reject but the UI was
-  // misleading). Falls back to undefined when not signed in.
+  // accidentally double-subscribing. Also pass the cancellation/renewal
+  // dates so the current-plan card can warn 'ends on X — cancelled'.
   const hasActiveSub = profile?.subscription_status === 'active'
     || profile?.subscription_status === 'cancelling'
     || profile?.subscription_status === 'past_due';
   const currentPlan = hasActiveSub ? (profile?.plan as string | undefined) : undefined;
+  const currentPlanStatus = hasActiveSub ? (profile?.subscription_status as string | undefined) : undefined;
+  const currentPlanRenewsAt = hasActiveSub ? profile?.subscription_renews_at : undefined;
+  const currentPlanCancelAt = hasActiveSub ? profile?.subscription_cancel_at : undefined;
 
   return (
     <Pricing
@@ -742,6 +745,9 @@ function PricingWrapper() {
       onCheckout={user ? handleCheckout : undefined}
       isAuthenticated={!!user}
       currentPlan={currentPlan}
+      currentPlanStatus={currentPlanStatus}
+      currentPlanRenewsAt={currentPlanRenewsAt}
+      currentPlanCancelAt={currentPlanCancelAt}
     />
   );
 }

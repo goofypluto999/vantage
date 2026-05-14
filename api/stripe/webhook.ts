@@ -99,6 +99,56 @@ async function addTokensAtomic(userId: string, amount: number): Promise<number> 
   return res.json();
 }
 
+/**
+ * Tolerant extractor for subscription renewal + cancellation dates.
+ *
+ * Stripe MOVED `current_period_end` from the subscription top-level to
+ * per-item on their recent API versions. Old code reading
+ * `sub.current_period_end` silently gets `undefined` on modern APIs and
+ * `subscription_renews_at` never gets set — every paying user shows as
+ * "free tier" despite paying. Defensively read BOTH locations.
+ *
+ * `cancel_at` is the MODERN cancellation flag (epoch timestamp at which
+ * the subscription becomes 'cancelled'). When the user clicks Cancel in
+ * the portal, Stripe sets both `cancel_at_period_end: true` AND
+ * `cancel_at: <period_end_epoch>`. Reading the timestamp lets the UI
+ * say "Pro ends Mar 15 — renewal cancelled" instead of a date-less
+ * "Cancelling at end of period".
+ *
+ * `cancelled_at` is set only AFTER the cancellation takes effect, so
+ * we don't read it for display purposes — it's a historical marker.
+ *
+ * Returns ISO strings or null. Stripe epoch timestamps are seconds-since-1970.
+ */
+function extractSubscriptionDates(sub: any): { renewsAt: string | null; cancelAt: string | null } {
+  if (!sub || typeof sub !== 'object') return { renewsAt: null, cancelAt: null };
+
+  // current_period_end may live in two places depending on API version.
+  // Tolerant: try top-level first (legacy), then per-item (modern).
+  let renewsEpoch: number | null = null;
+  if (typeof sub.current_period_end === 'number' && sub.current_period_end > 0) {
+    renewsEpoch = sub.current_period_end;
+  } else if (sub.items?.data?.[0]?.current_period_end && typeof sub.items.data[0].current_period_end === 'number') {
+    renewsEpoch = sub.items.data[0].current_period_end;
+  }
+
+  // cancel_at is the modern flag (epoch). May be null even when
+  // cancel_at_period_end is true on very old API versions — defensive
+  // fallback to current_period_end in that case so the UI still has a
+  // date to display.
+  let cancelEpoch: number | null = null;
+  if (typeof sub.cancel_at === 'number' && sub.cancel_at > 0) {
+    cancelEpoch = sub.cancel_at;
+  } else if (sub.cancel_at_period_end === true && renewsEpoch) {
+    cancelEpoch = renewsEpoch;
+  }
+
+  return {
+    renewsAt: renewsEpoch ? new Date(renewsEpoch * 1000).toISOString() : null,
+    cancelAt: cancelEpoch ? new Date(cancelEpoch * 1000).toISOString() : null,
+  };
+}
+
 export default async function handler(request: any, response: any) {
   if (request.method !== 'POST') {
     return response.status(405).json({ error: 'Method not allowed' });
@@ -195,15 +245,23 @@ export default async function handler(request: any, response: any) {
           }
         }
 
-        // Derive plan from the actual Stripe subscription price, not user-controlled metadata
+        // Derive plan from the actual Stripe subscription price, not user-controlled metadata.
+        // ALSO retrieve the full subscription so we can extract renews_at + cancel_at —
+        // these dates are required by the Account UI to show "Pro renews on X".
         let plan = session.metadata?.plan || 'pro';
+        let renewsAt: string | null = null;
+        let cancelAt: string | null = null;
         if (newSubscriptionId) {
           try {
             const sub = await stripe.subscriptions.retrieve(newSubscriptionId);
             const priceId = sub.items.data[0]?.price?.id;
             if (priceId) plan = getPlanFromPriceId(priceId);
-          } catch {
-            // Fall back to metadata plan
+            const dates = extractSubscriptionDates(sub);
+            renewsAt = dates.renewsAt;
+            cancelAt = dates.cancelAt;
+          } catch (e: any) {
+            console.error(`Webhook: failed to retrieve subscription ${newSubscriptionId} for dates:`, e?.message || '');
+            // Fall back to metadata plan; dates stay null (will populate on next webhook)
           }
         }
 
@@ -211,11 +269,16 @@ export default async function handler(request: any, response: any) {
         const tokensToAdd = PLAN_TOKENS[plan] || 10;
         await addTokensAtomic(userId, tokensToAdd);
 
-        await supabasePatch(`id=eq.${userId}`, {
+        const ok = await supabasePatch(`id=eq.${userId}`, {
           plan,
           stripe_subscription_id: newSubscriptionId,
           subscription_status: 'active',
+          subscription_renews_at: renewsAt,
+          subscription_cancel_at: cancelAt,
         });
+        if (!ok) {
+          console.error(`Webhook CRITICAL: profile patch failed after token credit for user ${userId} — user paid but plan/dates not updated`);
+        }
         break;
       }
 
@@ -287,16 +350,143 @@ export default async function handler(request: any, response: any) {
         const tokensToAdd = PLAN_TOKENS[plan];
         await addTokensAtomic(profile.id, tokensToAdd);
         console.log(`Renewal: added ${tokensToAdd} tokens to user ${profile.id} (plan ${plan}, invoice ${invoice.id})`);
+
+        // ALSO extend the subscription_renews_at timestamp so the UI shows
+        // the NEW next-renewal date, not the old one. Retrieve the full
+        // subscription because the invoice itself doesn't carry the next
+        // period_end (it carries the just-ended period only).
+        try {
+          const sub = await stripe.subscriptions.retrieve(subscriptionId);
+          const dates = extractSubscriptionDates(sub);
+          const ok = await supabasePatch(`id=eq.${profile.id}`, {
+            subscription_renews_at: dates.renewsAt,
+            subscription_cancel_at: dates.cancelAt,
+            // Defensive: status may have transitioned cancelling→active if user
+            // un-cancelled before the renewal landed. Keep status in sync.
+            subscription_status: sub.cancel_at_period_end ? 'cancelling' : 'active',
+          });
+          if (!ok) {
+            console.error(`Renewal: profile patch failed for renewal-date update on user ${profile.id}`);
+          }
+        } catch (e: any) {
+          console.error(`Renewal: failed to retrieve sub ${subscriptionId} for date update:`, e?.message || '');
+          // Tokens already added; date will catch up on next webhook
+        }
+        break;
+      }
+
+      case 'invoice.payment_failed': {
+        // Card declined or other payment failure on a renewal.
+        // Mark the user 'past_due' so the UI can warn them BEFORE Stripe
+        // gives up and cancels the subscription. Stripe will continue
+        // retrying for ~3 weeks by default; our job is to surface the
+        // problem so the user can update their card via the portal.
+        const invoice = event.data.object as Stripe.Invoice;
+        const customerId = typeof invoice.customer === 'string' ? invoice.customer : invoice.customer?.id;
+        if (!customerId) {
+          console.warn(`payment_failed: no customer on invoice ${invoice.id}`);
+          break;
+        }
+        const profiles = await supabaseGet(`stripe_customer_id=eq.${customerId}&select=id,stripe_subscription_id`);
+        if (profiles.length === 0) {
+          console.warn(`payment_failed: no profile for customer ${customerId}`);
+          break;
+        }
+        const profile = profiles[0];
+        const ok = await supabasePatch(`id=eq.${profile.id}`, {
+          subscription_status: 'past_due',
+        });
+        if (!ok) {
+          console.error(`payment_failed: profile patch failed for user ${profile.id}`);
+        } else {
+          console.log(`payment_failed: marked user ${profile.id} past_due (invoice ${invoice.id})`);
+        }
+        break;
+      }
+
+      case 'charge.dispute.created': {
+        // Customer initiated a chargeback. Mark past_due so we stop serving
+        // premium features until the dispute resolves. Tokens are NOT clawed
+        // back here — we wait for charge.refunded (if the dispute is lost)
+        // or charge.dispute.closed (if won) to make the final decision.
+        const dispute = event.data.object as Stripe.Dispute;
+        const charge = typeof dispute.charge === 'string' ? dispute.charge : dispute.charge?.id;
+        if (!charge) break;
+        try {
+          const chargeObj = await stripe.charges.retrieve(charge);
+          const customerId = typeof chargeObj.customer === 'string' ? chargeObj.customer : chargeObj.customer?.id;
+          if (!customerId) {
+            console.warn(`dispute.created: no customer on charge ${charge}`);
+            break;
+          }
+          const profiles = await supabaseGet(`stripe_customer_id=eq.${customerId}&select=id`);
+          if (profiles.length === 0) break;
+          await supabasePatch(`id=eq.${profiles[0].id}`, { subscription_status: 'past_due' });
+          console.log(`dispute.created: marked user ${profiles[0].id} past_due (dispute ${dispute.id})`);
+        } catch (e: any) {
+          console.error(`dispute.created: failed:`, e?.message || '');
+        }
+        break;
+      }
+
+      case 'charge.dispute.closed': {
+        // Dispute resolved. Stripe sends 'won' or 'lost' in dispute.status.
+        // If WON: restore subscription_status to active (or cancelling if
+        // user had cancelled separately). Note: do NOT use the dispute event
+        // to restore tokens — they were never deducted.
+        // If LOST: charge.refunded will fire separately and handle plan→free.
+        const dispute = event.data.object as Stripe.Dispute;
+        if (dispute.status !== 'won') break; // 'lost' is handled by charge.refunded
+        const charge = typeof dispute.charge === 'string' ? dispute.charge : dispute.charge?.id;
+        if (!charge) break;
+        try {
+          const chargeObj = await stripe.charges.retrieve(charge);
+          const customerId = typeof chargeObj.customer === 'string' ? chargeObj.customer : chargeObj.customer?.id;
+          if (!customerId) break;
+          const profiles = await supabaseGet(`stripe_customer_id=eq.${customerId}&select=id,stripe_subscription_id`);
+          if (profiles.length === 0) break;
+          const profile = profiles[0];
+          // Re-derive status from the current Stripe subscription state.
+          let newStatus: string = 'active';
+          if (profile.stripe_subscription_id) {
+            try {
+              const sub = await stripe.subscriptions.retrieve(profile.stripe_subscription_id);
+              newStatus = sub.cancel_at_period_end ? 'cancelling'
+                : sub.status === 'active' ? 'active'
+                : sub.status === 'canceled' ? 'cancelled'
+                : 'past_due';
+            } catch { /* fall back to 'active' */ }
+          }
+          await supabasePatch(`id=eq.${profile.id}`, { subscription_status: newStatus });
+          console.log(`dispute.closed (won): restored user ${profile.id} to ${newStatus}`);
+        } catch (e: any) {
+          console.error(`dispute.closed: failed:`, e?.message || '');
+        }
         break;
       }
 
       case 'customer.subscription.updated': {
+        // Fires on EVERY subscription mutation: cancellation, un-cancellation,
+        // plan change, payment-method swap, status transition. We need to
+        // re-sync our local mirror of the renewal date AND the cancellation
+        // date on every one of these — otherwise the UI lies.
         const subscription = event.data.object as Stripe.Subscription;
         const customerId = subscription.customer as string;
 
-        const profiles = await supabaseGet(
+        // Lookup by customer_id (subscription_id is fragile — a sub may have
+        // been deleted and replaced; the customer_id is stable).
+        let profiles = await supabaseGet(
           `stripe_customer_id=eq.${customerId}&select=id,stripe_subscription_id`
         );
+
+        // Fallback: lookup by subscription_id if customer_id missed (rare —
+        // happens if customer_id was never set on the profile due to an
+        // earlier webhook race).
+        if (profiles.length === 0) {
+          profiles = await supabaseGet(
+            `stripe_subscription_id=eq.${subscription.id}&select=id,stripe_subscription_id`
+          );
+        }
 
         if (profiles.length > 0) {
           const profile = profiles[0];
@@ -309,13 +499,28 @@ export default async function handler(request: any, response: any) {
           const priceId = subscription.items?.data[0]?.price?.id;
           const plan = priceId ? getPlanFromPriceId(priceId) : undefined;
 
+          // Extract dates — THIS is the missing piece that meant cancellations
+          // never showed a date in the UI. cancel_at carries the period-end
+          // epoch when the user clicked Cancel; current_period_end (or its
+          // modern items.data[0] sibling) carries the next-renewal epoch.
+          const dates = extractSubscriptionDates(subscription);
+
           const patch: Record<string, any> = {
             subscription_status: status,
             stripe_subscription_id: subscription.id,
+            subscription_renews_at: dates.renewsAt,
+            // Explicitly write null on un-cancel so the "Renewal cancelled"
+            // banner clears in the UI.
+            subscription_cancel_at: dates.cancelAt,
           };
           if (plan) patch.plan = plan;
 
-          await supabasePatch(`id=eq.${profile.id}`, patch);
+          const ok = await supabasePatch(`id=eq.${profile.id}`, patch);
+          if (!ok) {
+            console.error(`subscription.updated: profile patch failed for user ${profile.id} (sub ${subscription.id})`);
+          }
+        } else {
+          console.warn(`subscription.updated: no profile for customer ${customerId} or subscription ${subscription.id}`);
         }
         break;
       }
@@ -427,12 +632,19 @@ export default async function handler(request: any, response: any) {
       }
 
       case 'customer.subscription.deleted': {
+        // Fires when the subscription is FULLY terminated (period ended after
+        // cancellation OR Stripe gave up on a past_due sub OR admin deleted it).
         const subscription = event.data.object as Stripe.Subscription;
         const customerId = subscription.customer as string;
 
-        const profiles = await supabaseGet(
+        let profiles = await supabaseGet(
           `stripe_customer_id=eq.${customerId}&select=id,stripe_subscription_id`
         );
+        if (profiles.length === 0) {
+          profiles = await supabaseGet(
+            `stripe_subscription_id=eq.${subscription.id}&select=id,stripe_subscription_id`
+          );
+        }
 
         if (profiles.length > 0) {
           const profile = profiles[0];
@@ -442,10 +654,20 @@ export default async function handler(request: any, response: any) {
             break;
           }
 
-          // Only update status — tokens are kept (user paid for them)
-          await supabasePatch(`id=eq.${profile.id}`, {
+          // Clear renewal + cancel dates AND zero out the subscription_id.
+          // Tokens are kept (user paid for them) — only status + dates flip.
+          // Clearing stripe_subscription_id prevents stale-sub lookups in
+          // future webhooks (e.g. a delayed renewal event firing on the
+          // dead sub).
+          const ok = await supabasePatch(`id=eq.${profile.id}`, {
             subscription_status: 'cancelled',
+            subscription_renews_at: null,
+            subscription_cancel_at: null,
+            stripe_subscription_id: null,
           });
+          if (!ok) {
+            console.error(`subscription.deleted: profile patch failed for user ${profile.id}`);
+          }
         }
         break;
       }

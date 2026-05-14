@@ -254,18 +254,47 @@ export default function Account() {
                 <p className="text-white font-bold">
                   {hasActiveSub ? `${planInfo.label} Plan` : 'No active subscription'}
                 </p>
-                <p className={`text-sm capitalize ${
-                  profile?.subscription_status === 'active' ? 'text-emerald-400' :
-                  profile?.subscription_status === 'cancelling' ? 'text-amber-400' :
-                  profile?.subscription_status === 'cancelled' ? 'text-amber-400' :
-                  profile?.subscription_status === 'past_due' ? 'text-red-400' :
-                  'text-white/60'
-                }`}>
-                  {profile?.subscription_status === 'active' ? `${planInfo.label} — Active` :
-                   profile?.subscription_status === 'cancelling' ? 'Cancelling at end of period' :
-                   profile?.subscription_status === 'cancelled' ? 'Cancelled — tokens kept' :
-                   'Buy tokens or subscribe to a plan'}
-                </p>
+                {/* Status line now reads actual renewal / cancellation date from
+                    profile.subscription_renews_at + subscription_cancel_at.
+                    Pre-fix: 'Cancelling at end of period' with no date — user
+                    couldn't tell when access ends. Audit 2026-05-14. */}
+                {(() => {
+                  const status = profile?.subscription_status;
+                  const renewsAt = profile?.subscription_renews_at;
+                  const cancelAt = profile?.subscription_cancel_at;
+                  const fmt = (iso: string | undefined): string => {
+                    if (!iso) return '';
+                    try {
+                      const d = new Date(iso);
+                      if (Number.isNaN(d.getTime())) return '';
+                      return d.toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' });
+                    } catch { return ''; }
+                  };
+                  let colorClass = 'text-white/60';
+                  let text: React.ReactNode = 'Buy tokens or subscribe to a plan';
+                  if (status === 'active') {
+                    colorClass = 'text-emerald-400';
+                    const r = fmt(renewsAt);
+                    text = r ? <>{planInfo.label} — <span className="font-semibold">renews {r}</span></> : `${planInfo.label} — Active`;
+                  } else if (status === 'cancelling') {
+                    colorClass = 'text-amber-400';
+                    const c = fmt(cancelAt) || fmt(renewsAt);
+                    text = c
+                      ? <><span className="font-semibold">Ends {c}</span> — renewal cancelled</>
+                      : 'Cancelling at end of period';
+                  } else if (status === 'past_due') {
+                    colorClass = 'text-rose-300';
+                    text = <><span className="font-semibold">Payment failed</span> — update card via Manage Subscription, or your plan will end.</>;
+                  } else if (status === 'cancelled') {
+                    colorClass = 'text-amber-400';
+                    text = 'Cancelled — tokens kept. Resubscribe any time.';
+                  }
+                  return (
+                    <p className={`text-sm ${colorClass}`}>
+                      {text}
+                    </p>
+                  );
+                })()}
               </div>
             </div>
 
