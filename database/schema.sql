@@ -40,6 +40,11 @@ CREATE INDEX IF NOT EXISTS idx_profiles_subscription_renews_at
 CREATE INDEX IF NOT EXISTS idx_profiles_subscription_cancel_at
   ON profiles(subscription_cancel_at)
   WHERE subscription_cancel_at IS NOT NULL;
+-- Partial index for the 24h-free-scan gate lookup
+-- (api/interview/jobsearch reads last_free_jobsearch_at on every call).
+CREATE INDEX IF NOT EXISTS idx_profiles_last_free_jobsearch
+  ON profiles(last_free_jobsearch_at)
+  WHERE last_free_jobsearch_at IS NOT NULL;
 
 -- ============================================================================
 -- ANALYSES TABLE (user's saved job analyses)
@@ -63,6 +68,30 @@ CREATE TABLE IF NOT EXISTS analyses (
 
 CREATE INDEX IF NOT EXISTS idx_analyses_user_id ON analyses(user_id);
 CREATE INDEX IF NOT EXISTS idx_analyses_created_at ON analyses(created_at DESC);
+
+-- ============================================================================
+-- SEEN JOB SEARCHES (AI Job Search per-user dedup)
+-- ============================================================================
+-- Every job returned from a successful AI Job Search scan is recorded as
+-- "seen" for that user. Subsequent scans filter the raw Adzuna/Remotive
+-- results to exclude IDs the user has seen in the last 30 days BEFORE
+-- feeding to Gemini — saves their token spend on identical results.
+-- Sourced from migration-2026-05-12-seen-jobs-dedup.sql.
+
+CREATE TABLE IF NOT EXISTS seen_job_searches (
+  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  job_external_id TEXT NOT NULL,
+  seen_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  PRIMARY KEY (user_id, job_external_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_seen_user_recent
+  ON seen_job_searches(user_id, seen_at DESC);
+
+ALTER TABLE seen_job_searches ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can read own seen jobs" ON seen_job_searches
+  FOR SELECT USING (auth.uid() = user_id);
 
 -- ============================================================================
 -- WAITLIST TABLE
@@ -122,6 +151,13 @@ CREATE POLICY "Users can update own profile" ON profiles
 -- REVOKE update on sensitive columns from authenticated users
 REVOKE UPDATE (plan, token_balance, stripe_customer_id, stripe_subscription_id, subscription_status) ON profiles FROM authenticated;
 REVOKE UPDATE (plan, token_balance, stripe_customer_id, stripe_subscription_id, subscription_status) ON profiles FROM anon;
+
+-- Also REVOKE on the AI Job Search columns. Critical: without this, an
+-- authenticated user could PATCH their own last_free_jobsearch_at to bypass
+-- the 24h-free-scan gate, or PATCH cv_summary to inject prompts into the
+-- Gemini scorer (since cv_summary is concatenated into the AI prompt
+-- context). Sourced from migration-2026-05-12-fix-all.sql.
+REVOKE UPDATE (last_free_jobsearch_at, cv_summary) ON profiles FROM authenticated, anon;
 
 -- Analyses: users can only see their own analyses
 CREATE POLICY "Users can view own analyses" ON analyses
@@ -338,3 +374,23 @@ ALTER TABLE processed_stripe_events ENABLE ROW LEVEL SECURITY;
 -- Stripe setup:
 -- - Create 3 products in Stripe: Starter (5 GBP), Pro (12 GBP), Premium (20 GBP)
 -- - Add their Price IDs to: STRIPE_PRICE_STARTER, STRIPE_PRICE_PRO, STRIPE_PRICE_PREMIUM
+--
+-- ============================================================================
+-- OPTIONAL FEATURE MIGRATIONS (run after this schema)
+-- ============================================================================
+-- This file is the canonical bootstrap. Two additional features ship their
+-- schema in separate files because they're feature-flagged / optional:
+--
+-- - `roast-rate-limit.sql` — persistent rate-limit + abuse log for the
+--   /api/roast endpoint. Required only if ROAST_RATELIMIT_ENABLED=true on
+--   Vercel. Without it, /api/roast falls back to transparent in-memory
+--   limits which reset on every cold start.
+--
+-- - `webmentions.sql` — pending-moderation queue for the future
+--   /mentions feed page. Future feature; safe to skip until enabled.
+--
+-- Both files are idempotent and safe to re-run. Past dated `migration-*.sql`
+-- files in this directory are historical; their relevant DDL has been folded
+-- into the table definitions above (last_free_jobsearch_at, cv_summary,
+-- subscription_renews_at, subscription_cancel_at, seen_job_searches table).
+-- A fresh Supabase setup needs ONLY this file + the two optional ones above.
