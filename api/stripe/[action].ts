@@ -14,6 +14,7 @@
 // Net effect: 4 stripe functions → 2 (this file + webhook). Saves 2 slots.
 
 import Stripe from 'stripe';
+import { initSentry, captureError } from '../../lib/observability/sentry';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '');
 
@@ -27,6 +28,14 @@ const PLAN_CREDITS: Record<string, number> = {
   starter: 20,
   pro: 60,
   premium: 120,
+};
+
+// GA4 `purchase` event requires `value` in major currency units. The client
+// (Dashboard.tsx) doesn't know the price, so the checkout success_url carries
+// amount + currency back from here. Must stay in sync with src/components/Pricing.tsx.
+const PLAN_AMOUNTS: Record<string, Record<string, number>> = {
+  gbp: { starter: 5, pro: 12, premium: 20 },
+  usd: { starter: 5, pro: 15, premium: 25 },
 };
 
 const cleanEnv = (v: string | undefined) => (v || '').trim();
@@ -145,18 +154,28 @@ async function handleCheckout(request: any, response: any) {
 
     const origin = getAllowedOrigin(request.headers.origin);
     const isTopup = planKey === 'starter';
+    const amount = PLAN_AMOUNTS[currencyKey]?.[planKey];
+    const successQs = amount
+      ? `success=true&amount=${amount}&currency=${currencyKey.toUpperCase()}`
+      : `success=true`;
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       payment_method_types: ['card'],
       line_items: [{ price: stripePriceId, quantity: 1 }],
       mode: isTopup ? 'payment' : 'subscription',
-      success_url: `${origin}/dashboard?success=true`,
+      success_url: `${origin}/dashboard?${successQs}`,
       cancel_url: `${origin}/dashboard?cancelled=true`,
       metadata: { user_id: user.id, plan: planKey, type: isTopup ? 'topup' : 'subscription', currency: currencyKey },
     });
     return response.status(200).json({ url: session.url });
   } catch (error: any) {
     console.error('Stripe checkout error:', error?.message || 'Unknown error');
+    captureError(error, {
+      route: '/api/stripe/checkout',
+      user_id: user?.id ?? null,
+      plan: plan ?? null,
+      currency: currency ?? null,
+    });
     return response.status(500).json({ error: 'Failed to create checkout session' });
   }
 }
@@ -180,6 +199,10 @@ async function handlePortal(request: any, response: any) {
     return response.status(200).json({ url: session.url });
   } catch (error: any) {
     console.error('Stripe portal error:', error?.message || 'Unknown error');
+    captureError(error, {
+      route: '/api/stripe/portal',
+      user_id: user?.id ?? null,
+    });
     return response.status(500).json({ error: 'Failed to create billing portal session' });
   }
 }
@@ -377,12 +400,17 @@ async function handleSync(request: any, response: any) {
     });
   } catch (error: any) {
     console.error('Sync error:', error?.message || 'Unknown error');
+    captureError(error, {
+      route: '/api/stripe/sync',
+      user_id: user?.id ?? null,
+    });
     return response.status(500).json({ error: 'Sync failed' });
   }
 }
 
 // ---- Dispatcher ----
 export default async function handler(request: any, response: any) {
+  initSentry();
   // The dynamic segment lands in request.query.action ('checkout' | 'portal'
   // | 'sync'). webhook is handled by the sibling api/stripe/webhook.ts which
   // is more specific so it wins for /api/stripe/webhook.

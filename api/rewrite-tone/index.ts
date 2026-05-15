@@ -1,6 +1,7 @@
 // API endpoint for cover letter tone rewriting
 // Vercel serverless function — costs 1 credit
 import { GoogleGenAI } from '@google/genai';
+import { initSentry, captureError } from '../../lib/observability/sentry';
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
 
@@ -60,6 +61,7 @@ async function refundTokens(userId: string, amount: number): Promise<boolean> {
 }
 
 export default async function handler(request: any, response: any) {
+  initSentry();
   if (request.method !== 'POST') {
     return response.status(405).json({ error: 'Method not allowed' });
   }
@@ -175,6 +177,12 @@ Return ONLY the rewritten cover letter text. No explanation, no preamble, no mar
     if (didCharge && chargedUserId) {
       refundSucceeded = await refundTokens(chargedUserId, COST);
     }
+    captureError(error, {
+      route: '/api/rewrite-tone',
+      user_id: chargedUserId,
+      did_charge: didCharge,
+      refund_succeeded: refundSucceeded,
+    });
     return response.status(500).json({
       error: !didCharge
         ? 'Failed to rewrite cover letter. Please try again.'

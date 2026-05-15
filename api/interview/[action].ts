@@ -24,6 +24,7 @@
 
 import { GoogleGenAI } from '@google/genai';
 import { createHash } from 'crypto';
+import { initSentry, captureError } from '../../lib/observability/sentry';
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
 const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || '';
@@ -910,6 +911,12 @@ Only return the JSON array, no other text. No markdown fences. No commentary.`;
     if (didChargeQuestions && user?.id) {
       refundSucceeded = await refundTokens(user.id, QUESTIONS_COST);
     }
+    captureError(error, {
+      route: '/api/interview/questions',
+      user_id: user?.id ?? null,
+      did_charge: didChargeQuestions,
+      refund_succeeded: refundSucceeded,
+    });
     return response.status(500).json({
       error: !didChargeQuestions
         ? 'Failed to generate questions. Please try again.'
@@ -991,6 +998,10 @@ Return only the JSON object, no other text. No markdown fences. No commentary.`;
     return response.status(200).json({ success: true, evaluation });
   } catch (error: any) {
     console.error('Interview evaluate error:', error?.message || 'Unknown error');
+    captureError(error, {
+      route: '/api/interview/evaluate',
+      user_id: user?.id ?? null,
+    });
     return response.status(500).json({ error: 'Failed to evaluate answer' });
   }
 }
@@ -1221,6 +1232,12 @@ Return EXACTLY this JSON shape (no other text, no markdown fences):
     if (didChargeFollowup && user?.id) {
       refundSucceeded = await refundTokens(user.id, FOLLOWUP_COST);
     }
+    captureError(error, {
+      route: '/api/interview/followup',
+      user_id: user?.id ?? null,
+      did_charge: didChargeFollowup,
+      refund_succeeded: refundSucceeded,
+    });
     return response.status(500).json({
       error: !didChargeFollowup
         ? 'Failed to generate follow-up email. Please try again.'
@@ -1642,6 +1659,12 @@ Return EXACTLY this JSON shape (no other text, no markdown fences). All five fie
     if (didChargeNegotiation && user?.id) {
       refundSucceeded = await refundTokens(user.id, NEGOTIATION_COST);
     }
+    captureError(error, {
+      route: '/api/interview/negotiation',
+      user_id: user?.id ?? null,
+      did_charge: didChargeNegotiation,
+      refund_succeeded: refundSucceeded,
+    });
     return response.status(500).json({
       error: !didChargeNegotiation
         ? 'Failed to generate negotiation brief. Please try again.'
@@ -2313,6 +2336,12 @@ Penalize ghost-tells heavily. NEVER invent skills/companies not in CV/JD. STRICT
         console.error('Interview jobsearch CRITICAL: refund failed after crash for user', user.id);
       }
     }
+    captureError(error, {
+      route: '/api/interview/jobsearch',
+      user_id: user?.id ?? null,
+      did_charge: didCharge,
+      refund_succeeded: refundSucceeded,
+    });
     return response.status(500).json({
       error: !didCharge
         ? 'Job search failed. Try again in a minute.'
@@ -2327,6 +2356,7 @@ Penalize ghost-tells heavily. NEVER invent skills/companies not in CV/JD. STRICT
 
 // ---- Dispatcher ----
 export default async function handler(request: any, response: any) {
+  initSentry();
   const raw = request.query?.action;
   const action = String(Array.isArray(raw) ? raw[0] : raw || '').toLowerCase();
   switch (action) {
