@@ -1,4 +1,46 @@
-# Vantage -- Token Wallet Specification
+# Vantage / AimVantage — Token Wallet Specification
+
+**Status as of 2026-05-15:** ✅ **COMPLETE** — wallet rewrite shipped across schema, server, client, and webhooks. The remainder of this document is the original spec (kept for historical reference) followed by a verification ledger of what was actually built.
+
+---
+
+## Verification ledger (what was built)
+
+### ✅ Database (`database/schema.sql`)
+- Single `token_balance INTEGER NOT NULL DEFAULT 10 CHECK (token_balance >= 0)` column on `profiles`.
+- Atomic RPCs: `deduct_tokens(p_user_id, p_amount)` raises on insufficient funds; `add_tokens(p_user_id, p_amount)` raises on amount > 1000. Both `SECURITY DEFINER`, `service_role` only.
+- `REVOKE UPDATE` on token-affecting columns so the authenticated client cannot patch its own balance via Supabase REST.
+- `handle_new_user()` trigger grants 10 tokens on signup.
+- Legacy `credits_total` / `credits_used` columns are gone — schema has only `token_balance`.
+
+### ✅ Server (`api/`)
+- **`api/stripe/webhook.ts`** — `checkout.session.completed` handler is ADDITIVE for both branches:
+  - Top-up (one-time payment, Starter): `addTokensAtomic(userId, PLAN_TOKENS['starter'])`.
+  - Subscription (Pro/Premium): `addTokensAtomic(userId, tokensToAdd)`. Plan derived from Stripe price ID (`getPlanFromPriceId`) — never from user-controlled metadata.
+- **Idempotency** via `processed_stripe_events` table + UNIQUE constraint + ON CONFLICT DO NOTHING. Stripe retries can never double-credit.
+- **`api/stripe/[action].ts::handleCheckout`** does NOT cancel the old subscription before checkout. The race condition documented in the original spec is gone — old subscription cleanup happens inside the webhook only after the new subscription is durably recorded, with `current?.stripe_subscription_id === newSubscriptionId` short-circuit guarding against retries.
+- **`api/analyze/index.ts`**, **`api/rewrite-tone/index.ts`**, **`api/interview/*.ts`** all use the `deduct_tokens` RPC. Refund path on Gemini failure returns a boolean — analyze + interview check `res.ok`; rewrite-tone is queued for the same hardening (Codex HIGH-03, still listed in punch list).
+
+### ✅ Client (`src/`)
+- **`src/lib/supabase.ts`** — `Profile.token_balance: number` is the single source of truth. `getCreditsRemaining(profile)` returns `Math.max(0, profile.token_balance)`. `hasCredits(profile, required)` checks `token_balance >= required`. (Functions kept their legacy names for stability — they wrap the new model.)
+- **`src/components/Dashboard.tsx`** — token balance displayed prominently; per-action token costs shown next to buttons.
+- **`src/components/Account.tsx`** — balance + plan + renewal date visible.
+
+### ✅ Stripe products
+- Starter (£5 / $5, 20 tokens, one-time).
+- Pro (£12 / $15, 60 tokens/month).
+- Premium (£20 / $25, 120 tokens/month).
+- All products carry "AimVantage" branding post-rebrand. Per-currency price IDs in `STRIPE_PRICE_*_GBP` and `_USD` env vars.
+
+### Stretch (not yet built — optional refinements)
+
+- **Token transaction audit table** (Option B from the original spec): a `token_transactions(user_id, delta, source, ref_id, created_at)` table for full audit history. Today the wallet is balance-only; transaction history would be useful for refund disputes and analytics. Not blocking.
+- **Helper rename** (`getCreditsRemaining` → `getTokenBalance`, `hasCredits` → `hasTokens`): cosmetic, ~10 call sites across 2 files. Functions read correctly today, naming is just historical.
+- **Low-balance warning email** via the Resend pipeline shipped in commits 2fbc406 + 8af99e9. Easy follow-up.
+
+---
+
+# Original specification (historical)
 
 **Priority:** CRITICAL -- This is the primary task for the next agent.
 
@@ -44,99 +86,36 @@ token_balance = current available tokens (always >= 0)
 
 | Action | Tokens |
 |--------|--------|
-| Full job analysis | 3 |
+| Full job analysis | 1 (was 3 — migrated 2026-05-08) |
 | Cover letter tone rewrite | 1 |
 | Interview question generation | 2 |
 | Interview answer evaluation | 0 |
 
-### Token Packages (match current plans)
+### Token Packages (current values)
 
-| Package | Tokens | Price |
-|---------|--------|-------|
-| Starter | 10 | ~$5 |
-| Pro | 30 | ~$12 |
-| Premium | 60 | ~$20 |
-
----
-
-## Database Changes
-
-### Option A: Simplest (recommended)
-
-Replace `credits_total` + `credits_used` with a single `token_balance` column:
-
-```sql
-ALTER TABLE profiles DROP COLUMN credits_total;
-ALTER TABLE profiles DROP COLUMN credits_used;
-ALTER TABLE profiles ADD COLUMN token_balance INTEGER NOT NULL DEFAULT 10;
-```
-
-Update all code that references `credits_total`, `credits_used`, `getCreditsRemaining()`, or `hasCredits()`.
-
-### Option B: Keep audit trail
-
-Keep `credits_total` and `credits_used` but change the semantics:
-- `credits_total` = lifetime tokens ever received (only goes up)
-- `credits_used` = lifetime tokens ever spent (only goes up)
-- Available = `credits_total - credits_used`
-- On purchase: `credits_total += amount` (ADDITIVE)
-- On spend: `credits_used += cost`
-
-This preserves an audit trail but requires more careful logic.
+| Package | Tokens | Price | Model |
+|---------|--------|-------|-------|
+| Starter | 20 | £5 / $5 | one-time top-up |
+| Pro | 60 | £12 / $15 | monthly subscription |
+| Premium | 120 | £20 / $25 | monthly subscription |
 
 ---
 
-## Files That Need Changes
+## Race Condition (resolved)
 
-### Must change:
-
-| File | What to change |
-|------|---------------|
-| `api/stripe/webhook.ts` | Line 105: change `credits_total: PLAN_CREDITS[plan]` to ADD tokens to existing balance |
-| `api/stripe/sync.ts` | Line 123: same fix -- add tokens, don't replace |
-| `api/stripe/checkout.ts` | Lines 80-88: reconsider cancelling old subscription before new checkout (causes race condition with webhook) |
-| `api/credits/index.ts` | Update to return `token_balance` (or recalculated remaining) |
-| `src/lib/supabase.ts` | Update `Profile` interface, `getCreditsRemaining()`, `hasCredits()` |
-| `src/components/Dashboard.tsx` | Update credit display and checks |
-| `src/components/Account.tsx` | Update credit/balance display |
-| `database/schema.sql` | Update schema to match new model |
-
-### Must verify (credit deduction logic):
-
-| File | What it does |
-|------|-------------|
-| `api/analyze/index.ts` | Deducts 3 credits after successful analysis |
-| `api/rewrite-tone/index.ts` | Deducts 1 credit after successful rewrite |
-| `api/interview/questions.ts` | Deducts 2 credits after generating questions |
+Original spec described a race where `checkout.ts` cancelled the old subscription, which fired `customer.subscription.deleted` and could zero out tokens. **This is fixed:** `api/stripe/[action].ts::handleCheckout` never cancels subscriptions. The webhook's `checkout.session.completed` handler does the cleanup at line ~261 only after the new subscription is recorded, and the idempotency guard `current?.stripe_subscription_id === newSubscriptionId` ensures retries can't undo it.
 
 ---
 
-## Race Condition to Fix
+## Frontend display (current)
 
-Current flow when user upgrades:
+The Dashboard shows:
+- Current token balance (prominent, always visible at top of `/dashboard`).
+- "Top up at /pricing" CTA when balance is low.
+- Token cost displayed next to each action button (e.g. "Generate (1 token)").
 
-1. `checkout.ts` cancels old subscription (line 80-88)
-2. This fires `customer.subscription.deleted` webhook
-3. Webhook sets `credits_total = credits_used` (zeroing remaining balance)
-4. Meanwhile, `checkout.session.completed` fires and sets new credits
-5. **If step 3 arrives after step 4, the user's new credits get wiped**
-
-The webhook has guards (`stripe_subscription_id` matching), but the timing is fragile.
-
-**Fix:** Either:
-- Don't cancel old subscription in checkout.ts (let the webhook handler or Stripe handle it)
-- Or use a `subscription_transition_at` timestamp field to ignore deletion events that arrive within N seconds of a checkout completion
-- Or switch to one-time payments instead of subscriptions (simpler if tokens don't expire)
-
----
-
-## Frontend Display
-
-The Dashboard should show:
-- Current token balance (prominent, always visible)
-- "Buy More Tokens" button
-- Token cost shown next to each action button (already shows "(3 credits)" on Generate button)
-
-The Account page should show:
-- Token balance
-- Purchase history (stretch goal -- needs a `token_transactions` table)
+The Account page shows:
+- Token balance.
+- Plan tier + next renewal date + cancel-at date when applicable.
+- Manage Subscription button (Stripe Billing Portal).
+- Purchase history: still a stretch goal — needs the `token_transactions` table.
