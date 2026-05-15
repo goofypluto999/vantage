@@ -1,11 +1,11 @@
 {
-  "name": "@vantage-ai/mcp-server",
+  "name": "@aimvantage/mcp-server",
   "version": "0.1.0",
-  "description": "Model Context Protocol server for Vantage AI — call Vantage's free job-prep tools (cover letter roast, rejection email decoder, ghost job detector) from any MCP-compatible client (Claude Desktop, Claude Code, Cursor, VS Code, Codex CLI).",
+  "description": "Model Context Protocol server for AimVantage (formerly Vantage AI) — call AimVantage's free job-prep tools (cover letter roast, rejection email decoder, ghost job detector) from any MCP-compatible client (Claude Desktop, Claude Code, Cursor, VS Code, Codex CLI).",
   "license": "MIT",
   "type": "module",
   "bin": {
-    "vantage-mcp": "./dist/index.js"
+    "aimvantage-mcp": "./dist/index.js"
   },
   "main": "./dist/index.js",
   "files": [
@@ -35,6 +35,7 @@
     "model-context-protocol",
     "claude",
     "anthropic",
+    "aimvantage",
     "vantage",
     "job-prep",
     "cover-letter",
@@ -43,11 +44,11 @@
   ],
   "homepage": "https://aimvantage.uk/docs/api",
   "bugs": {
-    "url": "https://github.com/goofypluto999/vantage/issues"
+    "url": "https://github.com/goofypluto999/aimvantage/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/goofypluto999/vantage.git",
+    "url": "git+https://github.com/goofypluto999/aimvantage.git",
     "directory": "mcp-server"
   },
   "author": "Giovanni Sizino Ennes <hello@aimvantage.uk> (https://aimvantage.uk)"
