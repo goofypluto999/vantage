@@ -17,6 +17,22 @@
     <meta name="google-site-verification" content="CxGMsq3htYbg81lDgs8ZbKEy0PZHZJC3OOR-_DtAZOo" />
     <meta name="google-site-verification" content="mt9jxsCNbClfyg16j1cr7N7UjVt3ZzPbTUMAdRI2WVI" />
 
+    <!-- LCP preload — the static fallback hero image is the first
+         large-content paint on mobile (React hydration happens after
+         the static HTML is already on screen). Preloading the WebP at
+         the size the viewport will actually render lets the browser
+         fetch it in parallel with the JS bundle instead of waiting
+         for the parser to reach the <img>. Mobile Lighthouse 2026-05-15
+         flagged "LCP request discovery" as red — this fixes it. -->
+    <link
+      rel="preload"
+      as="image"
+      href="/hero-600.webp"
+      imagesrcset="/hero-375.webp 375w, /hero-600.webp 600w, /hero-1200.webp 1200w"
+      imagesizes="(max-width: 600px) 100vw, 600px"
+      fetchpriority="high"
+    />
+
     <!-- Favicon + PWA -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="alternate icon" href="/favicon.ico" />
@@ -310,7 +326,10 @@
         <h1>AimVantage — AI Job Preparation Tool</h1>
         <p style="color: rgba(255,255,255,0.6); font-size: 1rem;">Clarity in the chaos. Brand colours: violet <span style="color:#a78bfa;">#a78bfa</span>, indigo <span style="color:#6366f1;">#6366f1</span>, dark purple background <span style="color:#a5b4fc;">#0d0b1e</span>.</p>
         <p>Upload your CV, paste a job link, and get the full prep pack in about 90 seconds: company intelligence, tailored cover letter, mock interview questions with an AI-graded mock drill, a CV fit score, and a 5-minute interview pitch outline. Built for people applying to many jobs a week.</p>
-        <img src="/og-image.png" alt="AimVantage — Clarity in the Chaos. Upload your CV, paste a job link, get the full prep pack in 90 seconds." class="ssf-hero-img" width="600" height="315" loading="eager" />
+        <picture>
+          <source type="image/webp" srcset="/hero-375.webp 375w, /hero-600.webp 600w, /hero-1200.webp 1200w" sizes="(max-width: 600px) 100vw, 600px" />
+          <img src="/og-image.png" alt="AimVantage — Clarity in the Chaos. Upload your CV, paste a job link, get the full prep pack in 90 seconds." class="ssf-hero-img" width="600" height="315" loading="eager" fetchpriority="high" />
+        </picture>
       </header>
       <main>
         <h2>What you get in one analysis</h2>
