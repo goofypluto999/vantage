@@ -278,6 +278,7 @@ export default function Dashboard() {
       setCheckoutSuccess(true);
       setSearchParams({}, { replace: true });
       const preBalance = typeof profile?.token_balance === 'number' ? profile.token_balance : 0;
+      const prePlan = profile?.plan || 'starter';
       let cancelled = false;
       setTokenSyncing(true);
       const attempt = async (delayMs: number, remaining: number) => {
@@ -289,7 +290,30 @@ export default function Dashboard() {
         const fresh = await refreshProfile();
         const newBalance = typeof fresh?.token_balance === 'number' ? fresh.token_balance : preBalance;
         if (newBalance > preBalance || remaining <= 0) {
-          if (!cancelled) setTokenSyncing(false);
+          if (!cancelled) {
+            setTokenSyncing(false);
+            // GA4 funnel — `purchase` is the GA4 recommended event for the
+            // checkout-complete moment. Fires only after we've confirmed
+            // tokens/subscription landed (or polling timed out — webhook
+            // will eventually land regardless). prePlan vs newPlan tells
+            // us whether this was a token top-up (same plan) or a real
+            // tier upgrade. No PII / no Stripe IDs in params.
+            const newPlan = fresh?.plan || prePlan;
+            const isTierUpgrade = newPlan !== prePlan;
+            void import('../lib/ga4').then(({ trackEvent }) => {
+              trackEvent('purchase', {
+                plan: newPlan,
+                upgrade_type: isTierUpgrade ? 'tier_upgrade' : 'token_topup',
+                currency: 'GBP',
+              });
+              if (isTierUpgrade) {
+                trackEvent('plan_upgrade', {
+                  from_plan: prePlan,
+                  to_plan: newPlan,
+                });
+              }
+            }).catch(() => { /* analytics never blocks the success path */ });
+          }
           return;
         }
         // Backoff: 500ms, 1s, 2s, 3s, 4s, 5s, ~5s (sum ~20s total)
