@@ -178,6 +178,7 @@ vantage/
 
 ### Server (Plain, feature flags)
 - `ROAST_RATELIMIT_ENABLED`, `ROAST_DISABLED`
+- `SENTRY_DSN` (Sensitive when set — env-gates Sentry init. Helper no-ops if unset.)
 
 ### Client (Plain — VITE_* bundles into browser JS, intentionally public)
 - `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`
@@ -229,6 +230,40 @@ REVOKE UPDATE on sensitive columns from authenticated + anon: `plan`, `token_bal
 | Supabase Auth (signup confirm, magic link, recovery, change, invite) | Supabase Auth uses Resend as SMTP relay | n/a |
 
 Helper: `lib/email/resend.ts`. `sendEmail({to, subject, html, tag?})` is fail-soft (never throws). `wrapEmailBody(headline, innerHtml)` provides the branded shell — **callers MUST escape user-supplied substrings** in innerHtml.
+
+---
+
+## Observability + Audit (Foresay-import additions, 2026-05-15)
+
+### Audit log table — `audit_log` in `database/schema.sql`
+Fire-and-forget event log for dispute paper trail + future admin dashboard. Service-role only. Helper: `lib/audit/log.ts::logAuditEvent({event_type, actor_id, actor_email, ip_address, resource_type, resource_id, detail, metadata})` — **NEVER pass whole Stripe objects into `metadata`** (would bleed customer email, card fingerprint). Hand-pick scalars.
+
+Wired event types:
+- `purchase.completed` — `api/stripe/webhook.ts` topup + subscription branches
+- `purchase.refunded` — `api/stripe/webhook.ts` charge.refunded
+
+Event taxonomy (dotted namespace, soft convention): `auth.*` / `purchase.*` / `token.*` / `admin.*`.
+
+### Sentry server-side — `lib/observability/sentry.ts`
+Env-gated. No-op without `SENTRY_DSN`. Activate by adding env var (Sensitive, Production + Preview). Recommend toggling **Spike Protection** in the Sentry project settings as belt-and-braces against quota nuke.
+
+`initSentry()` at handler entry, `captureError(err, context)` on outer catch. `captureMessage(msg, level, context)` for non-exception signals.
+
+Defensive defaults:
+- `tracesSampleRate: 0` (Performance has separate quota; auto-instrumenting fetch would burn fast)
+- `beforeSend` strips 4xx-tagged events + known noise patterns
+- Per-fingerprint dedupe (60s window, 200-entry ceiling, `route+msg` key) protects 5K-event free tier from bad-deploy spam loops
+
+Currently wired at: `api/stripe/webhook.ts`, `api/analyze/index.ts`. Follow-up chip: extend to `api/interview/[action].ts`, `api/rewrite-tone/index.ts`, `api/stripe/[action].ts`.
+
+### Health endpoints
+- `GET /api/health` — minimal "function alive" (instant 200, no probes). Cheapest UptimeRobot keyword target.
+- `GET /api/health-deep` — multi-probe (Supabase authoritative + Stripe/Resend/Gemini advisory). Returns 200 always; truth is in `status: 'ok' | 'degraded'`. 30s in-memory cache to prevent abuse amplification. Cache-Control: no-store so monitors see live state.
+
+Both inside `api/[publicTool].ts` dispatcher — no Vercel function slot burned.
+
+### Build-time gate
+`package.json` `build` + `vercel-build` chain `tsc --noEmit` before vite. Any TS error fails the deploy at build step. Was missing — only `lint` script existed but nothing in pipeline called it.
 
 ---
 

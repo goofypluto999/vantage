@@ -178,6 +178,32 @@ Spec updated with COMPLETE header + verification ledger + stretch items (transac
 2. **OAuth `sign_up` double-count edge case** — instrument Day-0 confirmation-click path properly so we don't mis-fire.
 3. **`value`/`amount` for GA4 purchase event** — plumb amount through Stripe `success_url` query.
 4. ~~Zero-decimal currency in refund email~~ — **shipped (commit `3470c0d`)**.
+5. **Extend Sentry captureError** to `interview/[action]`, `rewrite-tone`, `stripe/[action]`. Pattern established in commit `3a8c514`.
+
+---
+
+## 🧪 Foresay cross-pollination (4 commits, 2026-05-15 evening)
+
+After paste-back from the Foresay Claude, audited 17 patterns from their stack. Shipped 4 high-value, low-risk additions:
+
+| Commit | What | Foresay equivalent |
+|---|---|---|
+| `e69808d` | `vercel-build` chain `tsc --noEmit` first | Their `Dockerfile && not ;` scar — silent build failures |
+| `6fc8bc2` | `/api/health` + `/api/health-deep` in publicTool dispatcher | Their `/api/health-deep` multi-probe |
+| `5f0116d` | `audit_log` table + `lib/audit/log.ts` helper + 3 webhook events | Their `services/audit.py` + `audit_log` table |
+| `3a8c514` | Sentry server-side via `lib/observability/sentry.ts` + `captureError` on webhook + analyze outer catches | Their `@sentry-sdk/python` integration |
+
+Deferred (real but too big / wrong shape for Vantage's stack):
+- **2FA TOTP** — Supabase Auth supports it; not wired yet. End users on a job-prep tool don't expect it; B2B might. Spawn when needed.
+- **CSP `unsafe-inline` removal** — would need nonce/hash for inline JSON-LD (SEO-critical). Risky, needs focused session.
+- **Backend tests** — large. Scaffold on request.
+- **Slowapi-style auth rate limits** — Supabase Auth handles its own. Self-hosted endpoints already use Vercel Edge middleware sliding-window limits.
+
+Schema migration to apply manually in Supabase SQL Editor:
+```sql
+-- Paste the audit_log block from database/schema.sql.
+-- Idempotent (CREATE TABLE IF NOT EXISTS + CREATE INDEX IF NOT EXISTS).
+```
 
 ---
 
