@@ -74,6 +74,23 @@ export default function Account() {
   const PlanIcon = planInfo.icon;
   const hasActiveSub = profile?.subscription_status === 'active' || profile?.subscription_status === 'cancelling' || profile?.subscription_status === 'past_due';
 
+  // Operator-only Stripe-mode banner. End users never see this — would be a
+  // conversion-killer ("test mode" sounds sketchy). Admins (operator email
+  // listed in VITE_ADMIN_EMAILS) need it as a constant reminder that real
+  // payments aren't being captured. Defaults to showing the banner unless
+  // VITE_STRIPE_MODE === 'live' — fail-loud is the safe default for a paid
+  // SaaS where forgetting to flip to live = lost revenue, not lost data.
+  const adminEmails = ((import.meta.env.VITE_ADMIN_EMAILS as string | undefined) || '')
+    .toLowerCase()
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
+  const isAdmin =
+    Boolean(import.meta.env.DEV) ||
+    (typeof user?.email === 'string' && adminEmails.includes(user.email.toLowerCase()));
+  const stripeMode = ((import.meta.env.VITE_STRIPE_MODE as string | undefined) || 'test').toLowerCase();
+  const showStripeTestBanner = isAdmin && stripeMode !== 'live';
+
   const handleSaveName = async () => {
     if (!user) return;
     setNameSaving(true);
@@ -181,6 +198,26 @@ export default function Account() {
             <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm flex items-center gap-2">
               <AlertTriangle className="w-4 h-4 flex-shrink-0" aria-hidden="true" />
               {error}
+            </div>
+          )}
+
+          {showStripeTestBanner && (
+            <div
+              role="alert"
+              className="mb-6 p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-100 text-sm flex items-start gap-3"
+            >
+              <AlertTriangle className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" aria-hidden="true" />
+              <div className="space-y-1.5">
+                <div className="font-bold text-amber-300">Stripe TEST mode — operator notice</div>
+                <div className="text-amber-100/85 leading-relaxed">
+                  This deploy is using Stripe test keys, so checkouts cost
+                  nothing and real customer cards will be rejected. Switch
+                  STRIPE_SECRET_KEY + STRIPE_WEBHOOK_SECRET +
+                  STRIPE_PRICE_* in Vercel to your live values and set
+                  VITE_STRIPE_MODE=live to dismiss this. Only visible to
+                  emails listed in VITE_ADMIN_EMAILS (and in local dev).
+                </div>
+              </div>
             </div>
           )}
 
