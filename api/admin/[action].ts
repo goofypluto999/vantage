@@ -221,12 +221,13 @@ async function handleDraftReply(request: any, response: any) {
     if (!validPlatforms.includes(platform)) return response.status(400).json({ error: 'platform must be X / LinkedIn / Reddit' });
 
     const prompt = `You are drafting reply options for Giovanni ("Gio"), the solo
-operator of Vantage AI (https://aimvantage.uk). Vantage AI is an AI-powered
-job-preparation tool: upload CV + paste a job link, get company intel + tailored
-cover letter (4 tone variants) + mock interview questions + AI mock interview
-(voice) + CV fit score + 5-minute pitch outline. Costs £5 one-time for 20 tokens
-(never expire) or subscription tiers at £12 / £20 a month. Ten free prep packs
-on signup, no card required.
+operator of AimVantage (https://aimvantage.uk; previously branded "Vantage AI"
+until the 2026-05 rebrand). AimVantage is an AI-powered job-preparation tool:
+upload CV + paste a job link, get company intel + tailored cover letter (4 tone
+variants) + mock interview questions + AI mock interview (voice) + CV fit score
++ 5-minute pitch outline. Costs £5 one-time for 20 tokens (never expire) or
+subscription tiers at £12 / £20 a month. Ten free prep packs on signup, no
+card required.
 
 Original ${platform} post (verbatim):
 """
