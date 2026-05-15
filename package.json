@@ -6,11 +6,11 @@
   "scripts": {
     "dev": "vite --port=3000 --host=0.0.0.0",
     "prebuild": "node scripts/generate-feeds.mjs",
-    "build": "vite build && node scripts/prerender-seo.mjs",
+    "build": "tsc --noEmit && vite build && node scripts/prerender-seo.mjs",
     "preview": "vite preview",
     "clean": "rm -rf dist",
     "lint": "tsc --noEmit",
-    "vercel-build": "node scripts/generate-feeds.mjs && vite build && node scripts/prerender-seo.mjs",
+    "vercel-build": "node scripts/generate-feeds.mjs && tsc --noEmit && vite build && node scripts/prerender-seo.mjs",
     "seo:prerender": "node scripts/prerender-seo.mjs",
     "seo:feeds": "node scripts/generate-feeds.mjs",
     "seo:ping": "node scripts/indexnow-ping.mjs",
