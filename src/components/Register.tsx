@@ -42,6 +42,15 @@ export default function Register() {
 
     try {
       await signUp(email, password, trimmedName);
+      // GA4 funnel — sign_up is a GA4 "recommended event", special-cased in
+      // the user-acquisition reports. Fires only on actual new-account
+      // creation: signUp() throws for both backend errors AND the
+      // already-registered case (identities.length === 0 trap), so reaching
+      // this line implies a genuine first-time submission. Dynamic import to
+      // keep the auth bundle slim if GA4 ever gets tree-shaken out.
+      void import('../lib/ga4').then(({ trackEvent }) => {
+        trackEvent('sign_up', { method: 'email' });
+      }).catch(() => { /* analytics must never break signup */ });
       setSuccess(true);
     } catch (err: any) {
       setError(mapAuthError(err.message || ''));
