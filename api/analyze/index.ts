@@ -966,6 +966,43 @@ export default async function handler(request: any, response: any) {
     // Mark didCharge=false on success — analysis delivered, the charge
     // is legitimately earned. Outer catch shouldn't try to refund.
     didCharge = false;
+
+    // Low-balance warning email — fires exactly once per drain cycle when
+    // the user crosses from above the threshold to below it. Threshold = 3
+    // tokens, chosen so the user gets a nudge BEFORE they're locked out on
+    // their next attempt (1 analysis = 1 token; with 3 left they can run
+    // 3 more before zero). After a top-up the new balance is above the
+    // threshold so the next drain-down can re-fire — no schema column
+    // needed, no spam.
+    const LOW_BALANCE_THRESHOLD = 3;
+    const preBalance = newBalance + COST_PER_ANALYSIS;
+    if (
+      preBalance >= LOW_BALANCE_THRESHOLD &&
+      newBalance < LOW_BALANCE_THRESHOLD &&
+      typeof user.email === 'string' &&
+      user.email.length > 0
+    ) {
+      // Fire-and-forget: must never delay or fail the analyze response.
+      void import('../../lib/email/resend').then(({ sendEmail, wrapEmailBody }) => {
+        const body = `
+          <p>You've got <strong style="color:#ffffff;">${newBalance} token${newBalance === 1 ? '' : 's'}</strong> left in your AimVantage wallet.</p>
+          <p>That's enough for ${newBalance} more prep pack${newBalance === 1 ? '' : 's'}. A top-up at any tier adds to your existing balance — nothing expires.</p>
+          <p style="margin:20px 0;"><a href="https://aimvantage.uk/pricing" style="display:inline-block;padding:12px 20px;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#ffffff;text-decoration:none;border-radius:8px;font-weight:600;">Top up tokens →</a></p>
+          <p style="font-size:13px;color:#8a85a3;margin-top:24px;">Starter is £5 / $5 for 20 tokens, one-time, never expire. Pro and Premium are monthly subscriptions if you want a steady refill.</p>
+        `;
+        return sendEmail({
+          to: user.email,
+          subject: `${newBalance} token${newBalance === 1 ? '' : 's'} left in your AimVantage wallet`,
+          html: wrapEmailBody('Heads up — your token balance is low', body),
+          tag: 'low_balance',
+        });
+      }).then((result) => {
+        if (result && !result.ok) {
+          console.warn(`analyze: low-balance email failed — ${result.error}`);
+        }
+      }).catch(() => { /* never block the success path */ });
+    }
+
     return response.status(200).json({
       success: true,
       data: results,
