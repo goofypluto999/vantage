@@ -752,6 +752,14 @@ export default async function handler(request: any, response: any) {
               });
               if (deductRes.ok) {
                 console.log(`Refund: deducted ${safeDeduct}/${tokensToDeduct} tokens from user ${profile.id} (charge ${charge.id}, ${charge.currency} ${totalPaid})`);
+              } else {
+                // Was silently swallowed before — now surface so we can tell apart
+                // "deduct returned 4xx" (e.g. RPC mismatch, profile gone) from
+                // "deduct fetch threw" (network). Both keep the webhook 200 — the
+                // refund itself is irreversible Stripe-side, retrying the deduct
+                // is the operator's call.
+                const errText = await deductRes.text().catch(() => '');
+                console.error(`Refund: token deduct returned ${deductRes.status} for user ${profile.id} (charge ${charge.id}): ${errText.slice(0, 200)}`);
               }
             } catch (err: any) {
               console.error(`Refund: failed to deduct tokens: ${err.message}`);
@@ -763,6 +771,46 @@ export default async function handler(request: any, response: any) {
           const isSubscriptionCharge = !!charge.invoice;
           if (refundRatio >= 1 && isSubscriptionCharge) {
             await supabasePatch(`id=eq.${profile.id}`, { subscription_status: 'cancelled' });
+          }
+
+          // Refund-confirmation email — courtesy notification so the user
+          // doesn't wonder why their balance dropped. Fire-and-forget; never
+          // blocks the webhook. Recipient comes from the charge's billing
+          // details (Stripe-verified buyer email at time of purchase, more
+          // reliable than profile.email which a user could change post-purchase).
+          const buyerEmail =
+            (charge.billing_details?.email as string | undefined) ||
+            (charge.receipt_email as string | undefined) ||
+            '';
+          if (buyerEmail) {
+            const refundedMajor =
+              ((charge.currency || 'gbp').toLowerCase() === 'jpy')
+                ? charge.amount_refunded
+                : (charge.amount_refunded / 100).toFixed(2);
+            const currencyLabel = (charge.currency || 'gbp').toUpperCase();
+            const refundType = refundRatio >= 1 ? 'full' : 'partial';
+            const deductedNote =
+              tokensToDeduct > 0 && profile.token_balance > 0
+                ? `<p>We've adjusted your token balance accordingly — ${Math.min(tokensToDeduct, profile.token_balance)} token${Math.min(tokensToDeduct, profile.token_balance) === 1 ? '' : 's'} removed. Anything you used before the refund stays used.</p>`
+                : '<p>No tokens were available to remove, so your balance is unchanged.</p>';
+            const body = `
+              <p>Your AimVantage refund has been processed: <strong style="color:#ffffff;">${currencyLabel} ${refundedMajor}</strong> (${refundType} refund).</p>
+              ${deductedNote}
+              <p>Funds typically arrive in your card account within 5–10 working days — Stripe's own confirmation email will have the exact ETA for your card issuer.</p>
+              <p style="font-size:13px;color:#8a85a3;margin-top:24px;">If you didn't expect this refund, reply to this email and a human (Gio) will look into it.</p>
+            `;
+            void import('../../lib/email/resend').then(({ sendEmail, wrapEmailBody }) =>
+              sendEmail({
+                to: buyerEmail,
+                subject: `Refund processed — ${currencyLabel} ${refundedMajor}`,
+                html: wrapEmailBody('Refund processed', body),
+                tag: 'refund_processed',
+              })
+            ).then((result) => {
+              if (result && !result.ok) {
+                console.warn(`Refund email failed for user ${profile.id}: ${result.error}`);
+              }
+            }).catch(() => { /* never block the webhook response */ });
           }
         }
         break;
