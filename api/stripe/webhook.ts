@@ -4,6 +4,7 @@
 import Stripe from 'stripe';
 import { sendEmail, wrapEmailBody } from '../../lib/email/resend';
 import { logAuditEvent } from '../../lib/audit/log';
+import { initSentry, captureError } from '../../lib/observability/sentry';
 
 // Disable Vercel's default body parser — Stripe webhook signature
 // verification requires the raw request body, not a parsed JSON object.
@@ -206,6 +207,7 @@ function extractSubscriptionDates(sub: any): { renewsAt: string | null; cancelAt
 }
 
 export default async function handler(request: any, response: any) {
+  initSentry();
   if (request.method !== 'POST') {
     return response.status(405).json({ error: 'Method not allowed' });
   }
@@ -946,6 +948,15 @@ export default async function handler(request: any, response: any) {
     // Preserve the actual error message/stack — losing it on line 482's
     // static-string log was a diagnosability hole flagged in review.
     console.error('Webhook handler error:', error);
+    // Sentry capture — webhook failures are the single most-important
+    // server errors to know about (every miss = potentially refunded
+    // money / missing tokens / no email). Include event type + id so
+    // ops can replay via the Stripe CLI.
+    captureError(error, {
+      route: '/api/stripe/webhook',
+      stripe_event_id: event?.id || null,
+      stripe_event_type: event?.type || null,
+    });
     return response.status(500).json({ error: 'Webhook handler failed' });
   }
 }

@@ -1,6 +1,7 @@
 // API endpoint for job analysis
 // Vercel serverless function - handles Gemini AI calls securely
 import { GoogleGenAI } from '@google/genai';
+import { initSentry, captureError } from '../../lib/observability/sentry';
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
 
@@ -823,6 +824,7 @@ Requirements:
 }
 
 export default async function handler(request: any, response: any) {
+  initSentry();
   if (request.method !== 'POST') {
     return response.status(405).json({ error: 'Method not allowed' });
   }
@@ -1010,7 +1012,10 @@ export default async function handler(request: any, response: any) {
     });
   } catch (error: any) {
     console.error('Analysis error:', error?.message || 'Unknown error');
-    // Insufficient tokens — surface the message (never charged)
+    // Insufficient tokens — surface the message (never charged).
+    // SKIP Sentry capture: this is intentional 4xx validation noise, the
+    // before_send filter would drop it anyway but skipping the call saves
+    // a tiny bit of work.
     if (error.message?.includes('Insufficient')) {
       return response.status(403).json({ error: error.message });
     }
@@ -1023,9 +1028,18 @@ export default async function handler(request: any, response: any) {
     }
     // Friendly job-parse failure — tokens already refunded by the inner catch.
     // Surface the message verbatim so the user knows to paste the JD text.
+    // ALSO skip Sentry — this is "user pasted a bad URL", not a system error.
     if (error.code === 'JOB_PARSE_FAILED') {
       return response.status(422).json({ error: error.message, code: 'JOB_PARSE_FAILED' });
     }
+    // Real server error — capture with structured context so ops can
+    // diagnose without trawling Vercel logs.
+    captureError(error, {
+      route: '/api/analyze',
+      user_id: chargedUserId,
+      did_charge: didCharge,
+      refund_succeeded: refundSucceeded,
+    });
     return response.status(500).json({
       error: !didCharge
         ? 'Analysis failed. Please try again.'
