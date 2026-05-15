@@ -27,7 +27,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '..');
 
 const HOST = 'https://aimvantage.uk';
-const SITE_NAME = 'Vantage';
+const SITE_NAME = 'AimVantage';
 const SITE_DESC = 'AI job preparation. Upload your CV, paste a job link, get the full prep pack in ~90 seconds.';
 const AUTHOR_NAME = 'Gio';
 const AUTHOR_URL = `${HOST}/press`;
@@ -476,17 +476,17 @@ ${categories}
   xmlns:dc="http://purl.org/dc/elements/1.1/"
   xmlns:media="http://search.yahoo.com/mrss/">
   <channel>
-    <title>Vantage Blog — AI Job Prep, CV Optimisation, Interview Strategy</title>
+    <title>AimVantage Blog — AI Job Prep, CV Optimisation, Interview Strategy</title>
     <link>${HOST}/blog</link>
     <atom:link href="${HOST}/rss.xml" rel="self" type="application/rss+xml" />
     <atom:link href="https://pubsubhubbub.appspot.com/" rel="hub" />
-    <description>Practical, current guides on AI job preparation, CV optimisation, ATS-friendly resumes, cover letters, and interview strategy. Long-form, from a solo founder building Vantage in public.</description>
+    <description>Practical, current guides on AI job preparation, CV optimisation, ATS-friendly resumes, cover letters, and interview strategy. Long-form, from a solo founder building AimVantage (formerly Vantage) in public.</description>
     <language>${SITE_LANG.toLowerCase()}</language>
     <copyright>${SITE_NAME} 2026</copyright>
     <lastBuildDate>${rfc822(lastBuild)}</lastBuildDate>
     <managingEditor>noreply@aimvantage.uk (${AUTHOR_NAME})</managingEditor>
     <webMaster>noreply@aimvantage.uk (${AUTHOR_NAME})</webMaster>
-    <generator>Vantage scripts/generate-feeds.mjs</generator>
+    <generator>AimVantage scripts/generate-feeds.mjs</generator>
     <image>
       <url>${SITE_LOGO}</url>
       <title>${SITE_NAME}</title>
@@ -540,8 +540,8 @@ ${categories}
   <updated>${isoDateTime(lastBuild)}</updated>
   <icon>${SITE_FAVICON}</icon>
   <logo>${SITE_LOGO}</logo>
-  <rights>© 2026 Giovanni Sizino Ennes (Vantage AI, UK sole trader)</rights>
-  <generator uri="${HOST}" version="2.0">Vantage scripts/generate-feeds.mjs</generator>
+  <rights>© 2026 Giovanni Sizino Ennes (AimVantage, UK sole trader)</rights>
+  <generator uri="${HOST}" version="2.0">AimVantage scripts/generate-feeds.mjs</generator>
 
 ${entries}
 </feed>
