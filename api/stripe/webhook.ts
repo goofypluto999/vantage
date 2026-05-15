@@ -2,6 +2,7 @@
 // Vercel serverless function
 
 import Stripe from 'stripe';
+import { sendEmail, wrapEmailBody } from '../../lib/email/resend';
 
 // Disable Vercel's default body parser — Stripe webhook signature
 // verification requires the raw request body, not a parsed JSON object.
@@ -10,6 +11,60 @@ export const config = {
     bodyParser: false,
   },
 };
+
+// Lightweight HTML escape for any user-controlled string we splice into
+// the email body. The Resend helper escapes the headline but explicitly
+// leaves the body raw — this guards against the rare-but-possible case
+// of a signup email like `gio+<script>@example.com`.
+function esc(s: string): string {
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+/**
+ * Fire-and-forget purchase-confirmation email. Never throws, never
+ * blocks the webhook. If RESEND_API_KEY is unset, the helper returns
+ * { ok: false, error: 'resend_not_configured' } and we just log it.
+ */
+function firePurchaseEmail(args: {
+  toEmail: string | null | undefined;
+  planLabel: string;
+  tokenCount: number;
+  isTopup: boolean;
+  renewsAt?: string | null;
+}): void {
+  const to = (args.toEmail || '').trim();
+  if (!to) return;
+  const renewsHtml =
+    !args.isTopup && args.renewsAt
+      ? `<tr><td style="padding:8px 0;color:#8a85a3;">Next renewal</td><td style="padding:8px 0;color:#f0eef9;">${esc(new Date(args.renewsAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' }))}</td></tr>`
+      : '';
+  const body = `
+    <p>Your AimVantage purchase is confirmed. Here's what landed in your account:</p>
+    <table role="presentation" cellpadding="0" cellspacing="0" style="margin:16px 0;border-collapse:collapse;width:100%;">
+      <tr><td style="padding:8px 0;color:#8a85a3;width:140px;">Plan</td><td style="padding:8px 0;color:#f0eef9;font-weight:600;">${esc(args.planLabel)}</td></tr>
+      <tr><td style="padding:8px 0;color:#8a85a3;">Tokens added</td><td style="padding:8px 0;color:#f0eef9;font-weight:600;">${args.tokenCount}</td></tr>
+      ${renewsHtml}
+    </table>
+    <p style="margin:20px 0;"><a href="https://aimvantage.uk/dashboard" style="display:inline-block;padding:12px 20px;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#ffffff;text-decoration:none;border-radius:8px;font-weight:600;">Run your next prep pack →</a></p>
+    <p style="font-size:13px;color:#8a85a3;margin-top:24px;">Manage your subscription or top up tokens any time from <a href="https://aimvantage.uk/account" style="color:#a78bfa;">your Account settings</a>. Receipts and invoices are in the Stripe customer portal linked from there.</p>
+  `;
+  void sendEmail({
+    to,
+    subject: args.isTopup
+      ? `Top-up confirmed — ${args.tokenCount} tokens added`
+      : `Welcome to AimVantage ${args.planLabel}`,
+    html: wrapEmailBody(args.isTopup ? 'Top-up confirmed' : `${args.planLabel} subscription active`, body),
+    tag: 'purchase_confirm',
+  }).then((result) => {
+    if (!result.ok) {
+      console.warn(`Webhook: purchase email failed — ${result.error}`);
+    }
+  });
+}
 
 // Read raw body from the Node.js request stream
 async function getRawBody(req: any): Promise<Buffer> {
@@ -244,6 +299,12 @@ export default async function handler(request: any, response: any) {
           const topupTokens = PLAN_TOKENS['starter'] || 10;
           await addTokensAtomic(userId, topupTokens);
           console.log(`Webhook: top-up of ${topupTokens} tokens for user ${userId}`);
+          firePurchaseEmail({
+            toEmail: session.customer_details?.email,
+            planLabel: 'Starter top-up',
+            tokenCount: topupTokens,
+            isTopup: true,
+          });
           break;
         }
 
@@ -300,6 +361,13 @@ export default async function handler(request: any, response: any) {
         if (!ok) {
           console.error(`Webhook CRITICAL: profile patch failed after token credit for user ${userId} — user paid but plan/dates not updated`);
         }
+        firePurchaseEmail({
+          toEmail: session.customer_details?.email,
+          planLabel: plan.charAt(0).toUpperCase() + plan.slice(1),
+          tokenCount: tokensToAdd,
+          isTopup: false,
+          renewsAt,
+        });
         break;
       }
 
