@@ -225,6 +225,109 @@ async function handleWebmention(req: any, res: any) {
 }
 
 // =============================================================================
+// health-deep — multi-probe operational status
+// =============================================================================
+// Probes each external dependency we can't live without, with a tight per-
+// probe timeout. ALWAYS returns HTTP 200 with a status field — even if a
+// probe fails — so keyword-style uptime monitors (UptimeRobot etc.) stay
+// meaningful (they alert when `"status":"ok"` is absent from the body).
+//
+// Probe taxonomy:
+//   - supabase   : AUTHORITATIVE. GET /auth/v1/health with apikey header
+//                  returns 200 + JSON when healthy. If this is down, our
+//                  product is meaningfully down.
+//   - stripe     : ADVISORY (reachability only). HEAD on the API host —
+//                  401/404 is "edge is up", real call would need our
+//                  secret key + cost cycles for no extra signal.
+//   - resend     : ADVISORY (reachability only). Same.
+//   - gemini     : ADVISORY (reachability only). Same.
+//
+// Top-level `status` is 'ok' iff the AUTHORITATIVE probes are ok. Advisory
+// probes have an `ok` flag but don't down the rollup — they're operator
+// breadcrumbs ("internet path to Stripe is up") not health signals.
+//
+// In-memory result cache (30s TTL) protects against amplification abuse:
+// unauthenticated endpoint × 4 outbound fetches per call is exactly the
+// shape a bot would target to burn our Vercel egress. UptimeRobot polls
+// every 1-5 min anyway so 30s cache costs nothing operationally.
+//
+// Each probe is capped at 4s. Full handler bounded by Promise.all.
+type ProbeResult = { name: string; ok: boolean; ms: number; status?: number; error?: string; authoritative: boolean };
+
+async function probe(name: string, url: string, authoritative: boolean, opts: { method?: 'HEAD' | 'GET'; headers?: Record<string, string>; okStatus?: (s: number) => boolean; timeoutMs?: number } = {}): Promise<ProbeResult> {
+  const { method = 'HEAD', headers = {}, okStatus = (s) => s < 400, timeoutMs = 4000 } = opts;
+  const started = Date.now();
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const r = await fetch(url, { method, headers, signal: controller.signal });
+    clearTimeout(timer);
+    return { name, ok: okStatus(r.status), ms: Date.now() - started, status: r.status, authoritative };
+  } catch (e: any) {
+    clearTimeout(timer);
+    return { name, ok: false, ms: Date.now() - started, error: e?.name === 'AbortError' ? 'timeout' : String(e?.message || 'unknown').slice(0, 120), authoritative };
+  }
+}
+
+// In-memory cache. Survives within a single warm lambda instance; cold start
+// will re-probe. That's acceptable — abuse vector is sustained spam to a
+// single warm function, not first-of-N cold invocations.
+const HEALTH_CACHE_TTL_MS = 30_000;
+let healthCache: { at: number; body: any } | null = null;
+
+async function handleHealthDeep(_req: any, res: any) {
+  res.setHeader('Cache-Control', 'no-store, max-age=0');
+
+  if (healthCache && Date.now() - healthCache.at < HEALTH_CACHE_TTL_MS) {
+    return res.status(200).json({ ...healthCache.body, cached: true });
+  }
+
+  // Reachability-only probes for Stripe / Resend / Gemini. We can't make
+  // authoritative calls without burning a real API quota call. Treat all
+  // <500 as "reachable" — 401/404 still proves we hit their edge.
+  const advisoryOk = (s: number) => s < 500;
+
+  const probes = await Promise.all<ProbeResult>([
+    // AUTHORITATIVE: Supabase /auth/v1/health with apikey returns 200 JSON.
+    // Without the apikey it 401s — which is also <500 but doesn't prove the
+    // auth service is actually healthy. Use the anon key here (same one
+    // baked into the client bundle, no secret risk).
+    SUPABASE_URL && (process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY)
+      ? probe('supabase', `${SUPABASE_URL}/auth/v1/health`, true, {
+          method: 'GET',
+          headers: { apikey: (process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY) as string },
+        })
+      : Promise.resolve<ProbeResult>({ name: 'supabase', ok: false, ms: 0, error: 'not_configured', authoritative: true }),
+    // ADVISORY:
+    probe('stripe', 'https://api.stripe.com/', false, { okStatus: advisoryOk }),
+    probe('resend', 'https://api.resend.com/', false, { okStatus: advisoryOk }),
+    probe('gemini', 'https://generativelanguage.googleapis.com/', false, { okStatus: advisoryOk }),
+  ]);
+
+  // Top-level status only considers AUTHORITATIVE probes. Advisory probes
+  // failing surface in the breakdown but don't down the rollup.
+  const authoritative = probes.filter((p) => p.authoritative);
+  const allAuthOk = authoritative.length > 0 && authoritative.every((p) => p.ok);
+  const body = {
+    status: allAuthOk ? 'ok' : 'degraded',
+    timestamp: new Date().toISOString(),
+    probes,
+  };
+  healthCache = { at: Date.now(), body };
+  return res.status(200).json(body);
+}
+
+// =============================================================================
+// health — minimal "is the function alive" probe
+// =============================================================================
+// No external calls. Returns immediately. Useful for the cheapest possible
+// keyword monitor that confirms Vercel is serving requests at all.
+function handleHealth(_req: any, res: any) {
+  res.setHeader('Cache-Control', 'no-store, max-age=0');
+  return res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
+}
+
+// =============================================================================
 // Dispatcher
 // =============================================================================
 export default async function handler(req: any, res: any) {
@@ -235,6 +338,10 @@ export default async function handler(req: any, res: any) {
       return handleSearchSuggest(req, res);
     case 'webmention':
       return handleWebmention(req, res);
+    case 'health':
+      return handleHealth(req, res);
+    case 'health-deep':
+      return handleHealthDeep(req, res);
     default:
       return res.status(404).json({ error: `Unknown public endpoint: ${tool || '<empty>'}` });
   }
