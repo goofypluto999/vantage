@@ -28,6 +28,27 @@ export default function Account() {
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // GA4 funnel — `subscription_canceled` fires once per subscription_id when
+  // status flips to 'cancelling' (period-end cancel) or 'cancelled' (immediate).
+  // Dedupe via localStorage keyed by stripe_subscription_id so a refresh /
+  // remount can't re-fire. Cancellations happen at Stripe portal → webhook
+  // updates DB → user returns here → this effect observes the transition.
+  React.useEffect(() => {
+    const subId = profile?.stripe_subscription_id;
+    const status = profile?.subscription_status;
+    if (!subId || (status !== 'cancelling' && status !== 'cancelled')) return;
+    if (typeof localStorage === 'undefined') return;
+    const dedupeKey = `av_subcancel_fired_${subId}`;
+    if (localStorage.getItem(dedupeKey)) return;
+    void import('../lib/ga4').then(({ trackEvent }) => {
+      trackEvent('subscription_canceled', {
+        plan: profile?.plan || 'unknown',
+        reason: status === 'cancelled' ? 'immediate' : 'period_end',
+      });
+    }).catch(() => { /* analytics never blocks account UI */ });
+    try { localStorage.setItem(dedupeKey, '1'); } catch { /* quota — ignore */ }
+  }, [profile?.subscription_status, profile?.stripe_subscription_id, profile?.plan]);
+
   // Name editing
   const [editingName, setEditingName] = useState(false);
   const [nameValue, setNameValue] = useState(profile?.full_name || '');
