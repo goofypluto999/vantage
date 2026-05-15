@@ -138,7 +138,14 @@ function ScrollToTop() {
     if (typeof window !== 'undefined') {
       window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
     }
-  }, [location.pathname]);
+    // Fire a GA4 page_view on SPA route change. gtag's auto-pageview only
+    // fires on the very first hard-load; SPA navigations need to be
+    // reported manually. No-op if VITE_GA_MEASUREMENT_ID isn't set.
+    // Lazy import to avoid pulling ga4 into the eagerly-loaded App chunk.
+    void import('./lib/ga4').then(({ trackPageView }) => {
+      trackPageView(location.pathname + location.search, document.title);
+    }).catch(() => {/* analytics failure is silent — never block UX */});
+  }, [location.pathname, location.search]);
   return null;
 }
 
