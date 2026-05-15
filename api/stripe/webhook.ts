@@ -783,10 +783,11 @@ export default async function handler(request: any, response: any) {
             (charge.receipt_email as string | undefined) ||
             '';
           if (buyerEmail) {
-            const refundedMajor =
-              ((charge.currency || 'gbp').toLowerCase() === 'jpy')
-                ? charge.amount_refunded
-                : (charge.amount_refunded / 100).toFixed(2);
+            const ZERO_DECIMAL = new Set(['bif','clp','djf','gnf','jpy','kmf','krw','mga','pyg','rwf','ugx','vnd','vuv','xaf','xof','xpf']);
+            const currencyKey = (charge.currency || 'gbp').toLowerCase();
+            const refundedMajor = ZERO_DECIMAL.has(currencyKey)
+              ? String(charge.amount_refunded)
+              : (charge.amount_refunded / 100).toFixed(2);
             const currencyLabel = (charge.currency || 'gbp').toUpperCase();
             const refundType = refundRatio >= 1 ? 'full' : 'partial';
             const deductedNote =
