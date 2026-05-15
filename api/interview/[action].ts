@@ -854,7 +854,7 @@ Generate exactly 5 interview questions a real hiring manager at this company / f
 - category: one of "behavioural" | "technical" | "situational" | "motivational"
 - hint: string (a 1-2 sentence prep cue for the candidate — point at the STAR or SCQA shape they should reach for, name the specific evidence-type they should bring)
 
-STRICT RULES (this is what separates a Vantage mock from a generic ChatGPT prompt — follow them exactly):
+STRICT RULES (this is what separates an AimVantage mock from a generic ChatGPT prompt — follow them exactly):
   • Mandatory mix of categories across the 5: at least 1 "behavioural" (past behaviour predicts future), at least 1 "technical" or domain-specific to this role, at least 1 "situational" (hypothetical / scenario), and at least 1 "motivational" (why this role / company / now). The 5th can repeat any category.
   • Every question must reference SOMETHING SPECIFIC from the role context — a named technology, a stated responsibility, a domain, a scope. NEVER ask a generic question that could be asked in any interview.
   • DO NOT use these dead-shape questions: "Tell me about yourself" (the candidate already prepared one), "What's your greatest weakness", "Where do you see yourself in 5 years", "Why should we hire you" (without a specific role hook), "Describe a time you had a conflict with a coworker" (use a domain-specific conflict instead).

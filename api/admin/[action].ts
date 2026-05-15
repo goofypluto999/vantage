@@ -238,13 +238,13 @@ ${extraContext ? `Additional context Gio wants to land:\n${extraContext}\n` : ''
 Write THREE distinct reply options. Each must:
 
   • Be a HUMAN reply, not a brand DM. First-person ("I built…", "I run a tiny tool that…"). Sole-trader voice. Specific. Slightly self-deprecating where it fits.
-  • Acknowledge what the original poster actually said before pivoting to Vantage. Quote a phrase or paraphrase the gist — show you read the post.
-  • Recommend Vantage NATURALLY. Don't open with the link. Mention it once, in context. Link is https://aimvantage.uk
+  • Acknowledge what the original poster actually said before pivoting to AimVantage. Quote a phrase or paraphrase the gist — show you read the post.
+  • Recommend AimVantage NATURALLY. Don't open with the link. Mention it once, in context. Link is https://aimvantage.uk
   • Be platform-appropriate length:
       X reply: 200-280 chars (must fit in a tweet).
       LinkedIn reply: 80-150 words, can use line breaks.
       Reddit reply: 60-200 words, more conversational, can include 1 caveat ("not perfect, but…").
-  • Be honest. Don't claim things Vantage doesn't do. Don't claim user counts, awards, ratings, "everyone uses this" — Vantage is small. Lean into "small, fast, cheap" not "leader in the space".
+  • Be honest. Don't claim things AimVantage doesn't do. Don't claim user counts, awards, ratings, "everyone uses this" — AimVantage is small. Lean into "small, fast, cheap" not "leader in the space".
   • End with one of three patterns (rotate across the three replies):
       (a) the link, no fluff
       (b) "Happy to drop the link if useful" (asks for permission, low-pressure)
