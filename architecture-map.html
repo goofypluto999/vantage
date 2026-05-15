@@ -535,7 +535,7 @@ const nodes = [
     plain: 'Handles all the money. Customers pay through Stripe’s hosted checkout, and Stripe tells us when they pay/cancel.',
     path:  'stripe SDK v17 · dashboard.stripe.com',
     notes: [
-      'TEST mode currently in production — switch to LIVE is next priority',
+      'LIVE mode in production (confirmed 2026-05-15, sk_live_*); all secret env vars converted to Sensitive in Vercel',
       'Product IDs: prod_UK7rZ8M8ARLfbB (Starter), prod_UK7r5uWulsk6Jc (Pro), prod_UK7rEa90B9zYe4 (Premium)',
       'Customer Billing Portal enabled for self-serve cancel',
     ],
@@ -736,7 +736,7 @@ const KNOWN_BUGS = {
     { sev: 'low', t: 'charge.dispute.closed (lost) handler stub at line:459 — review tokens-deduct behaviour before LIVE switch' },
   ],
   'ext-stripe': [
-    { sev: 'high', ref: 'HANDOFF.md §3', t: 'Currently in TEST mode in production. Switch to LIVE mode before promotion: create live products, update env vars, set up live webhook secret.' },
+    { sev: 'info', ref: 'PROJECT-INDEX.md §7', t: 'LIVE mode confirmed 2026-05-15 (sk_live_* in Vercel). All secret env vars converted to Sensitive type in Vercel — Production + Preview only, not Development.' },
   ],
 };
 
@@ -747,10 +747,10 @@ const FINDINGS_HTML = `
 <h3>Notable findings from this map</h3>
 <div class="findings">
   <p><span class="h">CRITICAL PATH (the spine).</span> Dashboard → services/api::analyzeJob → POST /api/analyze → deduct_tokens RPC → profiles UPDATE → Gemini call (with googleSearch tool) → stripCitations → back to Dashboard. 9 nodes. Anything off this path is secondary.</p>
-  <p><span class="h">"Dead-ish" data path.</span> The <code>analyses</code> table is written to on every successful run but the Dashboard "view past analyses" UI never reads it. The persistence is there; the UI is not. Either wire the UI or stop writing.</p>
+  <p><span class="h">Past analyses UI is live</span> (commit <code>0fe6733</code>) — the <code>analyses</code> table is read by <code>AnalysisHistory</code> in Dashboard. Earlier audit marker "dead-ish" no longer applies.</p>
   <p><span class="h">Gemini constraint is a footgun.</span> <code>googleSearch</code> tool and <code>responseMimeType:'application/json'</code> are mutually exclusive in the same call. The codebase handles this via a <code>useSearch</code> branch in <code>api/analyze</code>, but every future endpoint touching Gemini must observe the same rule.</p>
-  <p><span class="h">Stripe is still in TEST mode in production.</span> See <code>HANDOFF.md</code> §3. This is the headline blocker before paid promotion.</p>
-  <p><span class="h">Email never calls Resend directly from server code.</span> Resend is wired ONLY as Supabase Auth's SMTP relay. Any future transactional email (e.g. "your prep pack is ready") would need a new server-side path. Resend's <code>@resend/node</code> SDK is not even installed.</p>
+  <p><span class="h">Stripe is LIVE in production</span> (confirmed 2026-05-15). All secret env vars are Sensitive-typed in Vercel. Local dev uses <code>.env.local</code> with test keys.</p>
+  <p><span class="h">Resend SDK is installed and used directly from server code</span> (commits <code>2fbc406</code> / <code>8af99e9</code> / <code>18333a6</code> / <code>233ef24</code>). Three transactional paths live: purchase confirmation, low-balance warning, refund confirmation. Plus Supabase Auth still uses Resend as SMTP relay for confirm/recovery emails.</p>
   <p><span class="h">Free tools live + paid live share Gemini.</span> If GEMINI_API_KEY is rate-limited or revoked, both the £-paying users AND the free funnel break together. The free funnel is throttled at the edge (middleware) which absorbs most abuse, but a Gemini outage is single-point-of-failure.</p>
   <p><span class="h">Edge middleware does three jobs at once.</span> 404 enforcement, rate limiting, AND geo cookie writing. None of them depend on each other; splitting would aid future maintenance.</p>
   <p><span class="h">api/user is a multiplexer.</span> Designed to keep Vercel function count under the Hobby plan 12-cap. If you ever consolidate more endpoints, do it here.</p>

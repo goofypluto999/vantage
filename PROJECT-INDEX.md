@@ -189,7 +189,7 @@ Templates live in repo at `docs/supabase-emails/01..05-*.html` for reference.
 
 ## 7. PAYMENTS — STRIPE
 
-**Mode:** TEST mode in production (not switched to LIVE yet — that's the "Switch Stripe to live mode" item in `HANDOFF.md`)
+**Mode:** **LIVE mode in production** as of 2026-05-15. Confirmed by inspecting `STRIPE_SECRET_KEY` in Vercel — value starts with `sk_live_`. All Stripe-related env vars (`STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `STRIPE_PRICE_*`) have been converted from "Plain" to "Sensitive" in Vercel. Sensitive vars target Production + Preview only (Vercel does not allow Sensitive in Development — local dev should use `.env.local` with test keys).
 
 ### Products (renamed 2026-05-14)
 
@@ -526,11 +526,11 @@ In website footer ("Featured on"):
 
 From `HANDOFF.md` + this session's discoveries:
 
-- ⏳ **Token wallet rewrite** — see `WALLET-SPEC.md`. Current model works but is fragile.
-- ⏳ **Results persistence wired to UI** — `analyses` table exists, ingestion works, but the "View past analyses" UI doesn't read it yet
-- ⏳ **Transactional emails** — Resend pipeline exists but only Supabase Auth uses it. No "Your prep pack is ready", "Subscription cancelled", "Token balance low" emails.
-- ⏳ **Refund webhook handler** — `charge.refunded` doesn't currently deduct tokens
-- ⏳ **Switch Stripe to LIVE mode** — currently TEST mode in production
+- ✅ **Token wallet rewrite** — see `WALLET-SPEC.md`. Status flipped to COMPLETE 2026-05-15 — additive `addTokensAtomic` on Stripe webhook, single `token_balance` column, RPC-gated, REVOKE on sensitive columns.
+- ✅ **Results persistence wired to UI** — `AnalysisHistory` component in `Dashboard.tsx` lists past analyses from the `analyses` table (commit `0fe6733`).
+- ✅ **Transactional emails** — Resend pipeline now used for 3 paths: purchase confirmation (`8af99e9`), low-balance warning (`18333a6`), refund confirmation (`233ef24`). Supabase Auth still uses Resend as SMTP relay.
+- ✅ **Refund webhook handler** — `charge.refunded` deducts tokens proportionally and sends a confirmation email (`233ef24`).
+- ✅ **Stripe LIVE mode** — confirmed live 2026-05-15. All secret-type env vars converted to Sensitive in Vercel.
 - ⏳ **Admin/CRM dashboard** — no visibility into signups, cancellations, MRR
 - ⏳ **Email onboarding sequence** — drip campaign for new signups
 - ⏳ **Mobile optimisation pass** — works on mobile but not polished

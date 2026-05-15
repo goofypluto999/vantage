@@ -1,7 +1,7 @@
 # VANTAGE AI — FULL SESSION HANDOFF
 **Date:** 2026-04-12
 **From:** Security hardening + subscription fix session
-**To:** Next Claude session — CRM, Stripe live mode, subscription validation, promotion prep
+**To:** Next Claude session — CRM, subscription validation, promotion prep (Stripe is already LIVE as of 2026-05-15)
 
 ---
 
@@ -224,14 +224,14 @@ Giova currently has ZERO visibility into signups, payments, cancellations, or us
 
 ### 5. DEFINE REFUND POLICY
 - Stripe handles refunds natively
-- Need webhook handler for `charge.refunded` to deduct tokens
-- Policy decision: full refund within X days? Pro-rated? Tokens kept or removed?
+- ✅ Webhook handler for `charge.refunded` shipped 2026-05-15 (`233ef24`) — proportional token deduct + confirmation email
+- Policy decision still open: full refund within X days? Pro-rated? Already kept as a soft rule via the proportional deduct logic.
 
 ### 6. PROMOTION PREP (2+ sessions away)
-- Stripe live mode working
-- Admin visibility exists
-- Landing page real testimonials
-- Email onboarding
+- ✅ Stripe live mode confirmed 2026-05-15 (`sk_live_*` in Vercel; all secrets converted to Sensitive)
+- Admin visibility exists  ← still open
+- Landing page real testimonials  ← still open
+- ✅ Transactional email onboarding partially shipped (purchase / low-balance / refund). Full Day-1/Day-3 sequence still pending.
 
 ---
 
