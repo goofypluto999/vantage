@@ -1,12 +1,12 @@
-# Vantage — Claude Agent Context File
+# AimVantage — Claude Agent Context File
 
-> Read this entire file before writing any code. It contains the full project state.
+> Read this entire file before writing any code. Then read the latest session ledger (see "Reading order" below) so you don't redo shipped work.
 
 ---
 
 ## What Is This Project?
 
-**Vantage** is an AI-powered job preparation SaaS web app. Users upload their CV and a job URL, and the AI generates:
+**AimVantage** (formerly "Vantage" until the 2026-05-14 rebrand — domain `aimvantage.uk`) is an AI-powered job preparation SaaS web app. Users upload their CV and a job URL, and the AI generates:
 - A company intelligence snapshot (auto-extracted from the URL)
 - A role/CV fit analysis
 - A strategic brief and narrative angle
@@ -14,7 +14,21 @@
 - A presentation outline
 - An interview prep pack with flashcards + AI mock interview
 
-The app has a full backend: Supabase Auth, Stripe payments, and Vercel serverless API functions. See `HANDOFF.md` for current status and `WALLET-SPEC.md` for the token system rewrite spec.
+Backend: Supabase Auth + Stripe (LIVE mode) + Vercel serverless API + Resend transactional emails + Google Gemini 2.5 Flash. Status is **live, paid, monetized, and instrumented**.
+
+---
+
+## ⚠️ Reading order (do NOT skip)
+
+1. **This file (CLAUDE.md)** — current rules + tech stack
+2. **`SESSION-2026-05-15-PART-2.md`** ← the latest session ledger (GA4 funnel, transactional emails, Stripe LIVE confirmation, env hygiene, mobile baseline)
+3. **`SESSION-2026-05-15-COMPLETE.md`** — rebrand context (Vantage → AimVantage, DNS, JSON-LD)
+4. **`PROJECT-INDEX.md`** — comprehensive 22-section system inventory
+5. **`HANDOFF.md`** — original handoff (mostly superseded by PROJECT-INDEX)
+6. **`architecture-map.html`** — open in browser for visual map (35 nodes / 45 edges)
+7. **`WALLET-SPEC.md`** — wallet model is DONE; doc kept for historical reference
+
+Before doing ANY non-trivial work, `git log --oneline -20` to see what's already shipped.
 
 ---
 
@@ -28,233 +42,193 @@ The app has a full backend: Supabase Auth, Stripe payments, and Vercel serverles
 | 3D (landing) | Three.js + `@react-three/fiber` + `@react-three/drei` |
 | AI | `@google/genai` SDK v1.29.0 — model: `models/gemini-2.5-flash` |
 | Auth | Supabase Auth (email + Google OAuth) |
-| Database | Supabase PostgreSQL with RLS |
-| Payments | Stripe (subscriptions via checkout sessions + webhooks) |
-| Backend | Vercel serverless functions (TypeScript, `api/` directory) |
+| Database | Supabase PostgreSQL with RLS + SECURITY DEFINER RPCs |
+| Payments | Stripe **LIVE mode** (multi-currency GBP + USD) |
+| Backend | Vercel serverless functions (TypeScript, `api/` directory, 12-function Hobby cap) |
+| Email | Resend (transactional + Supabase Auth SMTP relay). Domain `aimvantage.uk` verified DKIM/SPF/DMARC/MX. |
+| Analytics | GA4 (`G-FMW9BX278N`) + Microsoft Clarity |
+| Search Console | Domain property verified, sitemap.xml submitted |
 | Doc parsing | `mammoth` (DOCX → text, client-side) |
 | Speech | Web Speech API (`SpeechRecognition`) |
 | Icons | `lucide-react` |
 
 ### Critical Import Rules
-- Framer Motion: `import { motion, AnimatePresence, useScroll, useTransform } from 'motion/react'`
-- Gemini: model string MUST be `'models/gemini-2.5-flash'` (needs the `models/` prefix)
-- Tailwind v4: NO `tailwind.config.js` — use `@import "tailwindcss"` in CSS
+- **Framer Motion:** `import { motion, AnimatePresence, useScroll, useTransform } from 'motion/react'`
+- **Gemini:** model string MUST be `'models/gemini-2.5-flash'` (needs the `models/` prefix)
+- **Tailwind v4:** NO `tailwind.config.js` — use `@import "tailwindcss"` in CSS
+- **Server-only Resend helper:** `import { sendEmail, wrapEmailBody } from '../../lib/email/resend'` (path varies — helper lives OUTSIDE `/api/` to not count as a Vercel function)
+- **Never expose `GEMINI_API_KEY` client-side** — no `VITE_GEMINI_API_KEY` allowed. All Gemini calls are server-side via `api/analyze`, `api/interview/*`, `api/roast`, `api/decode-rejection`, `api/ghost-job-check`, `api/[publicTool]`.
 
 ---
 
-## File Structure
+## Token Wallet (status: COMPLETE per WALLET-SPEC.md)
+
+- Single `token_balance INTEGER NOT NULL DEFAULT 10 CHECK (token_balance >= 0)` column on `profiles`. No `credits_total/used`.
+- Atomic RPCs: `deduct_tokens(p_user_id, p_amount)` raises on insufficient funds, `add_tokens(p_user_id, p_amount)` raises on amount > 1000. SECURITY DEFINER, service_role only.
+- `addTokensAtomic` in Stripe webhook is **additive** for both topup (Starter) and subscription (Pro/Premium) branches. Plan derived from Stripe price ID, never user metadata.
+- REVOKE UPDATE blocks the authenticated client from PATCHing token-affecting columns.
+
+### Token Costs
+| Action | Tokens |
+|---|---|
+| Full job analysis | 1 (migrated from 3 in 2026-05-08) |
+| Cover letter tone rewrite | 1 |
+| Interview question generation | 2 |
+| Interview answer evaluation | 0 |
+
+### Token Packages
+| Package | Tokens | Price (GBP / USD) | Model |
+|---|---|---|---|
+| Starter | 20 | £5 / $5 | One-time top-up |
+| Pro | 60 | £12 / $15 | Monthly subscription |
+| Premium | 120 | £20 / $25 | Monthly subscription |
+
+---
+
+## File Structure (current)
 
 ```
 vantage/
-├── api/                               # Vercel serverless functions (backend)
-│   ├── analyze/index.ts               # URL scraping + Gemini analysis (3 credits)
-│   ├── credits/index.ts               # Credit balance check
-│   ├── rewrite-tone/index.ts          # Cover letter tone rewrite (1 credit)
-│   ├── interview/questions.ts         # Generate interview Qs (2 credits, Pro+)
-│   ├── interview/evaluate.ts          # Evaluate answers (free, Pro+)
-│   ├── stripe/checkout.ts             # Create Stripe checkout session
-│   ├── stripe/webhook.ts              # Stripe webhook handler
-│   ├── stripe/sync.ts                 # Fallback sync after checkout
-│   ├── stripe/portal.ts              # Billing portal session
-│   └── waitlist/index.ts              # Waitlist join/count
+├── api/                               # Vercel serverless functions
+│   ├── [publicTool].ts                # multiplexer for unauthed public tools
+│   ├── admin/[action].ts              # admin-gated by ADMIN_EMAILS env
+│   ├── analyze/index.ts               # job analysis (1 token) — fires GA4 prep_pack_run + low_balance email
+│   ├── decode-rejection/              # public free tool
+│   ├── ghost-job-check/               # public free tool
+│   ├── interview/[action].ts          # questions (2 tokens) + evaluate + jobsearch
+│   ├── rewrite-tone/index.ts          # tone switch (1 token)
+│   ├── roast/index.ts                 # public free tool with 7-layer abuse defense
+│   ├── stripe/[action].ts             # multiplexer: checkout / sync / portal
+│   ├── stripe/webhook.ts              # webhook handler — fires purchase, refund emails, GA4 events upstream
+│   ├── user/index.ts                  # multiplexer: credits / analyses / cv-summary
+│   └── waitlist/index.ts              # waitlist join/count
+├── lib/email/resend.ts                # ⚠️ server-only Resend helper (OUTSIDE /api/ — doesn't burn function slot)
 ├── database/
-│   └── schema.sql                     # Full Supabase schema (profiles, analyses, RLS)
+│   ├── schema.sql                     # canonical bootstrap (folded migrations 2026-05-15)
+│   ├── roast-rate-limit.sql           # OPTIONAL — only if ROAST_RATELIMIT_ENABLED=true
+│   ├── webmentions.sql                # OPTIONAL — future /mentions feature
+│   └── migration-*.sql                # historical (DDL folded into schema.sql)
 ├── src/
-│   ├── App.tsx                        # Auth context, routing, protected routes (~209 lines)
-│   ├── main.tsx                       # Entry point
-│   ├── index.css                      # Tailwind import + design tokens
-│   ├── contexts/
-│   │   └── ThemeContext.tsx           # Light/dark theme system
+│   ├── App.tsx                        # Auth context, lazy-loaded routes, GA4 OAuth sign_up
+│   ├── main.tsx                       # Entry point + initGA4 + initClarity
 │   ├── lib/
-│   │   └── supabase.ts               # Supabase client, Profile type, auth/credit helpers
+│   │   ├── ga4.ts                     # trackEvent / trackPageView, env-gated, DNT-aware
+│   │   ├── clarity.ts                 # Microsoft Clarity loader
+│   │   ├── supabase.ts                # Supabase client, Profile type, signUp/signIn helpers
+│   │   └── (other small libs)
 │   ├── services/
-│   │   └── api.ts                     # All API calls with auth token injection (~206 lines)
+│   │   └── api.ts                     # All API calls with auth token injection
 │   └── components/
-│       ├── Dashboard.tsx              # Main workspace (upload, results, credits) (~754 lines)
-│       ├── LandingPage.tsx            # Landing page (~996 lines)
-│       ├── AIInterviewSession.tsx     # Live AI mock interview session
-│       ├── InterviewPrep.tsx          # Flashcard UI
-│       ├── Account.tsx                # User account + subscription management
+│       ├── Dashboard.tsx              # Main workspace — fires prep_pack_run/_failed/purchase/plan_upgrade
+│       ├── LandingPage.tsx            # Landing — Three.js dot globe (currently eager, mobile-perf TODO)
+│       ├── AnalysisHistory            # Past prep packs from analyses table (inside Dashboard.tsx)
+│       ├── AIInterviewSession.tsx     # AI mock interview
+│       ├── Account.tsx                # Profile + billing + subscription_canceled GA4 + TEST-mode banner
 │       ├── Pricing.tsx                # Pricing page with Stripe checkout
-│       ├── Login.tsx                  # Login form (email + Google OAuth)
-│       ├── Register.tsx               # Registration form
-│       ├── ForgotPassword.tsx         # Password reset request
-│       ├── ResetPassword.tsx          # Password reset form
-│       └── (legal pages, cookie consent, waitlist, demo)
-├── HANDOFF.md                         # What works, what's broken, env vars, deployment
-├── WALLET-SPEC.md                     # Token wallet rewrite specification
-├── FILE-MAP.md                        # Every file mapped with purpose
-├── AGENT-PROMPT.md                    # Starter prompt for new agents
-├── vercel.json                        # Vercel routing config
-├── vite.config.ts
+│       ├── Register.tsx               # Email signup — fires GA4 sign_up
+│       ├── Login.tsx / ForgotPassword.tsx / ResetPassword.tsx
+│       └── (60+ blog/tool/SEO surfaces — all React.lazy in App.tsx)
+├── architecture-map.html              # interactive visual system map (open in browser)
+├── SESSION-2026-05-15-PART-2.md       # latest session ledger ← read first
+├── SESSION-2026-05-15-COMPLETE.md     # rebrand ledger
+├── PROJECT-INDEX.md                   # canonical 22-section inventory
+├── HANDOFF.md                         # original handoff
+├── WALLET-SPEC.md                     # wallet status: COMPLETE
+├── audit-report.md                    # Codex 2026-05-14 audit (all findings shipped)
+├── vercel.json                        # routes + headers + rewrites
 └── package.json
 ```
 
 ---
 
-## Theme System (`ThemeContext.tsx`)
+## API Functions (Vercel — 11/12 used)
 
-The app has full light/dark mode support via React Context.
+| File | Multiplexer? | Purpose |
+|---|---|---|
+| `api/analyze/index.ts` | no | Main job analysis (1 token) |
+| `api/admin/[action].ts` | yes | Admin dashboard reads (gated by ADMIN_EMAILS) |
+| `api/interview/[action].ts` | yes | questions / evaluate / jobsearch |
+| `api/rewrite-tone/index.ts` | no | Cover letter tone switch (1 token) |
+| `api/roast/index.ts` | no | Public free tool with 7-layer abuse defense |
+| `api/decode-rejection/index.ts` | no | Public free tool |
+| `api/ghost-job-check/index.ts` | no | Public free tool |
+| `api/[publicTool].ts` | yes | Catch-all for other public tools |
+| `api/stripe/[action].ts` | yes | checkout / sync / portal |
+| `api/stripe/webhook.ts` | no | Stripe event handler |
+| `api/user/index.ts` | yes | credits / analyses / cv-summary |
+| `api/waitlist/index.ts` | no | Waitlist join/count |
 
-```typescript
-// Usage in any component:
-const { theme, setTheme, t } = useTheme();
-// t.glass, t.text, t.textSub, t.textMuted, t.pageBg, t.nav, etc.
-```
-
-**ThemeStyles interface fields:**
-- `pageBg` — CSS gradient string (use as `style={{ background: t.pageBg }}`)
-- `glass` — Tailwind classes for glassmorphic card
-- `glassHeader` — card header row classes
-- `nav` — navbar bg classes
-- `text` — primary text color class
-- `textSub` — secondary text color class
-- `textMuted` — muted text color class
-- `cardInner` — nested inner card bg
-- `uploadZone` — file drop zone bg
-- `selectorItem` — selector pill bg
-- `footer` — footer bg
-- `overlayBg` — modal overlay CSS value (use inline style)
-- `inputBorder` — border class for inputs
-- `divider` — divider line class
-- `blobColors` — array of 3 hex colors for background blobs
-
-**localStorage key:** `'vantage-theme'`
-
-**Theme picker:** Shows on first load (when no localStorage key). Sun/moon slider. Sets theme and dismisses.
-
-**Theme toggle button:** In the nav bar, toggles between light and dark at any time.
+⚠️ **Do not add new top-level functions without retiring one.** Vercel Hobby plan caps at 12. Use multiplexers (`[action].ts` pattern) for related endpoints.
 
 ---
 
-## App.tsx — Key Architecture
+## Environment Variables (current Vercel state, 2026-05-15)
 
-### State (ToolWorkspace)
-```typescript
-// Upload state
-cvFile: File | null
-jobUrl: string
-jobDescFile: File | null
-includeFitScore: boolean
+### Server (Sensitive type, Production + Preview)
+- `STRIPE_SECRET_KEY` (`sk_live_*`)
+- `STRIPE_WEBHOOK_SECRET`
+- `STRIPE_PRICE_STARTER`, `STRIPE_PRICE_PRO`, `STRIPE_PRICE_PREMIUM` (GBP)
+- `STRIPE_PRICE_STARTER_USD`, `STRIPE_PRICE_PRO_USD`, `STRIPE_PRICE_PREMIUM_USD`
+- `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`
+- `GEMINI_API_KEY`
+- `RESEND_API_KEY`
+- `ADZUNA_APP_ID`, `ADZUNA_APP_KEY` (AI Job Search)
+- `ADMIN_EMAILS` (comma-split admin gate)
+- `APP_URL` (canonical origin)
 
-// Results state
-results: JobIntelligence | null
-isLoading: boolean
-error: string | null
-currentView: 'plan' | 'workspace' | 'results'
+### Server (Plain, feature flags)
+- `ROAST_RATELIMIT_ENABLED`, `ROAST_DISABLED`
 
-// Cover letter
-tone: 'Formal' | 'Warm' | 'Direct' | 'Creative'
-displayLetter: string
-isRegenerating: boolean
-toneCache: Map<string, string>  // (ref, not state)
+### Client (Plain — VITE_* bundles into browser JS, intentionally public)
+- `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`
+- `VITE_GA_MEASUREMENT_ID` (= `G-FMW9BX278N`)
+- `VITE_CLARITY_PROJECT_ID`
+- `VITE_STRIPE_MODE` (= `live` — gates the operator-only TEST-mode banner)
 
-// Modals
-showUpgradeModal: boolean
-showInterviewModal: boolean
-```
-
-### Components in App.tsx
-- `ThemePicker` — First-load modal (sun/moon slider)
-- `ThemeToggle` — Nav bar toggle button
-- `PlanPicker` — Plan selection (Free / Pro / Enterprise)
-- `UpgradeModal` — Pro upgrade prompt (test mode bypass available)
-- `ToolWorkspace` — Main upload form
-- `UploadZone` — File drop zone
-- `OutputSelector` — Checkboxes for what to generate
-- `ProcessingView` — Loading state while AI runs
-- `ResultsView` — Full results dashboard
-- `CompanyIntelligenceCard` — Company snapshot card
-- `RoleMatchCard` — CV fit score and match points
-- `StrategicBriefCard` — Strategic brief sections
-- `CoverLetterCard` — Cover letter with tone switcher
-- `LockedFeatureTeaser` — Pro feature lock with upgrade CTA
-- `PresentationDeckCard` — Presentation outline
-- `FitScoreCard` — Visual fit score gauge
-- `DownloadBtn` — Download results as text
-- `AIInterviewModal` — Mock interview session wrapper
+### Local dev
+- Use `.env.local` (already `.gitignore`d). Vercel's "Development" env cannot hold Sensitive vars, so server keys go in `.env.local` if you actually run server code locally. Normal `npm run dev` workflow does NOT need them — the frontend hits production API.
 
 ---
 
-## AI Service (`services/ai.ts`)
+## Database (schema.sql is canonical)
 
-### Main Function
-```typescript
-generateJobIntelligence(
-  cvFile: File,
-  jobUrl: string,
-  jobDescFile?: File,
-  includeFitScore?: boolean
-): Promise<JobIntelligence>
-```
+Tables: `profiles`, `analyses`, `waitlist`, `api_usage`, `processed_stripe_events`, `seen_job_searches`. Optional: `roast_rate_limit` + `roast_abuse_log`, `webmentions`.
 
-### Key Interfaces
-```typescript
-interface CompanySnapshot {
-  name?: string;
-  industry?: string;
-  founded?: string;
-  size?: string;
-  mission: string;
-  cultureSignals: string[];
-  recentHighlights: string[];
-}
+Atomic RPCs (SECURITY DEFINER, service_role only):
+- `deduct_tokens(p_user_id, p_amount)` — raises 'Insufficient tokens' if balance too low
+- `add_tokens(p_user_id, p_amount)` — raises if amount > 1000
 
-interface JobIntelligence {
-  companySnapshot: CompanySnapshot;
-  briefSections: BriefSections;
-  keyRequirements: string[];
-  cvMatchPoints: string[];
-  strategicBrief: string;
-  coverLetter: string;
-  presentation: string[];
-  fitScore?: number;
-}
-```
+Trigger `on_auth_user_created` → `handle_new_user()` grants 10 tokens on signup.
 
-### Gemini Constraint — CRITICAL
-`googleSearch` tool and `responseMimeType: 'application/json'` are **mutually exclusive**.
-
-The `useSearch` flag handles this:
-- When `jobUrl` provided → uses `tools: [{ googleSearch: {} }]` only (JSON shape embedded in prompt text)
-- When no URL → uses `responseMimeType: 'application/json'` only
-
-**Never combine both in the same request.**
-
-### Cover Letter Tone Rewriting
-```typescript
-rewriteCoverLetterTone(letter: string, tone: string): Promise<string>
-```
-Returns rewritten letter in specified tone. Called when user clicks tone buttons. Results cached in a `Map` ref.
-
-### Citation Stripping
-```typescript
-stripCitations(text: string): string
-// Removes: [CV, cite: 6], [cite: N], [1], etc.
-```
-Applied to all cover letter output (Gemini grounding artifacts).
+REVOKE UPDATE on sensitive columns from authenticated + anon: `plan`, `token_balance`, `stripe_customer_id`, `stripe_subscription_id`, `subscription_status`, `last_free_jobsearch_at`, `cv_summary`. Service role bypasses RLS.
 
 ---
 
-## Landing Page (`LandingPage.tsx`)
+## GA4 Event Catalog
 
-### Sections (top to bottom)
-1. **Navbar** — Logo, nav links, Get Started CTA, theme toggle
-2. **Hero** — Headline, subtext, CTA buttons, 3D dot globe (Three.js)
-3. **Stats bar** — 3 key metrics
-4. **Story Cards** — 4 alternating glassmorphic cards (scroll-in from left/right)
-5. **How It Works** — 3-step horizontal flow
-6. **Features Grid** — 6 feature cards
-7. **Testimonials** — 3 glassmorphic quote cards
-8. **Pricing** — Free / Pro / Enterprise cards
-9. **FAQ** — Accordion
-10. **Footer** — Links + branding
+| Event | Fired by | Params |
+|---|---|---|
+| `page_view` | `App.tsx::ScrollToTop` (route change) | path, title |
+| `sign_up` (email) | `Register.tsx` after `signUp()` success | method='email' |
+| `sign_up` (oauth) | `App.tsx::onAuthStateChange` (60s recency + sessionStorage dedupe) | method='google'/etc |
+| `prep_pack_run` | `Dashboard.tsx` analyze success | has_job_url, mode |
+| `prep_pack_failed` | `Dashboard.tsx` failure branches | has_job_url, mode, reason |
+| `purchase` | `Dashboard.tsx` post-checkout poll | plan, upgrade_type, currency |
+| `plan_upgrade` | same as purchase, only on tier change | from_plan, to_plan |
+| `subscription_canceled` | `Account.tsx` on status flip | plan, reason |
 
-### HowItWorksModal
-Opened by "See How It Works" button. Dark glassmorphic modal showing the 6-step flow + 8 feature grid.
+---
 
-### 3D Globe
-`DotGlobe` component using Three.js fibonacci sphere + orbital rings. Speeds up on hover.
+## Transactional Email Catalog (Resend)
+
+| Email | Trigger | Tag |
+|---|---|---|
+| Purchase confirmation | `api/stripe/webhook.ts` checkout.session.completed (topup + subscription) | `purchase_confirm` |
+| Low-balance warning | `api/analyze/index.ts` after deduct, when crossing ≥3 → <3 tokens | `low_balance` |
+| Refund confirmation | `api/stripe/webhook.ts` charge.refunded (after token deduct) | `refund_processed` |
+| Supabase Auth (signup confirm, magic link, recovery, change, invite) | Supabase Auth uses Resend as SMTP relay | n/a |
+
+Helper: `lib/email/resend.ts`. `sendEmail({to, subject, html, tag?})` is fail-soft (never throws). `wrapEmailBody(headline, innerHtml)` provides the branded shell — **callers MUST escape user-supplied substrings** in innerHtml.
 
 ---
 
@@ -274,47 +248,49 @@ bg-[#181530]/75 backdrop-blur-xl border border-white/[0.07] shadow-[0_8px_32px_r
 Tailwind v4 does NOT reliably apply `preserve-3d` and `backface-hidden` classes.
 **Always use inline styles for 3D CSS:**
 ```tsx
-style={{ transformStyle: 'preserve-3d' }}        // NOT className="preserve-3d"
-style={{ backfaceVisibility: 'hidden' }}          // NOT className="backface-hidden"
-style={{ perspective: '1200px' }}                 // NOT className="perspective-1000"
+style={{ transformStyle: 'preserve-3d' }}
+style={{ backfaceVisibility: 'hidden' }}
+style={{ perspective: '1200px' }}
 ```
 
 ---
 
-## Environment Variables
+## Gemini Constraint — CRITICAL
 
-See `HANDOFF.md` for the full list. Key vars:
-```
-# Supabase
-VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY
+`googleSearch` tool and `responseMimeType: 'application/json'` are **mutually exclusive** in the same request.
 
-# Gemini
-VITE_GEMINI_API_KEY, GEMINI_API_KEY
+Pattern used throughout `api/analyze` and similar handlers:
+- When `jobUrl` provided → `tools: [{ googleSearch: {} }]` only (JSON shape embedded in prompt text)
+- When no URL → `responseMimeType: 'application/json'` only
 
-# Stripe
-VITE_STRIPE_PUBLISHABLE_KEY, STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET
-STRIPE_PRICE_STARTER, STRIPE_PRICE_PRO, STRIPE_PRICE_PREMIUM
-```
+**Never combine both.** Every new endpoint touching Gemini must observe this rule.
 
 ---
 
-## What's NOT Built Yet
+## What's NOT Built Yet (current backlog)
 
-- **Token wallet rewrite** — See `WALLET-SPEC.md` (CRITICAL, current credit system is broken)
-- **Results persistence** — `analyses` table exists but not wired up to UI
-- **Email** — No onboarding or transactional emails
-- **Analytics** — No tracking
-- **Mobile optimization** — Needs a pass
-- **Email** — No email capture or comms
+- **Mobile performance pass** — Lighthouse Mobile 62/100, LCP 5.8s. Plan: dynamic-import Three.js, WebP images, LCP preload. Chip spawned 2026-05-15.
+- **Day-1 / Day-3 onboarding email sequence** — needs Vercel cron + idempotency. Day-0 already covered via Supabase Auth confirmation through Resend SMTP.
+- **CSP `unsafe-inline` removal** (Codex MED-01) — would require nonce/hash for inline JSON-LD. Risky to do without verifying SEO impact.
+- **Admin/CRM dashboard** — `api/admin` exists but no UI surface for it.
+- **Stripe `value`/`amount` in GA4 `purchase`** — need server to plumb amount through `success_url` query. Chip spawned.
+- **`rewrite-tone` + `interview` low-balance email instrumentation** — only `analyze` is instrumented; trivially extensible.
+- **Token transaction audit table** — wallet today is balance-only. A `token_transactions(user_id, delta, source, ref_id, created_at)` table would help with refund disputes.
+
+### NOT to do
+- Don't fake testimonials or ratings (see `dist/blog/i-shipped-fake-review-schema-then-caught-myself`)
+- Don't add `AggregateRating` JSON-LD without real ratings
+- Don't expose `GEMINI_API_KEY` client-side
+- Don't switch back to TEST mode without coordinating env var changes everywhere
 
 ---
 
 ## Dev Commands
 
 ```bash
-npm run dev          # Start dev server on http://localhost:3000
-npm run build        # Production build
-npx tsc --noEmit     # TypeScript check (must be clean before any PR)
+npm run dev          # Local dev on http://localhost:3000 (reads .env.local)
+npm run build        # Production build (will show chunk-size warnings — see mobile-perf TODO)
+npx tsc --noEmit     # TypeScript check — MUST be clean before any commit
 ```
 
 ---
@@ -322,6 +298,10 @@ npx tsc --noEmit     # TypeScript check (must be clean before any PR)
 ## Known Issues / Watch Out For
 
 1. Avira antivirus may block `@react-three/drei` downloads — whitelist if needed
-2. The `public/frames/` directory exists with 49 WebP frames (from Compass Video.mp4 at 12fps) — currently unused since the scroll video section was replaced with static cards
-3. The `useScroll` and `useTransform` imports from `motion/react` may show as unused — safe to ignore, used in some components
+2. `public/frames/` directory has 49 WebP frames from an old Compass Video — currently unused since the scroll video section was replaced with static cards. Safe to delete if disk space is needed.
+3. `useScroll` and `useTransform` imports from `motion/react` may show as unused — safe to ignore, used in some components
 4. Always run `npx tsc --noEmit` after edits and fix all errors before considering work done
+5. **Vercel Hobby plan: 12 serverless functions max.** Don't add a new function without retiring one. Use multiplexers.
+6. **Stripe is LIVE.** Mistakes here charge real customers' real cards. Test refund/checkout logic in a separate Stripe **test mode account** (separate API key) before pushing changes.
+7. **Resend free plan: 100 emails/day, 3K/month, 1 verified domain.** Don't write loops that send emails per user without rate-limiting.
+8. The `VITE_STRIPE_PUBLISHABLE_KEY` env var exists but is **dead weight** — the app does server-redirect checkout, not Stripe.js client-side. Safe to delete from Vercel.
