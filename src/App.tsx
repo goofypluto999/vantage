@@ -208,6 +208,34 @@ function AppContent() {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (session?.user) {
         setUser(session.user);
+        // GA4 funnel — sign_up for OAuth/non-email providers. Register.tsx
+        // already fires sign_up on the email path; here we cover Google
+        // (and any future provider) which hits SIGNED_IN after a redirect
+        // round-trip. Heuristic: user.created_at within last 60s + not
+        // already fired this session for this user.
+        // INITIAL_SESSION fires on page reload for existing sessions —
+        // gated by the recency check so it won't false-positive.
+        if (event === 'SIGNED_IN') {
+          try {
+            const createdAt = session.user.created_at;
+            const ageMs = createdAt ? Date.now() - new Date(createdAt).getTime() : Infinity;
+            const provider = session.user.app_metadata?.provider as string | undefined;
+            // Skip 'email' — Register.tsx is the canonical fire point for that
+            // path so we never double-count. Email confirmation click also
+            // emits SIGNED_IN but the dedupe key blocks the second fire.
+            if (ageMs < 60_000 && provider && provider !== 'email' && typeof sessionStorage !== 'undefined') {
+              const dedupeKey = `av_signup_fired_${session.user.id}`;
+              if (!sessionStorage.getItem(dedupeKey)) {
+                void import('./lib/ga4').then(({ trackEvent }) => {
+                  trackEvent('sign_up', { method: provider });
+                }).catch(() => { /* analytics never blocks auth */ });
+                sessionStorage.setItem(dedupeKey, '1');
+              }
+            }
+          } catch {
+            // analytics never blocks auth
+          }
+        }
       } else if (event === 'SIGNED_OUT' || (event === 'INITIAL_SESSION' && !session)) {
         setUser(null);
         setProfile(null);
