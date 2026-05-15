@@ -796,10 +796,37 @@ export default function Dashboard() {
       } else {
         setError(result.error || 'Analysis failed');
         setStep('input');
+        // GA4 funnel — counter to prep_pack_run. Tracks soft failures
+        // (server returned success:false with a known error). Mirrors
+        // prep_pack_run param schema so success-rate joins are trivial.
+        // reason='returned_error' distinguishes API-level failures from
+        // thrown exceptions (caught below).
+        const hasJobUrl = jobUrl.trim().length > 0;
+        const sourceMode: 'url' | 'text' | 'file' = hasJobUrl ? 'url' : jdMode;
+        void import('../lib/ga4').then(({ trackEvent }) => {
+          trackEvent('prep_pack_failed', {
+            has_job_url: hasJobUrl,
+            mode: sourceMode,
+            reason: 'returned_error',
+          });
+        }).catch(() => { /* analytics must never break the error path */ });
       }
     } catch (err: any) {
       setError(err.message || 'Something went wrong');
       setStep('input');
+      // GA4 funnel — hard failure (network drop, mammoth parse explosion,
+      // unhandled exception). Distinct from 'returned_error' so dashboards
+      // can split infra failures from API failures. No err.message in
+      // params — could contain stack frames or user-supplied content.
+      const hasJobUrl = jobUrl.trim().length > 0;
+      const sourceMode: 'url' | 'text' | 'file' = hasJobUrl ? 'url' : jdMode;
+      void import('../lib/ga4').then(({ trackEvent }) => {
+        trackEvent('prep_pack_failed', {
+          has_job_url: hasJobUrl,
+          mode: sourceMode,
+          reason: 'threw',
+        });
+      }).catch(() => { /* analytics must never break the error path */ });
     }
   };
 
