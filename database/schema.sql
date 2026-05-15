@@ -339,6 +339,49 @@ CREATE TRIGGER profiles_updated_at
 -- -- Create the RPC functions (copy from above)
 
 -- ============================================================================
+-- AUDIT LOG
+-- ============================================================================
+-- Fire-and-forget event log for sensitive actions. Writes never throw —
+-- the helper (lib/audit/log.ts) swallows failures so an audit-write outage
+-- can't fail a payment, deduct, or login flow.
+--
+-- Event types use dotted namespace: `auth.password_changed`,
+-- `purchase.completed`, `purchase.refunded`, `token.deducted`,
+-- `admin.action`, etc. Keep them grep-friendly.
+--
+-- `detail` is a short human-readable summary safe to show in a future
+-- admin dashboard. `metadata` is a JSONB blob for structured fields
+-- (stripe_event_id, charge_id, plan, amount, currency, ...).
+--
+-- IP address is stored as text so future regional analytics work; we
+-- already hash IPs at the rate-limiter layer, so this is a different
+-- privacy choice (operator audit trail vs. abuse defense).
+--
+-- Service-role only. Authenticated users can NEVER read or write.
+
+CREATE TABLE IF NOT EXISTS audit_log (
+  id BIGSERIAL PRIMARY KEY,
+  event_type TEXT NOT NULL,
+  actor_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
+  actor_email TEXT,
+  ip_address TEXT,
+  user_agent TEXT,
+  resource_type TEXT,
+  resource_id TEXT,
+  detail TEXT,
+  metadata JSONB,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_audit_log_event_type ON audit_log(event_type);
+CREATE INDEX IF NOT EXISTS idx_audit_log_actor_id ON audit_log(actor_id) WHERE actor_id IS NOT NULL;
+CREATE INDEX IF NOT EXISTS idx_audit_log_created_at ON audit_log(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_audit_log_resource ON audit_log(resource_type, resource_id) WHERE resource_type IS NOT NULL;
+
+ALTER TABLE audit_log ENABLE ROW LEVEL SECURITY;
+-- No policies → service_role only (service_role bypasses RLS).
+
+-- ============================================================================
 -- PROCESSED STRIPE EVENTS (webhook idempotency)
 -- ============================================================================
 -- Prevents double-processing of the same Stripe event (e.g. network retries,

@@ -3,6 +3,7 @@
 
 import Stripe from 'stripe';
 import { sendEmail, wrapEmailBody } from '../../lib/email/resend';
+import { logAuditEvent } from '../../lib/audit/log';
 
 // Disable Vercel's default body parser — Stripe webhook signature
 // verification requires the raw request body, not a parsed JSON object.
@@ -305,6 +306,22 @@ export default async function handler(request: any, response: any) {
             tokenCount: topupTokens,
             isTopup: true,
           });
+          // Audit trail — fire-and-forget, never blocks webhook 200.
+          void logAuditEvent({
+            event_type: 'purchase.completed',
+            actor_id: userId,
+            actor_email: session.customer_details?.email || null,
+            resource_type: 'stripe_session',
+            resource_id: session.id,
+            detail: `Top-up: +${topupTokens} tokens (Starter)`,
+            metadata: {
+              stripe_event_id: event.id,
+              type: 'topup',
+              tokens_added: topupTokens,
+              amount_total: session.amount_total,
+              currency: session.currency,
+            },
+          });
           break;
         }
 
@@ -367,6 +384,24 @@ export default async function handler(request: any, response: any) {
           tokenCount: tokensToAdd,
           isTopup: false,
           renewsAt,
+        });
+        // Audit trail for subscription checkout
+        void logAuditEvent({
+          event_type: 'purchase.completed',
+          actor_id: userId,
+          actor_email: session.customer_details?.email || null,
+          resource_type: 'stripe_subscription',
+          resource_id: newSubscriptionId,
+          detail: `Subscription: ${plan} (+${tokensToAdd} tokens)`,
+          metadata: {
+            stripe_event_id: event.id,
+            type: 'subscription',
+            plan,
+            tokens_added: tokensToAdd,
+            amount_total: session.amount_total,
+            currency: session.currency,
+            renews_at: renewsAt,
+          },
         });
         break;
       }
@@ -782,6 +817,27 @@ export default async function handler(request: any, response: any) {
             (charge.billing_details?.email as string | undefined) ||
             (charge.receipt_email as string | undefined) ||
             '';
+          // Audit trail for refund — single most-important paper trail for
+          // dispute response. Always fires regardless of email path success.
+          void logAuditEvent({
+            event_type: 'purchase.refunded',
+            actor_id: profile.id,
+            actor_email: buyerEmail || null,
+            resource_type: 'stripe_charge',
+            resource_id: charge.id,
+            detail: `${refundRatio >= 1 ? 'Full' : 'Partial'} refund: ${charge.currency?.toUpperCase()} ${charge.amount_refunded} (deducted ${Math.min(tokensToDeduct, profile.token_balance)} tokens)`,
+            metadata: {
+              stripe_event_id: event.id,
+              charge_amount: charge.amount,
+              amount_refunded: charge.amount_refunded,
+              refund_ratio: Number(refundRatio.toFixed(4)),
+              currency: charge.currency,
+              tokens_deducted: Math.min(tokensToDeduct, profile.token_balance),
+              tokens_to_deduct_calculated: tokensToDeduct,
+              is_subscription_charge: isSubscriptionCharge,
+            },
+          });
+
           if (buyerEmail) {
             const ZERO_DECIMAL = new Set(['bif','clp','djf','gnf','jpy','kmf','krw','mga','pyg','rwf','ugx','vnd','vuv','xaf','xof','xpf']);
             const currencyKey = (charge.currency || 'gbp').toLowerCase();
