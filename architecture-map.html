@@ -1,0 +1,1058 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>AimVantage · Architecture Map</title>
+<style>
+  :root{
+    --bg:#0F0F0F; --panel:#161616; --panel-2:#1c1c1c; --border:#2a2a2a;
+    --text:#e8e8e8; --muted:#8a8a8a;
+    --client:#4ea1ff; --route:#7bd389; --service:#c792ea;
+    --db:#ffb86b; --external:#ff6b9d; --critical:#ff3860;
+    --accent:#f5b942; --accent-2:#ff7a45;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;background:var(--bg);color:var(--text);
+    font:14px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    overflow:hidden;
+  }
+  header{
+    position:fixed;top:0;left:0;right:0;z-index:10;
+    background:linear-gradient(180deg,rgba(15,15,15,.95) 60%,transparent);
+    padding:14px 22px 18px;border-bottom:1px solid var(--border);
+  }
+  header h1{margin:0 0 4px;font-size:15px;font-weight:700;letter-spacing:.2px}
+  header h1 .sub{color:var(--muted);font-weight:500;margin-left:8px;font-size:13px}
+  .chips{margin-top:10px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+  .chip{
+    background:var(--panel);color:var(--text);border:1px solid var(--border);
+    padding:5px 11px;border-radius:999px;font-size:12px;cursor:pointer;user-select:none;
+    transition:background .12s,border-color .12s,color .12s;
+  }
+  .chip:hover{border-color:#3a3a3a}
+  .chip.active{background:var(--accent);color:#0F0F0F;border-color:var(--accent);font-weight:600}
+  .legend{display:flex;gap:14px;margin-left:16px;align-items:center;color:var(--muted);font-size:12px}
+  .legend .swatch{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:middle}
+
+  #canvas{position:absolute;top:90px;left:0;right:360px;bottom:0;background:var(--bg);overflow:hidden;cursor:grab}
+  #canvas.grabbing{cursor:grabbing}
+  #svg{width:100%;height:100%;display:block;user-select:none}
+  .controls{position:absolute;left:18px;bottom:18px;display:flex;gap:6px;z-index:5}
+  .controls button{
+    background:var(--panel);border:1px solid var(--border);color:var(--text);
+    width:32px;height:32px;border-radius:6px;cursor:pointer;font-size:14px;
+  }
+  .controls button:hover{border-color:#3a3a3a}
+
+  .cluster-rect{fill-opacity:.32;stroke-width:1;stroke-dasharray:3 4}
+  .cluster-label{font-size:12px;font-weight:700;fill:var(--muted);letter-spacing:1.2px;text-transform:uppercase}
+  .node-rect{
+    fill:var(--panel-2);stroke-width:1.5;rx:6;ry:6;cursor:pointer;
+    transition:fill .15s,stroke-width .15s,filter .15s;
+  }
+  .node-rect.critical{stroke-width:2.2}
+  .node-rect.selected,.node-rect.hovered{fill:#23232f;filter:drop-shadow(0 0 6px rgba(245,185,66,.35))}
+  .node-rect.dim{opacity:.18}
+  .node-label{font-size:12.5px;font-weight:700;fill:var(--text);pointer-events:none;dominant-baseline:hanging}
+  .node-sub{font-size:10.5px;fill:var(--muted);pointer-events:none;dominant-baseline:hanging}
+  .node-rect.dim ~ .node-label,.node-rect.dim ~ .node-sub{opacity:.25}
+  .edge{fill:none;stroke-width:1.4;opacity:.85;pointer-events:none}
+  .edge.dim{opacity:.08}
+  .edge-label{
+    font-size:10px;fill:var(--muted);pointer-events:none;
+    paint-order:stroke;stroke:var(--bg);stroke-width:3;
+  }
+  .edge-label.dim{opacity:.15}
+  .badge-fix circle{fill:#1b3b1f;stroke:#3fae5a;stroke-width:1}
+  .badge-bug circle{fill:#3b1b1b;stroke:#ff3860;stroke-width:1}
+  .badge text{font-size:9.5px;font-weight:700;fill:var(--text);text-anchor:middle;dominant-baseline:central;pointer-events:none}
+
+  #sidebar{
+    position:fixed;top:0;right:0;bottom:0;width:360px;
+    background:var(--panel);border-left:1px solid var(--border);
+    padding:18px 18px 22px;overflow-y:auto;z-index:8;
+  }
+  #sidebar h2{margin:0 0 6px;font-size:14px;font-weight:700;letter-spacing:.2px}
+  #sidebar .ntag{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.9px}
+  #sidebar h3{margin:18px 0 6px;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+  #sidebar code{
+    background:#0d0d0d;border:1px solid var(--border);color:#e8e8e8;
+    padding:1px 5px;border-radius:3px;font-size:11.5px;
+  }
+  #sidebar .role{font-size:13.5px;line-height:1.5;color:#dadada;margin:4px 0 10px}
+  #sidebar .plain{font-size:13px;line-height:1.55;color:#c8c8c8}
+  #sidebar ul{margin:6px 0 0;padding-left:18px}
+  #sidebar li{margin:3px 0;color:#c8c8c8;font-size:12.5px;line-height:1.45}
+  #sidebar .edge-line{font-size:11.5px;color:#c8c8c8;margin:3px 0;display:flex;gap:6px}
+  #sidebar .edge-line .arrow{color:var(--muted)}
+  #sidebar .findings p{margin:6px 0;font-size:12.5px;color:#c8c8c8;line-height:1.55}
+  #sidebar .findings .h{color:var(--accent);font-weight:700}
+  #sidebar .bug,#sidebar .fix{
+    padding:6px 8px;border-radius:5px;margin:5px 0;font-size:12px;line-height:1.4;
+  }
+  #sidebar .bug{background:#2b1313;border-left:3px solid var(--critical);color:#ffd1d1}
+  #sidebar .fix{background:#13251a;border-left:3px solid #3fae5a;color:#d2f0d8}
+  #sidebar .sev{font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);font-weight:700;margin-right:6px}
+  .sev-high{color:#ff6b6b}.sev-med{color:#f5b942}.sev-low{color:#7bd389}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>AimVantage <span class="sub">· Architecture Map · 2026-05-15</span></h1>
+  <div class="chips" id="filterChips">
+    <span class="chip active" data-tag="overview">Overview</span>
+    <span class="chip" data-tag="critical">Critical path · prep pack</span>
+    <span class="chip" data-tag="auth">Auth</span>
+    <span class="chip" data-tag="payments">Payments + subscriptions</span>
+    <span class="chip" data-tag="email">Email + Resend</span>
+    <span class="chip" data-tag="freetools">Free tools</span>
+    <span class="chip" data-tag="analytics">Analytics</span>
+    <span class="chip" data-tag="roadmap">Roadmap & bugs</span>
+    <span class="chip" data-tag="all">Show all wires</span>
+    <span class="legend">
+      <span><span class="swatch" style="background:var(--critical)"></span>critical</span>
+      <span><span class="swatch" style="background:var(--accent-2)"></span>api</span>
+      <span><span class="swatch" style="background:var(--db)"></span>db</span>
+      <span><span class="swatch" style="background:var(--client)"></span>mount</span>
+      <span><span class="swatch" style="background:#555"></span>normal</span>
+    </span>
+  </div>
+</header>
+
+<div id="canvas">
+  <svg id="svg" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="ah-critical" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#ff3860"/></marker>
+      <marker id="ah-api"      viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#ff7a45"/></marker>
+      <marker id="ah-db"       viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#ffb86b"/></marker>
+      <marker id="ah-mount"    viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#4ea1ff"/></marker>
+      <marker id="ah-normal"   viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#777"/></marker>
+    </defs>
+    <g id="viewport"></g>
+  </svg>
+  <div class="controls">
+    <button id="zoomIn"  title="Zoom in">+</button>
+    <button id="zoomOut" title="Zoom out">−</button>
+    <button id="fit"     title="Fit">⤢</button>
+  </div>
+</div>
+
+<aside id="sidebar">
+  <div id="sidebar-content"></div>
+</aside>
+
+<script>
+/* ============================================================
+   CLUSTERS — 6 columns left-to-right.
+   ============================================================ */
+const clusters = [
+  { id: 'client',   label: 'Client entry',        x: 40,   y: 40,  w: 280, h: 700, color: 'var(--client)' },
+  { id: 'pages',    label: 'Pages',               x: 360,  y: 40,  w: 280, h: 1280, color: 'var(--route)' },
+  { id: 'services', label: 'Services · libs',     x: 680,  y: 40,  w: 280, h: 920, color: 'var(--service)' },
+  { id: 'server',   label: 'Server · API',        x: 1000, y: 40,  w: 320, h: 1280, color: 'var(--service)' },
+  { id: 'data',     label: 'Data · Supabase',     x: 1360, y: 40,  w: 260, h: 720, color: 'var(--db)' },
+  { id: 'external', label: 'External services',   x: 1660, y: 40,  w: 280, h: 1280, color: 'var(--external)' },
+];
+
+/* ============================================================
+   NODES
+   ============================================================ */
+const N = (id, cluster, label, sub, x, y, w, h, color, opts = {}) => ({
+  id, cluster, label, sub, x, y, w, h, color, ...opts
+});
+
+const nodes = [
+  /* ───────── CLIENT ───────── */
+  N('main', 'client', 'main.tsx', 'app bootstrap', 80, 90, 200, 60, 'var(--client)', {
+    role:  'React app entry — renders <HelmetProvider><App/><Analytics/></HelmetProvider> into #root.',
+    plain: 'The first file the browser runs. It wakes up the app, sets up SEO meta tags, and turns on tracking (Clarity + GA4) before any page is shown.',
+    path:  'src/main.tsx',
+    notes: [
+      'line:10 initClarity(VITE_CLARITY_PROJECT_ID) — env-gated',
+      'line:14 initGA4(VITE_GA_MEASUREMENT_ID) — env-gated',
+      'line:17 createRoot mounts <App/>',
+      'Vercel Analytics included via @vercel/analytics/react',
+    ],
+    tag: ['overview','analytics','all'],
+  }),
+  N('app', 'client', 'App.tsx', 'routes · auth context', 80, 170, 200, 60, 'var(--client)', {
+    role:  'BrowserRouter, AuthContext.Provider, ThemeProvider, CurrencyProvider, ~50 routes lazy-imported.',
+    plain: 'The page router. Decides which screen to show based on the URL, knows who is logged in, and tracks the user’s currency/theme.',
+    path:  'src/App.tsx',
+    notes: [
+      'line:238 <BrowserRouter>',
+      'line:264 <Routes> begins — ~50 routes',
+      'line:441 /login, line:445 /pricing, line:265 /',
+      'Critical routes (Landing, Auth, Dashboard, Pricing) eagerly imported; everything else lazy',
+    ],
+    tag: ['overview','auth','payments','all'],
+  }),
+  N('scrolltop', 'client', 'ScrollToTop', 'route change → GA4', 80, 250, 200, 60, 'var(--client)', {
+    role:  'Listens to react-router location changes. Scrolls to top + fires GA4 page_view.',
+    plain: 'Every time you navigate to a new page in the app, this resets the scroll position and tells Google Analytics about it.',
+    path:  'src/App.tsx:130',
+    notes: [
+      'line:131 useLocation()',
+      'line:144 lazy import("./lib/ga4").then(({trackPageView}) => …)',
+      'No-op if GA4 env var unset',
+    ],
+    tag: ['overview','analytics','all'],
+  }),
+  N('middleware', 'client', 'middleware.ts', 'Vercel Edge', 80, 330, 200, 60, 'var(--client)', {
+    role:  'Edge function: HTTP 404 for unknown SPA routes, per-IP rate limits, geo country cookie, /api/stripe/webhook signature passthrough.',
+    plain: 'The bouncer at the front door. Returns a real "404 not found" for fake URLs, throttles abusive callers, and remembers your country to default the currency.',
+    path:  'middleware.ts',
+    notes: [
+      'line:19 STATIC_ROUTES allowlist (~85 known SPA paths)',
+      'line:98 LIMITS table — /api/analyze 10/min, /api/roast 30/5min, etc.',
+      'line:118 geoCookieResponse writes vantage-geo cookie',
+      'line:170 prefers x-vercel-forwarded-for to defeat IP spoofing (Codex HIGH-02)',
+    ],
+    tag: ['overview','critical','freetools','auth','payments','all'],
+    critical: true,
+  }),
+
+  /* ───────── PAGES ───────── */
+  N('landing', 'pages', 'LandingPage.tsx', 'marketing /', 400, 90, 240, 60, 'var(--route)', {
+    role:  '/ marketing page — hero, story cards, how-it-works, features, testimonials, pricing, FAQ.',
+    plain: 'The homepage anyone hits when they Google AimVantage. Sells the product and pushes signups to /register.',
+    path:  'src/components/LandingPage.tsx',
+    notes: [
+      'line:205 AimVantage wordmark logo',
+      'line:489 "How AimVantage Works" H2',
+      'line:1809 disambiguation paragraph (competitor names preserved)',
+      'Three.js dot globe in hero',
+    ],
+    tag: ['overview','all'],
+  }),
+  N('dashboard', 'pages', 'Dashboard.tsx', 'CV upload + result · /dashboard', 400, 170, 240, 60, 'var(--route)', {
+    role:  'Main paid workspace: CV upload, job URL paste, results view, application tracker, AI job search.',
+    plain: 'The room where the magic happens. User drops their CV and a job link, hits run, and the prep pack appears here.',
+    path:  'src/components/Dashboard.tsx',
+    notes: [
+      'line:14 imports analyzeJob, rewriteTone, createStripeCheckout, syncSubscription',
+      'line:766 await analyzeJob(...) — THE SEAM',
+      'line:927 navbar AimVantage wordmark',
+      'ApplicationTracker uses localStorage, not Supabase yet',
+    ],
+    tag: ['overview','critical','all'],
+    critical: true,
+  }),
+  N('auth-screens', 'pages', 'Login/Register/Reset', '/login /register /forgot-password /reset-password', 400, 250, 240, 60, 'var(--route)', {
+    role:  'Four auth screens. All consume helpers from src/lib/supabase.ts and mapAuthError().',
+    plain: 'Sign-in, sign-up, "forgot my password" and "set new password" pages. All errors get translated into plain-English messages.',
+    path:  'src/components/Login.tsx · Register.tsx · ForgotPassword.tsx · ResetPassword.tsx',
+    notes: [
+      'Login wordmark line:52 each',
+      'Forgot/Reset wired to mapAuthError (commit 84bcfa3)',
+      'ResetPassword line:49 sentinel LINK_EXPIRED branch',
+      'Google OAuth uses Supabase default proxy (no custom consent screen)',
+    ],
+    tag: ['auth','overview','all'],
+  }),
+  N('pricing', 'pages', 'Pricing.tsx', '/pricing · 3 plan cards', 400, 330, 240, 60, 'var(--route)', {
+    role:  '/pricing page — Starter £5 / Pro £12 / Premium £20 cards, currency toggle, FAQ.',
+    plain: 'The plan picker. Click a plan, get sent to Stripe Checkout.',
+    path:  'src/components/Pricing.tsx',
+    notes: [
+      'line:148 AimVantage wordmark in nav',
+      'Calls createStripeCheckout(plan, currency)',
+      'Currency context determines GBP vs USD price ID',
+      'Diagnostic onramp link at /tools/no-interviews-diagnostic',
+    ],
+    tag: ['payments','overview','all'],
+  }),
+  N('account', 'pages', 'Account.tsx', '/account · settings + billing', 400, 410, 240, 60, 'var(--route)', {
+    role:  'User account page — current plan, token balance, password change, billing portal launch.',
+    plain: 'Profile + billing screen. Shows the user how many tokens they have left and lets them open Stripe to cancel.',
+    path:  'src/components/Account.tsx',
+    notes: [
+      'line:22 calls syncSubscription() on mount (used to silently cancel — Codex CRIT-01, since fixed)',
+      'line:138 wordmark',
+      'Password visibility toggle aria-label fixed (Codex MED-03)',
+    ],
+    tag: ['payments','auth','overview','all'],
+  }),
+  N('tools', 'pages', 'ToolsPage.tsx', '/tools · free tools hub', 400, 490, 240, 60, 'var(--route)', {
+    role:  '/tools hub linking to 20+ free no-signup tools.',
+    plain: 'The "try before you buy" page. Lists every free tool so visitors can sample the AI without creating an account.',
+    path:  'src/components/ToolsPage.tsx',
+    notes: [
+      '20+ tool routes catalogued',
+      'Most tools are pure client-side (deterministic, no AI cost)',
+      '3 use server AI: /roast, /decode-rejection, /ghost-job-check',
+    ],
+    tag: ['freetools','overview','all'],
+  }),
+  N('freetool-pages', 'pages', 'RoastPage + DecodeRejection + GhostJob', '3 AI-powered free tools', 400, 570, 240, 60, 'var(--route)', {
+    role:  '/roast, /decode-rejection, /ghost-job-check — each posts text to the matching API endpoint.',
+    plain: 'Three free AI tools: roast my cover letter, decode my rejection email, is this job listing real?',
+    path:  'src/components/RoastPage.tsx · DecodeRejectionPage.tsx · GhostJobCheckPage.tsx',
+    notes: [
+      'All three rate-limited by IP at the Edge',
+      'No login required',
+      'Each shares a viral-loop CTA: "share your result"',
+    ],
+    tag: ['freetools','overview','all'],
+  }),
+
+  /* ───────── SERVICES ───────── */
+  N('services-api', 'services', 'services/api.ts', 'browser → server bridge', 720, 90, 240, 60, 'var(--service)', {
+    role:  'Single client-side wrapper for ALL fetch calls to /api/*. Auto-injects Supabase JWT.',
+    plain: 'The pipe between the browser and the server. Knows which URLs to hit and adds the user’s login token automatically.',
+    path:  'src/services/api.ts',
+    notes: [
+      'line:106 analyzeJob() — THE SEAM (POST /api/analyze)',
+      'line:216 createStripeCheckout, line:231 createBillingPortal, line:245 syncSubscription',
+      'line:257 rewriteTone, line:273 generateInterviewQuestions',
+      'Every call passes Bearer ${session.access_token}',
+    ],
+    tag: ['overview','critical','payments','auth','all'],
+    critical: true,
+  }),
+  N('lib-supabase', 'services', 'lib/supabase.ts', 'client + auth helpers', 720, 170, 240, 60, 'var(--service)', {
+    role:  'Supabase client init, Profile type, signIn/signUp/signOut/Google OAuth/reset helpers, mapAuthError.',
+    plain: 'The library file that knows how to talk to Supabase: log users in, fetch their profile, translate raw errors into nice messages.',
+    path:  'src/lib/supabase.ts',
+    notes: [
+      'line:6 createClient(supabaseUrl, supabaseAnonKey)',
+      'line:11 Profile type — token_balance, plan, subscription_status, etc.',
+      'line:93 signInWithGoogle()',
+      'line:113 mapAuthError — covers 10+ Supabase error patterns',
+    ],
+    tag: ['auth','overview','all'],
+  }),
+  N('lib-ga4', 'services', 'lib/ga4.ts', 'GA4 loader · NEW 2026-05-15', 720, 250, 240, 60, 'var(--service)', {
+    role:  'gtag.js loader · trackPageView · trackEvent. Env-gated, DNT-aware, idempotent.',
+    plain: 'New analytics file added this session. Loads Google Analytics 4 once VITE_GA_MEASUREMENT_ID is set, then reports each page change.',
+    path:  'src/lib/ga4.ts',
+    notes: [
+      'line:42 initGA4(measurementId)',
+      'Validates G-XXXXXXXXXX format; warns + skips if malformed',
+      'Honours navigator.doNotTrack',
+      'anonymize_ip: true on initial config',
+    ],
+    tag: ['analytics','overview','all'],
+  }),
+  N('lib-clarity', 'services', 'lib/clarity.ts', 'Microsoft Clarity loader', 720, 330, 240, 60, 'var(--service)', {
+    role:  'Heatmap + session-replay loader. Env-gated, DNT-aware.',
+    plain: 'Loads Microsoft’s session-replay tool so we can watch (anonymised) recordings of how visitors use the site.',
+    path:  'src/lib/clarity.ts',
+    notes: [
+      'line:32 initClarity(projectId)',
+      'Form inputs masked by default',
+      'Idempotent — never injects twice',
+    ],
+    tag: ['analytics','overview','all'],
+  }),
+
+  /* ───────── SERVER ───────── */
+  N('api-analyze', 'server', 'api/analyze', 'POST /api/analyze · 60s', 1040, 90, 280, 60, 'var(--service)', {
+    role:  'Main prep-pack generator. Auth → token deduct → SSRF-safe URL fetch → Gemini → JSON-LD-stripped output.',
+    plain: 'The most important function. Takes the user’s CV + job URL, charges 1 token, scrapes the job page safely, asks Gemini for the prep pack, and returns it.',
+    path:  'api/analyze/index.ts',
+    notes: [
+      'line:102 isUrlSafe — SSRF defense incl. IPv6 brackets, IPv4-mapped, DNS resolution',
+      'line:335 RPC deduct_tokens(1)',
+      'line:540 Gemini call with googleSearch tool',
+      'line:467 stripCitations — removes [CV, cite: 6] artifacts',
+    ],
+    tag: ['critical','overview','all'],
+    critical: true,
+  }),
+  N('api-rewrite', 'server', 'api/rewrite-tone', 'POST · 1 token · 30s', 1040, 170, 280, 60, 'var(--service)', {
+    role:  'Re-renders existing cover letter in a different tone (Formal/Warm/Direct/Creative). Honest-refund pattern.',
+    plain: 'Rewrites the cover letter in a new tone of voice. If Gemini fails, refunds the token honestly — telling the user clearly if the refund itself failed.',
+    path:  'api/rewrite-tone/index.ts',
+    notes: [
+      'Codex HIGH-03 fix — refundTokens now returns boolean',
+      'Tone parameter allowlist enforced',
+      'Three-tier honest 500 message (not-charged / refunded-OK / refund-FAILED)',
+    ],
+    tag: ['critical','overview','all'],
+  }),
+  N('api-interview', 'server', 'api/interview/[action]', 'questions + evaluate', 1040, 250, 280, 60, 'var(--service)', {
+    role:  '?action=questions (2 tokens, Pro+) → generate · ?action=evaluate (free) → score live answer.',
+    plain: 'Mock-interview backend. Generates likely questions before the interview, then scores each answer the user speaks during practice.',
+    path:  'api/interview/[action].ts',
+    notes: [
+      'line:857 system prompt — "AimVantage mock vs generic ChatGPT" rule',
+      '60s timeout for question generation',
+      'evaluate is free so Pro users can iterate',
+    ],
+    tag: ['overview','all'],
+  }),
+  N('api-stripe', 'server', 'api/stripe/[action]', 'checkout · portal · sync', 1040, 330, 280, 60, 'var(--service)', {
+    role:  '?action=checkout → Stripe Checkout Session · ?action=portal → Billing Portal · ?action=sync → READ-ONLY DB sync.',
+    plain: 'Three Stripe-related actions in one file. Creates checkout pages, opens the cancel page, and re-syncs subscription state from Stripe if the webhook is late.',
+    path:  'api/stripe/[action].ts',
+    notes: [
+      'line:385 handler',
+      'Sync is READ-ONLY since Codex CRIT-01 — used to silently cancel active subs',
+      'PLAN_PRICES_GBP + PLAN_PRICES_USD env-var-driven',
+    ],
+    tag: ['payments','overview','all'],
+  }),
+  N('api-stripe-webhook', 'server', 'api/stripe/webhook', 'signed events', 1040, 410, 280, 60, 'var(--service)', {
+    role:  'Stripe → webhook receiver. Verifies signature, dedupes by event id, switches on event.type.',
+    plain: 'The mailbox where Stripe drops payment events. Verifies they’re real, then updates plan/tokens/status accordingly.',
+    path:  'api/stripe/webhook.ts',
+    notes: [
+      'line:152 handler · line:233 switch(event.type)',
+      'line:234 checkout.session.completed → add tokens',
+      'line:495 customer.subscription.created · line:537 .updated · line:703 .deleted',
+      'line:597 charge.refunded handled · line:434 charge.dispute.created',
+    ],
+    tag: ['payments','overview','all'],
+    critical: true,
+  }),
+  N('api-user', 'server', 'api/user', 'credits + analyses + cv-upload', 1040, 490, 280, 60, 'var(--service)', {
+    role:  'Consolidated user-data endpoint. Replaces /api/credits + /api/analyses to stay under Hobby plan 12-function cap.',
+    plain: 'One endpoint that does three jobs (read token balance, read past analyses, upload CV summary). Bundled together so Vercel doesn’t bill extra.',
+    path:  'api/user/index.ts',
+    notes: [
+      'line:239 endpoint=credits · line:243 endpoint=analyses · line:247 endpoint=cv-upload',
+      'Routed via vercel.json rewrites (preserves original client paths)',
+    ],
+    tag: ['overview','all'],
+  }),
+  N('api-roast', 'server', 'api/roast', 'IP rate-limit · 20s', 1040, 570, 280, 60, 'var(--service)', {
+    role:  'Free cover letter roast endpoint. IP rate-limit at edge (30 req / 5 min), Gemini call, returns structured roast.',
+    plain: 'The free cover letter savaging tool’s backend.',
+    path:  'api/roast/index.ts',
+    notes: [
+      'line:88 client-IP extraction — uses x-vercel-forwarded-for (Codex HIGH-02 fix)',
+      'ROAST_DISABLED env var = emergency kill switch',
+    ],
+    tag: ['freetools','overview','all'],
+  }),
+  N('api-decode', 'server', 'api/decode-rejection', 'IP rate-limit · 20s', 1040, 650, 280, 60, 'var(--service)', {
+    role:  'Free rejection-email decoder.',
+    plain: 'Free rejection-email decoder backend.',
+    path:  'api/decode-rejection/index.ts',
+    notes: ['Hardened JSON extraction with retry', 'Output sanitization', 'Graceful degraded 200 fallback for parse failures'],
+    tag: ['freetools','overview','all'],
+  }),
+  N('api-ghost', 'server', 'api/ghost-job-check', 'IP rate-limit · 20s', 1040, 730, 280, 60, 'var(--service)', {
+    role:  'Free ghost-job probability scorer.',
+    plain: 'Free "is this job real?" detector backend.',
+    path:  'api/ghost-job-check/index.ts',
+    notes: ['Pattern-matched signals + Gemini reasoning', 'Returns 0–100 probability + quoted tells'],
+    tag: ['freetools','overview','all'],
+  }),
+  N('api-admin', 'server', 'api/admin/[action]', 'ADMIN_EMAILS allowlist', 1040, 810, 280, 60, 'var(--service)', {
+    role:  'Admin-only endpoints. Reply-generator (Reddit/X/LinkedIn), audit reads, user mgmt.',
+    plain: 'Tools for the founder only. Drafts social replies that recommend AimVantage, reads admin stats.',
+    path:  'api/admin/[action].ts',
+    notes: [
+      'Auth: Supabase JWT + ADMIN_EMAILS env var allowlist',
+      'line:224 reply-generator prompt (updated to AimVantage)',
+    ],
+    tag: ['overview','all'],
+  }),
+
+  /* ───────── DATA ───────── */
+  N('tbl-profiles', 'data', 'profiles', 'user · plan · tokens · stripe IDs', 1400, 90, 220, 60, 'var(--db)', {
+    role:  'One row per user. Extends auth.users via FK = auth.users.id.',
+    plain: 'The user record. Stores who they are, what plan they’re on, how many tokens they have, and their Stripe customer ID.',
+    path:  'database/schema.sql:8',
+    notes: [
+      'Columns: id, email, plan, token_balance, stripe_customer_id, stripe_subscription_id, subscription_status, subscription_renews_at, subscription_cancel_at, cv_summary, last_free_jobsearch_at',
+      'RLS: user can SELECT/UPDATE own row only',
+      'Column-level REVOKE on plan, token_balance, stripe_*, subscription_status (service_role only)',
+      'CHECK constraint MUST include "cancelling" — webhook writes silently fail otherwise',
+    ],
+    tag: ['overview','critical','payments','auth','all'],
+    critical: true,
+  }),
+  N('tbl-analyses', 'data', 'analyses', 'past prep packs (JSONB)', 1400, 170, 220, 60, 'var(--db)', {
+    role:  'Saved prep-pack results per user. Payload is JSONB.',
+    plain: 'A history of every prep pack the user has run. Currently saved but NOT yet read back in the Dashboard UI.',
+    path:  'database/schema.sql:48',
+    notes: [
+      'Columns: id, user_id, payload (JSONB), created_at',
+      'RLS: user can SELECT/INSERT own rows only',
+      'DEAD-ish: written by api/analyze but Dashboard "view past analyses" UI not wired — see roadmap',
+    ],
+    tag: ['overview','all'],
+  }),
+  N('tbl-waitlist', 'data', 'waitlist', 'pre-signup emails', 1400, 250, 220, 60, 'var(--db)', {
+    role:  'Pre-launch / waitlist email captures.',
+    plain: 'Email-only signups from before the product opened to the public.',
+    path:  'database/schema.sql:71',
+    notes: ['Public INSERT allowed (rate-limited at edge)', 'No reads from client'],
+    tag: ['overview','all'],
+  }),
+  N('tbl-stripe-events', 'data', 'processed_stripe_events', 'webhook idempotency', 1400, 330, 220, 60, 'var(--db)', {
+    role:  'Stripe event_id dedupe table — prevents the same webhook event from being applied twice.',
+    plain: 'Keeps a log of Stripe event IDs we’ve already processed so we never double-charge tokens if Stripe retries.',
+    path:  'database/schema.sql:312',
+    notes: ['Insert-on-receive with UNIQUE constraint', 'Used by api/stripe/webhook for idempotency'],
+    tag: ['payments','overview','all'],
+  }),
+  N('rpc-deduct', 'data', 'RPC deduct_tokens', 'service_role only', 1400, 410, 220, 60, 'var(--db)', {
+    role:  'Atomic token decrement. Returns {ok, balance}. service_role EXECUTE only.',
+    plain: 'The only safe way to take a token away from a user. Server-only, atomic — no race conditions.',
+    path:  'database/schema.sql:146',
+    notes: [
+      'GRANT EXECUTE TO service_role only',
+      'REVOKE from authenticated/anon',
+      'Returns {ok: false} if insufficient balance',
+    ],
+    tag: ['critical','overview','all'],
+    critical: true,
+  }),
+  N('rpc-add', 'data', 'RPC add_tokens', 'service_role only', 1400, 490, 220, 60, 'var(--db)', {
+    role:  'Atomic token credit. Capped at 1000 per call. service_role EXECUTE only.',
+    plain: 'The only safe way to add tokens to a user. Used by checkout completion and refund handling.',
+    path:  'database/schema.sql:177',
+    notes: [
+      'Cap at 1000/call — input validation',
+      'GRANT EXECUTE TO service_role only',
+    ],
+    tag: ['payments','overview','all'],
+  }),
+
+  /* ───────── EXTERNAL ───────── */
+  N('ext-gemini', 'external', 'Google Gemini', 'models/gemini-2.5-flash', 1700, 90, 240, 60, 'var(--external)', {
+    role:  'LLM provider for prep packs, roasts, mock interview, JD decode, ghost-job scoring.',
+    plain: 'The AI brain. Generates the actual cover letter, interview questions, and most other AI text.',
+    path:  '@google/genai v1.29.0',
+    notes: [
+      'GEMINI_API_KEY env var (server-only)',
+      'CRITICAL: googleSearch tool and responseMimeType:json are MUTUALLY EXCLUSIVE',
+      'temperature: 0 for analyze, slight variance for tone rewrite',
+    ],
+    tag: ['critical','overview','freetools','all'],
+    critical: true,
+  }),
+  N('ext-stripe', 'external', 'Stripe', 'subscriptions + checkout', 1700, 170, 240, 60, 'var(--external)', {
+    role:  'Payment provider. 3 products: AimVantage Starter/Pro/Premium (renamed 2026-05-14).',
+    plain: 'Handles all the money. Customers pay through Stripe’s hosted checkout, and Stripe tells us when they pay/cancel.',
+    path:  'stripe SDK v17 · dashboard.stripe.com',
+    notes: [
+      'TEST mode currently in production — switch to LIVE is next priority',
+      'Product IDs: prod_UK7rZ8M8ARLfbB (Starter), prod_UK7r5uWulsk6Jc (Pro), prod_UK7rEa90B9zYe4 (Premium)',
+      'Customer Billing Portal enabled for self-serve cancel',
+    ],
+    tag: ['payments','overview','all'],
+  }),
+  N('ext-supabase-auth', 'external', 'Supabase Auth', 'sign-in · session · OAuth', 1700, 250, 240, 60, 'var(--external)', {
+    role:  'Email/password + Google OAuth + JWT issuer. Sends auth emails via custom SMTP (Resend).',
+    plain: 'The user account system. Stores passwords, issues login tokens, sends "confirm your email" messages.',
+    path:  'supabase.com/dashboard/project/wgbizaesqrweqzotzfhb',
+    notes: [
+      'Google OAuth uses Supabase’s default proxy (no custom Google Cloud app)',
+      'Custom SMTP via Resend: smtp.resend.com:465',
+      '5 email templates pasted into Auth → Emails',
+    ],
+    tag: ['auth','email','overview','all'],
+  }),
+  N('ext-resend', 'external', 'Resend', 'email · noreply@aimvantage.uk', 1700, 330, 240, 60, 'var(--external)', {
+    role:  'Email delivery for Supabase Auth. Free tier 100/day, custom domain aimvantage.uk verified.',
+    plain: 'Sends every account email (signup confirm, password reset, etc.) from a real AimVantage address instead of generic supabase.io.',
+    path:  'resend.com (adlixir.uk@gmail.com account)',
+    notes: [
+      'Domain UUID e5f5f427-758e-49cf-a2d2-d798ac45c2b3, region eu-west-1',
+      'DKIM ✓, SPF MX ✓, SPF TXT ✓, DMARC ✓',
+      'API key "AimVantage Supabase Auth" — Sending scope, aimvantage.uk only',
+      'NOT yet called from any server-side code — only via Supabase SMTP relay',
+    ],
+    tag: ['email','auth','overview','all'],
+  }),
+  N('ext-ga4', 'external', 'Google Analytics 4', 'G-FMW9BX278N', 1700, 410, 240, 60, 'var(--external)', {
+    role:  'Page-view + custom-event analytics. Stream ID 14885402585.',
+    plain: 'Counts visitors and tracks what they do. Set up this session.',
+    path:  'analytics.google.com (adlixir.uk@gmail.com)',
+    notes: [
+      'Measurement ID: G-FMW9BX278N',
+      'Configured 2026-05-15 — replaces removed Cybit GA4',
+      'Env var: VITE_GA_MEASUREMENT_ID',
+    ],
+    tag: ['analytics','overview','all'],
+  }),
+  N('ext-clarity', 'external', 'Microsoft Clarity', 'wmw4zvycgg', 1700, 490, 240, 60, 'var(--external)', {
+    role:  'Heatmaps + session replay.',
+    plain: 'Records (anonymised) replays of how users move their mouse and scroll.',
+    path:  'clarity.microsoft.com/projects/view/wmw4zvycgg',
+    notes: ['Project renamed to "AimVantage" 2026-05-15', 'Env var: VITE_CLARITY_PROJECT_ID'],
+    tag: ['analytics','overview','all'],
+  }),
+  N('ext-gsc', 'external', 'Google Search Console', 'Domain property', 1700, 570, 240, 60, 'var(--external)', {
+    role:  'Search-indexing dashboard. Domain property verified via DNS TXT.',
+    plain: 'Google’s view of which pages are indexed. We tell it which URLs to crawl via the sitemap.',
+    path:  'search.google.com/search-console (sc-domain:aimvantage.uk)',
+    notes: [
+      'Verified via DNS TXT at @: google-site-verification=mt9jxsCNb...',
+      'sitemap.xml submitted, 289 pages discovered',
+    ],
+    tag: ['analytics','overview','all'],
+  }),
+  N('ext-vercel', 'external', 'Vercel', 'hosting + edge + analytics', 1700, 650, 240, 60, 'var(--external)', {
+    role:  'Production hosting. SPA + 10 serverless functions + Edge middleware.',
+    plain: 'The cloud that serves the website. Also runs all server code and the rate-limit middleware.',
+    path:  'vercel.com/adlixirs-projects/aimvantage',
+    notes: [
+      'Hobby plan: 12 function cap — currently 10 used',
+      'Production domain: aimvantage.uk',
+      '~25 env vars catalogued in PROJECT-INDEX.md §4',
+    ],
+    tag: ['overview','all'],
+  }),
+  N('ext-jina', 'external', 'Jina · r.jina.ai', 'SSRF-safe URL fetch', 1700, 730, 240, 60, 'var(--external)', {
+    role:  'External readability proxy. Used by /api/analyze as scraping fallback.',
+    plain: 'A safer way to fetch a job page when the direct scrape fails (handles JS-rendered sites).',
+    path:  'r.jina.ai/<url>',
+    notes: ['Allowlisted in vercel.json CSP', 'Used only when direct fetch fails inside isUrlSafe-guarded flow'],
+    tag: ['critical','overview','all'],
+  }),
+  N('ext-adzuna', 'external', 'Adzuna API', 'AI Job Search', 1700, 810, 240, 60, 'var(--external)', {
+    role:  'Job listing data provider for AI Job Search (Dashboard section).',
+    plain: 'A directory of millions of UK + US job listings, used to populate the "find me jobs" search inside the dashboard.',
+    path:  'developer.adzuna.com',
+    notes: ['Env vars: ADZUNA_APP_ID, ADZUNA_APP_KEY', 'Cross-referenced with Remotive for fully remote roles'],
+    tag: ['overview','all'],
+  }),
+];
+
+/* ============================================================
+   EDGES
+   ============================================================ */
+const edges = [
+  /* — entry / mount — */
+  { from: 'main', to: 'app',           kind: 'mount', label: 'createRoot', tag: ['overview','all'] },
+  { from: 'main', to: 'lib-clarity',   kind: 'mount', label: 'initClarity', tag: ['analytics','all'] },
+  { from: 'main', to: 'lib-ga4',       kind: 'mount', label: 'initGA4', tag: ['analytics','all'] },
+  { from: 'app', to: 'scrolltop',      kind: 'mount', label: 'mount', tag: ['overview','all'] },
+  { from: 'app', to: 'landing',        kind: 'mount', label: '/', tag: ['overview','all'] },
+  { from: 'app', to: 'dashboard',      kind: 'mount', label: '/dashboard', tag: ['overview','critical','all'] },
+  { from: 'app', to: 'auth-screens',   kind: 'mount', label: '/login /register …', tag: ['auth','all'] },
+  { from: 'app', to: 'pricing',        kind: 'mount', label: '/pricing', tag: ['payments','all'] },
+  { from: 'app', to: 'account',        kind: 'mount', label: '/account', tag: ['payments','auth','all'] },
+  { from: 'app', to: 'tools',          kind: 'mount', label: '/tools', tag: ['freetools','all'] },
+  { from: 'app', to: 'freetool-pages', kind: 'mount', label: '/roast …', tag: ['freetools','all'] },
+  { from: 'middleware', to: 'app',     kind: 'mount', label: 'edge guard · 404 + geo + rate', tag: ['overview','critical','freetools','auth','payments','all'] },
+  { from: 'scrolltop', to: 'lib-ga4',  kind: 'normal', label: 'trackPageView', tag: ['analytics','all'] },
+
+  /* — CRITICAL SPINE — prep pack — */
+  { from: 'dashboard', to: 'services-api',          kind: 'critical', label: '1 · analyzeJob(cv, jobUrl)', tag: ['overview','critical','all'] },
+  { from: 'services-api', to: 'api-analyze',        kind: 'critical', label: '2 · POST /api/analyze + Bearer JWT', tag: ['overview','critical','all'] },
+  { from: 'api-analyze', to: 'rpc-deduct',          kind: 'critical', label: '3 · RPC deduct_tokens(1)', tag: ['overview','critical','all'] },
+  { from: 'rpc-deduct', to: 'tbl-profiles',         kind: 'db',       label: '4 · UPDATE token_balance', tag: ['overview','critical','all'] },
+  { from: 'api-analyze', to: 'ext-jina',            kind: 'api',      label: '5a · r.jina.ai/<url> (fallback)', tag: ['critical','all'] },
+  { from: 'api-analyze', to: 'ext-gemini',          kind: 'critical', label: '5b · gemini-2.5-flash + googleSearch', tag: ['overview','critical','all'] },
+  { from: 'ext-gemini', to: 'api-analyze',          kind: 'critical', label: '6 · JSON + citations', tag: ['overview','critical','all'] },
+  { from: 'api-analyze', to: 'tbl-analyses',        kind: 'db',       label: '7 · INSERT analyses (history)', tag: ['critical','all'] },
+  { from: 'api-analyze', to: 'dashboard',           kind: 'critical', label: '8 · JobIntelligence → results view', tag: ['overview','critical','all'] },
+
+  /* — Auth path — */
+  { from: 'auth-screens', to: 'lib-supabase',       kind: 'normal',   label: 'signIn / signUp / reset', tag: ['auth','all'] },
+  { from: 'lib-supabase', to: 'ext-supabase-auth',  kind: 'api',      label: 'supabase-js', tag: ['auth','all'] },
+  { from: 'ext-supabase-auth', to: 'tbl-profiles',  kind: 'db',       label: 'trigger handle_new_user', tag: ['auth','all'] },
+  { from: 'ext-supabase-auth', to: 'ext-resend',    kind: 'api',      label: 'SMTP relay · noreply@aimvantage.uk', tag: ['auth','email','all'] },
+  { from: 'app', to: 'lib-supabase',                kind: 'normal',   label: 'session subscription', tag: ['auth','all'] },
+
+  /* — Payments path — */
+  { from: 'pricing', to: 'services-api',            kind: 'normal',   label: 'createStripeCheckout', tag: ['payments','all'] },
+  { from: 'account', to: 'services-api',            kind: 'normal',   label: 'createBillingPortal · syncSubscription', tag: ['payments','all'] },
+  { from: 'services-api', to: 'api-stripe',         kind: 'normal',   label: 'POST /api/stripe?action=…', tag: ['payments','all'] },
+  { from: 'api-stripe', to: 'ext-stripe',           kind: 'api',      label: 'sessions.create · portal.create', tag: ['payments','all'] },
+  { from: 'ext-stripe', to: 'api-stripe-webhook',   kind: 'api',      label: 'event POST (signed)', tag: ['payments','all'] },
+  { from: 'api-stripe-webhook', to: 'tbl-stripe-events', kind: 'db',  label: 'INSERT event_id (idempotency)', tag: ['payments','all'] },
+  { from: 'api-stripe-webhook', to: 'rpc-add',      kind: 'db',       label: 'RPC add_tokens(N)', tag: ['payments','all'] },
+  { from: 'api-stripe-webhook', to: 'tbl-profiles', kind: 'db',       label: 'UPDATE plan, status, dates', tag: ['payments','all'] },
+  { from: 'rpc-add', to: 'tbl-profiles',            kind: 'db',       label: 'UPDATE token_balance', tag: ['payments','all'] },
+  { from: 'api-stripe', to: 'tbl-profiles',         kind: 'db',       label: 'READ-ONLY sync (Codex CRIT-01)', tag: ['payments','all'] },
+
+  /* — Free tools — */
+  { from: 'freetool-pages', to: 'api-roast',        kind: 'normal',   label: 'POST /api/roast', tag: ['freetools','all'] },
+  { from: 'freetool-pages', to: 'api-decode',       kind: 'normal',   label: 'POST /api/decode-rejection', tag: ['freetools','all'] },
+  { from: 'freetool-pages', to: 'api-ghost',        kind: 'normal',   label: 'POST /api/ghost-job-check', tag: ['freetools','all'] },
+  { from: 'api-roast', to: 'ext-gemini',            kind: 'api',      label: 'gemini-2.5-flash', tag: ['freetools','all'] },
+  { from: 'api-decode', to: 'ext-gemini',           kind: 'api',      label: 'gemini-2.5-flash', tag: ['freetools','all'] },
+  { from: 'api-ghost', to: 'ext-gemini',            kind: 'api',      label: 'gemini-2.5-flash', tag: ['freetools','all'] },
+
+  /* — Other server flows — */
+  { from: 'dashboard', to: 'services-api',          kind: 'normal',   label: 'rewriteTone · checkCredits', tag: ['all'] },
+  { from: 'services-api', to: 'api-rewrite',        kind: 'normal',   label: 'POST /api/rewrite-tone', tag: ['all'] },
+  { from: 'api-rewrite', to: 'rpc-deduct',          kind: 'db',       label: 'deduct(1) · refund if fail', tag: ['all'] },
+  { from: 'api-rewrite', to: 'ext-gemini',          kind: 'api',      label: 'tone rewrite', tag: ['all'] },
+  { from: 'services-api', to: 'api-interview',      kind: 'normal',   label: '/questions /evaluate', tag: ['all'] },
+  { from: 'api-interview', to: 'ext-gemini',        kind: 'api',      label: 'gemini-2.5-flash', tag: ['all'] },
+  { from: 'services-api', to: 'api-user',           kind: 'normal',   label: '/credits /analyses (rewrites)', tag: ['all'] },
+  { from: 'api-user', to: 'tbl-profiles',           kind: 'db',       label: 'SELECT credits', tag: ['all'] },
+  { from: 'api-user', to: 'tbl-analyses',           kind: 'db',       label: 'SELECT history', tag: ['all'] },
+  { from: 'app', to: 'api-admin',                   kind: 'normal',   label: '/admin · gated', tag: ['all'] },
+  { from: 'api-admin', to: 'ext-gemini',            kind: 'api',      label: 'reply generator', tag: ['all'] },
+
+  /* — Analytics — */
+  { from: 'lib-ga4', to: 'ext-ga4',                 kind: 'api',      label: 'gtag/js POST', tag: ['analytics','all'] },
+  { from: 'lib-clarity', to: 'ext-clarity',         kind: 'api',      label: 'clarity.ms tag', tag: ['analytics','all'] },
+
+  /* — Hosting — */
+  { from: 'middleware', to: 'ext-vercel',           kind: 'normal',   label: 'edge runtime', tag: ['all'] },
+];
+
+/* ============================================================
+   FIXES + KNOWN_BUGS
+   ============================================================ */
+const FIXES = {
+  'api-analyze': [
+    { n: 1, t: 'Codex HIGH-01 fix: SSRF now blocks bracketed IPv6, IPv4-mapped, DNS-resolved private hosts (line:102)' },
+  ],
+  'api-stripe': [
+    { n: 1, t: 'Codex CRIT-01 fix: sync endpoint is now READ-ONLY (used to silently cancel duplicate live subscriptions)' },
+  ],
+  'middleware': [
+    { n: 1, t: 'Codex HIGH-05: real HTTP 404 for unknown SPA routes (was soft-200 rewrite)' },
+    { n: 2, t: 'Codex HIGH-02: x-vercel-forwarded-for preferred over spoofable x-forwarded-for' },
+  ],
+  'api-rewrite': [
+    { n: 1, t: 'Codex HIGH-03: refundTokens now returns boolean — 3-tier honest 500 message' },
+  ],
+  'lib-supabase': [
+    { n: 1, t: 'mapAuthError wired into ForgotPassword + ResetPassword fallback paths (commit 84bcfa3)' },
+  ],
+  'lib-ga4': [
+    { n: 1, t: 'NEW this session: gtag.js env-gated loader with DNT + Do Not Track honoured (commit 43a817d)' },
+  ],
+};
+
+const KNOWN_BUGS = {
+  'tbl-analyses': [
+    { sev: 'med', ref: 'WALLET-SPEC', t: 'Written by api/analyze but Dashboard "view past analyses" UI not yet wired — feature gap' },
+  ],
+  'tbl-profiles': [
+    { sev: 'med', ref: 'WALLET-SPEC.md', t: 'Token wallet model flagged for rewrite — additive/never-expire logic OK but recovery races on webhook/sync overlap not fully closed' },
+  ],
+  'middleware': [
+    { sev: 'low', t: 'Rate-limit store is in-memory; resets on cold start. For production scale, replace with Upstash Redis.' },
+  ],
+  'api-stripe-webhook': [
+    { sev: 'low', t: 'charge.dispute.closed (lost) handler stub at line:459 — review tokens-deduct behaviour before LIVE switch' },
+  ],
+  'ext-stripe': [
+    { sev: 'high', ref: 'HANDOFF.md §3', t: 'Currently in TEST mode in production. Switch to LIVE mode before promotion: create live products, update env vars, set up live webhook secret.' },
+  ],
+};
+
+/* ============================================================
+   RUNTIME
+   ============================================================ */
+const FINDINGS_HTML = `
+<h3>Notable findings from this map</h3>
+<div class="findings">
+  <p><span class="h">CRITICAL PATH (the spine).</span> Dashboard → services/api::analyzeJob → POST /api/analyze → deduct_tokens RPC → profiles UPDATE → Gemini call (with googleSearch tool) → stripCitations → back to Dashboard. 9 nodes. Anything off this path is secondary.</p>
+  <p><span class="h">"Dead-ish" data path.</span> The <code>analyses</code> table is written to on every successful run but the Dashboard "view past analyses" UI never reads it. The persistence is there; the UI is not. Either wire the UI or stop writing.</p>
+  <p><span class="h">Gemini constraint is a footgun.</span> <code>googleSearch</code> tool and <code>responseMimeType:'application/json'</code> are mutually exclusive in the same call. The codebase handles this via a <code>useSearch</code> branch in <code>api/analyze</code>, but every future endpoint touching Gemini must observe the same rule.</p>
+  <p><span class="h">Stripe is still in TEST mode in production.</span> See <code>HANDOFF.md</code> §3. This is the headline blocker before paid promotion.</p>
+  <p><span class="h">Email never calls Resend directly from server code.</span> Resend is wired ONLY as Supabase Auth's SMTP relay. Any future transactional email (e.g. "your prep pack is ready") would need a new server-side path. Resend's <code>@resend/node</code> SDK is not even installed.</p>
+  <p><span class="h">Free tools live + paid live share Gemini.</span> If GEMINI_API_KEY is rate-limited or revoked, both the £-paying users AND the free funnel break together. The free funnel is throttled at the edge (middleware) which absorbs most abuse, but a Gemini outage is single-point-of-failure.</p>
+  <p><span class="h">Edge middleware does three jobs at once.</span> 404 enforcement, rate limiting, AND geo cookie writing. None of them depend on each other; splitting would aid future maintenance.</p>
+  <p><span class="h">api/user is a multiplexer.</span> Designed to keep Vercel function count under the Hobby plan 12-cap. If you ever consolidate more endpoints, do it here.</p>
+</div>
+`;
+
+const svg = document.getElementById('svg');
+const viewport = document.getElementById('viewport');
+const sidebar = document.getElementById('sidebar-content');
+const canvas = document.getElementById('canvas');
+const nodesById = Object.fromEntries(nodes.map(n => [n.id, n]));
+
+let activeTag = 'overview';
+let selected = null;
+let hovered = null;
+
+function colorForCluster(id){
+  return {
+    client: 'var(--client)', pages: 'var(--route)', services: 'var(--service)',
+    server: 'var(--service)', data: 'var(--db)', external: 'var(--external)',
+  }[id] || 'var(--text)';
+}
+
+function strokeForKind(kind){
+  return {
+    critical: '#ff3860', api: '#ff7a45', db: '#ffb86b',
+    mount: '#4ea1ff', normal: '#777',
+  }[kind] || '#777';
+}
+
+function renderClusters(){
+  for (const c of clusters) {
+    const r = document.createElementNS('http://www.w3.org/2000/svg','rect');
+    r.setAttribute('x', c.x); r.setAttribute('y', c.y);
+    r.setAttribute('width', c.w); r.setAttribute('height', c.h);
+    r.setAttribute('rx', 10); r.setAttribute('ry', 10);
+    r.setAttribute('class','cluster-rect');
+    r.setAttribute('fill', c.color);
+    r.setAttribute('stroke', c.color);
+    viewport.appendChild(r);
+
+    const t = document.createElementNS('http://www.w3.org/2000/svg','text');
+    t.setAttribute('x', c.x + 14); t.setAttribute('y', c.y - 10);
+    t.setAttribute('class','cluster-label');
+    t.textContent = c.label;
+    viewport.appendChild(t);
+  }
+}
+
+function renderEdges(){
+  for (const e of edges) {
+    const a = nodesById[e.from]; const b = nodesById[e.to];
+    if (!a || !b) continue;
+    const x1 = a.x + a.w; const y1 = a.y + a.h/2;
+    const x2 = b.x;       const y2 = b.y + b.h/2;
+    const dx = Math.max(60, (x2 - x1) * 0.4);
+    const cx1 = x1 + dx;  const cx2 = x2 - dx;
+    const d = `M ${x1} ${y1} C ${cx1} ${y1}, ${cx2} ${y2}, ${x2} ${y2}`;
+
+    const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+    path.setAttribute('d', d);
+    path.setAttribute('class', 'edge');
+    path.setAttribute('stroke', strokeForKind(e.kind));
+    path.setAttribute('marker-end', `url(#ah-${e.kind})`);
+    path.dataset.from = e.from; path.dataset.to = e.to;
+    path.dataset.tags = (e.tag || ['all']).join(',');
+    viewport.appendChild(path);
+
+    if (e.label) {
+      const lx = (x1 + x2) / 2;
+      const ly = (y1 + y2) / 2 - 6;
+      const t = document.createElementNS('http://www.w3.org/2000/svg','text');
+      t.setAttribute('x', lx); t.setAttribute('y', ly);
+      t.setAttribute('text-anchor','middle');
+      t.setAttribute('class','edge-label');
+      t.dataset.tags = (e.tag || ['all']).join(',');
+      t.textContent = e.label;
+      viewport.appendChild(t);
+    }
+  }
+}
+
+function renderNodes(){
+  for (const n of nodes) {
+    const g = document.createElementNS('http://www.w3.org/2000/svg','g');
+    g.dataset.id = n.id;
+    g.dataset.tags = (n.tag || ['all']).join(',');
+
+    const rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
+    rect.setAttribute('x', n.x); rect.setAttribute('y', n.y);
+    rect.setAttribute('width', n.w); rect.setAttribute('height', n.h);
+    rect.setAttribute('rx', 6); rect.setAttribute('ry', 6);
+    rect.setAttribute('class', 'node-rect' + (n.critical ? ' critical' : ''));
+    rect.setAttribute('stroke', colorForCluster(n.cluster));
+    rect.dataset.id = n.id;
+    g.appendChild(rect);
+
+    const label = document.createElementNS('http://www.w3.org/2000/svg','text');
+    label.setAttribute('x', n.x + 12); label.setAttribute('y', n.y + 12);
+    label.setAttribute('class','node-label');
+    label.textContent = n.label;
+    g.appendChild(label);
+
+    const sub = document.createElementNS('http://www.w3.org/2000/svg','text');
+    sub.setAttribute('x', n.x + 12); sub.setAttribute('y', n.y + 33);
+    sub.setAttribute('class','node-sub');
+    sub.textContent = n.sub || '';
+    g.appendChild(sub);
+
+    /* badges */
+    const fixCount = (FIXES[n.id] || []).length;
+    const bugCount = (KNOWN_BUGS[n.id] || []).length;
+    let bx = n.x + n.w - 16;
+    if (bugCount) {
+      const bg = document.createElementNS('http://www.w3.org/2000/svg','g');
+      bg.setAttribute('class','badge badge-bug');
+      bg.setAttribute('transform', `translate(${bx},${n.y + 14})`);
+      const c = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      c.setAttribute('r', 8);
+      const t = document.createElementNS('http://www.w3.org/2000/svg','text');
+      t.textContent = bugCount;
+      bg.appendChild(c); bg.appendChild(t);
+      g.appendChild(bg);
+      bx -= 20;
+    }
+    if (fixCount) {
+      const bg = document.createElementNS('http://www.w3.org/2000/svg','g');
+      bg.setAttribute('class','badge badge-fix');
+      bg.setAttribute('transform', `translate(${bx},${n.y + 14})`);
+      const c = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      c.setAttribute('r', 8);
+      const t = document.createElementNS('http://www.w3.org/2000/svg','text');
+      t.textContent = fixCount;
+      bg.appendChild(c); bg.appendChild(t);
+      g.appendChild(bg);
+    }
+
+    g.addEventListener('click', (ev) => { ev.stopPropagation(); selectNode(n.id); });
+    g.addEventListener('mouseenter', () => { hovered = n.id; applyVisibility(); renderSidebar(); });
+    g.addEventListener('mouseleave', () => { hovered = null; applyVisibility(); renderSidebar(); });
+    viewport.appendChild(g);
+  }
+}
+
+function applyVisibility(){
+  const focusId = selected || hovered;
+  const nodeEls = viewport.querySelectorAll('g[data-id]');
+  const pathEls = viewport.querySelectorAll('path.edge');
+  const labelEls = viewport.querySelectorAll('text.edge-label');
+
+  /* tag filter */
+  const tagMatch = (tags) => {
+    if (!tags) return true;
+    if (activeTag === 'all') return true;
+    if (activeTag === 'roadmap') return false; /* handled separately */
+    return tags.split(',').includes(activeTag);
+  };
+
+  /* roadmap = show only nodes with bug/fix */
+  const isRoadmap = activeTag === 'roadmap';
+  const hasBadge = (id) => (FIXES[id]||[]).length || (KNOWN_BUGS[id]||[]).length;
+
+  /* neighbours of focused node */
+  let neighbours = null;
+  if (focusId) {
+    neighbours = new Set([focusId]);
+    for (const e of edges) {
+      if (e.from === focusId) neighbours.add(e.to);
+      if (e.to === focusId) neighbours.add(e.from);
+    }
+  }
+
+  nodeEls.forEach(g => {
+    const id = g.dataset.id;
+    const tags = g.dataset.tags;
+    let dim = false;
+    if (isRoadmap) dim = !hasBadge(id);
+    else if (!tagMatch(tags)) dim = true;
+    if (focusId && !neighbours.has(id)) dim = true;
+    const rect = g.querySelector('rect');
+    rect.classList.toggle('dim', dim);
+    rect.classList.toggle('selected', id === selected);
+    rect.classList.toggle('hovered', id === hovered && id !== selected);
+    g.querySelectorAll('text').forEach(t => t.style.opacity = dim ? .25 : 1);
+  });
+  pathEls.forEach(p => {
+    const tags = p.dataset.tags;
+    let dim = false;
+    if (isRoadmap) dim = true;
+    else if (!tagMatch(tags)) dim = true;
+    if (focusId && !(p.dataset.from === focusId || p.dataset.to === focusId)) dim = true;
+    p.classList.toggle('dim', dim);
+  });
+  labelEls.forEach(t => {
+    const tags = t.dataset.tags;
+    let dim = false;
+    if (isRoadmap) dim = true;
+    else if (!tagMatch(tags)) dim = true;
+    t.classList.toggle('dim', dim);
+  });
+}
+
+function selectNode(id){
+  selected = (selected === id) ? null : id;
+  applyVisibility();
+  renderSidebar();
+}
+
+function renderSidebar(){
+  const id = selected || hovered;
+  if (!id) {
+    sidebar.innerHTML = `
+      <div class="ntag">AimVantage · architecture overview</div>
+      <h2>Click any node to inspect</h2>
+      <p class="plain">35 nodes · 45 edges. The red spine is the prep-pack flow (Dashboard → /api/analyze → Gemini → back). Filter chips at the top narrow the view.</p>
+      ${FINDINGS_HTML}
+    `;
+    return;
+  }
+  const n = nodesById[id]; if (!n) return;
+  const ins  = edges.filter(e => e.to === id);
+  const outs = edges.filter(e => e.from === id);
+  const fixes = FIXES[id] || []; const bugs = KNOWN_BUGS[id] || [];
+  sidebar.innerHTML = `
+    <div class="ntag">${n.cluster} · ${n.critical ? '⚠ critical-path · ' : ''}node</div>
+    <h2>${n.label}${n.sub ? '<span class="ntag" style="margin-left:8px">'+n.sub+'</span>' : ''}</h2>
+    <p class="role">${n.role || ''}</p>
+    <p class="plain">${n.plain || ''}</p>
+    ${n.path ? `<h3>Path</h3><code>${n.path}</code>` : ''}
+    ${n.notes && n.notes.length ? `<h3>Notes</h3><ul>${n.notes.map(x => `<li>${x}</li>`).join('')}</ul>` : ''}
+    ${bugs.length ? `<h3>Known bugs / gaps</h3>${bugs.map(b => `<div class="bug"><span class="sev sev-${b.sev}">${b.sev}</span>${b.t}${b.ref?` <code>${b.ref}</code>`:''}</div>`).join('')}` : ''}
+    ${fixes.length ? `<h3>Recent fixes</h3>${fixes.map(f => `<div class="fix"><b>#${f.n}.</b> ${f.t}</div>`).join('')}` : ''}
+    ${ins.length ?  `<h3>Incoming (${ins.length})</h3>${ins.map(e => `<div class="edge-line"><span class="arrow">←</span><code>${e.from}</code><span class="arrow">·</span>${e.label||''}</div>`).join('')}` : ''}
+    ${outs.length ? `<h3>Outgoing (${outs.length})</h3>${outs.map(e => `<div class="edge-line"><span class="arrow">→</span><code>${e.to}</code><span class="arrow">·</span>${e.label||''}</div>`).join('')}` : ''}
+  `;
+}
+
+/* ---- pan + zoom ---- */
+let tx = 0, ty = 0, s = 1;
+function applyTransform(){ viewport.setAttribute('transform', `translate(${tx} ${ty}) scale(${s})`); }
+function fit(){
+  const minX = Math.min(...clusters.map(c => c.x)) - 30;
+  const minY = Math.min(...clusters.map(c => c.y)) - 30;
+  const maxX = Math.max(...clusters.map(c => c.x + c.w)) + 30;
+  const maxY = Math.max(...clusters.map(c => c.y + c.h)) + 30;
+  const bw = canvas.clientWidth, bh = canvas.clientHeight;
+  const sx = bw / (maxX - minX), sy = bh / (maxY - minY);
+  s = Math.min(sx, sy, 1);
+  tx = (bw - (maxX - minX) * s) / 2 - minX * s;
+  ty = (bh - (maxY - minY) * s) / 2 - minY * s;
+  applyTransform();
+}
+let dragging = false, startX = 0, startY = 0, startTx = 0, startTy = 0;
+canvas.addEventListener('mousedown', e => {
+  if (e.target.closest('g[data-id]')) return;
+  dragging = true; canvas.classList.add('grabbing');
+  startX = e.clientX; startY = e.clientY; startTx = tx; startTy = ty;
+});
+window.addEventListener('mousemove', e => {
+  if (!dragging) return;
+  tx = startTx + (e.clientX - startX); ty = startTy + (e.clientY - startY);
+  applyTransform();
+});
+window.addEventListener('mouseup', () => { dragging = false; canvas.classList.remove('grabbing'); });
+canvas.addEventListener('wheel', e => {
+  e.preventDefault();
+  const r = canvas.getBoundingClientRect();
+  const mx = e.clientX - r.left, my = e.clientY - r.top;
+  const k = e.deltaY < 0 ? 1.1 : 1/1.1;
+  const ns = Math.max(0.25, Math.min(2.5, s * k));
+  /* anchor zoom to mouse */
+  tx = mx - (mx - tx) * (ns / s);
+  ty = my - (my - ty) * (ns / s);
+  s = ns; applyTransform();
+}, { passive: false });
+canvas.addEventListener('click', e => {
+  if (e.target.closest('g[data-id]')) return;
+  selected = null; applyVisibility(); renderSidebar();
+});
+document.getElementById('zoomIn').onclick = () => { s = Math.min(2.5, s * 1.2); applyTransform(); };
+document.getElementById('zoomOut').onclick = () => { s = Math.max(0.25, s / 1.2); applyTransform(); };
+document.getElementById('fit').onclick = fit;
+
+/* ---- filter chips ---- */
+document.getElementById('filterChips').addEventListener('click', e => {
+  const chip = e.target.closest('.chip'); if (!chip) return;
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  chip.classList.add('active');
+  activeTag = chip.dataset.tag;
+  selected = null;
+  applyVisibility();
+  renderSidebar();
+});
+
+/* ---- init ---- */
+renderClusters();
+renderEdges();
+renderNodes();
+applyVisibility();
+renderSidebar();
+window.addEventListener('load', () => requestAnimationFrame(fit));
+window.addEventListener('resize', fit);
+</script>
+</body>
+</html>
