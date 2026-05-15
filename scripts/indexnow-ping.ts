@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Vantage IndexNow ping — notify Bing, Yandex, and other IndexNow-compatible
+ * AimVantage IndexNow ping — notify Bing, Yandex, and other IndexNow-compatible
  * search engines about updated URLs. Run after publish to accelerate indexing.
  *
  * Usage:

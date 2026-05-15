@@ -124,7 +124,7 @@ function buildEntry({
         'TODO: Concrete step 3.',
       ] },
 
-      { type: 'h2', text: 'How Vantage handles this' },
+      { type: 'h2', text: 'How AimVantage handles this' },
       { type: 'p', text: 'TODO: 2-3 sentences max. The point is the post, not the upsell. Link to /register or a specific tool.' },
     ],
   },

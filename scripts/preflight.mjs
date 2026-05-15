@@ -433,7 +433,7 @@ function checkJsonLdValidity() {
 // ── Main ────────────────────────────────────────────────────────────────
 function main() {
   if (!JSON_MODE) {
-    console.log('\nVantage preflight — local pre-deploy safety net');
+    console.log('\nAimVantage preflight — local pre-deploy safety net');
     console.log('================================================\n');
   }
   checkFunctionCount();
