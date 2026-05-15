@@ -2,21 +2,21 @@ import React, { useState, useEffect, useRef, createContext, useContext } from 'r
 import { BrowserRouter, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { supabase, signOut, fetchProfile, Profile } from './lib/supabase';
 import { createStripeCheckout } from './services/api';
-// CRITICAL PATH — eagerly bundled. These render on the most-visited routes
-// (homepage, auth flow, dashboard) so we want them in the initial chunk to
-// avoid a Suspense flash on first interaction.
+// CRITICAL PATH — only the landing page is eagerly bundled because it IS the
+// LCP route for first-time visitors. Lighthouse mobile audit (2026-05-15)
+// flagged 299 KiB unused JS on first paint — Login/Register/Dashboard/Account
+// were sitting in the initial chunk despite not being on the landing path.
+// Lazy-loading them drops the main bundle and lets the landing page render
+// without waiting on auth/dashboard code that the visitor may never reach.
 import LandingPage from './components/LandingPage';
-import Login from './components/Login';
-import Register from './components/Register';
-import ForgotPassword from './components/ForgotPassword';
-import ResetPassword from './components/ResetPassword';
-import Dashboard from './components/Dashboard';
-// Pricing was eager-loaded but isn't on the auth happy path on first
-// visit — lazy-load it so it doesn't bloat the home/login chunk.
-// LLM-council gap audit P2 fix.
+const Login = React.lazy(() => import('./components/Login'));
+const Register = React.lazy(() => import('./components/Register'));
+const ForgotPassword = React.lazy(() => import('./components/ForgotPassword'));
+const ResetPassword = React.lazy(() => import('./components/ResetPassword'));
+const Dashboard = React.lazy(() => import('./components/Dashboard'));
+const Account = React.lazy(() => import('./components/Account'));
 const Pricing = React.lazy(() => import('./components/Pricing'));
 import CookieConsent from './components/CookieConsent';
-import Account from './components/Account';
 import SEO from './components/SEO';
 
 // SECONDARY PATH — lazy-loaded. SEO/marketing/blog/cohort pages aren't on
