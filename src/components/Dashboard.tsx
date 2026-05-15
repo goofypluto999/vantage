@@ -779,6 +779,20 @@ export default function Dashboard() {
         setResults(result.data);
         setStep('results');
         refreshProfile();
+        // GA4 funnel — `prep_pack_run` is the core paid-action conversion.
+        // Fires only on result.success, so refunded/failed analyses don't
+        // pollute the count. No PII in params — only a boolean + 3-value
+        // enum showing how the user provided the job (URL > JD-text >
+        // JD-file). Dynamic import + .catch() so analytics can never
+        // break the success path.
+        const hasJobUrl = jobUrl.trim().length > 0;
+        const sourceMode: 'url' | 'text' | 'file' = hasJobUrl ? 'url' : jdMode;
+        void import('../lib/ga4').then(({ trackEvent }) => {
+          trackEvent('prep_pack_run', {
+            has_job_url: hasJobUrl,
+            mode: sourceMode,
+          });
+        }).catch(() => { /* analytics must never break the flow */ });
       } else {
         setError(result.error || 'Analysis failed');
         setStep('input');
