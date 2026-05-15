@@ -105,6 +105,6 @@ Gemini's `maxOutputTokens` is capped at 1500 per request, which costs roughly $0
 - **Log results, not prompts.** You do not want a log of 10,000 cover letters. You want a log of 10,000 result codes.
 - **Cap maxOutputTokens.** The cost ceiling is a feature, not a limitation.
 
-If you want to see all of this implemented, the source is at `api/roast/index.ts` in the [Vantage repo](https://github.com/goofypluto999/vantage). If you want to see the other end of it, the tool is live at [aimvantage.uk/roast](https://aimvantage.uk/roast) — paste a real cover letter (80+ chars) and you get a real roast in about 8 seconds.
+If you want to see all of this implemented, the source is at `api/roast/index.ts` in the [Vantage repo](https://github.com/goofypluto999/aimvantage). If you want to see the other end of it, the tool is live at [aimvantage.uk/roast](https://aimvantage.uk/roast) — paste a real cover letter (80+ chars) and you get a real roast in about 8 seconds.
 
 > [Vantage](https://aimvantage.uk) proper does the full job-prep pack — company intel, tailored cover letter, mock interview, fit score — in 90 seconds. The free roast tool is the front door.

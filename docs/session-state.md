@@ -283,7 +283,7 @@ curl -s -o /dev/null -w "%{http_code}\n" https://aimvantage.uk/
 curl -s -X POST -o /dev/null -w "%{http_code}\n" -H "Content-Type: application/json" -d '{}' https://aimvantage.uk/api/interview/negotiation
 
 # 2. Check whether the rate-limited deploy cleared:
-gh api repos/goofypluto999/vantage/commits/49999c3/status --jq '.state'
+gh api repos/goofypluto999/aimvantage/commits/49999c3/status --jq '.state'
 # If "success" — the Download (.md) feature is now live too.
 # If still "failure" with "rate limited" — wait, no action needed.
 

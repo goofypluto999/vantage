@@ -585,7 +585,7 @@ export default function AtsKeywordScannerPage() {
               No upload, no API call, no logs. The scan happens in JavaScript running in your
               browser. Source on GitHub:{' '}
               <a
-                href="https://github.com/goofypluto999/vantage"
+                href="https://github.com/goofypluto999/aimvantage"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-violet-500 hover:underline"

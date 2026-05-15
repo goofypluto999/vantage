@@ -23,7 +23,7 @@
 - Line to add (alphabetised):
 
 ```
-- [Vantage AI](https://github.com/goofypluto999/vantage) - AI job preparation tool. Upload CV + paste job link → 90-second prep pack with company brief, fit score, tailored cover letter (4 tones), interview questions, 5-min pitch outline. Built on Gemini 2.5 Flash with grounded company research.
+- [Vantage AI](https://github.com/goofypluto999/aimvantage) - AI job preparation tool. Upload CV + paste job link → 90-second prep pack with company brief, fit score, tailored cover letter (4 tones), interview questions, 5-min pitch outline. Built on Gemini 2.5 Flash with grounded company research.
 ```
 
 - Commit message: `Add Vantage AI to LLM apps list`
@@ -41,7 +41,7 @@ Stack:
 
 Open-source companion: cv-mirror-mcp (MIT-licensed MCP server simulating 5 ATS parsers).
 
-Public source: https://github.com/goofypluto999/vantage
+Public source: https://github.com/goofypluto999/aimvantage
 Companion repo: https://github.com/goofypluto999/cv-mirror-mcp
 ```
 

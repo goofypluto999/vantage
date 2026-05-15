@@ -66,7 +66,7 @@ Vantage AI is an AI-powered job preparation tool operated by Giovanni Sizino Enn
 
 Operator transparency: https://aimvantage.uk/about
 Trust audit: https://aimvantage.uk/receipts
-GitHub: https://github.com/goofypluto999/vantage
+GitHub: https://github.com/goofypluto999/aimvantage
 Contact: hello@aimvantage.uk
 ```
 
@@ -167,7 +167,7 @@ Glama at https://glama.ai/ is the second major MCP registry. They auto-index fro
 | Name              | `vantage-ai`                                                                  |
 | Display name      | `Vantage AI`                                                                  |
 | Description       | (paste the description from §4.b above)                                       |
-| Source URL        | `https://github.com/goofypluto999/vantage/tree/master/mcp-server`             |
+| Source URL        | `https://github.com/goofypluto999/aimvantage/tree/master/mcp-server`             |
 | npm               | `@vantage-ai/mcp-server`                                                      |
 | Homepage          | `https://aimvantage.uk/docs/api`                                              |
 | License           | `MIT`                                                                         |

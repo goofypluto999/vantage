@@ -197,7 +197,7 @@ If you're laid off in the 2026 wave, follow back if useful.
 ```
 Numbers (verifiable):
 
-— 268 commits in last 7 days: github.com/goofypluto999/vantage/commits
+— 268 commits in last 7 days: github.com/goofypluto999/aimvantage/commits
 — 199 prerendered routes
 — 12 free tools live
 — 34 interview deep-dives

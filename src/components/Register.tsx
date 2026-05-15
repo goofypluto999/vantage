@@ -333,7 +333,7 @@ export default function Register() {
                 <span>
                   Public changelog and commit graph on{' '}
                   <a
-                    href="https://github.com/goofypluto999/vantage"
+                    href="https://github.com/goofypluto999/aimvantage"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="underline hover:text-white"

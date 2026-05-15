@@ -46,7 +46,7 @@ Giovanni Sizino Ennes (UK independent founder, sole trader).
 
 - Operator transparency: https://aimvantage.uk/about
 - Trust audit: https://aimvantage.uk/receipts
-- GitHub: https://github.com/goofypluto999/vantage
+- GitHub: https://github.com/goofypluto999/aimvantage
 - Sister product (free, fully client-side ATS scanner): https://cv-mirror-web.vercel.app/
 - API docs: https://aimvantage.uk/docs/api
 - Contact: hello@aimvantage.uk

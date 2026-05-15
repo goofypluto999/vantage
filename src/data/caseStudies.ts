@@ -134,7 +134,7 @@ export const caseStudies: CaseStudy[] = [
       },
       {
         type: 'p',
-        text: 'If you want to verify any of this, the live counter is at the bottom of aimvantage.uk. The git log is public at github.com/goofypluto999/vantage. The launch date stamp is in the first commit.',
+        text: 'If you want to verify any of this, the live counter is at the bottom of aimvantage.uk. The git log is public at github.com/goofypluto999/aimvantage. The launch date stamp is in the first commit.',
       },
     ],
   },

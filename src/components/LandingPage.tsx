@@ -1455,7 +1455,7 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
               build. Skeptics can audit any of them. */}
           <div className="mt-7 grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-3xl mx-auto">
             <a
-              href="https://github.com/goofypluto999/vantage/commits/master"
+              href="https://github.com/goofypluto999/aimvantage/commits/master"
               target="_blank"
               rel="noopener noreferrer"
               className="block rounded-xl bg-white/45 backdrop-blur-[20px] border border-white/55 px-4 py-3 hover:border-[#4F46E5]/40 transition group"

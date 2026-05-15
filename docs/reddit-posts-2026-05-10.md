@@ -195,7 +195,7 @@ aimvantage.uk/tools
 
 Asking for: brutal feedback. What's missing? Which tool would you actually use? Which one looks like marketing junk and should die?
 
-Stack: React 19 + Vite + TS + Tailwind v4 + Vercel. Source: github.com/goofypluto999/vantage. UK sole trader, ICO-registered, no VC, no upsells.
+Stack: React 19 + Vite + TS + Tailwind v4 + Vercel. Source: github.com/goofypluto999/aimvantage. UK sole trader, ICO-registered, no VC, no upsells.
 ```
 
 ---
@@ -209,7 +209,7 @@ Stack: React 19 + Vite + TS + Tailwind v4 + Vercel. Source: github.com/goofyplut
 UK indie founder here. Vantage AI (aimvantage.uk) — AI job-prep, 90 seconds per role.
 
 Numbers:
-- 268 commits in last 7 days (verifiable: github.com/goofypluto999/vantage/commits)
+- 268 commits in last 7 days (verifiable: github.com/goofypluto999/aimvantage/commits)
 - 197 prerendered routes
 - 34 long-form company interview deep-dives published
 - 10 free in-browser tools

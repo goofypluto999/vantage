@@ -23,7 +23,7 @@ npm install -g @vantage-ai/mcp-server
 Or run from source:
 
 ```bash
-git clone https://github.com/goofypluto999/vantage.git
+git clone https://github.com/goofypluto999/aimvantage.git
 cd vantage/mcp-server
 npm install
 npm run build
@@ -109,8 +109,8 @@ Add to `settings.json`:
 
 ## Source / issues
 
-- GitHub: https://github.com/goofypluto999/vantage/tree/master/mcp-server
-- Issues: https://github.com/goofypluto999/vantage/issues
+- GitHub: https://github.com/goofypluto999/aimvantage/tree/master/mcp-server
+- Issues: https://github.com/goofypluto999/aimvantage/issues
 - Operator: Giovanni Sizino Ennes (UK sole trader) · hello@aimvantage.uk
 - Trust audit: https://aimvantage.uk/receipts
 
