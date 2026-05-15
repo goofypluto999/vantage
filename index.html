@@ -17,21 +17,14 @@
     <meta name="google-site-verification" content="CxGMsq3htYbg81lDgs8ZbKEy0PZHZJC3OOR-_DtAZOo" />
     <meta name="google-site-verification" content="mt9jxsCNbClfyg16j1cr7N7UjVt3ZzPbTUMAdRI2WVI" />
 
-    <!-- LCP preload — the static fallback hero image is the first
-         large-content paint on mobile (React hydration happens after
-         the static HTML is already on screen). Preloading the WebP at
-         the size the viewport will actually render lets the browser
-         fetch it in parallel with the JS bundle instead of waiting
-         for the parser to reach the <img>. Mobile Lighthouse 2026-05-15
-         flagged "LCP request discovery" as red — this fixes it. -->
-    <link
-      rel="preload"
-      as="image"
-      href="/hero-600.webp"
-      imagesrcset="/hero-375.webp 375w, /hero-600.webp 600w, /hero-1200.webp 1200w"
-      imagesizes="(max-width: 600px) 100vw, 600px"
-      fetchpriority="high"
-    />
+    <!-- LCP preload for the hero WebP was added 2026-05-15 and then
+         removed the same day: Lighthouse confirmed the actual LCP element
+         is the H1 text ("90 seconds from CV to interview-ready"), not the
+         static-fallback hero image. Preloading the image meant the static
+         fallback painted a fully-loaded state before React hydrated, which
+         contributed to the fallback→React layout-shift signal in CLS. The
+         WebP is still served via the <picture> element below; it just no
+         longer competes with the JS bundle for early bandwidth. -->
 
     <!-- Favicon + PWA -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
