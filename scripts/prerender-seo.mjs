@@ -201,7 +201,7 @@ async function loadProgrammaticRoutes() {
         seenSlugs.add(slug);
         routes.push({
           path: `/blog/${slug}`,
-          title: `${title} | Vantage AI Blog`,
+          title: `${title} | AimVantage Blog`,
           description: (description || '').slice(0, 200),
           type: 'article',
         });
@@ -224,7 +224,7 @@ async function loadProgrammaticRoutes() {
     for (const { slug, title, description } of entries) {
       routes.push({
         path: `/sample/${slug}`,
-        title: `${title} | Vantage AI Sample`,
+        title: `${title} | AimVantage Sample`,
         description: (description || '').slice(0, 200),
         type: 'article',
       });
@@ -243,8 +243,8 @@ async function loadProgrammaticRoutes() {
     for (const { slug, name } of entries) {
       routes.push({
         path: `/alternatives/${slug}`,
-        title: `${name} Alternative — Vantage AI Compared | Vantage`,
-        description: `Honest side-by-side comparison of Vantage AI vs ${name}. Where each tool wins, where each loses, and which is the better fit for your job hunt.`,
+        title: `${name} Alternative — AimVantage Compared | AimVantage`,
+        description: `Honest side-by-side comparison of AimVantage vs ${name}. Where each tool wins, where each loses, and which is the better fit for your job hunt.`,
       });
     }
   } catch (err) {
@@ -261,7 +261,7 @@ async function loadProgrammaticRoutes() {
     for (const { slug, company } of entries) {
       routes.push({
         path: `/interview-prep/${slug}`,
-        title: `${company} Interview Questions & Prep (2026) | Vantage AI`,
+        title: `${company} Interview Questions & Prep (2026) | AimVantage`,
         description: `Free ${company} interview prep pack: signature interview pattern, 12 likely questions, common mistakes, prep routine. Free guide, no signup.`,
       });
     }
@@ -279,7 +279,7 @@ async function loadProgrammaticRoutes() {
     for (const { slug, name } of entries) {
       routes.push({
         path: `/ats/${slug}`,
-        title: `${name} resume parser: how it reads your CV (and what to fix) | Vantage`,
+        title: `${name} resume parser: how it reads your CV (and what to fix) | AimVantage`,
         description: `How the ${name} ATS parses CVs in 2026. Specific parse quirks, common failures, and the fixes that actually work. Free multi-vendor scanner included.`,
       });
     }
@@ -297,7 +297,7 @@ async function loadProgrammaticRoutes() {
     for (const { slug, name } of entries) {
       routes.push({
         path: `/laid-off/from/${slug}`,
-        title: `Just laid off from ${name}? 2026 cohort playbook | Vantage`,
+        title: `Just laid off from ${name}? 2026 cohort playbook | AimVantage`,
         description: `Cohort-specific playbook for the 2026 ${name} layoffs: CV fixes, warm-intro framework, interview prep. Free AI tools included. By a UK indie founder.`,
       });
     }
@@ -338,7 +338,7 @@ async function loadProgrammaticRoutes() {
         const seniorityLabel = seniority.charAt(0).toUpperCase() + seniority.slice(1);
         routes.push({
           path: `/interview-prep/${companySlug}/${seniority}`,
-          title: `${companyName} ${seniorityLabel} Interview Prep (2026) | Vantage`,
+          title: `${companyName} ${seniorityLabel} Interview Prep (2026) | AimVantage`,
           description: `${companyName} ${seniorityLabel} interview pattern, signature questions, level rubric, comp range, common gaps. Free guide, no signup.`,
         });
       }
@@ -357,7 +357,7 @@ async function loadProgrammaticRoutes() {
     for (const { slug, role } of entries) {
       routes.push({
         path: `/interview-questions/${slug}`,
-        title: `${role} Interview Questions (2026 Prep Pack) | Vantage AI`,
+        title: `${role} Interview Questions (2026 Prep Pack) | AimVantage`,
         description: `Free ${role} interview question bank: 12 most-asked questions, model answers, prep tips, follow-up questions. No signup.`,
       });
     }
@@ -376,7 +376,7 @@ async function loadProgrammaticRoutes() {
     for (const { slug, title, subtitle } of entries) {
       routes.push({
         path: `/case-studies/${slug}`,
-        title: `${title} | Vantage AI case study`,
+        title: `${title} | AimVantage case study`,
         description: (subtitle || '').slice(0, 200),
         type: 'article',
       });
@@ -396,7 +396,7 @@ async function loadProgrammaticRoutes() {
     for (const { slug, title, description } of entries) {
       routes.push({
         path: `/press-releases/${slug}`,
-        title: `${title} — Vantage AI press release`,
+        title: `${title} — AimVantage press release`,
         description: (description || '').slice(0, 200),
         type: 'article',
       });
@@ -416,7 +416,7 @@ async function loadProgrammaticRoutes() {
     for (const { slug, role, description } of entries) {
       routes.push({
         path: `/salary/${slug}`,
-        title: `${role} Salary (UK + US, 2026) | Vantage AI`,
+        title: `${role} Salary (UK + US, 2026) | AimVantage`,
         description: (description || `Sourced ${role} salary band — median, percentiles, factors that move pay, negotiation traps. Free guide, no signup.`).slice(0, 200),
       });
     }
