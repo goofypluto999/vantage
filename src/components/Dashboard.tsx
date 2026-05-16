@@ -276,6 +276,13 @@ export default function Dashboard() {
   useEffect(() => {
     if (searchParams.get('success') === 'true') {
       setCheckoutSuccess(true);
+      // Read amount/currency BEFORE clearing — api/stripe/[action].ts appends
+      // them to success_url so the GA4 `purchase` event can include `value`.
+      // Untrusted — analytics only. Stripe webhook is the source of truth for billing.
+      const amountRaw = searchParams.get('amount');
+      const currencyRaw = (searchParams.get('currency') || '').toUpperCase();
+      const purchaseValue = amountRaw != null ? Number(amountRaw) : NaN;
+      const purchaseCurrency = currencyRaw === 'GBP' || currencyRaw === 'USD' ? currencyRaw : 'GBP';
       setSearchParams({}, { replace: true });
       const preBalance = typeof profile?.token_balance === 'number' ? profile.token_balance : 0;
       const prePlan = profile?.plan || 'starter';
@@ -301,11 +308,15 @@ export default function Dashboard() {
             const newPlan = fresh?.plan || prePlan;
             const isTierUpgrade = newPlan !== prePlan;
             void import('../lib/ga4').then(({ trackEvent }) => {
-              trackEvent('purchase', {
+              const purchaseParams: Record<string, any> = {
                 plan: newPlan,
                 upgrade_type: isTierUpgrade ? 'tier_upgrade' : 'token_topup',
-                currency: 'GBP',
-              });
+                currency: purchaseCurrency,
+              };
+              if (Number.isFinite(purchaseValue)) {
+                purchaseParams.value = purchaseValue;
+              }
+              trackEvent('purchase', purchaseParams);
               if (isTierUpgrade) {
                 trackEvent('plan_upgrade', {
                   from_plan: prePlan,

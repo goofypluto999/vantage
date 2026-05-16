@@ -15,10 +15,10 @@
     <lastBuildDate>Mon, 11 May 2026 00:00:00 +0000</lastBuildDate>
     <managingEditor>noreply@aimvantage.uk (Gio)</managingEditor>
     <webMaster>noreply@aimvantage.uk (Gio)</webMaster>
-    <generator>Vantage scripts/generate-feeds.mjs</generator>
+    <generator>AimVantage scripts/generate-feeds.mjs</generator>
     <image>
       <url>https://aimvantage.uk/og-image.png</url>
-      <title>Vantage</title>
+      <title>AimVantage</title>
       <link>https://aimvantage.uk/blog</link>
       <width>1200</width>
       <height>630</height>
