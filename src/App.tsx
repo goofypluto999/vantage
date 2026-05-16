@@ -285,17 +285,24 @@ function AppContent() {
           >
             Skip to main content
           </a>
-          {/* Suspense boundary for the lazy-loaded marketing/blog/cohort routes
-              declared at the top of this file. Critical-path routes (landing,
-              auth, dashboard, account, pricing) are eagerly imported and don't
-              hit this fallback. The fallback matches the ProtectedRoute spinner
-              for visual consistency on slower connections. */}
+          {/* Suspense boundary for the lazy-loaded routes (all auth + dashboard +
+              60+ marketing/blog/cohort components — only LandingPage stays
+              eagerly bundled because it IS the LCP route).
+              FALLBACK = null intentionally. Most routes are SSG-prerendered
+              (see scripts/seo-routes.mjs), so on first paint the browser is
+              showing the prerendered HTML — replacing it with a colored
+              full-screen spinner during the lazy chunk download was a
+              jarring flash (~200ms wipe-and-redraw, reported by user 2026-05-16).
+              With null fallback, the prerendered HTML stays painted while
+              the chunk loads, then React hydrates seamlessly in place.
+              For client-side navigation between lazy routes, the PREVIOUS
+              page stays visible during the brief chunk download — no wipe,
+              feels instant. Trade-off: cold-load of a non-prerendered route
+              shows blank for ~200ms, but every non-prerendered route in this
+              app is auth-gated (Dashboard, Account) and the user is already
+              authenticated by then so the previous page IS painted. */}
           <ScrollToTop />
-          <React.Suspense fallback={
-            <div className="min-h-screen flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #edeaff, #e8f4ff)' }}>
-              <div className="w-8 h-8 border-4 border-violet-500 border-t-transparent rounded-full animate-spin" />
-            </div>
-          }>
+          <React.Suspense fallback={null}>
           <Routes>
             <Route path="/" element={<>
               <SEO
