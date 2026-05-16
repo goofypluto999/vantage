@@ -535,7 +535,7 @@ From `HANDOFF.md` + this session's discoveries:
 - ✅ **Server-side error tracking** — Sentry live in `foresay-labs` org as `aimvantage-server` project (commit `3a8c514` shipped helper + 2 critical handlers; `5eb2886` extended to 3 more = 5 total wired handlers).
 - ✅ **Health endpoints** — `/api/health` + `/api/health-deep` (commit `6fc8bc2`). Multi-probe with 30s cache, authoritative Supabase + advisory Stripe/Resend/Gemini. Verified live.
 - ✅ **CI build gate** — `vercel-build` chains `tsc --noEmit` first (commit `e69808d`) so TS errors fail deploys at build step.
-- 🟡 **Mobile perf** — Lighthouse baseline 62/100 / LCP 5.8s. 4 commits shipped (`7159176` lazy-loaded routes, `8e3e432` WebP hero + preload, `c2efe49` Three.js out of modulepreload, `3eae14c` LCP preload dropped — H1 was true LCP). Re-measurement after these 4 not yet captured.
+- ✅ **Mobile perf** — Lighthouse re-measurement 2026-05-16: **Performance 79/100** (was 62, +17). LCP **3.0s** (was 5.8s, −2.8s). FCP 2.9s (was 4.5s, −1.6s). CLS 0.036 (still green). Accessibility 100, SEO 100, Best Practices 92. Mobile-first paid-acquisition strategy is now viable. To reach 90+ would need: forced-reflow fix, render-blocking-3rd-party reduction, more main-thread work splitting.
 - ✅ **GA4 `purchase` event has real `value`** — server bundled into `5eb2886` (success_url carries amount + currency), client completed in `5f39e33` (Dashboard reads + validates + ships only when finite). GA4 monetization reports now reflect real revenue.
 - ⏳ **Admin/CRM dashboard** — `api/admin` endpoint exists; no UI surface.
 - ⏳ **Email onboarding sequence** — Day-1 / Day-3 drip campaign (needs Vercel cron + idempotency).

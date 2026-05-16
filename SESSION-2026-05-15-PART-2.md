@@ -234,12 +234,29 @@ After the 4-commit Foresay-import landed, drove the Sentry activation end-to-end
 - Sentry `captureError` now wired in `api/interview/[action].ts`, `api/rewrite-tone/index.ts`, `api/stripe/[action].ts` outer catches in addition to webhook + analyze.
 - All 4xx-style validation branches (Insufficient tokens, JOB_PARSE_FAILED) early-return BEFORE capture — no Sentry noise for intentional 4xx.
 
-**Mobile perf chip — partial ship** — `7159176` / `8e3e432` / `c2efe49` / `3eae14c`
+**Mobile perf chip — shipped + measured** — `7159176` / `8e3e432` / `c2efe49` / `3eae14c`
 - React.lazy split on Login/Register/ForgotPassword/ResetPassword/Dashboard/Account/Pricing + 60 other components (only LandingPage stays eager — it IS the LCP route).
 - Hero PNG swapped for WebP with `<link rel="preload" fetchpriority="high">`.
 - Three.js chunk excluded from modulepreload.
 - LCP preload dropped after measurement showed the H1 text node was the real LCP element (preloading the hero image was actually slowing the real LCP).
-- **Lighthouse re-measurement not yet done** — should pull a fresh score now that all 4 perf commits are live to see the delta from baseline (Performance 62, LCP 5.8s, CLS 0). Spawn a chip for this if not already done.
+
+**Lighthouse Mobile re-measurement (2026-05-16 01:49 UTC)** — audit URL: https://pagespeed.web.dev/analysis/https-aimvantage-uk/aeurjxyp3a?form_factor=mobile
+
+| Metric | Baseline 2026-05-15 | After 4 perf commits | Delta |
+|---|---|---|---|
+| **Performance** | 62 / 100 | **79 / 100** | **+17** 🟢 |
+| Accessibility | (not captured) | 100 / 100 | 🟢 |
+| Best Practices | (not captured) | 92 / 100 | 🟢 |
+| SEO | (not captured) | 100 / 100 | 🟢 |
+| **LCP** | 5.8s 🔴 | **3.0s** 🟠 | **−2.8s** (48% faster) |
+| **FCP** | 4.5s 🔴 | **2.9s** 🟠 | **−1.6s** (36% faster) |
+| **CLS** | 0 🟢 | 0.036 🟢 | +0.036 (still well below 0.1 threshold — minor regression from lazy-load space reservation) |
+| **TBT** | 240ms 🟡 | 310ms 🟡 | +70ms (slight regression from lazy-load scheduling overhead) |
+| **Speed Index** | 5.2s 🔴 | 5.3s 🔴 | essentially flat |
+| **Image savings opportunity** | 221 KiB 🔴 | 17 KiB 🟡 | **−204 KiB** (massive — WebP swap delivered) |
+| **Unused JavaScript** | 299 KiB 🔴 | dropped out of top insights | bundle pruning + route lazy-load paid off |
+
+**Net:** Mobile-first paid-acquisition strategy is now viable. LCP under 4s = Core Web Vitals "needs improvement" instead of "poor". To reach Performance 90+ the remaining levers are: Forced reflow (CSS/JS layout-read-after-write), Render blocking requests (3rd-party fonts/scripts), Main-thread work 2.2s (more code-splitting). Spawning as a chip if 90+ becomes a priority.
 
 **Schema migration applied** — user ran the `audit_log` block in Supabase SQL Editor → "Success". Table + 4 indexes + RLS now live; `logAuditEvent()` writes will start landing on next purchase / refund webhook fire.
 
