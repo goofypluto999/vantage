@@ -214,7 +214,7 @@ REVOKE UPDATE on sensitive columns from authenticated + anon: `plan`, `token_bal
 | `sign_up` (oauth) | `App.tsx::onAuthStateChange` (60s recency + sessionStorage dedupe) | method='google'/etc |
 | `prep_pack_run` | `Dashboard.tsx` analyze success | has_job_url, mode |
 | `prep_pack_failed` | `Dashboard.tsx` failure branches | has_job_url, mode, reason |
-| `purchase` | `Dashboard.tsx` post-checkout poll | plan, upgrade_type, currency |
+| `purchase` | `Dashboard.tsx` post-checkout poll | plan, upgrade_type, currency, **value** (major units, shipped via amount/currency query params from `api/stripe/[action].ts` success_url) |
 | `plan_upgrade` | same as purchase, only on tier change | from_plan, to_plan |
 | `subscription_canceled` | `Account.tsx` on status flip | plan, reason |
 

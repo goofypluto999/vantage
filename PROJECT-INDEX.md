@@ -536,6 +536,7 @@ From `HANDOFF.md` + this session's discoveries:
 - ✅ **Health endpoints** — `/api/health` + `/api/health-deep` (commit `6fc8bc2`). Multi-probe with 30s cache, authoritative Supabase + advisory Stripe/Resend/Gemini. Verified live.
 - ✅ **CI build gate** — `vercel-build` chains `tsc --noEmit` first (commit `e69808d`) so TS errors fail deploys at build step.
 - 🟡 **Mobile perf** — Lighthouse baseline 62/100 / LCP 5.8s. 4 commits shipped (`7159176` lazy-loaded routes, `8e3e432` WebP hero + preload, `c2efe49` Three.js out of modulepreload, `3eae14c` LCP preload dropped — H1 was true LCP). Re-measurement after these 4 not yet captured.
+- ✅ **GA4 `purchase` event has real `value`** — server bundled into `5eb2886` (success_url carries amount + currency), client completed in `5f39e33` (Dashboard reads + validates + ships only when finite). GA4 monetization reports now reflect real revenue.
 - ⏳ **Admin/CRM dashboard** — `api/admin` endpoint exists; no UI surface.
 - ⏳ **Email onboarding sequence** — Day-1 / Day-3 drip campaign (needs Vercel cron + idempotency).
 - ⏳ **2FA / TOTP** — Supabase Auth supports it; not wired. Defer until B2B asks.

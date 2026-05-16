@@ -174,11 +174,13 @@ Spec updated with COMPLETE header + verification ledger + stretch items (transac
 
 ## 🚧 Spawned follow-ups (chips on screen)
 
-1. **Mobile performance pass** — get Lighthouse Mobile 62 → 80+. Lazy-load Three.js, WebP images, LCP preload.
+1. ~~**Mobile performance pass** — Lighthouse Mobile 62 → 80+~~ — **chip shipped 4 commits** (`7159176` route lazy-load, `8e3e432` WebP hero + preload, `c2efe49` Three.js out of modulepreload, `3eae14c` LCP preload dropped — H1 was true LCP). Lighthouse re-measurement against baseline still pending.
 2. **OAuth `sign_up` double-count edge case** — instrument Day-0 confirmation-click path properly so we don't mis-fire.
-3. **`value`/`amount` for GA4 purchase event** — plumb amount through Stripe `success_url` query.
+3. ~~**`value`/`amount` for GA4 purchase event**~~ — **shipped in two halves**: server side bundled into `5eb2886` (PLAN_AMOUNTS map + amount+currency on success_url), client side `5f39e33` (Dashboard reads params, coerces, includes `value` only when finite). GA4 monetization reports will now show real revenue.
 4. ~~Zero-decimal currency in refund email~~ — **shipped (commit `3470c0d`)**.
-5. **Extend Sentry captureError** to `interview/[action]`, `rewrite-tone`, `stripe/[action]`. Pattern established in commit `3a8c514`.
+5. ~~**Extend Sentry captureError**~~ — **shipped (commit `5eb2886`)**. Wired into `interview/[action]`, `rewrite-tone`, `stripe/[action]`. 5 handlers total now have captureError on outer catch.
+
+**All spawned chips from this session are now closed.**
 
 ---
 
