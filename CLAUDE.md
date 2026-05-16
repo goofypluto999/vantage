@@ -21,12 +21,13 @@ Backend: Supabase Auth + Stripe (LIVE mode) + Vercel serverless API + Resend tra
 ## ⚠️ Reading order (do NOT skip)
 
 1. **This file (CLAUDE.md)** — current rules + tech stack
-2. **`SESSION-2026-05-15-PART-2.md`** ← the latest session ledger (GA4 funnel, transactional emails, Stripe LIVE confirmation, env hygiene, mobile baseline)
-3. **`SESSION-2026-05-15-COMPLETE.md`** — rebrand context (Vantage → AimVantage, DNS, JSON-LD)
-4. **`PROJECT-INDEX.md`** — comprehensive 22-section system inventory
-5. **`HANDOFF.md`** — original handoff (mostly superseded by PROJECT-INDEX)
-6. **`architecture-map.html`** — open in browser for visual map (35 nodes / 45 edges)
-7. **`WALLET-SPEC.md`** — wallet model is DONE; doc kept for historical reference
+2. **`BACKLOG.md`** — what's left to do (operator tasks + deferred code + strategic items + done-list)
+3. **`SESSION-2026-05-15-PART-2.md`** ← the latest session ledger (GA4 funnel, transactional emails, Stripe LIVE confirmation, env hygiene, mobile baseline)
+4. **`SESSION-2026-05-15-COMPLETE.md`** — rebrand context (Vantage → AimVantage, DNS, JSON-LD)
+5. **`PROJECT-INDEX.md`** — comprehensive 22-section system inventory
+6. **`HANDOFF.md`** — original handoff (mostly superseded by PROJECT-INDEX)
+7. **`architecture-map.html`** — open in browser for visual map (35 nodes / 45 edges)
+8. **`WALLET-SPEC.md`** — wallet model is DONE; doc kept for historical reference
 
 Before doing ANY non-trivial work, `git log --oneline -20` to see what's already shipped.
 
