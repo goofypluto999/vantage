@@ -531,11 +531,19 @@ From `HANDOFF.md` + this session's discoveries:
 - ✅ **Transactional emails** — Resend pipeline now used for 3 paths: purchase confirmation (`8af99e9`), low-balance warning (`18333a6`), refund confirmation (`233ef24`). Supabase Auth still uses Resend as SMTP relay.
 - ✅ **Refund webhook handler** — `charge.refunded` deducts tokens proportionally and sends a confirmation email (`233ef24`).
 - ✅ **Stripe LIVE mode** — confirmed live 2026-05-15. All secret-type env vars converted to Sensitive in Vercel.
-- ⏳ **Admin/CRM dashboard** — no visibility into signups, cancellations, MRR
-- ⏳ **Email onboarding sequence** — drip campaign for new signups
-- ⏳ **Mobile optimisation pass** — works on mobile but not polished
-- ⏳ **AggregateRating JSON-LD** — explicitly avoided (don't fake ratings — see `dist/blog/i-shipped-fake-review-schema-then-caught-myself`)
-- ⏳ **`unsafe-inline` removal from CSP** — MED-01 from LLM Council (~100-250 LOC)
+- ✅ **Audit log** — `audit_log` table (commit `5f0116d`) + `lib/audit/log.ts` helper. Migration applied to Supabase 2026-05-15. Wired on Stripe purchase + refund events.
+- ✅ **Server-side error tracking** — Sentry live in `foresay-labs` org as `aimvantage-server` project (commit `3a8c514` shipped helper + 2 critical handlers; `5eb2886` extended to 3 more = 5 total wired handlers).
+- ✅ **Health endpoints** — `/api/health` + `/api/health-deep` (commit `6fc8bc2`). Multi-probe with 30s cache, authoritative Supabase + advisory Stripe/Resend/Gemini. Verified live.
+- ✅ **CI build gate** — `vercel-build` chains `tsc --noEmit` first (commit `e69808d`) so TS errors fail deploys at build step.
+- 🟡 **Mobile perf** — Lighthouse baseline 62/100 / LCP 5.8s. 4 commits shipped (`7159176` lazy-loaded routes, `8e3e432` WebP hero + preload, `c2efe49` Three.js out of modulepreload, `3eae14c` LCP preload dropped — H1 was true LCP). Re-measurement after these 4 not yet captured.
+- ⏳ **Admin/CRM dashboard** — `api/admin` endpoint exists; no UI surface.
+- ⏳ **Email onboarding sequence** — Day-1 / Day-3 drip campaign (needs Vercel cron + idempotency).
+- ⏳ **2FA / TOTP** — Supabase Auth supports it; not wired. Defer until B2B asks.
+- ⏳ **AggregateRating JSON-LD** — explicitly avoided (don't fake ratings — see `dist/blog/i-shipped-fake-review-schema-then-caught-myself`).
+- ⏳ **`unsafe-inline` removal from CSP** — MED-01 from LLM Council (~100-250 LOC). Risky for inline JSON-LD.
+- ⏳ **Backend test suite** — none. Scaffold on request.
+- ⏳ **UptimeRobot 3 monitors** — endpoints ready + verified; point monitors at `/`, `/api/health`, `/api/health-deep` with keyword `"status":"ok"`.
+- ⏳ **Stripe restricted key swap** — `STRIPE_SECRET_KEY` still full-scope. Recommended hygiene; not blocking. ~15 min via Stripe dashboard.
 
 ---
 

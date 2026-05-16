@@ -178,7 +178,7 @@ vantage/
 
 ### Server (Plain, feature flags)
 - `ROAST_RATELIMIT_ENABLED`, `ROAST_DISABLED`
-- `SENTRY_DSN` (Sensitive when set — env-gates Sentry init. Helper no-ops if unset.)
+- `SENTRY_DSN` (Sensitive — active as of 2026-05-15, routes errors to `foresay-labs/aimvantage-server`. Helper no-ops if unset.)
 
 ### Client (Plain — VITE_* bundles into browser JS, intentionally public)
 - `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`
@@ -245,7 +245,9 @@ Wired event types:
 Event taxonomy (dotted namespace, soft convention): `auth.*` / `purchase.*` / `token.*` / `admin.*`.
 
 ### Sentry server-side — `lib/observability/sentry.ts`
-Env-gated. No-op without `SENTRY_DSN`. Activate by adding env var (Sensitive, Production + Preview). Recommend toggling **Spike Protection** in the Sentry project settings as belt-and-braces against quota nuke.
+**ACTIVE in production** as of 2026-05-15. Project: `aimvantage-server` in `foresay-labs` org, EU/Germany region (`de.sentry.io`). Dashboard: https://foresay-labs.sentry.io/projects/aimvantage-server/. DSN lives in Vercel as `SENTRY_DSN` (Sensitive, Production + Preview). Spike Protection ON at org level.
+
+Helper still env-gated — no-op if `SENTRY_DSN` is removed.
 
 `initSentry()` at handler entry, `captureError(err, context)` on outer catch. `captureMessage(msg, level, context)` for non-exception signals.
 
@@ -254,7 +256,14 @@ Defensive defaults:
 - `beforeSend` strips 4xx-tagged events + known noise patterns
 - Per-fingerprint dedupe (60s window, 200-entry ceiling, `route+msg` key) protects 5K-event free tier from bad-deploy spam loops
 
-Currently wired at: `api/stripe/webhook.ts`, `api/analyze/index.ts`. Follow-up chip: extend to `api/interview/[action].ts`, `api/rewrite-tone/index.ts`, `api/stripe/[action].ts`.
+**Wired in 5 handlers** (all token-charging or money-critical):
+- `api/stripe/webhook.ts` (commit `3a8c514`)
+- `api/analyze/index.ts` (commit `3a8c514`)
+- `api/interview/[action].ts` (commit `5eb2886`)
+- `api/rewrite-tone/index.ts` (commit `5eb2886`)
+- `api/stripe/[action].ts` (commit `5eb2886`)
+
+4xx-style branches (Insufficient tokens, JOB_PARSE_FAILED) early-return BEFORE capture — no Sentry noise for intentional 4xx.
 
 ### Health endpoints
 - `GET /api/health` — minimal "function alive" (instant 200, no probes). Cheapest UptimeRobot keyword target.

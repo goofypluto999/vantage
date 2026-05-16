@@ -199,11 +199,66 @@ Deferred (real but too big / wrong shape for Vantage's stack):
 - **Backend tests** — large. Scaffold on request.
 - **Slowapi-style auth rate limits** — Supabase Auth handles its own. Self-hosted endpoints already use Vercel Edge middleware sliding-window limits.
 
-Schema migration to apply manually in Supabase SQL Editor:
-```sql
--- Paste the audit_log block from database/schema.sql.
--- Idempotent (CREATE TABLE IF NOT EXISTS + CREATE INDEX IF NOT EXISTS).
-```
+---
+
+## 🟢 Sentry is LIVE in production (2026-05-15 late evening)
+
+After the 4-commit Foresay-import landed, drove the Sentry activation end-to-end via Claude-in-Chrome browser automation:
+
+**Sentry project**
+- Org: `foresay-labs` (shared org — alongside foresay-backend, foresay-frontend, waddaplay-backend, waddaplay-frontend)
+- Project: `aimvantage-server` — Node.js / vanilla (matches Vercel TS function setup)
+- Region: `de.sentry.io` (Germany / EU — GDPR-aligned, same region as Resend)
+- Dashboard: https://foresay-labs.sentry.io/projects/aimvantage-server/
+
+**Vercel env**
+- `SENTRY_DSN` added with the DE-region DSN, Sensitive flag ON, Production + Preview (Development excluded — Vercel requires this for Sensitive)
+- Triggered full redeploy from commit `5eb2886` — Ready in 7m 26s, 0 errors, 15 known chunk-size warnings (existing)
+
+**Spike Protection**
+- Already enabled at org level — covers all 5 Sentry projects automatically (aimvantage-server inherits)
+- Belt-and-braces protection against 5K/month free-tier quota nuke from a bad-deploy spam loop. Layered on top of our own `captureError` 60s-window fingerprint dedupe in `lib/observability/sentry.ts`.
+
+**End-to-end verification**
+- `/api/health-deep` hits live: returns `status: "ok"` with all 4 probes passing
+  - Supabase (authoritative): 200, 786ms cold / 328ms warm
+  - Stripe (advisory): 404 reachable, ~17-46ms
+  - Resend (advisory): 200, ~33-48ms
+  - Gemini (advisory): 404 reachable, ~43-60ms
+- 30s in-memory cache verified working: second hit within window returns identical timestamp + `cached: true`. Cache expires correctly after 30s.
+- Sentry init runs without crashing the function — confirmed by /api/health-deep returning 200, not 500.
+
+**Coverage extension (chip completed)** — `5eb2886`
+- Sentry `captureError` now wired in `api/interview/[action].ts`, `api/rewrite-tone/index.ts`, `api/stripe/[action].ts` outer catches in addition to webhook + analyze.
+- All 4xx-style validation branches (Insufficient tokens, JOB_PARSE_FAILED) early-return BEFORE capture — no Sentry noise for intentional 4xx.
+
+**Mobile perf chip — partial ship** — `7159176` / `8e3e432` / `c2efe49` / `3eae14c`
+- React.lazy split on Login/Register/ForgotPassword/ResetPassword/Dashboard/Account/Pricing + 60 other components (only LandingPage stays eager — it IS the LCP route).
+- Hero PNG swapped for WebP with `<link rel="preload" fetchpriority="high">`.
+- Three.js chunk excluded from modulepreload.
+- LCP preload dropped after measurement showed the H1 text node was the real LCP element (preloading the hero image was actually slowing the real LCP).
+- **Lighthouse re-measurement not yet done** — should pull a fresh score now that all 4 perf commits are live to see the delta from baseline (Performance 62, LCP 5.8s, CLS 0). Spawn a chip for this if not already done.
+
+**Schema migration applied** — user ran the `audit_log` block in Supabase SQL Editor → "Success". Table + 4 indexes + RLS now live; `logAuditEvent()` writes will start landing on next purchase / refund webhook fire.
+
+---
+
+## ✅ Foresay cross-pollination status: complete
+
+| Foresay pattern | Vantage status |
+|---|---|
+| `vercel-build` tsc gate | ✅ shipped |
+| `/api/health-deep` | ✅ shipped + verified live |
+| `audit_log` table + helper + first call sites | ✅ shipped + migration applied + table live |
+| Sentry server-side | ✅ shipped + project live in DE region + coverage extended to 5 critical handlers |
+| 2FA TOTP / recovery codes | ⏭ deferred — spawn when first B2B customer asks |
+| CSP `unsafe-inline` removal | ⏭ deferred — needs focused session |
+| Backend tests | ⏭ deferred — large scope |
+| Slowapi-style auth limits | n/a — covered by Supabase Auth + Vercel Edge middleware |
+| Stripe restricted key swap | ⏭ user task — recommended hygiene, not blocking |
+| UptimeRobot 3 monitors | ⏭ user task — endpoints live + ready, point monitors at https://aimvantage.uk/api/health-deep with keyword `"status":"ok"` |
+
+**Net result:** Vantage now matches Foresay's observability + audit + health-probe maturity bar, on a different stack (Vercel TS vs FastAPI). Vantage retains its own advantages — multiplexer pattern, atomic SQL RPC wallet, Stripe webhook idempotency table, /api/roast 7-layer abuse defense, threshold-crossing email pattern — which Foresay should consider importing.
 
 ---
 
