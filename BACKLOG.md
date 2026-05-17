@@ -22,13 +22,22 @@ Last reviewed: 2026-05-16
 
 ---
 
-## 🚨 KNOWN-BROKEN — must fix before any real customer load
+## ✅ RESOLVED (2026-05-17) — Vercel NFT bundling odyssey
 
-| # | Item | Severity | Reason |
-|---|---|---|---|
-| K1 | **Cross-file helpers (Sentry, Resend, audit) inline-stubbed in 5 handlers as of dc5375e** | 🟡 zero-observability + zero-emails, NOT user-blocking | 5 attempts to bundle `lib/`, `api/_lib/`, `api/shared/`, `includeFiles` all crashed prod with `ERR_MODULE_NOT_FOUND`. Stubs let the tool actually serve requests. Real fix needs a different strategy (inline real helpers per-function / workspace dep / single dispatcher function). Spawned chip on screen. **Tomorrow priority.** |
+**K1 (was 🚨 critical): Cross-file helpers** — RESOLVED via commit `d4a769f` (Strategy B). 6-attempt postmortem:
+1. `db922c5` hotfix stub — tool worked, observability disabled
+2. `b70db4e` static `@sentry/node` import — 500
+3. `2e33bcd` `lib/` → `api/_lib/` — 500
+4. `c178f86` `vercel.json functions.includeFiles` — 500
+5. `6b36048` `api/_lib/` → `api/shared/` — 500
+6. `dc5375e` Plan D inline stubs — 10/10 (no observability)
+7. **`d4a769f` Strategy B: inline REAL helpers per-function — 10/10 + Sentry live**
 
-When fixing K1, smoke test MUST be 10/10 (run `npm run smoke`) AND Sentry must capture a deliberately-triggered prod error to confirm.
+Final verdict: Vercel's NFT only bundles via `node_modules`. Cross-tree relative imports inside `/api/` are never packaged into sibling function bundles, regardless of underscore prefix, static vs dynamic imports, or `includeFiles` config. Two viable strategies remain documented in case this needs revisiting:
+- **B (chosen)** — inline real helper code per-function. Self-contained, ~150 LOC duplicated per file, but bundling impossible to get wrong.
+- **A (alternative)** — workspace package via `package.json "file:"` protocol. Clean, no duplication, but adds an `npm install` symlink dependency.
+
+Smoke test (`npm run smoke`) is the regression guard. Run after EVERY API change. Catches this whole class of bug in seconds.
 
 ## 🤖 CODE-SIDE DEFERRED (real but not urgent — defer pile)
 
