@@ -24,11 +24,11 @@
 
 import { GoogleGenAI } from '@google/genai';
 import { createHash } from 'crypto';
-// Restored 2026-05-17 — proper Sentry helper. The previous broken version
-// used dynamic require('@sentry/node') inside a function, which Vercel NFT
-// couldn't bundle (silent 500s for 2 days, see hotfix db922c5). lib/observability/sentry.ts
-// now uses a top-of-file static import — properly bundles, properly observable.
-import { initSentry, captureError } from '../shared/observability/sentry';
+// 2026-05-17 PLAN D: cross-file helper imports outside this function's
+// own tree fail Vercel NFT bundling (4 attempts: lib/, api/_lib/,
+// api/shared/, includeFiles config — see BACKLOG). Inline-stubbed.
+function initSentry(): void { /* stub */ }
+function captureError(_err: unknown, _context?: Record<string, unknown>): void { /* stub */ }
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
 const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || '';

@@ -1,9 +1,9 @@
 // API endpoint for cover letter tone rewriting
 // Vercel serverless function — costs 1 credit
 import { GoogleGenAI } from '@google/genai';
-// Restored 2026-05-17 — see lib/observability/sentry.ts header for the
-// previous-bug postmortem. Static @sentry/node import now, properly bundled.
-import { initSentry, captureError } from '../shared/observability/sentry';
+// 2026-05-17 PLAN D — same inline-stub approach as sibling functions.
+function initSentry(): void { /* stub */ }
+function captureError(_err: unknown, _context?: Record<string, unknown>): void { /* stub */ }
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
 

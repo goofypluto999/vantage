@@ -2,14 +2,33 @@
 // Vercel serverless function
 
 import Stripe from 'stripe';
-// 2026-05-17 (PROPER FIX 2nd round): all three helpers moved from lib/* to
-// api/_lib/*. lib/email/resend.ts had been ALSO silently broken in production
-// — NFT doesn't bundle ANY lib/* file into serverless function output, not
-// just the dynamic-require one. The webhook never noticed because Stripe
-// hasn't fired a real event since the import landed. Smoke test caught it.
-import { sendEmail, wrapEmailBody } from '../shared/email/resend';
-import { logAuditEvent } from '../shared/audit/log';
-import { initSentry, captureError } from '../shared/observability/sentry';
+// 2026-05-17 PLAN D: every cross-file helper import from outside this
+// file's function tree fails Vercel NFT bundling (4 attempts proven broken
+// in production logs: lib/, api/_lib/, api/shared/, vercel.json includeFiles
+// config). All helpers inline-stubbed below. Trade-offs:
+//   - No Sentry capture (already true — Sentry was the bug)
+//   - No purchase/refund email (no real purchases yet to lose)
+//   - No audit log (no events worth auditing yet)
+// Proper structural fix queued for next session (most likely: inline the
+// helper logic directly into each function file as real implementations,
+// OR consolidate to a single function with internal dispatch).
+function initSentry(): void { /* stub */ }
+function captureError(_err: unknown, _context?: Record<string, unknown>): void { /* stub */ }
+async function sendEmail(_args: { to: string; subject: string; html: string; text?: string; from?: string; replyTo?: string; tag?: string }): Promise<{ ok: boolean; id?: string; error?: string }> {
+  return { ok: false, error: 'stubbed_until_bundling_fix' };
+}
+function wrapEmailBody(_headline: string, _innerHtml: string): string { return ''; }
+async function logAuditEvent(_ev: {
+  event_type: string;
+  actor_id?: string | null;
+  actor_email?: string | null;
+  ip_address?: string | null;
+  user_agent?: string | null;
+  resource_type?: string | null;
+  resource_id?: string | null;
+  detail?: string | null;
+  metadata?: Record<string, unknown> | null;
+}): Promise<void> { /* stub */ }
 
 // Disable Vercel's default body parser — Stripe webhook signature
 // verification requires the raw request body, not a parsed JSON object.
@@ -863,18 +882,11 @@ export default async function handler(request: any, response: any) {
               <p>Funds typically arrive in your card account within 5–10 working days — Stripe's own confirmation email will have the exact ETA for your card issuer.</p>
               <p style="font-size:13px;color:#8a85a3;margin-top:24px;">If you didn't expect this refund, reply to this email and a human (Gio) will look into it.</p>
             `;
-            void import('../shared/email/resend').then(({ sendEmail, wrapEmailBody }) =>
-              sendEmail({
-                to: buyerEmail,
-                subject: `Refund processed — ${currencyLabel} ${refundedMajor}`,
-                html: wrapEmailBody('Refund processed', body),
-                tag: 'refund_processed',
-              })
-            ).then((result) => {
-              if (result && !result.ok) {
-                console.warn(`Refund email failed for user ${profile.id}: ${result.error}`);
-              }
-            }).catch(() => { /* never block the webhook response */ });
+            // STUBBED 2026-05-17 (Plan D): dynamic import would NFT-fail.
+            // Logging-only until bundling fix lands. Buyer still gets
+            // Stripe's own refund-notification email; ours is supplemental.
+            console.log(`webhook: refund email skipped (stubbed) for charge ${charge.id}, buyer ${buyerEmail}, ${currencyLabel} ${refundedMajor}`);
+            void body; // referenced to satisfy strict-unused warnings
           }
         }
         break;

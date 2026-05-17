@@ -14,9 +14,9 @@
 // Net effect: 4 stripe functions → 2 (this file + webhook). Saves 2 slots.
 
 import Stripe from 'stripe';
-// Restored 2026-05-17 — proper Sentry helper after dynamic-require bundling
-// bug. See lib/observability/sentry.ts header for postmortem.
-import { initSentry, captureError } from '../shared/observability/sentry';
+// 2026-05-17 PLAN D — inline-stub. See api/analyze for the full postmortem.
+function initSentry(): void { /* stub */ }
+function captureError(_err: unknown, _context?: Record<string, unknown>): void { /* stub */ }
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '');
 

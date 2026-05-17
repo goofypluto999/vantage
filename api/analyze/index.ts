@@ -1,9 +1,15 @@
 // API endpoint for job analysis
 // Vercel serverless function - handles Gemini AI calls securely
 import { GoogleGenAI } from '@google/genai';
-// Restored 2026-05-17 — proper Sentry helper after dynamic-require bundling
-// bug. See lib/observability/sentry.ts header for full postmortem.
-import { initSentry, captureError } from '../shared/observability/sentry';
+// 2026-05-17 PLAN D: every cross-file helper import from outside this file's
+// own function-tree fails Vercel NFT bundling (tried lib/, api/_lib/,
+// api/shared/, plus vercel.json `includeFiles` — all 4 attempts deployed
+// with ERR_MODULE_NOT_FOUND at runtime). Pragmatic fix: stub the helpers
+// inline so each function file is self-contained and bundling is impossible
+// to get wrong. Zero Sentry observability accepted as the cost of "tool
+// works"; proper structural fix queued as a chip for the next session.
+function initSentry(): void { /* stub */ }
+function captureError(_err: unknown, _context?: Record<string, unknown>): void { /* stub */ }
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
 
@@ -986,25 +992,12 @@ export default async function handler(request: any, response: any) {
       typeof user.email === 'string' &&
       user.email.length > 0
     ) {
-      // Fire-and-forget: must never delay or fail the analyze response.
-      void import('../shared/email/resend').then(({ sendEmail, wrapEmailBody }) => {
-        const body = `
-          <p>You've got <strong style="color:#ffffff;">${newBalance} token${newBalance === 1 ? '' : 's'}</strong> left in your AimVantage wallet.</p>
-          <p>That's enough for ${newBalance} more prep pack${newBalance === 1 ? '' : 's'}. A top-up at any tier adds to your existing balance — nothing expires.</p>
-          <p style="margin:20px 0;"><a href="https://aimvantage.uk/pricing" style="display:inline-block;padding:12px 20px;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#ffffff;text-decoration:none;border-radius:8px;font-weight:600;">Top up tokens →</a></p>
-          <p style="font-size:13px;color:#8a85a3;margin-top:24px;">Starter is £5 / $5 for 20 tokens, one-time, never expire. Pro and Premium are monthly subscriptions if you want a steady refill.</p>
-        `;
-        return sendEmail({
-          to: user.email,
-          subject: `${newBalance} token${newBalance === 1 ? '' : 's'} left in your AimVantage wallet`,
-          html: wrapEmailBody('Heads up — your token balance is low', body),
-          tag: 'low_balance',
-        });
-      }).then((result) => {
-        if (result && !result.ok) {
-          console.warn(`analyze: low-balance email failed — ${result.error}`);
-        }
-      }).catch(() => { /* never block the success path */ });
+      // STUBBED 2026-05-17 (Plan D): dynamic import of '../shared/email/resend'
+      // would ERR_MODULE_NOT_FOUND at runtime (same Vercel NFT bundling failure
+      // as the static imports — see header comment). Logged only for now; no
+      // user-visible regression because zero paid users have crossed the
+      // 3-token threshold yet. Re-enable when proper bundling fix lands.
+      console.log(`analyze: low-balance email skipped (stubbed) for user ${user.id}, balance now ${newBalance}`);
     }
 
     return response.status(200).json({
