@@ -537,6 +537,9 @@ From `HANDOFF.md` + this session's discoveries:
 - ✅ **CI build gate** — `vercel-build` chains `tsc --noEmit` first (commit `e69808d`) so TS errors fail deploys at build step.
 - ✅ **Mobile perf** — Lighthouse re-measurement 2026-05-16: **Performance 79/100** (was 62, +17). LCP **3.0s** (was 5.8s, −2.8s). FCP 2.9s (was 4.5s, −1.6s). CLS 0.036 (still green). Accessibility 100, SEO 100, Best Practices 92. Mobile-first paid-acquisition strategy is now viable. To reach 90+ would need: forced-reflow fix, render-blocking-3rd-party reduction, more main-thread work splitting.
 - ✅ **GA4 `purchase` event has real `value`** — server bundled into `5eb2886` (success_url carries amount + currency), client completed in `5f39e33` (Dashboard reads + validates + ships only when finite). GA4 monetization reports now reflect real revenue.
+- ✅ **Server observability (Sentry / Resend / audit_log)** — RESOLVED 2026-05-17 via Strategy B (commit `d4a769f`). After 6-attempt bundling postmortem (lib/, api/_lib/, api/shared/, `includeFiles`, underscore renames — all failed with `ERR_MODULE_NOT_FOUND`), all helpers are inlined real per-function. See `SESSION-2026-05-17-BUNDLING-ODYSSEY.md` for the full forensic trail.
+- ✅ **Post-deploy smoke test** — `scripts/smoke-test-deploy.mjs` + `npm run smoke` alias. 10 critical endpoints checked for JSON body + expected status. Catches "Vercel Ready but crashing" deploys in seconds. Must be 10/10 after every API change.
+- ✅ **Page-flash UX fix** — `null` Suspense fallback in `App.tsx` (commit `8070129`). SSG-prerendered routes no longer get wiped to a colored spinner during lazy-chunk hydration.
 - ⏳ **Admin/CRM dashboard** — `api/admin` endpoint exists; no UI surface.
 - ⏳ **Email onboarding sequence** — Day-1 / Day-3 drip campaign (needs Vercel cron + idempotency).
 - ⏳ **2FA / TOTP** — Supabase Auth supports it; not wired. Defer until B2B asks.

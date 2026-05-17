@@ -22,14 +22,23 @@ Backend: Supabase Auth + Stripe (LIVE mode) + Vercel serverless API + Resend tra
 
 1. **This file (CLAUDE.md)** — current rules + tech stack
 2. **`BACKLOG.md`** — what's left to do (operator tasks + deferred code + strategic items + done-list)
-3. **`SESSION-2026-05-15-PART-2.md`** ← the latest session ledger (GA4 funnel, transactional emails, Stripe LIVE confirmation, env hygiene, mobile baseline)
-4. **`SESSION-2026-05-15-COMPLETE.md`** — rebrand context (Vantage → AimVantage, DNS, JSON-LD)
-5. **`PROJECT-INDEX.md`** — comprehensive 22-section system inventory
-6. **`HANDOFF.md`** — original handoff (mostly superseded by PROJECT-INDEX)
-7. **`architecture-map.html`** — open in browser for visual map (35 nodes / 45 edges)
-8. **`WALLET-SPEC.md`** — wallet model is DONE; doc kept for historical reference
+3. **`SESSION-2026-05-17-BUNDLING-ODYSSEY.md`** ← LATEST — Vercel NFT bundling postmortem (6 attempts), Strategy B canonical pattern, smoke test infrastructure
+4. **`SESSION-2026-05-15-PART-2.md`** — GA4 funnel, transactional emails, Stripe LIVE confirmation, env hygiene, mobile baseline
+5. **`SESSION-2026-05-15-COMPLETE.md`** — rebrand context (Vantage → AimVantage, DNS, JSON-LD)
+6. **`PROJECT-INDEX.md`** — comprehensive 22-section system inventory
+7. **`HANDOFF.md`** — original handoff (mostly superseded by PROJECT-INDEX)
+8. **`architecture-map.html`** — open in browser for visual map (35 nodes / 45 edges)
+9. **`WALLET-SPEC.md`** — wallet model is DONE; doc kept for historical reference
 
-Before doing ANY non-trivial work, `git log --oneline -20` to see what's already shipped.
+Before doing ANY non-trivial work: `git log --oneline -30` to see what's already shipped AND `npm run smoke` to confirm the deploy is healthy.
+
+### Critical Vercel constraint (learned the hard way 2026-05-17)
+
+**Vercel's NFT (Node File Trace) only bundles files via `node_modules`. Cross-tree relative imports inside `/api/` are NEVER packaged into sibling function bundles.** Five different cross-tree strategies all failed (lib/, api/_lib/, api/shared/, `includeFiles` config, underscore-prefix). The only reliable patterns are:
+1. **Inline helpers per-function** (Strategy B — current pattern, see SESSION-2026-05-17 for details)
+2. **Workspace package via `package.json "file:./packages/..."` protocol** (Strategy A — deferred)
+
+If you write a new helper and import it across function trees, the deploy will mark "Ready" but every consumer endpoint will 500 at request time. Tsc won't catch this. Vercel's build logs won't catch this. **Only `npm run smoke` against the deployed URL catches it.**
 
 ---
 
