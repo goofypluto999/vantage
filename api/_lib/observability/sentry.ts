@@ -39,7 +39,7 @@
  * from bad-deploy spam loops.
  *
  * Use:
- *   import { initSentry, captureError } from '../../lib/observability/sentry';
+ *   import { initSentry, captureError } from '../_lib/observability/sentry';
  *   initSentry();                  // call once at top of handler
  *   ...
  *   try { ... } catch (err) {

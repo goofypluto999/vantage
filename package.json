@@ -15,7 +15,9 @@
     "seo:feeds": "node scripts/generate-feeds.mjs",
     "seo:ping": "node scripts/indexnow-ping.mjs",
     "preflight": "node scripts/preflight.mjs",
-    "preflight:fast": "node scripts/preflight.mjs --fast"
+    "preflight:fast": "node scripts/preflight.mjs --fast",
+    "smoke": "node scripts/smoke-test-deploy.mjs",
+    "smoke:preview": "node scripts/smoke-test-deploy.mjs"
   },
   "dependencies": {
     "@google/genai": "^1.29.0",

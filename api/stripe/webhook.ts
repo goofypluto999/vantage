@@ -2,12 +2,14 @@
 // Vercel serverless function
 
 import Stripe from 'stripe';
-import { sendEmail, wrapEmailBody } from '../../lib/email/resend';
-import { logAuditEvent } from '../../lib/audit/log';
-// Restored 2026-05-17 — proper Sentry helper. Confirmed theory of the bug:
-// only the file that used dynamic require() broke. resend/audit/log both
-// use static imports and bundled correctly the whole time.
-import { initSentry, captureError } from '../../lib/observability/sentry';
+// 2026-05-17 (PROPER FIX 2nd round): all three helpers moved from lib/* to
+// api/_lib/*. lib/email/resend.ts had been ALSO silently broken in production
+// — NFT doesn't bundle ANY lib/* file into serverless function output, not
+// just the dynamic-require one. The webhook never noticed because Stripe
+// hasn't fired a real event since the import landed. Smoke test caught it.
+import { sendEmail, wrapEmailBody } from '../_lib/email/resend';
+import { logAuditEvent } from '../_lib/audit/log';
+import { initSentry, captureError } from '../_lib/observability/sentry';
 
 // Disable Vercel's default body parser — Stripe webhook signature
 // verification requires the raw request body, not a parsed JSON object.
@@ -861,7 +863,7 @@ export default async function handler(request: any, response: any) {
               <p>Funds typically arrive in your card account within 5–10 working days — Stripe's own confirmation email will have the exact ETA for your card issuer.</p>
               <p style="font-size:13px;color:#8a85a3;margin-top:24px;">If you didn't expect this refund, reply to this email and a human (Gio) will look into it.</p>
             `;
-            void import('../../lib/email/resend').then(({ sendEmail, wrapEmailBody }) =>
+            void import('../_lib/email/resend').then(({ sendEmail, wrapEmailBody }) =>
               sendEmail({
                 to: buyerEmail,
                 subject: `Refund processed — ${currencyLabel} ${refundedMajor}`,

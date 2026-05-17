@@ -3,7 +3,7 @@
 import { GoogleGenAI } from '@google/genai';
 // Restored 2026-05-17 — proper Sentry helper after dynamic-require bundling
 // bug. See lib/observability/sentry.ts header for full postmortem.
-import { initSentry, captureError } from '../../lib/observability/sentry';
+import { initSentry, captureError } from '../_lib/observability/sentry';
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
 
@@ -987,7 +987,7 @@ export default async function handler(request: any, response: any) {
       user.email.length > 0
     ) {
       // Fire-and-forget: must never delay or fail the analyze response.
-      void import('../../lib/email/resend').then(({ sendEmail, wrapEmailBody }) => {
+      void import('../_lib/email/resend').then(({ sendEmail, wrapEmailBody }) => {
         const body = `
           <p>You've got <strong style="color:#ffffff;">${newBalance} token${newBalance === 1 ? '' : 's'}</strong> left in your AimVantage wallet.</p>
           <p>That's enough for ${newBalance} more prep pack${newBalance === 1 ? '' : 's'}. A top-up at any tier adds to your existing balance — nothing expires.</p>

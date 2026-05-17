@@ -16,7 +16,7 @@
 import Stripe from 'stripe';
 // Restored 2026-05-17 — proper Sentry helper after dynamic-require bundling
 // bug. See lib/observability/sentry.ts header for postmortem.
-import { initSentry, captureError } from '../../lib/observability/sentry';
+import { initSentry, captureError } from '../_lib/observability/sentry';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '');
 

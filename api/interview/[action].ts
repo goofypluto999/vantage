@@ -28,7 +28,7 @@ import { createHash } from 'crypto';
 // used dynamic require('@sentry/node') inside a function, which Vercel NFT
 // couldn't bundle (silent 500s for 2 days, see hotfix db922c5). lib/observability/sentry.ts
 // now uses a top-of-file static import — properly bundles, properly observable.
-import { initSentry, captureError } from '../../lib/observability/sentry';
+import { initSentry, captureError } from '../_lib/observability/sentry';
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
 const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || '';
