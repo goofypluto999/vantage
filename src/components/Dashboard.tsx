@@ -550,18 +550,18 @@ export default function Dashboard() {
   // Resolves user complaint 2026-05-12: 'forces user to waste a token
   // first before being able to use the tool with the job search'.
   type CvUploadStage = 'idle' | 'extracting' | 'saving' | 'done' | 'error' | 'unsupported';
-  const [cvUploadStage, setCvUploadStage] = useState<CvUploadStage>(() => (profile?.cv_summary ? 'done' : 'idle'));
+  // Always start 'idle'. Bug fix 2026-05-17: previously initialized to 'done'
+  // when profile.cv_summary existed from a prior session. That made the
+  // "CV ready ✓ — AI Job Search will now score against your profile" banner
+  // show on every page reload, even though `cvFile` was null and the user
+  // couldn't actually run a prep pack without re-uploading. Banner now
+  // strictly reflects the CURRENT-SESSION upload pipeline state.
+  // The 2026-05-12 "AI Job Search uses my saved profile" reassurance is
+  // surfaced separately (see savedCvSummaryHint below) without misleading
+  // about the analyze flow's needs.
+  const [cvUploadStage, setCvUploadStage] = useState<CvUploadStage>('idle');
   const [cvUploadError, setCvUploadError] = useState<string | null>(null);
   const cvUploadFileRef = useRef<File | null>(null);
-
-  // Keep stage in sync with profile.cv_summary — if a refresh comes in
-  // and reveals existing cv_summary, mark done.
-  useEffect(() => {
-    if (profile?.cv_summary && cvUploadStage === 'idle') {
-      setCvUploadStage('done');
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profile?.cv_summary]);
 
   // Watch cvFile + auto-extract + save. Throttled: each new file replaces
   // the in-flight job via cvUploadFileRef. PDF / DOCX / TXT supported
@@ -1622,12 +1622,31 @@ export default function Dashboard() {
                 );
               })()}
 
-              {/* CV upload status: extract→save animation + green confirmation
-                  once cv_summary is on the profile. Renders only when cvFile
-                  has been touched OR profile already has cv_summary. Bridges
-                  the user complaint that there was no signal the CV had been
-                  saved for AI Job Search (2026-05-12). */}
-              {(cvFile || profile?.cv_summary) && (
+              {/* CV upload status banner. ONLY shows when there's a cvFile
+                  loaded in THIS session (idle = "loaded but not yet processed",
+                  extracting/saving = in flight, done = profile updated,
+                  error/unsupported = failed). Never shows for "saved profile
+                  from a prior session" — that's a separate hint below that
+                  doesn't mislead about the analyze flow's needs.
+                  Bug fix 2026-05-17: previously fired on every reload because
+                  the cv_summary on the profile was conflated with a current
+                  session upload. */}
+              {/* Returning-user hint: when there's NO current-session CV but
+                  the profile has a saved cv_summary from a prior visit, tell
+                  the user honestly: their AI-Job-Search profile is saved, but
+                  they still need to upload a CV file to run a new prep pack.
+                  Replaces the misleading green "CV ready ✓" banner that used
+                  to fire on every reload pre-fix. */}
+              {!cvFile && profile?.cv_summary && (
+                <div className="mb-4 p-3 rounded-xl border border-violet-500/30 bg-violet-500/8 flex items-start gap-3">
+                  <FileText className="w-4 h-4 text-violet-300 flex-shrink-0 mt-0.5" aria-hidden="true" />
+                  <p className="text-xs text-violet-100/85 leading-relaxed">
+                    <strong className="text-violet-200">Your CV profile is saved</strong> from a previous visit — AI Job Search will score against it. To run a new prep pack here, upload your CV file again in Step 1 below.
+                  </p>
+                </div>
+              )}
+
+              {cvFile && (
                 <div className={`mb-4 p-3 rounded-xl border-2 flex items-center gap-3 ${
                   cvUploadStage === 'done' ? 'bg-emerald-500/15 border-emerald-500/50' :
                   cvUploadStage === 'error' || cvUploadStage === 'unsupported' ? 'bg-rose-500/15 border-rose-500/50' :
