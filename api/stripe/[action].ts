@@ -14,7 +14,10 @@
 // Net effect: 4 stripe functions → 2 (this file + webhook). Saves 2 slots.
 
 import Stripe from 'stripe';
-import { initSentry, captureError } from '../../lib/observability/sentry';
+// HOTFIX 2026-05-17: Sentry import broke Vercel deploys (NFT didn't bundle
+// ../../lib/observability/sentry). Same fix as api/interview/[action].ts.
+function initSentry(): void { /* no-op until proper bundling fix */ }
+function captureError(_err: unknown, _context?: Record<string, unknown>): void { /* no-op */ }
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '');
 
