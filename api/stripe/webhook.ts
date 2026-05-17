@@ -4,12 +4,10 @@
 import Stripe from 'stripe';
 import { sendEmail, wrapEmailBody } from '../../lib/email/resend';
 import { logAuditEvent } from '../../lib/audit/log';
-// HOTFIX 2026-05-17: Sentry import broke Vercel deploys (NFT didn't bundle
-// ../../lib/observability/sentry — likely the dynamic require('@sentry/node')
-// in that file made NFT skip it). lib/email/resend and lib/audit/log work
-// fine because they use only static imports.
-function initSentry(): void { /* no-op until proper bundling fix */ }
-function captureError(_err: unknown, _context?: Record<string, unknown>): void { /* no-op */ }
+// Restored 2026-05-17 — proper Sentry helper. Confirmed theory of the bug:
+// only the file that used dynamic require() broke. resend/audit/log both
+// use static imports and bundled correctly the whole time.
+import { initSentry, captureError } from '../../lib/observability/sentry';
 
 // Disable Vercel's default body parser — Stripe webhook signature
 // verification requires the raw request body, not a parsed JSON object.

@@ -24,15 +24,11 @@
 
 import { GoogleGenAI } from '@google/genai';
 import { createHash } from 'crypto';
-// HOTFIX 2026-05-17: Vercel NFT didn't bundle ../../lib/observability/sentry
-// into this function's deployment → ERR_MODULE_NOT_FOUND 500s on every
-// /api/interview/jobsearch. Sentry dashboard had ZERO captured events anyway
-// (probably crashing pre-init too) — observability gain was zero, breakage
-// was real. Inline no-ops keep call sites unchanged so Sentry can be
-// re-enabled cleanly later (move lib/observability/ → api/_lib/ OR use
-// vercel.json functions.includeFiles).
-function initSentry(): void { /* no-op until proper bundling fix */ }
-function captureError(_err: unknown, _context?: Record<string, unknown>): void { /* no-op */ }
+// Restored 2026-05-17 — proper Sentry helper. The previous broken version
+// used dynamic require('@sentry/node') inside a function, which Vercel NFT
+// couldn't bundle (silent 500s for 2 days, see hotfix db922c5). lib/observability/sentry.ts
+// now uses a top-of-file static import — properly bundles, properly observable.
+import { initSentry, captureError } from '../../lib/observability/sentry';
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
 const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || '';

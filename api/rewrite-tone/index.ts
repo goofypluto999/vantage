@@ -1,10 +1,9 @@
 // API endpoint for cover letter tone rewriting
 // Vercel serverless function — costs 1 credit
 import { GoogleGenAI } from '@google/genai';
-// HOTFIX 2026-05-17: Sentry import broke Vercel deploys (NFT didn't bundle
-// ../../lib/observability/sentry). Same fix as api/interview/[action].ts.
-function initSentry(): void { /* no-op until proper bundling fix */ }
-function captureError(_err: unknown, _context?: Record<string, unknown>): void { /* no-op */ }
+// Restored 2026-05-17 — see lib/observability/sentry.ts header for the
+// previous-bug postmortem. Static @sentry/node import now, properly bundled.
+import { initSentry, captureError } from '../../lib/observability/sentry';
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
 
