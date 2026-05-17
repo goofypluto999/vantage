@@ -1,15 +1,146 @@
 // API endpoint for job analysis
 // Vercel serverless function - handles Gemini AI calls securely
 import { GoogleGenAI } from '@google/genai';
-// 2026-05-17 PLAN D: every cross-file helper import from outside this file's
-// own function-tree fails Vercel NFT bundling (tried lib/, api/_lib/,
-// api/shared/, plus vercel.json `includeFiles` — all 4 attempts deployed
-// with ERR_MODULE_NOT_FOUND at runtime). Pragmatic fix: stub the helpers
-// inline so each function file is self-contained and bundling is impossible
-// to get wrong. Zero Sentry observability accepted as the cost of "tool
-// works"; proper structural fix queued as a chip for the next session.
-function initSentry(): void { /* stub */ }
-function captureError(_err: unknown, _context?: Record<string, unknown>): void { /* stub */ }
+import * as Sentry from '@sentry/node';
+import type { ErrorEvent, EventHint } from '@sentry/node';
+import { Resend } from 'resend';
+
+// ─── INLINED HELPERS ─────────────────────────────────────────────────────
+// Vercel's NFT (Node File Trace) bundler does NOT follow static imports of
+// sibling .ts files across the /api/ tree — 5 attempts to share these via
+// lib/, api/_lib/, api/shared/, vercel.json includeFiles, and underscore
+// renames all produced ERR_MODULE_NOT_FOUND at runtime. Inlined per-handler
+// instead. Each consumer is now self-contained; bundling is impossible to
+// get wrong. Trade-off: helper updates touch up to 5 files. Originals
+// preserved in git for reference: commit b70db4e (Sentry), 3a8c514 (wired).
+// ──────────────────────────────────────────────────────────────────────────
+
+let _sentryInit = false;
+const _SENTRY_DSN = (process.env.SENTRY_DSN || '').trim();
+const _SENTRY_ENV = (process.env.VERCEL_ENV || process.env.NODE_ENV || 'development').trim();
+const _SENTRY_RELEASE = (process.env.VERCEL_GIT_COMMIT_SHA || 'unknown').slice(0, 12);
+const _SENTRY_DEDUPE_MS = 60_000;
+const _sentrySeen = new Map<string, number>();
+
+function initSentry(): void {
+  if (_sentryInit) return;
+  if (!_SENTRY_DSN) return;
+  Sentry.init({
+    dsn: _SENTRY_DSN,
+    environment: _SENTRY_ENV,
+    release: _SENTRY_RELEASE,
+    tracesSampleRate: 0,
+    beforeSend(event: ErrorEvent, _hint: EventHint): ErrorEvent | null {
+      const status = (event.extra as Record<string, unknown> | undefined)?.status as number | undefined;
+      if (typeof status === 'number' && status >= 400 && status < 500) return null;
+      const msg = String(event.message || event.exception?.values?.[0]?.value || '');
+      if (/aborted: timed out/i.test(msg)) return null;
+      if (/Invalid token: not in valid range/i.test(msg)) return null;
+      return event;
+    },
+  });
+  _sentryInit = true;
+}
+
+function _sentryFingerprint(err: unknown, context?: Record<string, unknown>): string {
+  const route = (context?.route as string | undefined) || 'unknown';
+  const msg = err instanceof Error
+    ? err.message
+    : typeof err === 'string'
+      ? err
+      : (() => { try { return JSON.stringify(err); } catch { return String(err); } })();
+  return `${route}:${msg.slice(0, 120)}`;
+}
+
+function _sentryShouldSend(fp: string): boolean {
+  const now = Date.now();
+  const last = _sentrySeen.get(fp);
+  if (last && now - last < _SENTRY_DEDUPE_MS) return false;
+  _sentrySeen.set(fp, now);
+  if (_sentrySeen.size > 200) {
+    const cutoff = now - _SENTRY_DEDUPE_MS;
+    for (const [k, t] of _sentrySeen) if (t < cutoff) _sentrySeen.delete(k);
+  }
+  return true;
+}
+
+function captureError(err: unknown, context?: Record<string, unknown>): void {
+  if (!_sentryInit) return;
+  if (!_sentryShouldSend(_sentryFingerprint(err, context))) return;
+  try {
+    Sentry.withScope((scope) => {
+      if (context) for (const [k, v] of Object.entries(context)) scope.setExtra(k, v as never);
+      Sentry.captureException(err);
+    });
+  } catch { /* swallow */ }
+}
+
+// ─── Resend transactional email (inline) ─────────────────────────────────
+const _RESEND_FROM = 'AimVantage <noreply@aimvantage.uk>';
+const _RESEND_REPLY_TO = 'giovanni.sizino.ennes@hotmail.co.uk';
+let _resendClient: Resend | null = null;
+function _getResend(): Resend | null {
+  const key = process.env.RESEND_API_KEY;
+  if (!key) return null;
+  if (_resendClient) return _resendClient;
+  _resendClient = new Resend(key);
+  return _resendClient;
+}
+
+interface SendEmailArgs {
+  to: string;
+  subject: string;
+  html: string;
+  text?: string;
+  from?: string;
+  replyTo?: string;
+  tag?: string;
+}
+
+async function sendEmail(args: SendEmailArgs): Promise<{ ok: boolean; id?: string; error?: string }> {
+  const client = _getResend();
+  if (!client) return { ok: false, error: 'resend_not_configured' };
+  if (!args.to || !/.+@.+\..+/.test(args.to)) return { ok: false, error: 'invalid_recipient' };
+  if (!args.subject || !args.html) return { ok: false, error: 'missing_subject_or_html' };
+  const from = (args.from || process.env.RESEND_FROM || _RESEND_FROM).trim();
+  const replyTo = (args.replyTo || _RESEND_REPLY_TO).trim();
+  try {
+    const result = await client.emails.send({
+      from, to: args.to, subject: args.subject, html: args.html, text: args.text, replyTo,
+      tags: args.tag ? [{ name: 'kind', value: args.tag }] : undefined,
+    });
+    if (result.error) return { ok: false, error: String(result.error.message || result.error) };
+    return { ok: true, id: result.data?.id };
+  } catch (err: unknown) {
+    return { ok: false, error: err instanceof Error ? err.message : 'unknown_send_failure' };
+  }
+}
+
+function wrapEmailBody(headline: string, innerHtml: string): string {
+  const safeHeadline = String(headline).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  return `<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>${safeHeadline}</title></head>
+<body style="margin:0;padding:0;background:#0d0b1e;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#f0eef9;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#0d0b1e;">
+    <tr><td align="center" style="padding:32px 16px;">
+      <table role="presentation" width="560" cellpadding="0" cellspacing="0" style="max-width:560px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;overflow:hidden;">
+        <tr><td style="padding:24px 28px;border-bottom:1px solid rgba(255,255,255,0.06);">
+          <div style="font-size:18px;font-weight:700;color:#ffffff;letter-spacing:-0.01em;">AimVantage</div>
+        </td></tr>
+        <tr><td style="padding:28px;">
+          <h1 style="margin:0 0 16px;font-size:20px;line-height:1.35;color:#ffffff;font-weight:700;">${safeHeadline}</h1>
+          <div style="font-size:15px;line-height:1.55;color:#d4d0e8;">${innerHtml}</div>
+        </td></tr>
+        <tr><td style="padding:20px 28px 28px;border-top:1px solid rgba(255,255,255,0.06);font-size:12px;color:#8a85a3;line-height:1.5;">
+          AimVantage · AI Job Preparation · <a href="https://aimvantage.uk" style="color:#a78bfa;">aimvantage.uk</a><br>
+          Solo-built in the UK. Reply to this email and a human (Gio) reads it.
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body></html>`;
+}
+// ─── END INLINED HELPERS ─────────────────────────────────────────────────
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
 
@@ -992,12 +1123,21 @@ export default async function handler(request: any, response: any) {
       typeof user.email === 'string' &&
       user.email.length > 0
     ) {
-      // STUBBED 2026-05-17 (Plan D): dynamic import of '../shared/email/resend'
-      // would ERR_MODULE_NOT_FOUND at runtime (same Vercel NFT bundling failure
-      // as the static imports — see header comment). Logged only for now; no
-      // user-visible regression because zero paid users have crossed the
-      // 3-token threshold yet. Re-enable when proper bundling fix lands.
-      console.log(`analyze: low-balance email skipped (stubbed) for user ${user.id}, balance now ${newBalance}`);
+      const esc = (s: string): string => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      const lowBalanceBody = `
+        <p>Heads up — you have <strong>${newBalance} ${newBalance === 1 ? 'token' : 'tokens'}</strong> left on AimVantage.</p>
+        <p>Each prep pack costs 1 token, so you can still run ${newBalance} more before you'll need to top up. Top-ups start at £5 / $5 for 20 tokens.</p>
+        <p style="margin:20px 0;"><a href="https://aimvantage.uk/pricing" style="display:inline-block;padding:12px 20px;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#ffffff;text-decoration:none;border-radius:8px;font-weight:600;">Top up tokens →</a></p>
+        <p style="font-size:13px;color:#8a85a3;margin-top:24px;">Sent to ${esc(user.email)}. Manage your account at <a href="https://aimvantage.uk/account" style="color:#a78bfa;">aimvantage.uk/account</a>.</p>
+      `;
+      void sendEmail({
+        to: user.email,
+        subject: `You have ${newBalance} ${newBalance === 1 ? 'token' : 'tokens'} left on AimVantage`,
+        html: wrapEmailBody('Your token balance is running low', lowBalanceBody),
+        tag: 'low_balance',
+      }).then((result) => {
+        if (!result.ok) console.warn(`analyze: low-balance email failed — ${result.error}`);
+      });
     }
 
     return response.status(200).json({

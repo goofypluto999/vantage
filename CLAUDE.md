@@ -245,19 +245,13 @@ Wired event types:
 
 Event taxonomy (dotted namespace, soft convention): `auth.*` / `purchase.*` / `token.*` / `admin.*`.
 
-### ⚠️ Sentry / Resend / audit_log helpers — currently STUBBED (2026-05-17)
+### Sentry / Resend / audit_log helpers — INLINED PER-HANDLER (Plan E, 2026-05-17)
 
-**Status: NOT WORKING in production.** Inline no-op stubs are in place in 5 consumer handlers. Five different attempts to share cross-file helpers across Vercel TS serverless functions all crashed prod with `ERR_MODULE_NOT_FOUND`:
+**Status: REAL helpers live in every consumer.** No stubs. After 5 failed attempts to share cross-file helpers (lib/, api/_lib/, api/shared/, vercel.json includeFiles, underscore renames — all ERR_MODULE_NOT_FOUND at runtime), the code is now inlined directly into each consumer handler. Each function file is self-contained; Vercel NFT only has to follow bare-package imports from `node_modules`, which it does reliably.
 
-1. `db922c5` — local stubs (worked, no observability)
-2. `b70db4e` — `lib/observability/sentry.ts` with static `@sentry/node` import → 500
-3. `2e33bcd` — moved to `api/_lib/` → 500
-4. `c178f86` — added `vercel.json` `functions.includeFiles: "api/_lib/**"` → 500 (adds raw .ts, doesn't transpile)
-5. `6b36048` — renamed to `api/shared/` (no underscore) → 500
+Trade-off: helper updates touch up to 5 files (analyze, interview, rewrite-tone, stripe/[action], stripe/webhook). Originals (now deleted) lived at `api/shared/{observability,email,audit}/*` — preserved in git history if a future fix wants them back as a single source.
 
-Verdict: Vercel's NFT (Node File Trace) does NOT bundle files outside a specific function's own directory tree, regardless of static vs dynamic imports, regardless of underscore prefix, regardless of `includeFiles` config. Live as of `dc5375e`: every consumer handler has local no-op stubs (`function initSentry() {}` etc.) so the tool actually works.
-
-**Restoring real observability:** chip on screen — proper structural fix needed (inline real helpers per-function, OR workspace dep, OR single dispatcher function eating one of the 12 function slots). NEVER stub as the long-term answer.
+If you change one inlined helper, change all copies. They're 1:1 derived from `api/shared/observability/sentry.ts` @ commit `b70db4e` / `api/shared/email/resend.ts` / `api/shared/audit/log.ts`.
 
 **Smoke test (`npm run smoke`) is the regression guard.** Run after every API change. Must be 10/10.
 

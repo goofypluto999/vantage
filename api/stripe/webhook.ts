@@ -2,23 +2,150 @@
 // Vercel serverless function
 
 import Stripe from 'stripe';
-// 2026-05-17 PLAN D: every cross-file helper import from outside this
-// file's function tree fails Vercel NFT bundling (4 attempts proven broken
-// in production logs: lib/, api/_lib/, api/shared/, vercel.json includeFiles
-// config). All helpers inline-stubbed below. Trade-offs:
-//   - No Sentry capture (already true — Sentry was the bug)
-//   - No purchase/refund email (no real purchases yet to lose)
-//   - No audit log (no events worth auditing yet)
-// Proper structural fix queued for next session (most likely: inline the
-// helper logic directly into each function file as real implementations,
-// OR consolidate to a single function with internal dispatch).
-function initSentry(): void { /* stub */ }
-function captureError(_err: unknown, _context?: Record<string, unknown>): void { /* stub */ }
-async function sendEmail(_args: { to: string; subject: string; html: string; text?: string; from?: string; replyTo?: string; tag?: string }): Promise<{ ok: boolean; id?: string; error?: string }> {
-  return { ok: false, error: 'stubbed_until_bundling_fix' };
+import * as Sentry from '@sentry/node';
+import type { ErrorEvent, EventHint } from '@sentry/node';
+import { Resend } from 'resend';
+
+// ─── INLINED HELPERS ─────────────────────────────────────────────────────
+// Vercel NFT does NOT follow static imports of sibling .ts files across
+// /api/ — 5 attempts to share via lib/, api/_lib/, api/shared/, vercel.json
+// includeFiles, and underscore renames all produced ERR_MODULE_NOT_FOUND
+// at runtime. Inlined per-handler. See api/analyze/index.ts for the full
+// postmortem. Originals lived at api/shared/{observability,email,audit}/*.
+// ──────────────────────────────────────────────────────────────────────────
+
+// Sentry (init + captureError + per-fingerprint dedupe)
+let _sentryInit = false;
+const _SENTRY_DSN = (process.env.SENTRY_DSN || '').trim();
+const _SENTRY_ENV = (process.env.VERCEL_ENV || process.env.NODE_ENV || 'development').trim();
+const _SENTRY_RELEASE = (process.env.VERCEL_GIT_COMMIT_SHA || 'unknown').slice(0, 12);
+const _SENTRY_DEDUPE_MS = 60_000;
+const _sentrySeen = new Map<string, number>();
+
+function initSentry(): void {
+  if (_sentryInit) return;
+  if (!_SENTRY_DSN) return;
+  Sentry.init({
+    dsn: _SENTRY_DSN,
+    environment: _SENTRY_ENV,
+    release: _SENTRY_RELEASE,
+    tracesSampleRate: 0,
+    beforeSend(event: ErrorEvent, _hint: EventHint): ErrorEvent | null {
+      const status = (event.extra as Record<string, unknown> | undefined)?.status as number | undefined;
+      if (typeof status === 'number' && status >= 400 && status < 500) return null;
+      const msg = String(event.message || event.exception?.values?.[0]?.value || '');
+      if (/aborted: timed out/i.test(msg)) return null;
+      if (/Invalid token: not in valid range/i.test(msg)) return null;
+      return event;
+    },
+  });
+  _sentryInit = true;
 }
-function wrapEmailBody(_headline: string, _innerHtml: string): string { return ''; }
-async function logAuditEvent(_ev: {
+
+function _sentryFingerprint(err: unknown, context?: Record<string, unknown>): string {
+  const route = (context?.route as string | undefined) || 'unknown';
+  const msg = err instanceof Error
+    ? err.message
+    : typeof err === 'string'
+      ? err
+      : (() => { try { return JSON.stringify(err); } catch { return String(err); } })();
+  return `${route}:${msg.slice(0, 120)}`;
+}
+
+function _sentryShouldSend(fp: string): boolean {
+  const now = Date.now();
+  const last = _sentrySeen.get(fp);
+  if (last && now - last < _SENTRY_DEDUPE_MS) return false;
+  _sentrySeen.set(fp, now);
+  if (_sentrySeen.size > 200) {
+    const cutoff = now - _SENTRY_DEDUPE_MS;
+    for (const [k, t] of _sentrySeen) if (t < cutoff) _sentrySeen.delete(k);
+  }
+  return true;
+}
+
+function captureError(err: unknown, context?: Record<string, unknown>): void {
+  if (!_sentryInit) return;
+  if (!_sentryShouldSend(_sentryFingerprint(err, context))) return;
+  try {
+    Sentry.withScope((scope) => {
+      if (context) for (const [k, v] of Object.entries(context)) scope.setExtra(k, v as never);
+      Sentry.captureException(err);
+    });
+  } catch { /* swallow */ }
+}
+
+// Resend transactional email
+const _RESEND_FROM = 'AimVantage <noreply@aimvantage.uk>';
+const _RESEND_REPLY_TO = 'giovanni.sizino.ennes@hotmail.co.uk';
+let _resendClient: Resend | null = null;
+function _getResend(): Resend | null {
+  const key = process.env.RESEND_API_KEY;
+  if (!key) return null;
+  if (_resendClient) return _resendClient;
+  _resendClient = new Resend(key);
+  return _resendClient;
+}
+
+interface SendEmailArgs {
+  to: string;
+  subject: string;
+  html: string;
+  text?: string;
+  from?: string;
+  replyTo?: string;
+  tag?: string;
+}
+
+async function sendEmail(args: SendEmailArgs): Promise<{ ok: boolean; id?: string; error?: string }> {
+  const client = _getResend();
+  if (!client) return { ok: false, error: 'resend_not_configured' };
+  if (!args.to || !/.+@.+\..+/.test(args.to)) return { ok: false, error: 'invalid_recipient' };
+  if (!args.subject || !args.html) return { ok: false, error: 'missing_subject_or_html' };
+  const from = (args.from || process.env.RESEND_FROM || _RESEND_FROM).trim();
+  const replyTo = (args.replyTo || _RESEND_REPLY_TO).trim();
+  try {
+    const result = await client.emails.send({
+      from, to: args.to, subject: args.subject, html: args.html, text: args.text, replyTo,
+      tags: args.tag ? [{ name: 'kind', value: args.tag }] : undefined,
+    });
+    if (result.error) return { ok: false, error: String(result.error.message || result.error) };
+    return { ok: true, id: result.data?.id };
+  } catch (err: unknown) {
+    return { ok: false, error: err instanceof Error ? err.message : 'unknown_send_failure' };
+  }
+}
+
+function wrapEmailBody(headline: string, innerHtml: string): string {
+  const safeHeadline = String(headline).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  return `<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>${safeHeadline}</title></head>
+<body style="margin:0;padding:0;background:#0d0b1e;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#f0eef9;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#0d0b1e;">
+    <tr><td align="center" style="padding:32px 16px;">
+      <table role="presentation" width="560" cellpadding="0" cellspacing="0" style="max-width:560px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;overflow:hidden;">
+        <tr><td style="padding:24px 28px;border-bottom:1px solid rgba(255,255,255,0.06);">
+          <div style="font-size:18px;font-weight:700;color:#ffffff;letter-spacing:-0.01em;">AimVantage</div>
+        </td></tr>
+        <tr><td style="padding:28px;">
+          <h1 style="margin:0 0 16px;font-size:20px;line-height:1.35;color:#ffffff;font-weight:700;">${safeHeadline}</h1>
+          <div style="font-size:15px;line-height:1.55;color:#d4d0e8;">${innerHtml}</div>
+        </td></tr>
+        <tr><td style="padding:20px 28px 28px;border-top:1px solid rgba(255,255,255,0.06);font-size:12px;color:#8a85a3;line-height:1.5;">
+          AimVantage · AI Job Preparation · <a href="https://aimvantage.uk" style="color:#a78bfa;">aimvantage.uk</a><br>
+          Solo-built in the UK. Reply to this email and a human (Gio) reads it.
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body></html>`;
+}
+
+// Audit log writer (fire-and-forget, never throws)
+const _AUDIT_SUPABASE_URL = (process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || '').trim();
+const _AUDIT_SUPABASE_KEY = (process.env.SUPABASE_SERVICE_ROLE_KEY || '').trim();
+
+interface AuditEvent {
   event_type: string;
   actor_id?: string | null;
   actor_email?: string | null;
@@ -28,7 +155,41 @@ async function logAuditEvent(_ev: {
   resource_id?: string | null;
   detail?: string | null;
   metadata?: Record<string, unknown> | null;
-}): Promise<void> { /* stub */ }
+}
+
+async function logAuditEvent(ev: AuditEvent): Promise<void> {
+  if (!_AUDIT_SUPABASE_URL || !_AUDIT_SUPABASE_KEY) return;
+  if (!ev.event_type || typeof ev.event_type !== 'string') return;
+  try {
+    const res = await fetch(`${_AUDIT_SUPABASE_URL}/rest/v1/audit_log`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal',
+        apikey: _AUDIT_SUPABASE_KEY,
+        Authorization: `Bearer ${_AUDIT_SUPABASE_KEY}`,
+      },
+      body: JSON.stringify({
+        event_type: ev.event_type,
+        actor_id: ev.actor_id || null,
+        actor_email: ev.actor_email || null,
+        ip_address: ev.ip_address || null,
+        user_agent: ev.user_agent ? String(ev.user_agent).slice(0, 500) : null,
+        resource_type: ev.resource_type || null,
+        resource_id: ev.resource_id ? String(ev.resource_id).slice(0, 200) : null,
+        detail: ev.detail ? String(ev.detail).slice(0, 500) : null,
+        metadata: ev.metadata || null,
+      }),
+    });
+    if (!res.ok) {
+      const body = await res.text().catch(() => '');
+      console.warn(`audit: write failed (${res.status}) for ${ev.event_type}: ${body.slice(0, 200)}`);
+    }
+  } catch (err: any) {
+    console.warn(`audit: write threw for ${ev.event_type}: ${String(err?.message || err).slice(0, 200)}`);
+  }
+}
+// ─── END INLINED HELPERS ─────────────────────────────────────────────────
 
 // Disable Vercel's default body parser — Stripe webhook signature
 // verification requires the raw request body, not a parsed JSON object.
@@ -882,11 +1043,19 @@ export default async function handler(request: any, response: any) {
               <p>Funds typically arrive in your card account within 5–10 working days — Stripe's own confirmation email will have the exact ETA for your card issuer.</p>
               <p style="font-size:13px;color:#8a85a3;margin-top:24px;">If you didn't expect this refund, reply to this email and a human (Gio) will look into it.</p>
             `;
-            // STUBBED 2026-05-17 (Plan D): dynamic import would NFT-fail.
-            // Logging-only until bundling fix lands. Buyer still gets
-            // Stripe's own refund-notification email; ours is supplemental.
-            console.log(`webhook: refund email skipped (stubbed) for charge ${charge.id}, buyer ${buyerEmail}, ${currencyLabel} ${refundedMajor}`);
-            void body; // referenced to satisfy strict-unused warnings
+            // Real sendEmail now (helpers are inlined in this file —
+            // no more cross-file NFT bundling issue). Fire-and-forget so
+            // webhook still returns 200 even if Resend has a hiccup.
+            void sendEmail({
+              to: buyerEmail,
+              subject: `Refund processed — ${currencyLabel} ${refundedMajor}`,
+              html: wrapEmailBody('Refund processed', body),
+              tag: 'refund_processed',
+            }).then((result) => {
+              if (result && !result.ok) {
+                console.warn(`Refund email failed for user ${profile.id}: ${result.error}`);
+              }
+            }).catch(() => { /* never block the webhook response */ });
           }
         }
         break;

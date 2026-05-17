@@ -24,11 +24,76 @@
 
 import { GoogleGenAI } from '@google/genai';
 import { createHash } from 'crypto';
-// 2026-05-17 PLAN D: cross-file helper imports outside this function's
-// own tree fail Vercel NFT bundling (4 attempts: lib/, api/_lib/,
-// api/shared/, includeFiles config — see BACKLOG). Inline-stubbed.
-function initSentry(): void { /* stub */ }
-function captureError(_err: unknown, _context?: Record<string, unknown>): void { /* stub */ }
+import * as Sentry from '@sentry/node';
+import type { ErrorEvent, EventHint } from '@sentry/node';
+
+// ─── INLINED SENTRY HELPER ───────────────────────────────────────────────
+// Vercel NFT does NOT follow static imports of sibling .ts files across
+// /api/ — 5 attempts to share via lib/, api/_lib/, api/shared/, vercel.json
+// includeFiles, and underscore renames all produced ERR_MODULE_NOT_FOUND
+// at runtime. Inlined per-handler. See api/analyze/index.ts for full
+// rationale. Original lived at api/shared/observability/sentry.ts (b70db4e).
+// ──────────────────────────────────────────────────────────────────────────
+let _sentryInit = false;
+const _SENTRY_DSN = (process.env.SENTRY_DSN || '').trim();
+const _SENTRY_ENV = (process.env.VERCEL_ENV || process.env.NODE_ENV || 'development').trim();
+const _SENTRY_RELEASE = (process.env.VERCEL_GIT_COMMIT_SHA || 'unknown').slice(0, 12);
+const _SENTRY_DEDUPE_MS = 60_000;
+const _sentrySeen = new Map<string, number>();
+
+function initSentry(): void {
+  if (_sentryInit) return;
+  if (!_SENTRY_DSN) return;
+  Sentry.init({
+    dsn: _SENTRY_DSN,
+    environment: _SENTRY_ENV,
+    release: _SENTRY_RELEASE,
+    tracesSampleRate: 0,
+    beforeSend(event: ErrorEvent, _hint: EventHint): ErrorEvent | null {
+      const status = (event.extra as Record<string, unknown> | undefined)?.status as number | undefined;
+      if (typeof status === 'number' && status >= 400 && status < 500) return null;
+      const msg = String(event.message || event.exception?.values?.[0]?.value || '');
+      if (/aborted: timed out/i.test(msg)) return null;
+      if (/Invalid token: not in valid range/i.test(msg)) return null;
+      return event;
+    },
+  });
+  _sentryInit = true;
+}
+
+function _sentryFingerprint(err: unknown, context?: Record<string, unknown>): string {
+  const route = (context?.route as string | undefined) || 'unknown';
+  const msg = err instanceof Error
+    ? err.message
+    : typeof err === 'string'
+      ? err
+      : (() => { try { return JSON.stringify(err); } catch { return String(err); } })();
+  return `${route}:${msg.slice(0, 120)}`;
+}
+
+function _sentryShouldSend(fp: string): boolean {
+  const now = Date.now();
+  const last = _sentrySeen.get(fp);
+  if (last && now - last < _SENTRY_DEDUPE_MS) return false;
+  _sentrySeen.set(fp, now);
+  if (_sentrySeen.size > 200) {
+    const cutoff = now - _SENTRY_DEDUPE_MS;
+    for (const [k, t] of _sentrySeen) if (t < cutoff) _sentrySeen.delete(k);
+  }
+  return true;
+}
+
+function captureError(err: unknown, context?: Record<string, unknown>): void {
+  if (!_sentryInit) return;
+  if (!_sentryShouldSend(_sentryFingerprint(err, context))) return;
+  try {
+    Sentry.withScope((scope) => {
+      if (context) for (const [k, v] of Object.entries(context)) scope.setExtra(k, v as never);
+      Sentry.captureException(err);
+    });
+  } catch { /* swallow */ }
+}
+// ─── END INLINED SENTRY HELPER ───────────────────────────────────────────
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
 const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || '';
