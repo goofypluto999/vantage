@@ -1,14 +1,12 @@
 {
   "functions": {
-    "api/analyze/index.ts": { "maxDuration": 60, "includeFiles": "api/_lib/**" },
-    "api/interview/[action].ts": { "maxDuration": 60, "includeFiles": "api/_lib/**" },
-    "api/rewrite-tone/index.ts": { "maxDuration": 30, "includeFiles": "api/_lib/**" },
+    "api/analyze/index.ts": { "maxDuration": 60 },
+    "api/interview/[action].ts": { "maxDuration": 60 },
+    "api/rewrite-tone/index.ts": { "maxDuration": 30 },
     "api/roast/index.ts": { "maxDuration": 20 },
     "api/decode-rejection/index.ts": { "maxDuration": 20 },
     "api/ghost-job-check/index.ts": { "maxDuration": 20 },
-    "api/admin/[action].ts": { "maxDuration": 30 },
-    "api/stripe/webhook.ts": { "includeFiles": "api/_lib/**" },
-    "api/stripe/[action].ts": { "includeFiles": "api/_lib/**" }
+    "api/admin/[action].ts": { "maxDuration": 30 }
   },
   "framework": "vite",
   "buildCommand": "npm run build",

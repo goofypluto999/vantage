@@ -7,9 +7,9 @@ import Stripe from 'stripe';
 // — NFT doesn't bundle ANY lib/* file into serverless function output, not
 // just the dynamic-require one. The webhook never noticed because Stripe
 // hasn't fired a real event since the import landed. Smoke test caught it.
-import { sendEmail, wrapEmailBody } from '../_lib/email/resend';
-import { logAuditEvent } from '../_lib/audit/log';
-import { initSentry, captureError } from '../_lib/observability/sentry';
+import { sendEmail, wrapEmailBody } from '../shared/email/resend';
+import { logAuditEvent } from '../shared/audit/log';
+import { initSentry, captureError } from '../shared/observability/sentry';
 
 // Disable Vercel's default body parser — Stripe webhook signature
 // verification requires the raw request body, not a parsed JSON object.
@@ -863,7 +863,7 @@ export default async function handler(request: any, response: any) {
               <p>Funds typically arrive in your card account within 5–10 working days — Stripe's own confirmation email will have the exact ETA for your card issuer.</p>
               <p style="font-size:13px;color:#8a85a3;margin-top:24px;">If you didn't expect this refund, reply to this email and a human (Gio) will look into it.</p>
             `;
-            void import('../_lib/email/resend').then(({ sendEmail, wrapEmailBody }) =>
+            void import('../shared/email/resend').then(({ sendEmail, wrapEmailBody }) =>
               sendEmail({
                 to: buyerEmail,
                 subject: `Refund processed — ${currencyLabel} ${refundedMajor}`,

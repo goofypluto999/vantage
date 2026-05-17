@@ -3,7 +3,7 @@
 import { GoogleGenAI } from '@google/genai';
 // Restored 2026-05-17 — see lib/observability/sentry.ts header for the
 // previous-bug postmortem. Static @sentry/node import now, properly bundled.
-import { initSentry, captureError } from '../_lib/observability/sentry';
+import { initSentry, captureError } from '../shared/observability/sentry';
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
 
