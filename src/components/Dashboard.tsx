@@ -1667,8 +1667,12 @@ export default function Dashboard() {
               <div className="grid md:grid-cols-3 gap-5 mb-6">
                 {/* CV Upload */}
                 <div
-                  className={`p-6 rounded-2xl border-2 border-dashed transition-all cursor-pointer relative ${
-                    isDragging ? 'border-violet-500 bg-violet-500/10' : 'border-white/10 bg-white/5 hover:border-white/20'
+                  className={`p-6 rounded-2xl border-2 transition-all cursor-pointer relative ${
+                    isDragging
+                      ? 'border-violet-500 bg-violet-500/10 border-dashed'
+                      : cvFile
+                        ? 'border-emerald-500/40 bg-gradient-to-br from-emerald-500/8 to-transparent hover:border-emerald-500/60'
+                        : 'border-white/10 bg-white/5 border-dashed hover:border-white/20'
                   }`}
                   onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
                   onDragLeave={() => setIsDragging(false)}
@@ -1679,7 +1683,26 @@ export default function Dashboard() {
                   }}
                   onClick={() => fileInputRef.current?.click()}
                 >
-                  <span className="absolute top-3 right-3 text-[10px] font-bold uppercase tracking-widest text-violet-300/70">Step 1 · Required</span>
+                  {/* Prominent step header — replaces the tiny corner label.
+                      Numbered circle on the left anchors the 3-step flow
+                      visually. Right-side badge flips to ✓ when filled. */}
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-2.5">
+                      <span className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold transition-colors ${
+                        cvFile
+                          ? 'bg-emerald-500 text-white'
+                          : 'bg-violet-500/20 text-violet-300 border border-violet-500/40'
+                      }`}>
+                        {cvFile ? <Check className="w-4 h-4" aria-hidden="true" /> : '1'}
+                      </span>
+                      <div>
+                        <p className={`text-[10px] font-bold uppercase tracking-widest ${cvFile ? 'text-emerald-300' : 'text-violet-300/80'}`}>
+                          Step 1 · Required
+                        </p>
+                        <p className="text-xs text-white/70 leading-tight">{cvFile ? 'CV ready' : 'Upload your CV'}</p>
+                      </div>
+                    </div>
+                  </div>
                   <input
                     ref={fileInputRef}
                     type="file"
@@ -1749,9 +1772,34 @@ export default function Dashboard() {
                     document. Visually labelled "Step 2 · Recommended" rather than
                     "Optional" — most users skip optional fields, but quality drops
                     sharply without a JD on URL-protected sites. */}
-                <div className="p-4 rounded-2xl border-2 border-dashed border-white/10 bg-white/5 relative">
-                  <span className="absolute top-3 right-3 text-[10px] font-bold uppercase tracking-widest text-emerald-300/70">Step 2 · Recommended</span>
-                  <div className="flex items-center gap-1 mb-3 mt-5">
+                {(() => {
+                  const jdDone = (jdMode === 'file' && !!jobDescFile) ||
+                                 (jdMode === 'text' && jobDescText.trim().length > 50);
+                  return (
+                <div className={`p-4 rounded-2xl border-2 transition-all relative ${
+                  jdDone
+                    ? 'border-emerald-500/40 bg-gradient-to-br from-emerald-500/8 to-transparent'
+                    : 'border-white/10 bg-white/5 border-dashed'
+                }`}>
+                  {/* Prominent step header — matches Cards 1 + 3 for visual rhythm */}
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2.5">
+                      <span className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold transition-colors ${
+                        jdDone
+                          ? 'bg-emerald-500 text-white'
+                          : 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/40'
+                      }`}>
+                        {jdDone ? <Check className="w-4 h-4" aria-hidden="true" /> : '2'}
+                      </span>
+                      <div>
+                        <p className={`text-[10px] font-bold uppercase tracking-widest ${jdDone ? 'text-emerald-300' : 'text-emerald-300/80'}`}>
+                          Step 2 · Recommended
+                        </p>
+                        <p className="text-xs text-white/70 leading-tight">{jdDone ? 'Job description loaded' : 'Paste or upload job description'}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1 mb-3">
                     <button
                       onClick={() => setJdMode('text')}
                       className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold transition-all ${jdMode === 'text' ? 'bg-violet-600/30 text-violet-300' : 'text-white/60 hover:text-white/60'}`}
@@ -1812,11 +1860,37 @@ export default function Dashboard() {
                     </div>
                   )}
                 </div>
+                  );
+                })()}
 
                 {/* Job posting URL */}
-                <div className="p-6 rounded-2xl bg-white/5 border border-white/10 relative">
-                  <span className="absolute top-3 right-3 text-[10px] font-bold uppercase tracking-widest text-violet-300/70">Step 3 · Required</span>
-                  <label className="block text-xs font-bold text-white/60 uppercase tracking-widest mb-3 mt-5">
+                {(() => {
+                  const urlDone = !!jobUrl.trim();
+                  return (
+                <div className={`p-6 rounded-2xl border-2 transition-all relative ${
+                  urlDone
+                    ? 'border-emerald-500/40 bg-gradient-to-br from-emerald-500/8 to-transparent'
+                    : 'border-white/10 bg-white/5 border-dashed'
+                }`}>
+                  {/* Prominent step header — matches Cards 1 + 2 */}
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2.5">
+                      <span className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold transition-colors ${
+                        urlDone
+                          ? 'bg-emerald-500 text-white'
+                          : 'bg-violet-500/20 text-violet-300 border border-violet-500/40'
+                      }`}>
+                        {urlDone ? <Check className="w-4 h-4" aria-hidden="true" /> : '3'}
+                      </span>
+                      <div>
+                        <p className={`text-[10px] font-bold uppercase tracking-widest ${urlDone ? 'text-emerald-300' : 'text-violet-300/80'}`}>
+                          Step 3 · Required
+                        </p>
+                        <p className="text-xs text-white/70 leading-tight">{urlDone ? 'Job URL ready' : 'Paste the job posting URL'}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <label className="block text-xs font-bold text-white/60 uppercase tracking-widest mb-3">
                     Job posting URL
                   </label>
                   <input
@@ -1830,6 +1904,8 @@ export default function Dashboard() {
                     Paste the link from the careers page. Works with most company sites + Indeed, LinkedIn, Reed, Greenhouse, Lever. Some sites block scrapers — if so, paste the JD text in Step 2 too.
                   </p>
                 </div>
+                  );
+                })()}
               </div>
 
               {/* Pre-emptive warning for URLs that commonly block automated readers.
