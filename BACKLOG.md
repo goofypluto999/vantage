@@ -22,6 +22,14 @@ Last reviewed: 2026-05-16
 
 ---
 
+## 🚨 KNOWN-BROKEN — must fix before any real customer load
+
+| # | Item | Severity | Reason |
+|---|---|---|---|
+| K1 | **Cross-file helpers (Sentry, Resend, audit) inline-stubbed in 5 handlers as of dc5375e** | 🟡 zero-observability + zero-emails, NOT user-blocking | 5 attempts to bundle `lib/`, `api/_lib/`, `api/shared/`, `includeFiles` all crashed prod with `ERR_MODULE_NOT_FOUND`. Stubs let the tool actually serve requests. Real fix needs a different strategy (inline real helpers per-function / workspace dep / single dispatcher function). Spawned chip on screen. **Tomorrow priority.** |
+
+When fixing K1, smoke test MUST be 10/10 (run `npm run smoke`) AND Sentry must capture a deliberately-triggered prod error to confirm.
+
 ## 🤖 CODE-SIDE DEFERRED (real but not urgent — defer pile)
 
 | # | Item | Why deferred | When to revisit |

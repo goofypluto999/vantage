@@ -245,6 +245,22 @@ Wired event types:
 
 Event taxonomy (dotted namespace, soft convention): `auth.*` / `purchase.*` / `token.*` / `admin.*`.
 
+### ⚠️ Sentry / Resend / audit_log helpers — currently STUBBED (2026-05-17)
+
+**Status: NOT WORKING in production.** Inline no-op stubs are in place in 5 consumer handlers. Five different attempts to share cross-file helpers across Vercel TS serverless functions all crashed prod with `ERR_MODULE_NOT_FOUND`:
+
+1. `db922c5` — local stubs (worked, no observability)
+2. `b70db4e` — `lib/observability/sentry.ts` with static `@sentry/node` import → 500
+3. `2e33bcd` — moved to `api/_lib/` → 500
+4. `c178f86` — added `vercel.json` `functions.includeFiles: "api/_lib/**"` → 500 (adds raw .ts, doesn't transpile)
+5. `6b36048` — renamed to `api/shared/` (no underscore) → 500
+
+Verdict: Vercel's NFT (Node File Trace) does NOT bundle files outside a specific function's own directory tree, regardless of static vs dynamic imports, regardless of underscore prefix, regardless of `includeFiles` config. Live as of `dc5375e`: every consumer handler has local no-op stubs (`function initSentry() {}` etc.) so the tool actually works.
+
+**Restoring real observability:** chip on screen — proper structural fix needed (inline real helpers per-function, OR workspace dep, OR single dispatcher function eating one of the 12 function slots). NEVER stub as the long-term answer.
+
+**Smoke test (`npm run smoke`) is the regression guard.** Run after every API change. Must be 10/10.
+
 ### Sentry server-side — `lib/observability/sentry.ts`
 **ACTIVE in production** as of 2026-05-15. Project: `aimvantage-server` in `foresay-labs` org, EU/Germany region (`de.sentry.io`). Dashboard: https://foresay-labs.sentry.io/projects/aimvantage-server/. DSN lives in Vercel as `SENTRY_DSN` (Sensitive, Production + Preview). Spike Protection ON at org level.
 
