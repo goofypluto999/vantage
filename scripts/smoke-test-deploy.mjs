@@ -9,9 +9,9 @@
  * 2 days until a real user (the founder, demoing to a friend) hit it.
  *
  * This script catches that class of bug in seconds. Hits every critical
- * API endpoint with a sanity request and asserts the response is JSON
- * with the expected HTTP status. If anything returns HTML or unexpected
- * status, the script exits 1.
+ * API endpoint (11 of them) with a sanity request and asserts the response
+ * is JSON with the expected HTTP status. If anything returns HTML or
+ * unexpected status, the script exits 1.
  *
  * USAGE:
  *   node scripts/smoke-test-deploy.mjs                 # default: prod
@@ -124,6 +124,13 @@ const checks = [
     expectStatus: [401, 405],
     expectJsonShape: (b) => (typeof b?.error === 'string' ? null : `expected JSON error field, got ${JSON.stringify(b)}`),
     note: 'Stripe checkout creation — would block all paid signups if broken',
+  },
+  {
+    path: '/api/delete-account',
+    method: 'GET',
+    expectStatus: [401, 405],
+    expectJsonShape: (b) => (typeof b?.error === 'string' ? null : `expected JSON error field, got ${JSON.stringify(b)}`),
+    note: 'GDPR self-serve deletion endpoint — must return JSON 401/405 on GET, not crash with ERR_MODULE_NOT_FOUND',
   },
   {
     path: '/api/user?endpoint=credits',

@@ -595,7 +595,7 @@ git push origin master
 
 **Goal:** The smoke test must catch any future regression that breaks the delete-account endpoint at the function-loads-or-not level.
 
-- [ ] **Step 1: Add the new check**
+- [x] **Step 1: Add the new check**
 
 Find the `checks` array in `scripts/smoke-test-deploy.mjs`. Add this entry after the `/api/stripe/checkout` entry:
 
