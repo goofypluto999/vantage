@@ -747,6 +747,14 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
               <Hero3DScene />
             </React.Suspense>
           )}
+          {/* Mobile-only ambient drift — three CSS-only gradient blobs that
+              softly orbit behind the hero text. GPU-accelerated (transform
+              only), zero JS bundle cost, honours prefers-reduced-motion.
+              Hidden on lg+ where Hero3DScene takes over. See index.css
+              .mobile-hero-blobs for the rule. */}
+          <div className="lg:hidden mobile-hero-blobs" aria-hidden="true">
+            <span />
+          </div>
         </div>
 
         {/* Hero text. The `relative` is critical — without explicit positioning,
@@ -894,12 +902,17 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
           </div>
         </motion.div>
 
-        {/* Scroll indicator */}
+        {/* Scroll indicator — desktop only. On mobile the hero content (eyebrow
+            + 4-line H1 + subtitle + CTAs + chip cluster) extends past 100vh, so
+            the absolute bottom-8 lands ON TOP of the "Built solo by..." trust
+            paragraph (visible bug in user's iPhone screenshot 2026-05-18). The
+            scroll hint is also redundant on mobile where the layout already
+            telegraphs more-content-below via the visible chip wrap. */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 2, duration: 1 }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-[#6B6B8D]"
+          className="hidden md:flex absolute bottom-8 left-1/2 -translate-x-1/2 flex-col items-center gap-2 text-[#6B6B8D]"
         >
           <span className="text-[10px] uppercase tracking-widest font-bold">Scroll</span>
           <div className="w-[1px] h-10 bg-gradient-to-b from-[#6B6B8D]/60 to-transparent" />
