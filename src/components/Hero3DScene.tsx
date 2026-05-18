@@ -1,4 +1,4 @@
-import React, { useRef, useState, useMemo } from 'react';
+import React, { useRef, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Sparkles } from '@react-three/drei';
 import * as THREE from 'three';
@@ -15,7 +15,6 @@ import * as THREE from 'three';
 
 function DotGlobe() {
   const groupRef = useRef<THREE.Group>(null);
-  const [hovered, setHovered] = useState(false);
 
   // Fibonacci sphere — evenly-distributed points on a sphere surface
   const positions = useMemo(() => {
@@ -33,19 +32,23 @@ function DotGlobe() {
     return arr;
   }, []);
 
+  // Smooth constant rotation — no hover boost. Previous behaviour ramped the
+  // Y-spin from 0.14 to 0.7 rad/s when the pointer entered the canvas, which
+  // felt janky because the speed jumped discontinuously crossing the canvas
+  // edge. Now: single constant Y-rotation + gentle X-oscillation. The hover
+  // state and onPointerOver/Out handlers are gone — pointer events on the
+  // canvas were also briefly intercepting clicks meant for the hero CTAs
+  // (already mitigated by `relative z-10` on the text container, but removing
+  // the listeners makes the canvas fully passive).
   useFrame((state, delta) => {
     if (groupRef.current) {
-      groupRef.current.rotation.y += delta * (hovered ? 0.7 : 0.14);
+      groupRef.current.rotation.y += delta * 0.18;
       groupRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.4) * 0.12;
     }
   });
 
   return (
-    <group
-      ref={groupRef}
-      onPointerOver={() => setHovered(true)}
-      onPointerOut={() => setHovered(false)}
-    >
+    <group ref={groupRef}>
       <points>
         <bufferGeometry>
           <bufferAttribute attach="attributes-position" args={[positions, 3]} />

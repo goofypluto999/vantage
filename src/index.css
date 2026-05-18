@@ -251,22 +251,22 @@ h1, h2, h3, h4, h5, h6 {
   will-change: transform;
 }
 .mobile-hero-blobs::before {
-  width: 75vw; height: 75vw;
-  top: -12%; left: -18%;
-  background: radial-gradient(circle, rgba(124, 58, 237, 0.55) 0%, rgba(124, 58, 237, 0) 70%);
+  width: 90vw; height: 90vw;
+  top: -20%; left: -25%;
+  background: radial-gradient(circle, rgba(91, 33, 182, 0.75) 0%, rgba(124, 58, 237, 0.3) 40%, rgba(124, 58, 237, 0) 70%);
   animation: blob-drift-a 18s ease-in-out infinite;
 }
 .mobile-hero-blobs::after {
-  width: 65vw; height: 65vw;
-  bottom: -12%; right: -12%;
-  background: radial-gradient(circle, rgba(79, 70, 229, 0.5) 0%, rgba(79, 70, 229, 0) 70%);
+  width: 85vw; height: 85vw;
+  bottom: -20%; right: -18%;
+  background: radial-gradient(circle, rgba(67, 56, 202, 0.7) 0%, rgba(79, 70, 229, 0.28) 40%, rgba(79, 70, 229, 0) 70%);
   animation: blob-drift-b 22s ease-in-out infinite;
 }
 .mobile-hero-blobs > span {
-  width: 55vw; height: 55vw;
-  top: 30%; left: 50%;
-  margin-left: -27.5vw;
-  background: radial-gradient(circle, rgba(167, 139, 250, 0.45) 0%, rgba(167, 139, 250, 0) 70%);
+  width: 70vw; height: 70vw;
+  top: 28%; left: 50%;
+  margin-left: -35vw;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.45) 0%, rgba(167, 139, 250, 0.25) 40%, rgba(167, 139, 250, 0) 70%);
   animation: blob-drift-c 26s ease-in-out infinite;
 }
 @media (prefers-reduced-motion: reduce) {
