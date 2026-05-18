@@ -171,11 +171,11 @@ git push origin master
 
 **Goal:** Confirm the Privacy Policy page renders the new content correctly.
 
-- [ ] **Step 1: Wait for Vercel deploy (~7 min)**
+- [x] **Step 1: Wait for Vercel deploy (~7 min)**
 
 Run `npm run smoke` — should still be 10/10 (no API surface touched).
 
-- [ ] **Step 2: Manual page-load verification**
+- [x] **Step 2: Manual page-load verification**
 
 Open `https://aimvantage.uk/privacy` in a browser. Scroll to:
 - Section 4 (Data We Collect) — confirm "CV Profile Summary" item appears between "CV / Resume Content" and the next item.
@@ -183,11 +183,11 @@ Open `https://aimvantage.uk/privacy` in a browser. Scroll to:
 
 Both should render with the same visual style as siblings (no broken layout).
 
-- [ ] **Step 3: Verify the violet hint references hold**
+- [x] **Step 3: Verify the violet hint references hold**
 
 The dashboard violet hint says "AI Job Search will score against it." Confirm the new Section 4 paragraph backs that claim. The hint also says "upload your CV file again in Step 1 below" — that's UX direction, not a privacy claim, so doesn't need policy backing.
 
-- [ ] **Step 4: Update BACKLOG.md**
+- [x] **Step 4: Update BACKLOG.md**
 
 Mark Gap #3 resolved:
 
@@ -195,7 +195,7 @@ Mark Gap #3 resolved:
 - ✅ **Gap #3 (Privacy Policy cv_summary disclosure)** — shipped 2026-05-18. Section 4 lists cv_summary as a stored item with what/why/how-long. Section 7 explains the retention lifecycle. Pairs cleanly with Gap #1's new self-serve deletion flow.
 ```
 
-- [ ] **Step 5: Commit + push BACKLOG**
+- [x] **Step 5: Commit + push BACKLOG**
 
 ```bash
 git add BACKLOG.md

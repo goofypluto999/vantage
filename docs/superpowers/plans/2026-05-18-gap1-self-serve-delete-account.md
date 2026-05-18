@@ -294,7 +294,7 @@ Frontend UI + client wrapper land in next commits."
 git push origin master
 ```
 
-- [ ] **Step 9: Wait for Vercel deploy (~7 min)**
+- [x] **Step 9: Wait for Vercel deploy (~7 min)**
 
 Use `npm run smoke` to confirm the deploy is healthy (should still be 10/10 — the new endpoint isn't smoke-tested yet, comes in Phase 5).
 
@@ -611,7 +611,7 @@ Find the `checks` array in `scripts/smoke-test-deploy.mjs`. Add this entry after
 
 Update the docstring count: change "10 critical endpoints" → "11 critical endpoints" at the top.
 
-- [ ] **Step 2: Run the smoke test locally against production**
+- [x] **Step 2: Run the smoke test locally against production**
 
 ```bash
 node scripts/smoke-test-deploy.mjs

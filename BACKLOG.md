@@ -39,6 +39,14 @@ Final verdict: Vercel's NFT only bundles via `node_modules`. Cross-tree relative
 
 Smoke test (`npm run smoke`) is the regression guard. Run after EVERY API change. Catches this whole class of bug in seconds.
 
+---
+
+## ✅ RESOLVED (2026-05-18) — GDPR compliance gaps
+
+**Gap #1 (Self-serve "Delete account" flow)** — shipped 2026-05-18 across commits `225fd82` (backend handler), `4e59974` (client wrapper), `96174f1` (Account.tsx UI), `6bdb19f` (vercel.json rewrite), `eca3a7c` (smoke test extension). ICO/UK-GDPR Article 17 compliance: users can now self-serve account deletion via Account → Danger Zone → "Delete account" with a typed-`DELETE` confirmation gate. Backend: `POST /api/delete-account` (consolidated into `api/user/index.ts` multiplexer — no new function, stays under 12-cap). Audit row written BEFORE `auth.users` delete so dispute paper trail survives. ON DELETE CASCADE chain wipes profile + analyses + api_usage + seen_job_searches + cv_summary. Stripe customer record INTENTIONALLY preserved for UK financial-records retention (disclosed in confirmation email). Reviewer SHIP IT verdict 10/10 (backend) + 8/8 (UI). Smoke test now 11/11 covering the new endpoint. **Manual E2E with a disposable account still required** (Phase 6 — operator task).
+
+**Gap #3 (Privacy Policy cv_summary disclosure)** — shipped 2026-05-18 via commit `769261f`. New subsection in Section 3 (Data We Collect) discloses the AI-distilled CV summary (≤2,000 chars) stored on profiles, its purpose (AI Job Search scoring), and the cross-reference that the raw CV is NOT retained. New subsection in Section 8 (Data Retention) explains the lifecycle: lives with the account, deleted immediately via Gap #1's self-serve flow (or by email request). Closes the Article 13/14 disclosure gap that the dashboard violet "Your CV profile is saved" hint had been referencing implicitly. Reviewer SHIP IT verdict 5/5.
+
 ## 🤖 CODE-SIDE DEFERRED (real but not urgent — defer pile)
 
 | # | Item | Why deferred | When to revisit |
