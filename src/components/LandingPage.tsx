@@ -741,7 +741,13 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
             gradient instead and skip the ~1MB three.js chunk download. The
             hero text + CTAs are the actual conversion surface; the 3D globe
             is decorative. */}
-        <div className="absolute inset-0 z-0 pointer-events-auto bg-[#A8A5E6]">
+        {/* Static brand-correct gradient that fades to lighter lavender at the
+            bottom. Uses the exact same #A8A5E6 -> #C2C0F0 -> #E6E5F8 palette
+            as the LandingPage outer wrapper (line ~701). No animation, no
+            blobs — just a tasteful vertical fade so mobile isn't a flat
+            colour block. lg:bg-[#A8A5E6] lg:bg-none restores the solid
+            base on screens >=1024px where the 3D dot-globe takes over. */}
+        <div className="absolute inset-0 z-0 pointer-events-auto bg-gradient-to-b from-[#A8A5E6] via-[#C2C0F0] to-[#E6E5F8] lg:bg-[#A8A5E6] lg:bg-none">
           {load3DHero && (
             <React.Suspense fallback={null}>
               <Hero3DScene />
