@@ -741,29 +741,12 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
             gradient instead and skip the ~1MB three.js chunk download. The
             hero text + CTAs are the actual conversion surface; the 3D globe
             is decorative. */}
-        {/* Background container. lg+: 3D dot-globe (Hero3DScene), solid
-            #A8A5E6 fallback while chunk loads. <lg: HIGH-CONTRAST vertical
-            gradient from light lavender at top -> bright violet -> deep
-            indigo at bottom, so the hero genuinely reads as alive on a
-            phone screen. Previous attempts used subtle pale-lavender stops
-            that were technically a gradient but visually flat. This one
-            is obvious — text remains readable against the lighter upper
-            half where the H1 + subtitle sit. */}
-        <div className="absolute inset-0 z-0 pointer-events-auto bg-gradient-to-b from-[#DDD6FE] via-[#A78BFA] to-[#4338CA] lg:bg-[#A8A5E6] lg:bg-none">
+        <div className="absolute inset-0 z-0 pointer-events-auto bg-[#A8A5E6]">
           {load3DHero && (
             <React.Suspense fallback={null}>
               <Hero3DScene />
             </React.Suspense>
           )}
-          {/* Mobile-only ambient drift — animated gradient mesh as the base
-              plus three large violet/indigo/lavender gradient blobs that
-              orbit slowly. GPU-only (transform + background-position), zero
-              JS bundle cost, honours prefers-reduced-motion. Hidden on lg+
-              where Hero3DScene takes over. See index.css .mobile-hero-blobs
-              for the keyframes + rules. */}
-          <div className="lg:hidden mobile-hero-blobs" aria-hidden="true">
-            <span />
-          </div>
         </div>
 
         {/* Hero text. The `relative` is critical — without explicit positioning,
