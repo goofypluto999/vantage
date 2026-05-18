@@ -62,7 +62,7 @@ If any gate fails: STOP. Don't proceed to next phase. Diagnose first.
 
 **Goal:** Add `handleDeleteAccount` function + a dispatcher case. Handler must (in order): authenticate → fetch profile.email for the audit log → write final `account.deleted` audit_log row → delete the Supabase Auth user via service-role admin API → fire fire-and-forget confirmation email → return 200 JSON.
 
-- [ ] **Step 1: Read api/user/index.ts to understand the existing inline helper pattern**
+- [x] **Step 1: Read api/user/index.ts to understand the existing inline helper pattern**
 
 Already exists: an inline `authenticate()` helper at line 15. Dispatcher pattern at line ~239 (`if (endpoint === 'credits')`).
 
@@ -70,7 +70,7 @@ Need to add: inline Resend `sendEmail` + `wrapEmailBody` (copy from `api/stripe/
 
 Run: `sed -n '1,50p' api/user/index.ts` and `grep -n "endpoint ===" api/user/index.ts` to confirm. Note current file length: it's well under 300 LOC, adding 80 brings it to ~340 — fine.
 
-- [ ] **Step 2: Add inline INLINED HELPERS block (Resend + Audit + Sentry init — same pattern as webhook.ts)**
+- [x] **Step 2: Add inline INLINED HELPERS block (Resend + Audit + Sentry init — same pattern as webhook.ts)**
 
 Insert at top of `api/user/index.ts`, after the existing imports + SUPABASE_URL/KEY constants. Block size: ~150 LOC.
 
@@ -85,7 +85,7 @@ Source: copy verbatim from `api/stripe/webhook.ts` (the established Strategy B c
 
 Use the EXACT same INLINED HELPERS comment fence so future grep + 1:1 derivation tracking works.
 
-- [ ] **Step 3: Implement handleDeleteAccount**
+- [x] **Step 3: Implement handleDeleteAccount**
 
 Add this function (paste verbatim — typed correctly for the inline helpers above):
 
@@ -229,7 +229,7 @@ async function handleDeleteAccount(request: any, response: any, user: any): Prom
 }
 ```
 
-- [ ] **Step 4: Add dispatcher case + call initSentry at top of handler**
+- [x] **Step 4: Add dispatcher case + call initSentry at top of handler**
 
 In the existing default handler at the bottom of `api/user/index.ts`, add `initSentry()` as the FIRST line (after the existing variable reads), and add the dispatcher case:
 
@@ -241,14 +241,14 @@ if (endpoint === 'delete-account') {
 
 The case goes AFTER the existing `if (endpoint === 'cv-upload')` block, BEFORE the final `return response.status(404)`.
 
-- [ ] **Step 5: Verify tsc clean**
+- [x] **Step 5: Verify tsc clean**
 
 Run: `npx tsc --noEmit`
 Expected: zero output, exit 0.
 
 If it fails: read the error. Most likely Sentry types if the inline block was pasted wrong. Compare against `api/stripe/webhook.ts` line-by-line.
 
-- [ ] **Step 6: Spawn multi-agent reviewer (general-purpose subagent)**
+- [x] **Step 6: Spawn multi-agent reviewer (general-purpose subagent)**
 
 Prompt the reviewer with this verbatim:
 
@@ -267,9 +267,9 @@ Prompt the reviewer with this verbatim:
 >
 > Push blockers? Anything you'd reject?
 
-- [ ] **Step 7: Address any reviewer feedback. Re-run tsc if changed.**
+- [x] **Step 7: Address any reviewer feedback. Re-run tsc if changed.**
 
-- [ ] **Step 8: Commit + push**
+- [x] **Step 8: Commit + push**
 
 ```bash
 git add api/user/index.ts
@@ -338,7 +338,7 @@ export async function deleteAccount(): Promise<{ success: boolean; deleted?: { a
 }
 ```
 
-- [ ] **Step 2: Verify tsc clean**
+- [x] **Step 2: Verify tsc clean**
 
 Run: `npx tsc --noEmit`
 Expected: zero output.
@@ -499,7 +499,7 @@ INSIDE that section, AFTER the existing Sign Out button, BEFORE the section's cl
 
 Make sure `AlertTriangle` and `Loader2` are already imported at the top of `Account.tsx`. They almost certainly are (existing UI uses both). If not, add to the existing `from 'lucide-react'` import line.
 
-- [ ] **Step 5: Verify tsc clean**
+- [x] **Step 5: Verify tsc clean**
 
 Run: `npx tsc --noEmit`
 Expected: zero output.
