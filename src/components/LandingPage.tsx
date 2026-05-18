@@ -741,13 +741,17 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
             gradient instead and skip the ~1MB three.js chunk download. The
             hero text + CTAs are the actual conversion surface; the 3D globe
             is decorative. */}
-        {/* Static brand-correct gradient that fades to lighter lavender at the
-            bottom. Uses the exact same #A8A5E6 -> #C2C0F0 -> #E6E5F8 palette
-            as the LandingPage outer wrapper (line ~701). No animation, no
-            blobs — just a tasteful vertical fade so mobile isn't a flat
-            colour block. lg:bg-[#A8A5E6] lg:bg-none restores the solid
-            base on screens >=1024px where the 3D dot-globe takes over. */}
-        <div className="absolute inset-0 z-0 pointer-events-auto bg-gradient-to-b from-[#A8A5E6] via-[#C2C0F0] to-[#E6E5F8] lg:bg-[#A8A5E6] lg:bg-none">
+        {/* Mobile hero background — solid lavender at the top fading to FULLY
+            TRANSPARENT at the bottom, so the underlying LandingPage outer
+            wrapper gradient (#A8A5E6 -> #C2C0F0 -> #E6E5F8, line ~701) shows
+            through and continues seamlessly into the trust bar + sections
+            below. Previous attempt ended at #E6E5F8 which was lighter than
+            the wrapper colour beneath, creating a visible hard seam. The
+            via-[#B5B3EB] stop gives a subtle top-to-bottom shift so the
+            hero isn't a flat block. lg:bg-[#A8A5E6] lg:bg-none restores the
+            solid pale base on screens >=1024px so the 3D dot-globe paints
+            against the brand colour it was designed against. */}
+        <div className="absolute inset-0 z-0 pointer-events-auto bg-gradient-to-b from-[#A8A5E6] via-[#B5B3EB] to-transparent lg:bg-[#A8A5E6] lg:bg-none">
           {load3DHero && (
             <React.Suspense fallback={null}>
               <Hero3DScene />
