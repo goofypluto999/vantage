@@ -527,3 +527,28 @@ export async function fetchAnalysisHistory(): Promise<any[]> {
   const result = await response.json();
   return result.analyses || [];
 }
+
+/**
+ * Permanently delete the authenticated user's account and ALL associated data
+ * (profile, analyses, CV summary, token balance, AI Job Search history).
+ * Stripe customer record is preserved for financial-records retention.
+ *
+ * The user MUST type "DELETE" in the confirmation gate before this is called
+ * (enforced both client-side via Account.tsx UI and server-side via
+ * api/user::handleDeleteAccount body validation).
+ *
+ * After success, the caller should sign the user out (Supabase session is
+ * already revoked server-side by the auth admin delete) and redirect to
+ * landing.
+ */
+export async function deleteAccount(): Promise<{ success: boolean; deleted?: { analyses: number; token_balance: number }; error?: string }> {
+  const response = await fetchWithAuth('/user?endpoint=delete-account', {
+    method: 'POST',
+    body: JSON.stringify({ confirmation: 'DELETE' }),
+  });
+  const data = await safeJson(response);
+  if (!response.ok) {
+    return { success: false, error: data.error || 'Account deletion failed. Please try again or contact support.' };
+  }
+  return { success: true, deleted: data.deleted };
+}

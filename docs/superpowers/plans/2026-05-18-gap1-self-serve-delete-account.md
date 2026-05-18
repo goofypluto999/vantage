@@ -307,7 +307,7 @@ Use `npm run smoke` to confirm the deploy is healthy (should still be 10/10 — 
 
 **Goal:** Add typed `deleteAccount()` wrapper so the React component doesn't see raw fetch logic.
 
-- [ ] **Step 1: Add the wrapper function**
+- [x] **Step 1: Add the wrapper function**
 
 At the end of `src/services/api.ts` (after the existing `fetchAnalysisHistory` function around line 528):
 
@@ -343,7 +343,7 @@ export async function deleteAccount(): Promise<{ success: boolean; deleted?: { a
 Run: `npx tsc --noEmit`
 Expected: zero output.
 
-- [ ] **Step 3: Commit + push**
+- [x] **Step 3: Commit + push**
 
 ```bash
 git add src/services/api.ts
