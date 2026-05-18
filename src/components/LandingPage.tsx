@@ -181,7 +181,7 @@ function Navbar({ onStart, showLogin }: { onStart: () => void; showLogin?: () =>
       className={`fixed top-9 md:top-10 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
           ? 'bg-white/30 backdrop-blur-[28px] border-b border-white/40 shadow-[0_4px_24px_rgba(0,0,0,0.08)]'
-          : 'bg-transparent'
+          : 'bg-white/30 backdrop-blur-[20px] border-b border-white/30 md:bg-transparent md:backdrop-blur-0 md:border-b-0'
       }`}
     >
       <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
@@ -735,7 +735,7 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
       {/* ================================================================
           HERO — dot-matrix globe behind the headline
       ================================================================ */}
-      <section className="relative h-screen flex flex-col items-center justify-center overflow-hidden grain-overlay">
+      <section className="relative min-h-screen flex flex-col items-center justify-start pt-32 md:pt-0 md:justify-center overflow-hidden grain-overlay">
         {/* 3D canvas — desktop + non-reduced-motion only. On mobile or when
             the user prefers reduced motion, we show the static bg-[#A8A5E6]
             gradient instead and skip the ~1MB three.js chunk download. The
