@@ -4,10 +4,11 @@ import type { LucideIcon } from 'lucide-react';
 import {
   ArrowLeft, Sparkles, User, Mail, CreditCard, Shield, LogOut,
   Zap, Star, Crown, Lock, ExternalLink, Check, AlertTriangle, Eye, EyeOff,
+  Loader2,
 } from 'lucide-react';
 import { useAuth } from '../App';
 import { supabase, getCreditsRemaining } from '../lib/supabase';
-import { createBillingPortal, syncSubscription } from '../services/api';
+import { createBillingPortal, syncSubscription, deleteAccount } from '../services/api';
 
 const PLAN_META: Record<string, { color: string; icon: LucideIcon; label: string }> = {
   starter: { color: '#6B6B8D', icon: Zap, label: 'Starter' },
@@ -65,6 +66,12 @@ export default function Account() {
 
   // Billing portal
   const [portalLoading, setPortalLoading] = useState(false);
+
+  // Account deletion (GDPR right-to-erasure, gap #1 self-serve flow)
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deleteConfirmText, setDeleteConfirmText] = useState('');
+  const [deleteSubmitting, setDeleteSubmitting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   // General error
   const [error, setError] = useState('');
@@ -162,6 +169,26 @@ export default function Account() {
   const handleSignOut = async () => {
     await signOut();
     navigate('/');
+  };
+
+  const handleDeleteAccount = async () => {
+    if (deleteConfirmText !== 'DELETE') {
+      setDeleteError('Type DELETE exactly (uppercase) to confirm.');
+      return;
+    }
+    setDeleteSubmitting(true);
+    setDeleteError(null);
+    const result = await deleteAccount();
+    if (!result.success) {
+      setDeleteError(result.error || 'Account deletion failed. Please try again or email giovanni.sizino.ennes@hotmail.co.uk.');
+      setDeleteSubmitting(false);
+      return;
+    }
+    // Success — Supabase session was revoked server-side. Sign out client-
+    // side too (clears localStorage / auth context) + redirect. replace: true
+    // so the back button doesn't return to /account.
+    await signOut();
+    navigate('/?deleted=1', { replace: true });
   };
 
   return (
@@ -513,6 +540,75 @@ export default function Account() {
               <LogOut className="w-4 h-4" aria-hidden="true" />
               Sign Out
             </button>
+
+            {/* GDPR Gap #1: self-serve account deletion */}
+            <div className="mt-6 pt-6 border-t border-red-500/20">
+              <h3 className="text-sm font-bold text-red-300 mb-2">Delete your account permanently</h3>
+              <p className="text-white/60 text-xs leading-relaxed mb-3">
+                Removes your profile, all saved analyses, your CV profile, token balance, and AI Job Search history.
+                Your past payment records on Stripe are preserved for tax/financial-records retention — request separate
+                Stripe-side erasure by emailing giovanni.sizino.ennes@hotmail.co.uk if you also need that.
+                <strong className="text-red-300"> This action cannot be reversed.</strong>
+              </p>
+
+              {!deleteOpen ? (
+                <button
+                  onClick={() => setDeleteOpen(true)}
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-red-500/10 border border-red-500/30 text-red-300 text-sm font-semibold hover:bg-red-500/20 transition-colors min-h-[44px]"
+                >
+                  <AlertTriangle className="w-4 h-4" aria-hidden="true" />
+                  Delete account
+                </button>
+              ) : (
+                <div className="space-y-3">
+                  <p className="text-red-200 text-xs font-medium">
+                    Type <strong className="font-mono text-red-100">DELETE</strong> below to confirm.
+                  </p>
+                  <input
+                    type="text"
+                    value={deleteConfirmText}
+                    onChange={(e) => setDeleteConfirmText(e.target.value)}
+                    placeholder="Type DELETE"
+                    autoComplete="off"
+                    spellCheck={false}
+                    className="w-full px-3 py-2 rounded-lg bg-black/30 border border-red-500/30 text-white placeholder-white/30 outline-none focus:border-red-500/60 text-sm font-mono"
+                    disabled={deleteSubmitting}
+                  />
+                  {deleteError && (
+                    <div className="text-red-300 text-xs flex items-center gap-1.5">
+                      <AlertTriangle className="w-3.5 h-3.5" aria-hidden="true" />
+                      {deleteError}
+                    </div>
+                  )}
+                  <div className="flex gap-2">
+                    <button
+                      onClick={handleDeleteAccount}
+                      disabled={deleteSubmitting || deleteConfirmText !== 'DELETE'}
+                      className="flex items-center gap-2 px-4 py-2 rounded-lg bg-red-600 text-white text-sm font-semibold hover:bg-red-500 transition-colors disabled:opacity-40 disabled:cursor-not-allowed min-h-[44px]"
+                    >
+                      {deleteSubmitting ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" />
+                          Deleting…
+                        </>
+                      ) : (
+                        <>
+                          <AlertTriangle className="w-4 h-4" aria-hidden="true" />
+                          Permanently delete my account
+                        </>
+                      )}
+                    </button>
+                    <button
+                      onClick={() => { setDeleteOpen(false); setDeleteConfirmText(''); setDeleteError(null); }}
+                      disabled={deleteSubmitting}
+                      className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white/70 text-sm font-semibold hover:bg-white/10 transition-colors min-h-[44px] disabled:opacity-40"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           </section>
         </div>
       </main>

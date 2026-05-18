@@ -366,7 +366,7 @@ git push origin master
 
 **Goal:** Below the existing Sign Out button in the Danger Zone, add a collapsed-by-default deletion sub-section. Click "Delete account" → expands to typed-DELETE input + confirm button. Confirm calls `deleteAccount()` → success → sign out + redirect.
 
-- [ ] **Step 1: Add the deletion state at top of the Account component**
+- [x] **Step 1: Add the deletion state at top of the Account component**
 
 Find the existing useState declarations in `Account.tsx` (around line 26-50). Add these after the existing ones:
 
@@ -386,7 +386,7 @@ import { createBillingPortal, syncSubscription, deleteAccount } from '../service
 
 (modifying the existing import line — just add `, deleteAccount` to the existing list)
 
-- [ ] **Step 2: Add the deletion handler**
+- [x] **Step 2: Add the deletion handler**
 
 After the existing `handleSignOut` function, add:
 
@@ -412,7 +412,7 @@ const handleDeleteAccount = async () => {
 };
 ```
 
-- [ ] **Step 3: Add the UI block at the bottom of the existing Danger Zone section**
+- [x] **Step 3: Add the UI block at the bottom of the existing Danger Zone section**
 
 Find the existing Danger Zone in `Account.tsx` (line ~507):
 
@@ -495,7 +495,7 @@ INSIDE that section, AFTER the existing Sign Out button, BEFORE the section's cl
 </div>
 ```
 
-- [ ] **Step 4: Verify all imports are present**
+- [x] **Step 4: Verify all imports are present**
 
 Make sure `AlertTriangle` and `Loader2` are already imported at the top of `Account.tsx`. They almost certainly are (existing UI uses both). If not, add to the existing `from 'lucide-react'` import line.
 
@@ -504,7 +504,7 @@ Make sure `AlertTriangle` and `Loader2` are already imported at the top of `Acco
 Run: `npx tsc --noEmit`
 Expected: zero output.
 
-- [ ] **Step 6: Multi-agent reviewer for the UI**
+- [x] **Step 6: Multi-agent reviewer for the UI**
 
 Prompt:
 
@@ -521,9 +521,9 @@ Prompt:
 >
 > Push blockers?
 
-- [ ] **Step 7: Address feedback, re-tsc**
+- [x] **Step 7: Address feedback, re-tsc**
 
-- [ ] **Step 8: Commit + push**
+- [x] **Step 8: Commit + push**
 
 ```bash
 git add src/components/Account.tsx
