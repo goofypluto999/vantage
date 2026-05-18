@@ -43,13 +43,13 @@
 
 **Goal:** Inside the existing `items` array for Section 4, add a new `{ title, text }` object specifically about `cv_summary`. Should sit between the existing "CV / Resume Content" item and the next item.
 
-- [ ] **Step 1: Read the current Section 4 structure**
+- [x] **Step 1: Read the current Section 4 structure**
 
 Run: `sed -n '19,50p' src/components/PrivacyPolicy.tsx`
 
 Confirm: Section 4 has `id: 'data-we-collect'`, contains an `items` array. The "CV / Resume Content" item is at line ~27-29.
 
-- [ ] **Step 2: Add the new item after "CV / Resume Content"**
+- [x] **Step 2: Add the new item after "CV / Resume Content"**
 
 Find the existing item:
 
@@ -69,12 +69,12 @@ INSERT a new item RIGHT AFTER it (and BEFORE the next item):
 },
 ```
 
-- [ ] **Step 3: Verify tsc clean**
+- [x] **Step 3: Verify tsc clean**
 
 Run: `npx tsc --noEmit`
 Expected: zero output. (Sanity — should never break, but trailing-comma errors are possible.)
 
-- [ ] **Step 4: Commit (no push yet — bundle with Phase 2)**
+- [x] **Step 4: Commit (no push yet — bundle with Phase 2)**
 
 ```bash
 git add src/components/PrivacyPolicy.tsx
@@ -102,13 +102,13 @@ dashboard hint to an explicit privacy disclosure."
 
 **Goal:** Add a new item explaining the cv_summary retention lifecycle.
 
-- [ ] **Step 1: Read the current Section 7 structure**
+- [x] **Step 1: Read the current Section 7 structure**
 
 Run: `sed -n '102,125p' src/components/PrivacyPolicy.tsx`
 
 Confirm: Section 7 has `id: 'data-retention'`, contains an `items` array. Existing items cover account info, analysis outputs, waitlist, transaction records.
 
-- [ ] **Step 2: Add the new item**
+- [x] **Step 2: Add the new item**
 
 Insert this as the SECOND item in the array (right after the first "Account Information" item that says "retained for as long as your account is active"):
 
@@ -119,12 +119,12 @@ Insert this as the SECOND item in the array (right after the first "Account Info
 },
 ```
 
-- [ ] **Step 3: Verify tsc clean**
+- [x] **Step 3: Verify tsc clean**
 
 Run: `npx tsc --noEmit`
 Expected: zero output.
 
-- [ ] **Step 4: Spawn multi-agent reviewer (low-stakes — doc only)**
+- [x] **Step 4: Spawn multi-agent reviewer (low-stakes — doc only)**
 
 Prompt:
 
@@ -142,11 +142,11 @@ Prompt:
 >
 > Anything legally or factually off? Anything missing?
 
-- [ ] **Step 5: Address feedback if any**
+- [x] **Step 5: Address feedback if any**
 
 If reviewer says wording is fine — proceed. If they flag anything material, fix and re-tsc.
 
-- [ ] **Step 6: Commit + push**
+- [x] **Step 6: Commit + push**
 
 ```bash
 git add src/components/PrivacyPolicy.tsx

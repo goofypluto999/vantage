@@ -29,6 +29,10 @@ const sections = [
         text: 'The text content of CVs and resumes you upload. This content is processed by AI to generate analyses and is not permanently stored in its raw form after processing. Structured results are stored for your continued access.',
       },
       {
+        title: 'CV Profile Summary',
+        text: 'A short, AI-distilled summary of your CV (no more than 2,000 characters) extracted during your first analysis and stored on your profile. This summary powers our AI Job Search feature — when you run a job-board scan, the AI scores each role against this summary so we do not have to re-process your full CV on every search. The raw CV text itself is NOT retained (see "CV / Resume Content" above); only this short summary is. You can delete the summary at any time by deleting your account in your Account → Danger Zone settings, or by emailing giovanni.sizino.ennes@hotmail.co.uk.',
+      },
+      {
         title: 'Job Information',
         text: 'Job URLs and job descriptions you provide for analysis.',
       },
@@ -106,6 +110,10 @@ const sections = [
       {
         title: 'Account Data',
         text: 'Your account information and analysis results are retained for as long as your account is active. You may request deletion at any time (see Section 9).',
+      },
+      {
+        title: 'CV Profile Summary',
+        text: 'Your AI-distilled CV summary (≤2,000 characters, stored on your profile — see Section 3) is retained for as long as your account is active. It is deleted automatically and immediately when you delete your account via Account → Danger Zone → "Delete account" (self-serve, takes effect within seconds and cannot be undone) or when you email us a deletion request at giovanni.sizino.ennes@hotmail.co.uk. There is no separate retention window — the summary lives with your account and dies with it.',
       },
       {
         title: 'Analysis Results',
