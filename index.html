@@ -258,6 +258,14 @@
          React replaces #root's children on hydration so this disappears
          the moment the JS app boots. -->
     <style id="static-fallback-style">
+      /* Hide the static SEO fallback from real (JS-enabled) browsers so it
+         doesn't flash for ~100-300ms before React hydrates. The fallback
+         stays in the DOM and is fully crawlable from the raw HTML — JS-less
+         crawlers (older scrapers, archive bots, some directory indexers)
+         see it via the <noscript> override below. JS-rendering crawlers
+         (Googlebot, Bingbot modern) execute React and index the real page.
+         Net result: SEO-equivalent for bots, zero flash for real users. */
+      [data-static-fallback] { display: none; }
       [data-static-fallback] {
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         background: linear-gradient(135deg, #0d0b1e 0%, #1a1635 100%);
@@ -304,6 +312,14 @@
       }
       [data-static-fallback] footer { color: rgba(255,255,255,0.5); font-size: 0.875rem; margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1); }
     </style>
+    <noscript>
+      <!-- When JS is disabled the style tags inside <noscript> are honoured by
+           the browser. JS-less crawlers therefore re-enable the SEO fallback
+           with full visibility, while real users (JS-on) keep it hidden. -->
+      <style>
+        [data-static-fallback] { display: block !important; }
+      </style>
+    </noscript>
   </head>
   <body>
     <div id="root">
