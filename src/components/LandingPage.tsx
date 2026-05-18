@@ -741,14 +741,15 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
             gradient instead and skip the ~1MB three.js chunk download. The
             hero text + CTAs are the actual conversion surface; the 3D globe
             is decorative. */}
-        {/* Background container. lg+: 3D dot-globe (Hero3DScene), Tailwind
-            gradient as fallback while chunk loads. <lg: static Tailwind
-            gradient PLUS our CSS-driven .mobile-hero-blobs overlay (mesh +
-            drifting blobs). The Tailwind gradient is the SAFETY NET — even
-            if our custom CSS rule gets dropped by an aggressive Safari
-            cache, the user still sees a visible multi-stop gradient
-            rather than a flat purple base. */}
-        <div className="absolute inset-0 z-0 pointer-events-auto bg-gradient-to-br from-[#8E84DC] via-[#C7B8F2] to-[#A78BFA] lg:bg-[#A8A5E6] lg:bg-none">
+        {/* Background container. lg+: 3D dot-globe (Hero3DScene), solid
+            #A8A5E6 fallback while chunk loads. <lg: HIGH-CONTRAST vertical
+            gradient from light lavender at top -> bright violet -> deep
+            indigo at bottom, so the hero genuinely reads as alive on a
+            phone screen. Previous attempts used subtle pale-lavender stops
+            that were technically a gradient but visually flat. This one
+            is obvious — text remains readable against the lighter upper
+            half where the H1 + subtitle sit. */}
+        <div className="absolute inset-0 z-0 pointer-events-auto bg-gradient-to-b from-[#DDD6FE] via-[#A78BFA] to-[#4338CA] lg:bg-[#A8A5E6] lg:bg-none">
           {load3DHero && (
             <React.Suspense fallback={null}>
               <Hero3DScene />
