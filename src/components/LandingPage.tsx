@@ -841,8 +841,13 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
                 live on AimVantage. Skeptics who don't want to sign up have a
                 second doorway: try a free tool first, get value, come back
                 for the paid analysis. Each chip links to a tool route. */}
+            {/* Free-tool chips. On mobile the label was sharing its row with
+                the first chip, causing a zigzag wrap pattern that looked
+                messy. Forcing the label to w-full on mobile (md:w-auto on
+                desktop) puts it on its own centered line, with chips wrapping
+                cleanly underneath. Desktop visual identical to before. */}
             <div className="flex flex-wrap items-center justify-center gap-2 pt-2 pointer-events-auto">
-              <span className="text-[11px] uppercase tracking-widest font-bold text-[#3B3A5C]">Or try a free tool:</span>
+              <span className="block w-full md:w-auto md:inline text-center text-[11px] uppercase tracking-widest font-bold text-[#3B3A5C]">Or try a free tool:</span>
               <Link
                 to="/roast"
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/45 backdrop-blur-[20px] border border-white/55 text-[#2D2B4E] text-xs font-semibold hover:bg-white/65 transition-all"
