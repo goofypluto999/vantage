@@ -183,28 +183,42 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ──────────────────────────────────────────────────────────────────────────
-   Mobile hero ambient background — 3 large gradient blobs that drift slowly.
-   GPU-only (transform/opacity), zero JS bundle cost. Replaces the flat
-   bg-[#A8A5E6] on mobile where the 1MB Three.js globe is intentionally
-   skipped (Hero3DScene gated to lg+ in LandingPage.tsx::load3DHero).
-   Honours prefers-reduced-motion. Sized to be subtle, not distracting.
+   Mobile hero ambient background — TWO layers stacked for visibility.
+
+   Layer 1: animated gradient-position drift on a multi-stop mesh. This is
+   the always-visible base motion — guarantees the hero feels alive even
+   if blob blending is muted by light-mode contrast or older Safari quirks.
+
+   Layer 2: three solid violet/indigo/lavender blobs that orbit slowly via
+   transform keyframes. No mix-blend-mode (it killed contrast on the light
+   #A8A5E6 base — round-2 mobile feedback). Higher opacity, smaller blur
+   so the drift is actually perceptible on a phone screen in daylight.
+
+   Mobile-only (lg:hidden in JSX). Desktop still gets Three.js globe via
+   load3DHero. GPU-only (transform / background-position). Honours
+   prefers-reduced-motion: reduce.
    ────────────────────────────────────────────────────────────────────── */
+@keyframes hero-mesh-shift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
 @keyframes blob-drift-a {
   0%   { transform: translate(0%, 0%)    scale(1); }
-  33%  { transform: translate(8%, -6%)   scale(1.08); }
-  66%  { transform: translate(-4%, 10%)  scale(0.96); }
+  33%  { transform: translate(10%, -8%)  scale(1.1); }
+  66%  { transform: translate(-6%, 12%)  scale(0.94); }
   100% { transform: translate(0%, 0%)    scale(1); }
 }
 @keyframes blob-drift-b {
   0%   { transform: translate(0%, 0%)    scale(1); }
-  33%  { transform: translate(-10%, 8%)  scale(0.92); }
-  66%  { transform: translate(6%, -6%)   scale(1.1); }
+  33%  { transform: translate(-12%, 10%) scale(0.9); }
+  66%  { transform: translate(8%, -8%)   scale(1.12); }
   100% { transform: translate(0%, 0%)    scale(1); }
 }
 @keyframes blob-drift-c {
   0%   { transform: translate(0%, 0%)    scale(1); }
-  33%  { transform: translate(5%, 8%)    scale(1.04); }
-  66%  { transform: translate(-8%, -10%) scale(0.94); }
+  33%  { transform: translate(7%, 10%)   scale(1.05); }
+  66%  { transform: translate(-10%, -12%) scale(0.92); }
   100% { transform: translate(0%, 0%)    scale(1); }
 }
 
@@ -214,39 +228,49 @@ h1, h2, h3, h4, h5, h6 {
   overflow: hidden;
   pointer-events: none;
   z-index: 0;
+  /* Layer 1 — animated mesh as the base background */
+  background:
+    linear-gradient(135deg,
+      #A8A5E6 0%,
+      #C7B8F2 25%,
+      #9B8FE3 50%,
+      #B6A5EC 75%,
+      #A8A5E6 100%
+    );
+  background-size: 400% 400%;
+  animation: hero-mesh-shift 24s ease-in-out infinite;
 }
+/* Layer 2 — drifting solid blobs above the mesh */
 .mobile-hero-blobs::before,
 .mobile-hero-blobs::after,
 .mobile-hero-blobs > span {
   content: '';
   position: absolute;
   border-radius: 50%;
-  filter: blur(60px);
-  opacity: 0.55;
-  mix-blend-mode: soft-light;
+  filter: blur(48px);
   will-change: transform;
 }
 .mobile-hero-blobs::before {
-  width: 70vw; height: 70vw;
-  top: -10%; left: -15%;
-  background: radial-gradient(circle, #7C3AED 0%, transparent 70%);
+  width: 75vw; height: 75vw;
+  top: -12%; left: -18%;
+  background: radial-gradient(circle, rgba(124, 58, 237, 0.55) 0%, rgba(124, 58, 237, 0) 70%);
   animation: blob-drift-a 18s ease-in-out infinite;
 }
 .mobile-hero-blobs::after {
-  width: 60vw; height: 60vw;
-  bottom: -10%; right: -10%;
-  background: radial-gradient(circle, #4F46E5 0%, transparent 70%);
+  width: 65vw; height: 65vw;
+  bottom: -12%; right: -12%;
+  background: radial-gradient(circle, rgba(79, 70, 229, 0.5) 0%, rgba(79, 70, 229, 0) 70%);
   animation: blob-drift-b 22s ease-in-out infinite;
 }
 .mobile-hero-blobs > span {
-  width: 50vw; height: 50vw;
-  top: 35%; left: 50%;
-  transform: translate(-50%, -50%);
-  background: radial-gradient(circle, #A78BFA 0%, transparent 70%);
+  width: 55vw; height: 55vw;
+  top: 30%; left: 50%;
+  margin-left: -27.5vw;
+  background: radial-gradient(circle, rgba(167, 139, 250, 0.45) 0%, rgba(167, 139, 250, 0) 70%);
   animation: blob-drift-c 26s ease-in-out infinite;
-  opacity: 0.4;
 }
 @media (prefers-reduced-motion: reduce) {
+  .mobile-hero-blobs,
   .mobile-hero-blobs::before,
   .mobile-hero-blobs::after,
   .mobile-hero-blobs > span {
