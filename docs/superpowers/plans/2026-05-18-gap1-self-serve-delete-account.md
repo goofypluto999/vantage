@@ -551,7 +551,7 @@ git push origin master
 
 **Goal:** `/api/delete-account` should work as a clean URL, mirroring how `/api/credits` and `/api/analyses` rewrite to the user multiplexer.
 
-- [ ] **Step 1: Add the rewrite**
+- [x] **Step 1: Add the rewrite**
 
 Find the existing rewrites array (line ~68-75) and add this entry as the THIRD line:
 
@@ -570,11 +570,11 @@ So the array reads:
     "source": "/((?!api/|assets/| ...
 ```
 
-- [ ] **Step 2: Optionally update services/api.ts to use the clean URL**
+- [x] **Step 2: Optionally update services/api.ts to use the clean URL**
 
-In `src/services/api.ts::deleteAccount`, change `'/user?endpoint=delete-account'` to `'/delete-account'`. (Vercel rewrite handles the mapping.) This is cosmetic — both work. Skip if you want the explicit form.
+SKIPPED — kept the explicit form `/user?endpoint=delete-account` so the call works whether or not the rewrite is in place (defense-in-depth).
 
-- [ ] **Step 3: Commit + push**
+- [x] **Step 3: Commit + push**
 
 ```bash
 git add vercel.json src/services/api.ts
