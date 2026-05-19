@@ -757,6 +757,14 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
               <Hero3DScene />
             </React.Suspense>
           )}
+          {/* Mobile-only Stripe-style gradient mesh — three brand-colored
+              soft orbs (violet / lavender / indigo) drifting slowly across
+              the hero. Orb CENTERS sit off-canvas in opposing corners so
+              the soft falloff reaches the visible area without any mass
+              ever covering the headline. See index.css .mobile-hero-mesh. */}
+          <div className="lg:hidden mobile-hero-mesh" aria-hidden="true">
+            <span />
+          </div>
         </div>
 
         {/* Hero text. The `relative` is critical — without explicit positioning,
