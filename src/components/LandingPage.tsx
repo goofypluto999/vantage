@@ -757,6 +757,11 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
               <Hero3DScene />
             </React.Suspense>
           )}
+          {/* Mobile-only ambient glow — two pulsing corner glows (brand
+              violet + white sheen) that drift slightly. Sits in corners so
+              the headline area stays clean. Brand colors only. See
+              index.css .mobile-hero-glow for rules + keyframes. */}
+          <div className="lg:hidden mobile-hero-glow" aria-hidden="true" />
         </div>
 
         {/* Hero text. The `relative` is critical — without explicit positioning,
