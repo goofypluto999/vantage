@@ -183,34 +183,29 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ──────────────────────────────────────────────────────────────────────────
-   Mobile hero gradient mesh — Stripe-style.
+   Mobile hero gradient mesh — Stripe-style (canonical technique).
 
-   Three soft color masses that slowly drift across the hero, blending into
-   each other. Uses the EXACT brand palette — saturated violet (#7C3AED),
-   lavender (#C7B8F2), and indigo (#4F46E5) — at high enough opacity to
-   actually show, with heavy blur for fluid color blending.
+   The classic Stripe mesh works by stacking 4 radial-gradients in ONE
+   background property, then animating background-position. Each radial
+   is rendered crisp (no separate blur filter), so the saturated brand
+   colors actually show through the lavender base. The blending happens
+   where the gradients overlap, creating a fluid color mesh.
 
-   Orb CENTERS are positioned off-canvas in opposing corners + bottom-center
-   so only the SOFT FALLOFF of each orb reaches the headline area. The
-   headline never competes with a color mass directly.
+   Previous attempts used separate blurred <div>s — each got softened
+   into a near-invisible whisper because filter:blur(80px) on a low-alpha
+   color over lavender averages everything into mud. This implementation
+   is fundamentally different: gradients are sharp, colors are saturated,
+   visibility is guaranteed.
 
-   Mobile-only (lg:hidden in JSX). Desktop preserved (3D dot-globe).
-   GPU-only (transform). Honours prefers-reduced-motion.
+   Mobile-only (lg:hidden in JSX). Desktop preserved.
+   GPU-only (background-position). Honours prefers-reduced-motion.
    ────────────────────────────────────────────────────────────────────── */
-@keyframes mesh-drift-a {
-  0%, 100% { transform: translate(0%, 0%) scale(1); }
-  33%      { transform: translate(15%, 10%) scale(1.1); }
-  66%      { transform: translate(-5%, 18%) scale(0.95); }
-}
-@keyframes mesh-drift-b {
-  0%, 100% { transform: translate(0%, 0%) scale(1); }
-  33%      { transform: translate(-12%, -8%) scale(0.92); }
-  66%      { transform: translate(10%, -15%) scale(1.12); }
-}
-@keyframes mesh-drift-c {
-  0%, 100% { transform: translate(0%, 0%) scale(1); }
-  33%      { transform: translate(18%, -10%) scale(1.05); }
-  66%      { transform: translate(-15%, 8%)  scale(0.93); }
+@keyframes mesh-shift {
+  0%   { background-position: 0% 0%,   100% 0%,   50% 100%, 0% 100%; }
+  25%  { background-position: 100% 0%, 100% 100%, 0% 50%,   50% 0%; }
+  50%  { background-position: 100% 100%, 0% 100%, 100% 50%, 0% 0%; }
+  75%  { background-position: 0% 100%, 0% 0%,    50% 0%,   100% 100%; }
+  100% { background-position: 0% 0%,   100% 0%,   50% 100%, 0% 100%; }
 }
 
 .mobile-hero-mesh {
@@ -219,42 +214,17 @@ h1, h2, h3, h4, h5, h6 {
   overflow: hidden;
   pointer-events: none;
   z-index: 0;
-}
-.mobile-hero-mesh::before,
-.mobile-hero-mesh::after,
-.mobile-hero-mesh > span {
-  content: '';
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(80px);
-  will-change: transform;
-}
-/* Brand violet — dominant top-left */
-.mobile-hero-mesh::before {
-  width: 100vw; height: 100vw;
-  top: -25%; left: -30%;
-  background: radial-gradient(circle, rgba(124, 58, 237, 0.55) 0%, rgba(124, 58, 237, 0) 65%);
-  animation: mesh-drift-a 22s ease-in-out infinite;
-}
-/* Light lavender — secondary bottom-right */
-.mobile-hero-mesh::after {
-  width: 95vw; height: 95vw;
-  bottom: -25%; right: -25%;
-  background: radial-gradient(circle, rgba(199, 184, 242, 0.7) 0%, rgba(199, 184, 242, 0) 65%);
-  animation: mesh-drift-b 26s ease-in-out infinite;
-}
-/* Indigo accent — bottom-centre adds depth */
-.mobile-hero-mesh > span {
-  width: 80vw; height: 80vw;
-  bottom: -30%; left: 50%;
-  margin-left: -40vw;
-  background: radial-gradient(circle, rgba(79, 70, 229, 0.5) 0%, rgba(79, 70, 229, 0) 65%);
-  animation: mesh-drift-c 30s ease-in-out infinite;
+  background-image:
+    radial-gradient(at 25% 30%, rgba(124, 58, 237, 0.7) 0px, transparent 55%),
+    radial-gradient(at 75% 25%, rgba(199, 184, 242, 0.85) 0px, transparent 55%),
+    radial-gradient(at 60% 90%, rgba(79, 70, 229, 0.65) 0px, transparent 55%),
+    radial-gradient(at 15% 85%, rgba(167, 139, 250, 0.7) 0px, transparent 55%);
+  background-size: 180% 180%, 180% 180%, 180% 180%, 180% 180%;
+  animation: mesh-shift 30s ease-in-out infinite;
+  will-change: background-position;
 }
 @media (prefers-reduced-motion: reduce) {
-  .mobile-hero-mesh::before,
-  .mobile-hero-mesh::after,
-  .mobile-hero-mesh > span {
+  .mobile-hero-mesh {
     animation: none;
   }
 }
