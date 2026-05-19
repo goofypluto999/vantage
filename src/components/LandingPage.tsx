@@ -757,11 +757,35 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
               <Hero3DScene />
             </React.Suspense>
           )}
-          {/* Mobile-only ambient glow — two pulsing corner glows (brand
-              violet + white sheen) that drift slightly. Sits in corners so
-              the headline area stays clean. Brand colors only. See
-              index.css .mobile-hero-glow for rules + keyframes. */}
-          <div className="lg:hidden mobile-hero-glow" aria-hidden="true" />
+          {/* Mobile-only flat dot constellation — visual cousin to the
+              desktop Three.js dot-globe. 80 small white dots arranged in a
+              Fibonacci sphere pattern, slowly rotating. Crisp shapes (no
+              blur) so they're definitely visible against the lavender
+              base. See index.css .mobile-hero-constellation for the
+              keyframes + sizing. */}
+          <div className="lg:hidden mobile-hero-constellation" aria-hidden="true">
+            <svg viewBox="-50 -50 100 100">
+              {Array.from({ length: 80 }, (_, i) => {
+                const golden = Math.PI * (3 - Math.sqrt(5));
+                const phi = golden * i;
+                const r = Math.sqrt(i / 80) * 46;
+                const cx = Math.cos(phi) * r;
+                const cy = Math.sin(phi) * r;
+                const dotR = 0.35 + (i % 5) * 0.12;
+                const opacity = 0.45 + ((i * 7) % 10) / 22;
+                return (
+                  <circle
+                    key={i}
+                    cx={cx}
+                    cy={cy}
+                    r={dotR}
+                    fill="#ffffff"
+                    opacity={opacity}
+                  />
+                );
+              })}
+            </svg>
+          </div>
         </div>
 
         {/* Hero text. The `relative` is critical — without explicit positioning,

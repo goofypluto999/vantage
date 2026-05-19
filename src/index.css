@@ -183,64 +183,51 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ──────────────────────────────────────────────────────────────────────────
-   Mobile hero ambient glow — TWO corner glows (brand violet + white sheen)
-   that pulse opacity and drift slightly. Sits underneath the hero text,
-   positioned in opposing corners so the headline area stays clean.
+   Mobile hero ambient backdrop — a 2D flat version of the desktop Three.js
+   dot-globe. Inline SVG of ~80 small white dots arranged in a Fibonacci
+   sphere pattern, slowly rotating. Mirrors the desktop visual DNA
+   (Hero3DScene.tsx::DotGlobe) without the 1MB Three.js dependency.
 
-   Lessons applied vs previous failed rounds:
-     - Brand colors ONLY (violet #A78BFA + white). No neon cyan/pink.
-     - Glows are positioned in CORNERS, not behind the headline, so the
-       central text remains clean and readable.
-     - Higher peak opacity (0.45-0.6) so motion is genuinely visible.
-     - Pulsing OPACITY (not just transform) so the eye catches the
-       change without the colors competing with brand identity.
-     - blur(70px) for soft falloff — enough to feel ambient, not muddy.
+   Why this instead of blurred blobs: previous attempts used blur(48-70px)
+   which made low-opacity colors average into the lavender background and
+   read as flat. SOLID dot shapes don't have that problem — they stay
+   crisp regardless of contrast.
 
    Mobile-only (lg:hidden in JSX). Desktop still gets Three.js globe.
-   Honours prefers-reduced-motion: reduce.
+   GPU-only (transform rotation). Honours prefers-reduced-motion: reduce.
    ────────────────────────────────────────────────────────────────────── */
-@keyframes hero-glow-violet {
-  0%, 100% { opacity: 0.3; transform: translate(0%, 0%) scale(1); }
-  50%      { opacity: 0.6; transform: translate(8%, -6%) scale(1.08); }
+@keyframes constellation-rotate {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
 }
-@keyframes hero-glow-white {
-  0%, 100% { opacity: 0.25; transform: translate(0%, 0%) scale(1); }
-  50%      { opacity: 0.55; transform: translate(-6%, 10%) scale(1.1); }
+@keyframes constellation-fade-pulse {
+  0%, 100% { opacity: 0.55; }
+  50%      { opacity: 0.75; }
 }
 
-.mobile-hero-glow {
+.mobile-hero-constellation {
   position: absolute;
   inset: 0;
-  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   pointer-events: none;
   z-index: 0;
+  overflow: hidden;
+  animation: constellation-fade-pulse 8s ease-in-out infinite;
 }
-.mobile-hero-glow::before,
-.mobile-hero-glow::after {
-  content: '';
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(70px);
-  will-change: opacity, transform;
-}
-/* Brand violet glow — top-left corner */
-.mobile-hero-glow::before {
-  width: 75vw; height: 75vw;
-  top: -20%; left: -25%;
-  background: radial-gradient(circle, rgba(167, 139, 250, 0.7) 0%, rgba(167, 139, 250, 0) 65%);
-  animation: hero-glow-violet 14s ease-in-out infinite;
-}
-/* White sheen — bottom-right corner */
-.mobile-hero-glow::after {
-  width: 70vw; height: 70vw;
-  bottom: -20%; right: -20%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0) 65%);
-  animation: hero-glow-white 18s ease-in-out infinite;
+.mobile-hero-constellation svg {
+  width: 130vw;
+  height: 130vw;
+  max-width: none;
+  transform-origin: 50% 50%;
+  animation: constellation-rotate 60s linear infinite;
+  will-change: transform;
 }
 @media (prefers-reduced-motion: reduce) {
-  .mobile-hero-glow::before,
-  .mobile-hero-glow::after {
+  .mobile-hero-constellation,
+  .mobile-hero-constellation svg {
     animation: none;
-    opacity: 0.4;
+    opacity: 0.55;
   }
 }
