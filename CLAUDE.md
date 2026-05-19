@@ -22,13 +22,18 @@ Backend: Supabase Auth + Stripe (LIVE mode) + Vercel serverless API + Resend tra
 
 1. **This file (CLAUDE.md)** — current rules + tech stack
 2. **`BACKLOG.md`** — what's left to do (operator tasks + deferred code + strategic items + done-list)
-3. **`SESSION-2026-05-17-BUNDLING-ODYSSEY.md`** ← LATEST — Vercel NFT bundling postmortem (6 attempts), Strategy B canonical pattern, smoke test infrastructure
-4. **`SESSION-2026-05-15-PART-2.md`** — GA4 funnel, transactional emails, Stripe LIVE confirmation, env hygiene, mobile baseline
-5. **`SESSION-2026-05-15-COMPLETE.md`** — rebrand context (Vantage → AimVantage, DNS, JSON-LD)
-6. **`PROJECT-INDEX.md`** — comprehensive 22-section system inventory
-7. **`HANDOFF.md`** — original handoff (mostly superseded by PROJECT-INDEX)
-8. **`architecture-map.html`** — open in browser for visual map (35 nodes / 45 edges)
-9. **`WALLET-SPEC.md`** — wallet model is DONE; doc kept for historical reference
+3. **`SESSION-2026-05-19-GDPR-MOBILE-UX.md`** ← LATEST — GDPR Gaps #1 + #3 shipped (self-serve delete + privacy policy cv_summary), full mobile UX sweep (nav, hero spacing, chip cluster, gradient fade, SEO-flash fix, desktop globe smoothing), and a 10-round mobile-hero-animation rabbit hole (parked, do not re-litigate)
+4. **`SESSION-2026-05-17-BUNDLING-ODYSSEY.md`** — Vercel NFT bundling postmortem (6 attempts), Strategy B canonical pattern, smoke test infrastructure
+5. **`SESSION-2026-05-15-PART-2.md`** — GA4 funnel, transactional emails, Stripe LIVE confirmation, env hygiene, mobile baseline
+6. **`SESSION-2026-05-15-COMPLETE.md`** — rebrand context (Vantage → AimVantage, DNS, JSON-LD)
+7. **`PROJECT-INDEX.md`** — comprehensive 22-section system inventory
+8. **`HANDOFF.md`** — original handoff (mostly superseded by PROJECT-INDEX)
+9. **`architecture-map.html`** — open in browser for visual map (35 nodes / 45 edges)
+10. **`WALLET-SPEC.md`** — wallet model is DONE; doc kept for historical reference
+
+**Plans worth reading if touching the related code:**
+- `docs/superpowers/plans/2026-05-18-gap1-self-serve-delete-account.md` — full GDPR Gap #1 plan, checkboxes synced (Phase 1-5 done, Phase 6 = manual E2E operator task)
+- `docs/superpowers/plans/2026-05-18-gap3-privacy-policy-cv-summary.md` — full GDPR Gap #3 plan (all phases done)
 
 Before doing ANY non-trivial work: `git log --oneline -30` to see what's already shipped AND `npm run smoke` to confirm the deploy is healthy.
 
@@ -110,7 +115,7 @@ vantage/
 │   ├── roast/index.ts                 # public free tool with 7-layer abuse defense
 │   ├── stripe/[action].ts             # multiplexer: checkout / sync / portal
 │   ├── stripe/webhook.ts              # webhook handler — fires purchase, refund emails, GA4 events upstream
-│   ├── user/index.ts                  # multiplexer: credits / analyses / cv-summary
+│   ├── user/index.ts                  # multiplexer: credits / analyses / cv-summary / delete-account
 │   └── waitlist/index.ts              # waitlist join/count
 ├── lib/email/resend.ts                # ⚠️ server-only Resend helper (OUTSIDE /api/ — doesn't burn function slot)
 ├── database/
@@ -165,7 +170,7 @@ vantage/
 | `api/[publicTool].ts` | yes | Catch-all for other public tools |
 | `api/stripe/[action].ts` | yes | checkout / sync / portal |
 | `api/stripe/webhook.ts` | no | Stripe event handler |
-| `api/user/index.ts` | yes | credits / analyses / cv-summary |
+| `api/user/index.ts` | yes | credits / analyses / cv-summary / **delete-account** (GDPR Gap #1, 2026-05-18) |
 | `api/waitlist/index.ts` | no | Waitlist join/count |
 
 ⚠️ **Do not add new top-level functions without retiring one.** Vercel Hobby plan caps at 12. Use multiplexers (`[action].ts` pattern) for related endpoints.
@@ -251,6 +256,7 @@ Fire-and-forget event log for dispute paper trail + future admin dashboard. Serv
 Wired event types:
 - `purchase.completed` — `api/stripe/webhook.ts` topup + subscription branches
 - `purchase.refunded` — `api/stripe/webhook.ts` charge.refunded
+- `account.deleted` — `api/user/index.ts::handleDeleteAccount` (GDPR Gap #1, 2026-05-18). Written BEFORE the auth.users delete fires so the audit row survives with `actor_id=NULL` but `actor_email` + `ip_address` + `metadata` preserved.
 
 Event taxonomy (dotted namespace, soft convention): `auth.*` / `purchase.*` / `token.*` / `admin.*`.
 
@@ -258,11 +264,11 @@ Event taxonomy (dotted namespace, soft convention): `auth.*` / `purchase.*` / `t
 
 **Status: REAL helpers live in every consumer.** No stubs. After 5 failed attempts to share cross-file helpers (lib/, api/_lib/, api/shared/, vercel.json includeFiles, underscore renames — all ERR_MODULE_NOT_FOUND at runtime), the code is now inlined directly into each consumer handler. Each function file is self-contained; Vercel NFT only has to follow bare-package imports from `node_modules`, which it does reliably.
 
-Trade-off: helper updates touch up to 5 files (analyze, interview, rewrite-tone, stripe/[action], stripe/webhook). Originals (now deleted) lived at `api/shared/{observability,email,audit}/*` — preserved in git history if a future fix wants them back as a single source.
+Trade-off: helper updates touch up to **6 files** (analyze, interview, rewrite-tone, stripe/[action], stripe/webhook, user). Originals (now deleted) lived at `api/shared/{observability,email,audit}/*` — preserved in git history if a future fix wants them back as a single source.
 
-If you change one inlined helper, change all copies. They're 1:1 derived from `api/shared/observability/sentry.ts` @ commit `b70db4e` / `api/shared/email/resend.ts` / `api/shared/audit/log.ts`.
+If you change one inlined helper, change all copies. They're 1:1 derived from `api/shared/observability/sentry.ts` @ commit `b70db4e` / `api/shared/email/resend.ts` / `api/shared/audit/log.ts`. **`api/user/index.ts` joined the inlined-helpers set on 2026-05-18** (commit `225fd82`) so the new `handleDeleteAccount` could log the `account.deleted` audit row + send the confirmation email — count them all when updating.
 
-**Smoke test (`npm run smoke`) is the regression guard.** Run after every API change. Must be 10/10.
+**Smoke test (`npm run smoke`) is the regression guard.** Run after every API change. Must be **11/11** (was 10/10 before 2026-05-18; the new check is `/api/delete-account` returns JSON 401/405 on GET).
 
 ### Sentry server-side — `lib/observability/sentry.ts`
 **ACTIVE in production** as of 2026-05-15. Project: `aimvantage-server` in `foresay-labs` org, EU/Germany region (`de.sentry.io`). Dashboard: https://foresay-labs.sentry.io/projects/aimvantage-server/. DSN lives in Vercel as `SENTRY_DSN` (Sensitive, Production + Preview). Spike Protection ON at org level.
@@ -276,12 +282,13 @@ Defensive defaults:
 - `beforeSend` strips 4xx-tagged events + known noise patterns
 - Per-fingerprint dedupe (60s window, 200-entry ceiling, `route+msg` key) protects 5K-event free tier from bad-deploy spam loops
 
-**Wired in 5 handlers** (all token-charging or money-critical):
+**Wired in 6 handlers** (all token-charging, money-critical, or destructive-account):
 - `api/stripe/webhook.ts` (commit `3a8c514`)
 - `api/analyze/index.ts` (commit `3a8c514`)
 - `api/interview/[action].ts` (commit `5eb2886`)
 - `api/rewrite-tone/index.ts` (commit `5eb2886`)
 - `api/stripe/[action].ts` (commit `5eb2886`)
+- `api/user/index.ts` (commit `225fd82` — added 2026-05-18 with GDPR Gap #1 self-serve delete handler)
 
 4xx-style branches (Insufficient tokens, JOB_PARSE_FAILED) early-return BEFORE capture — no Sentry noise for intentional 4xx.
 

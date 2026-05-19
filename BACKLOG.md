@@ -19,6 +19,7 @@ Last reviewed: 2026-05-16
 | U7 | **YouTube channel rename** | 5 min | Channel `UCuZxrV6LaJfGHsEvztsaB4Q` lives on a different Google account. About, banner, handle (handle rate-limited 14d). |
 | U8 | **Send 3 directory rebrand emails** | 5 min total | Drafts in `docs/directory-rebrand-emails.md`. TheresAnAIForThat, SubmitAITools, AiToolzDir. |
 | U9 | **Add `VITE_ADMIN_EMAILS=adlixir.uk@gmail.com`** to Vercel | 1 min | Currently unset — operator-only TEST-mode banner gate is muted in prod via `VITE_STRIPE_MODE=live` anyway, but adding this re-enables the gate for any future operator-only UI. |
+| U10 | **GDPR Gap #1 Phase 6 — E2E with a disposable test account** | 10 min | Sign up with throwaway email → log in → Account → Danger Zone → "Delete account" → type DELETE → confirm. Then verify in Supabase: (1) `auth.users` row gone, (2) `profiles` row gone (cascade), (3) `analyses` rows gone (cascade), (4) `audit_log` row with `event_type='account.deleted'` SURVIVES with `actor_id=NULL` but `actor_email/ip/metadata` preserved, (5) confirmation email arrives. Full step list in `docs/superpowers/plans/2026-05-18-gap1-self-serve-delete-account.md` Phase 6. |
 
 ---
 
@@ -62,6 +63,7 @@ Smoke test (`npm run smoke`) is the regression guard. Run after EVERY API change
 | D9 | **`rewrite-tone` + `interview` low-balance email instrumentation** | Only `analyze` is instrumented today. Trivially extensible — same crossing pattern, ~10 LOC each. | Anytime. |
 | D10 | **OAuth `sign_up` double-count edge case** | Confirmation-click after email signup could fire `sign_up` twice in narrow window. Low impact. | Anytime. |
 | D11 | **GDPR right-to-erasure scrubbing** for audit_log | When a user requests deletion, actor_email + ip_address persist in audit rows as plain text. Needs a sweep helper. | First erasure request, or before B2B contract. |
+| D12 | **Mobile hero ambient motion** | 10 rounds tried 2026-05-18 with CSS-only techniques (blurred blobs, gradient mesh, dot constellation, Stripe-style canonical mesh) — all rolled back. Subtle pale-on-pale = invisible; saturated colours = off-brand against the pale lavender palette. CSS alone can't bridge that gap. **Don't iterate live again.** Correct path: design brief first, then custom Canvas/WebGL shader (same tech as desktop `Hero3DScene`, optimised for mobile bundle size). See `SESSION-2026-05-19-GDPR-MOBILE-UX.md` round-by-round postmortem. | Only if/when there's a real product reason (data showing mobile bounce attributable to flat hero). Don't prioritise on aesthetic-only grounds. |
 
 ---
 
