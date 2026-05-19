@@ -757,13 +757,6 @@ export default function LandingPage({ onStart, showLogin }: { onStart: () => voi
               <Hero3DScene />
             </React.Suspense>
           )}
-          {/* Mobile-only Stripe-style gradient mesh — 4 layered radial
-              gradients (saturated brand violet / lavender / indigo / light
-              violet) in a single background, with background-position
-              animating across a 180% canvas over 30s. Crisp gradients
-              (no separate blur filter) so colors are guaranteed visible.
-              See index.css .mobile-hero-mesh for the technique. */}
-          <div className="lg:hidden mobile-hero-mesh" aria-hidden="true" />
         </div>
 
         {/* Hero text. The `relative` is critical — without explicit positioning,
